@@ -1,13 +1,18 @@
 <template>
   <header>
-    <div class="logo">
+    <div class="con-logo">
+      <img class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
     </div>
+    <nav class="top-hat">
+    </nav>
+    <nav class="main-nav">
+    </nav>
   </header>
 </template>
 
 <script>
 export default {
-  name: 'header',
+  name: 'headerComponent',
   data () {
     return {
     }
@@ -19,11 +24,16 @@ export default {
 <style scoped lang="less">
   header {
     display: grid;
-    .logo {
-      width: 120px;
-      height: 145px;
-      background-color: blue;
+    .con-logo {
+      width: 25%;
+      height: 125px;
+      background-color: #fff;
       position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      left: -4%;
+      // transform: skew(-45deg);
       &:after {
         content: '';
         display: block;
@@ -32,8 +42,15 @@ export default {
         position: absolute;
         top: 0;
         left: 100%;
-        border-top: 100px solid blue;
-        border-right: 72px solid transparent;
+        border-top: 125px solid #fff;
+        border-right: 125px solid transparent;
+      }
+      .logo {
+        width: 268px;
+        height: auto;
+        position: absolute;
+        right: 0;
+        // transform: skew(45deg);
       }
     }
   }
