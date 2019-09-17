@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <headerComponent></headerComponent>
-    <img src="./assets/logo.png">
     <router-view/>
   </div>
 </template>
@@ -13,11 +12,35 @@ export default {
   name: 'App',
   data () {
     return {
-
     }
   },
   components: {
     'headerComponent': headerComponent
+  },
+  computed: {
+    frontPageRoutes () {
+      console.log(this.$router)
+      return this.$router.options.routes.forEach((route) => {
+        console.log(route)
+        if (route.name === 'frontpages') {
+          console.log(route)
+          return route
+        }
+      })
+    },
+    teamManagementRoutes () {
+      // console.log('test')
+      let routes = this.$router.options.routes.forEach((route) => {
+        // console.log('test')
+        if (route.name === 'TeamManagement') {
+          console.log(route)
+          return route
+        }
+      })
+
+      console.log(this.$route)
+      return routes
+    }
   }
 }
 </script>
