@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header :style="cssVars">
     <div class="con-logo">
       <router-link :to="{ path: '/'}" class="con-logo">
         <img class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
@@ -75,10 +75,18 @@ export default {
     }
   },
   mixins: [],
+  props: [
+    'styles'
+  ],
   components: {},
   computed: {
     routes () {
       return false
+    },
+    cssVars () {
+      return {
+        '--bg-color': this.styles.navColor
+      }
     }
   },
   watch: {},
@@ -168,7 +176,7 @@ export default {
     }
 
     .main-nav {
-      background-color: #0C4B75;
+      background-color: var(--bg-color);
       nav {
         a {
           color: #fff;
