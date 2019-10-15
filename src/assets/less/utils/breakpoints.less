@@ -1,0 +1,48 @@
+// Widths
+@max-width: 1380px; // max-width for content
+@gutter-width: 2rem; // default gutter-width
+@sidebar-width: 262px; // deafult sidebar width
+@content-width: { max-width: calc(@max-width - @sidebar-width - (@gutter-width)); };
+
+
+/*------------------------------------*\
+    BREAKPOINTS
+\*------------------------------------*/
+
+/**
+ * USE INLINE FOR BETTER MAINTAINABILITY
+ *
+ * Example :
+ *
+ *   .container {
+ *     @media @tablet-min { ... }
+ *   }
+ *
+ */
+
+// Phone
+@phone: ~"(max-width: 599px)";
+@phone-only: ~"(max-device-height: 768px) and (max-device-width: 768px)"; // Accounts for rotation
+
+// Tablets
+@tablet-min: ~"(min-width: 600px)";
+@tablet-max: ~"(max-width: 1024px)";
+@tablet: @tablet-min ~"and" @tablet-max;
+
+// Desktops
+@desktop-min: ~"(min-width: 1025px)";
+@desktop-max: ~"(max-width: 1680px)";
+@desktop: @desktop-min ~"and" @desktop-max;
+@desktop-large: ~"(min-width: 1681px)";
+
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+}

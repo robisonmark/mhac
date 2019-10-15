@@ -24,20 +24,25 @@ export default {
     //   if (this.$route)
     // },
   },
+  watch: {
+    $route (to, from) {
+      // check route call
+    }
+  },
   created () {
     this.$router.options.routes.forEach((route) => {
       if (route.children) {
-        // route.children.forEach((child) => {
-        //   console.log(child.name === this.$route.name)
-        //   if (child.name === this.$route.name) {
-        //     this.teamManagement = true
-        //   } else {
-        //     this.teamManagement = false
-        //   }
-        // })
-        this.teamManagement = true
-      } else {
-        this.teamManagement = false
+        route.children.forEach((child) => {
+          console.log(child.name === this.$route.name)
+          if (child.name === this.$route.name) {
+            this.teamManagement = true
+          } else {
+            this.teamManagement = false
+          }
+        })
+      //   this.teamManagement = true
+      // } else {
+      //   this.teamManagement = false
       }
     })
 
@@ -70,6 +75,7 @@ body {
 
  .team-management {
     background-color: #CFCDCD;
+    overflow: auto;
   }
   .front-pages {
     /*Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#f4f7f9+0,9fc7e3+21,8cbcde+25,2784c3+100 */

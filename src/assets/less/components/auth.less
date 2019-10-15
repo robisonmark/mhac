@@ -1,0 +1,175 @@
+/*------------------------------------*\
+    Auth
+
+    include only on auth pages 
+    not into main less
+
+\*------------------------------------*/
+
+.container--login{
+  padding: 2rem;
+  &:before,
+  &:after{
+    content: "";
+    clear: both;
+    display: table;
+  }
+}
+.instructions{
+  // vertical-align: middle;
+  position: absolute;
+  top: calc(50% - 75px);
+  left: 24.5%;
+  color: #fff;
+  max-width: 370px; // think through a better solution to keep text contained in clipped path
+  h2{
+    text-transform: uppercase; 
+    font-weight: 400;
+  }
+  p{
+    margin-bottom: 0;
+  }
+}
+.signout-container{
+  // vertical-align: middle;
+  position: absolute;
+  top: calc(50% - 75px);
+  left: 24.5%;
+  color: @color-text;
+  max-width: 500px; // think through a better solution to keep text contained in clipped path
+  h2{
+    text-transform: uppercase; 
+    font-weight: 400;
+  }
+  p{
+    margin-bottom: 0;
+  }
+}
+.displayPassword{
+  position: absolute;
+  right: .5rem;
+  top: calc(50% + 5px);
+  cursor: pointer;
+}
+.angled-11deg{
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  // width: 75vw;
+  background-image: url('../../assets/store.jpg');
+  background-size: cover;
+  background-position: center;
+  clip-path: polygon(0 0, 82% 0, 100% 100%, 0% 100%);
+  &:before{
+    content: '';
+    display: block;
+
+  }
+  &:after{
+    background: fade(@color-border, 81%);
+    bottom: -25%;
+    content: '';
+    display: block;
+    height: 125%;
+    width: 75vw;
+    left: -25vw;
+    position: absolute;
+    right: 0;
+    transform: skew(5.8deg);
+    transform-origin: 100%;
+    z-index: -1;
+    overflow: hidden;
+  }
+}
+.angled-neg-11deg{
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  // width: 75vw;
+  background-image: url('../../assets/store.jpg');
+  background-size: cover;
+  background-position: center;
+  clip-path: polygon(28% 0, 100% 0, 100% 100%, 0% 100%);
+  &:before{
+    content: '';
+    display: block;
+
+  }
+  &:after{
+    background: fade(@color-border, 81%);
+    bottom: -25%;
+    content: '';
+    display: block;
+    height: 125%;
+    width: 75vw;
+    left: -25vw;
+    position: absolute;
+    right: 0;
+    transform: skew(0deg);
+    transform-origin: 100%;
+    z-index: -1;
+    overflow: hidden;
+  }
+}
+.copyright{
+  color: @color-nav;
+}
+form{
+  border: 1px solid @color-border;
+  .border-radius;
+  max-width: 350px;
+  text-align: left;
+  label{
+    position: relative;
+    margin-bottom: 0;
+    // &:nth-child(2){
+    padding-top: 25px;
+    // }
+  }
+  input, label{
+    display: block;
+    width: 100%;
+    font-weight: 400;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    outline: 0;
+    font-size: 18px;
+  }
+  input{
+    height: 25px;
+    text-indent: 0;
+    // &:after{
+    //   content: '';
+    //   display: block;
+    //   // border-bottom: 2px solid @color-nav;
+    //   width: 0;
+    //   height: 3px;
+    //   background-color: #121212;
+    //   transition: width .5s ease-in-out;
+    // }
+    // &:active:after{
+    //   content: '';
+    //   display: block;
+    //   width: 100%;
+    //   transition: width .5s ease-in-out;
+    // }
+  }
+  a{
+    display: block;
+    font-size: 15px;
+    color: @color-text;
+    padding: 5px 0 0 0;
+    &.right.absolute{
+      top: 0;
+    }
+    &.backtologin {
+      margin-top: 20px;
+      float: left;
+    }
+  }
+  button{
+    margin-top: 20px;
+    float: right;
+  }
+}

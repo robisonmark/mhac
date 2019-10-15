@@ -1,0 +1,127 @@
+/*------------------------------------*\
+    Edit
+
+    Styles Apply to Edit Pages when
+    the edit class is applied
+
+\*------------------------------------*/
+
+.edit {
+  padding: .5rem 1rem 1rem 0;
+  //added for allowing just the container with this class to scroll - maybe add to the a new class called content-container
+  height: calc(100vh - 46px);
+  overflow-y: auto;
+  @media @tablet-max {
+    width: calc(100vw - 62px);
+    margin-left: calc(62px + 1rem);
+  }
+  .container{
+    border: 1px solid @color-border;
+    &.no-border {
+      border: 0;
+    }
+  }
+  
+  .formGroup.col {
+    -ms-flex: 0 0 31.25%;
+    -webkit-box-flex: 0;
+    flex: 0 0 31.25%;
+    max-width: 31.25%;
+    width: 31.25%;
+  }
+
+  .formGroup.col:nth-child(1) {
+    width: 62.5%;
+    -ms-flex: 0 0 31.25%;
+    -webkit-box-flex: 0;
+    flex: 0 0 62.5%;
+    max-width: 62.5%;
+  }
+  .tab{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 10px;
+    height: 45px;
+    vertical-align: middle;
+    font-size: 1.222222rem;
+    font-weight: 600;
+    border-right: 1px solid @color-border;
+    cursor: pointer;
+    &.active{
+      background: #fff;
+      height: 46px;
+    }
+  }
+  .tabContent{
+    padding: 15px 0;
+    min-height: 56vh;
+  }
+}
+
+.header{
+  &--edit{
+    height: 46px;
+    width: 100%;
+    background-color: @color-nav;
+    border-bottom: 1px solid @color-border;
+    position: relative;
+    &.groups{
+      border-top: 2px solid @color-border;
+      border-left: 2px solid @color-border;
+      border-right: 2px solid @color-border;
+      // overflow: hidden;
+      height: 53px; // momentary fix until I look more into multiselect sizing
+    }
+    &.secondary{
+      height: 45px;
+      margin-top: -1rem;
+      border-top: 1px solid @color-border;
+      background-color: @color-highlight;
+      .tab {
+        font-weight: 400;
+        height: 44px;
+        &.active{
+          height: 43px;
+        }
+      }
+    }
+    .tab{
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      height: 45px;
+      vertical-align: middle;
+      font-size: 1.2222rem;
+      font-weight: 600;
+      border-right: 1px solid @color-border;
+      cursor: pointer;
+      &.active{
+        background: #fff;
+        height: 46px;
+      }
+    }
+    .tabContent{
+      padding: 15px 0;
+      // min-height: 56vh;
+      // adjustment made for 'edit' pages on customers app
+      min-height: 525px;
+      max-height: 700px;
+    }
+  }
+}
+.dataIntegrity {
+  text-align: right;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: #707070;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  background: #EAEBE6;
+  margin-left: -18px;
+  margin-right: -18px;
+  padding: 5px 15px;
+  & .lastUserUpdate{
+    font-size: .7rem;
+  }
+}

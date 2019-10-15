@@ -1,11 +1,14 @@
 <template>
   <div class="hello">
     <h2>Current Roster</h2>
-    <editTable :columns="columns" :tabledata="roster"></editTable>
+    <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer"></editTable>
   </div>
 </template>
 
 <script>
+// api
+import { api } from '../../api/endpoints.js'
+
 // components
 import editTable from '@/components/editTable'
 
@@ -16,33 +19,52 @@ export default {
       columns: [
         {
           name: 'Number',
-          icon: ''
+          icon: '',
+          field_name: 'number',
+          type: 'text'
         },
         {
           name: 'First Name',
-          icon: ''
+          icon: '',
+          field_name: 'first_name',
+          type: 'text'
         },
         {
           name: 'Last Name',
-          icon: ''
+          icon: '',
+          field_name: 'last_name',
+          type: 'text'
         },
         {
           name: 'Position',
-          icon: ''
+          icon: '',
+          field_name: 'position',
+          type: 'text'
         },
         {
           name: 'Age',
-          icon: ''
+          icon: '',
+          field_name: 'age',
+          type: 'text'
         },
         {
           name: 'Birthdate',
-          icon: ''
+          icon: '',
+          field_name: 'birthday',
+          type: 'text'
         },
         {
           name: 'Height',
-          icon: ''
+          icon: '',
+          field_name: 'height',
+          type: 'text'
         }
       ],
+      config: {
+        'page': 'roster'
+      },
+      newPlayer: {
+      },
       roster: [
         {
           number: 1,
@@ -58,24 +80,55 @@ export default {
   },
   components: {
     'editTable': editTable
+  },
+  created () {
+    this.initRoster()
+
+    this.initNewPlayer()
+
+    this.$root.$on('save', payload => {
+      this.save()
+    })
+  },
+  methods: {
+    initRoster () {
+      api.getPlayers('8b31d3fa-e233-11e9-a4c2-b827ebcfd443').then(response => {
+        console.log(response)
+      })
+    },
+    initNewPlayer () {
+      this.newPlayer = {
+        'number': '',
+        'first_name': '',
+        'last_name': '',
+        'position': '',
+        'age': '',
+        'birthday': '',
+        'height': ''
+      }
+    },
+    save () {
+      console.log(this.newPlayer)
+      let playerJson = {
+        ...this.newPlayer,
+        'team_id': '8b31d3fa-e233-11e9-a4c2-b827ebcfd443'
+      }
+      api.updatePlayer('post', playerJson)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+      this.roster.push(this.newPlayer)
+      this.initNewPlayer()
+      this.$root.$emit('saved')
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
 </style>

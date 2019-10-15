@@ -1,0 +1,22 @@
+/*------------------------------------*\
+    Buttons
+\*------------------------------------*/
+
+button,
+[role="button"],
+.button{
+	border: 2px solid @color-border;
+	color: #fff;
+	background: @color-text;
+	-webkit-appearance: none;
+	&.uppercase{
+		text-transform: uppercase;
+	}
+	&.secondary {
+		border: 1px solid @color-border;
+		background-color: @color-nav;
+		color: @color-text-secondary;
+		font-weight: 600;
+		// box-shadow: 0px 3px 6px 0px rgba(66,76,88,0.5);
+	}
+}

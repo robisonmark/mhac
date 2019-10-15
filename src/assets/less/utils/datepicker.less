@@ -1,0 +1,56 @@
+/* ********************************* 
+    All Styles found in this file are used to overwrite defaults by the Airbnb style datepicker.
+    Most css styles will need an important class added to them for overwrite purposes.  
+    Be careful using using !important as it makes style changes harder and keeps Javascript 
+    from being able to style elements  
+********************************* */
+
+.asd__month-table {
+    height: auto;
+}
+.asd__month-table{
+    border:none;
+    & tbody {
+        height: 100%;
+        overflow-y: unset;
+    }
+}
+.asd__day--enabled:before{
+    margin-right: 0 !important;
+}
+.asd__week {
+    width: auto;
+    display: table-header-group;
+}
+.asd__week td {
+    border: 1px solid @color-border;
+}
+.asd__week td.asd__day--selected {
+    border: 1px double @color-border !important;
+}
+.asd__week td.asd__day--empty {
+    border: none;
+}
+.asd__mobile-close-icon{
+    color: @color-text;
+}
+.asd__day--in-range{
+    background: @color-nav !important;
+    border: 1px double @color-border !important;
+}
+.asd__action-buttons {
+    button{
+        color: @color-text !important;
+        border: 1px solid @color-border !important;
+        &:hover {
+            text-decoration: none !important;
+            background: @color-border;
+            color: #fff !important;
+        }
+    }
+}
+
+.asd__day--start_date{
+    background-color: lighten(#034FA6, 30%) !important; // get ipro blue? Play with style later
+    color: #fff !important;
+}

@@ -84,7 +84,7 @@ export default {
     z-index: 0;
   }
   .team-management {
-    padding: 1rem 3.5rem;
+    padding: 1rem 4rem;
   }
 }
 </style>

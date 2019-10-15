@@ -5,12 +5,19 @@
 </template>
 
 <script>
+import { api } from '../../api/endpoints.js'
+
 export default {
   name: 'stats',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  created () {
+    api.getTeams().then(response => {
+      console.log(response)
+    })
   }
 }
 </script>

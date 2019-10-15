@@ -1,0 +1,213 @@
+/*------------------------------------*\
+    TYPOGRAPHY
+\*------------------------------------*/
+
+// @import (css) url('https://fonts.googleapis.com/css?family=Raleway:400,600,700');
+@import (css) url('https://fonts.googleapis.com/css?family=Lato:400,700,900|Muli|Open+Sans:300,400,600,700|Poppins|Raleway:400,600,700|Roboto:300,400,500,700');
+
+@raleway: 'Raleway', sans-serif;
+@open-sans: 'Open Sans', sans-serif;
+@roboto: 'Roboto', sans-serif;
+@lato: 'Lato', sans-serif;
+@poppins: 'Poppins', sans-serif;
+@muli: 'Muli', sans-serif;
+// @heebo: 'Heebo', sans-serif;
+// @catamaran: 'Catamaran', sans-serif;
+
+.font-family{
+	font-family: @lato;
+	letter-spacing: .02rem;
+}
+// } end of Mark added
+
+// Global Typography
+
+html {
+
+	// Setting dynamic REM size
+	@min-fs : 14px; // Minimum Font Size
+	@max-fs : 18px; // Maximum Font Size
+	@min-vw : 600px; // Minimum Window width
+	@max-vw : 1240px; // Maximum Window width
+
+  font-size: calc( ~"(100vw -" @min-vw ~") /" ~"("unit(@max-vw) - unit(@min-vw)~") * ("unit(@max-fs) - unit(@min-fs)~") +" @min-fs);
+  @media (max-width: @min-vw) { font-size: @min-fs; }
+  @media (min-width: @max-vw) { font-size: @max-fs; }
+
+  *, *:before, *:after {
+		transition: none 0.2s ease-in-out; // Default transition properties
+	}
+	.edit {
+		font-size: calc( ~"(100vw -" @min-vw ~") /" ~"("unit(@max-vw) - unit(@min-vw)~") * ("unit(16px) - unit(@min-fs)~") +" @min-fs);
+	}
+
+}
+
+body {
+	line-height: 1.65;
+	// color: @color-text;
+	.font-family;
+	text-rendering: optimizeLegibility;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+}
+
+// ::selection {
+// 	background-color: fade(@link-color, 25);
+// }
+
+// All header fonts
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+	line-height: 1.33;
+	// margin-top: 1.25em;
+	// margin-bottom: 1em;
+	margin-top: 0;
+	margin-bottom: 0;
+	display: block;
+	.font-family();
+
+	&:first-child { margin-top: 0; }
+  	&:last-child { margin-bottom: 0; }
+}
+
+h1, .h1 {
+	font-weight: bolder;
+	font-size: 1.222rem; // = 22px / 18 (base rem size)
+	text-transform: uppercase;
+}
+
+// All but H1 header fonts
+h2, h3, h4, h5, h6,
+.h2, .h3, .h4, .h5, .h6 {
+	font-weight: 700;
+}
+
+h2, .h2 { 
+	font-size: 1.8rem;
+	letter-spacing: 1.2px 
+} // = 36px / 18 (base rem size)
+h3, .h3 { font-size: 1.6rem; } // = 24px / 16 (base rem size)
+h4, .h4 { font-size: 1.2rem; } // = 24px / 16 (base rem size)
+h5, .h5 { font-size: 1.125rem; }
+h6, .h6 { font-size: 0.875rem; }
+
+p {
+	margin-top: 0rem;
+	margin-bottom: 1rem;
+	.font-family();
+
+  &:first-child { margin-top: 0; }
+  &:last-child { margin-bottom: 0; }
+}
+
+a, [role="link"] {
+	// color: @link-color;
+	cursor: pointer;
+	transition-property: color;
+	text-decoration: none;
+	.font-family();
+	letter-spacing: .05rem; //set below to overwrite default
+
+	&.inherit {
+		&:not(:hover) {
+			color: inherit;
+		}
+	}
+
+	&:hover,
+	&:focus {
+		// color: @link-hover;
+    	outline: none;
+		.entry-content p &:not([class*="btn btn-default"]) {
+			text-decoration: underline;
+		}
+	}
+
+	img {
+		max-width: 100%;
+		display: inline-block;
+	}
+
+	.icon {
+		margin-right: 0.25em;
+	}
+
+}
+
+ul, ol {
+	list-style: none;
+	padding-left: 0;
+
+	&:first-child { margin-top: 0; }
+  	&:last-child { margin-bottom: 0; }
+
+	// ul/ol in content
+	// .site-main &,
+	.entry-content & {
+
+		padding-left: 3rem;
+
+		li {
+			margin-top: 1.125rem;
+			margin-bottom: 1.125rem;
+			position: relative;
+
+			&:before {
+				content: '';
+				display: inline-block;
+				position: absolute;
+				height: 0;
+				width: 0;
+				left: -1.5rem;
+				top: 0.5rem;
+				border: 2px solid;
+				margin-top: 2px;
+				margin-left: -2px;
+				border-radius: 100%;
+			}
+
+		}
+
+	}
+
+}
+
+code {
+  font-size: 1rem;
+  font-weight: normal;
+  vertical-align: middle;
+  margin-left: 1rem;
+  background-color: hex(whitesmoke);
+  padding: 0.25em 0.5em;
+  text-transform: none;
+	transition-property: background-color;
+
+	// &:hover {
+	//   background-color: fade(@link-color, 25);
+	// }
+
+	p & {
+		margin-left: 0;
+	}
+}
+
+// Alignment
+.text-left  { text-align: left !important; }
+.text-right   { text-align: right !important; }
+.text-justify  { text-align: justify !important; }
+.text-nowrap   { white-space: nowrap !important; }
+.text-center   { text-align: center !important; }
+
+// Transformation
+
+.text-lowercase  { text-transform: lowercase !important; }
+.text-uppercase  { text-transform: uppercase !important; }
+.text-capitalize { text-transform: capitalize !important; }
+
+// Weight and italics
+
+.font-weight-light  { font-weight: light !important; }
+.font-weight-normal { font-weight: normal !important; }
+.font-weight-bold   { font-weight: bold !important; }
+.font-italic        { font-style: italic !important; }

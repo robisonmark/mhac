@@ -1,0 +1,16 @@
+.notification {
+    padding: 15px;
+    width: 100%;
+    @content-width();
+    z-index: 6;
+    &.success{
+      border: 1px solid green;
+      color: green;
+      background: lighten(green, 70%);
+    }
+    &.error{
+      border: 1px solid #f00;
+      color: #f00;
+      background: lighten(#f00, 45%);
+    }
+  }

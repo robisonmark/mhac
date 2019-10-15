@@ -1,25 +1,42 @@
 <template>
   <table id="table">
     <thead id="table-head-fixed">
-      <th>
-        <td></td>
-        <td v-for="(column, index) in columns" :key="index">{{column.name}}</td>
-      </th>
+      <tr>
+        <!-- <th></th> -->
+        <th v-for="(column, index) in columns" :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
+        <!-- <th></th> -->
+      </tr>
     </thead>
 
     <tbody id="table-body">
       <tr v-for="(data, index) in tabledata" :key="index">
-        <td></td>
-        <td>{{data[0]}}</td>
-        <td>{{data[1]}}</td>
-        <td>{{data[2]}}</td>
-        <td>{{data[3]}}</td>
-        <td>{{data[4]}}</td>
-        <td>{{data[5]}}</td>
-        <td>{{data[6]}}</td>
+        <!-- <td></td> -->
+        <td v-for="(col, idx) in data" :key="idx" :class="idx">{{col}}</td>
+        <!-- <td></td> -->
         <!-- <td @click.stop.prevent="savedata(data)"><i class="far fa-copy icon"></i></td>
         <td @click.stop.prevent="deletedata(data)"><i class="far fa-trash-alt icon"></i></td> -->
       </tr>
+
+      <tr v-if="!addNew" @click="addTo">
+        <td :colspan="colspan" align="center" class="add-button">
+          <template v-if="$route.name === 'roster'">Edit Roster</template>
+          <template v-else>Add New Game to Schedule</template>
+        </td>
+        <!-- <td></td> -->
+      </tr>
+
+      <template v-else>
+        <tr class="split-fields">
+          <!-- <td></td> -->
+          <td v-for="(field, index) in columns" :key="index">
+
+            <input :type="field.type" v-model="value[field.field_name]" />
+            <!-- <input type="text" v-model="value[key]" /> -->
+            <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
+          </td>
+          <!-- <td></td> -->
+        </tr>
+      </template>
     </tbody>
   </table>
 </template>
@@ -30,12 +47,15 @@ export default {
   data () {
     return {
       currentSort: '',
-      currentSortDir: 'asc'
+      currentSortDir: 'asc',
+      addNew: false
     }
   },
   props: [
     'columns',
-    'tabledata'
+    'config',
+    'tabledata',
+    'value'
   ],
   computed: {
     filteredData () {
@@ -58,9 +78,15 @@ export default {
       //   })
       // }
       return false
+    },
+    colspan () {
+      return this.columns.length
     }
   },
   async created () {
+    this.$root.$on('saved', payload => {
+      this.addNew = false
+    })
     // await this.getPromosList('username', store.state.user.username)
     // client.getAllVendors().then(response => {
     //   this.vendorTypes = response
@@ -102,7 +128,7 @@ export default {
   // },
   methods: {
     setFixedTableHead () {
-      let columnCount = 9
+      let columnCount = 6
       let tableWidth = document.getElementById('table-body').rows[0].clientWidth
 
       document.getElementById('table-head-fixed').style.width = tableWidth + 'px'
@@ -146,8 +172,11 @@ export default {
         }
       })
     },
+    addTo () {
+      this.addNew = true
+    },
     savedata () {
-
+      this.$root.$emit('save')
     },
     deletedata () {
 
@@ -157,5 +186,87 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="less">
+table {
+  width: 100%;
+  border-collapse: collapse;
+  // border-spacing: 0 5px;
+  position: relative;
+  z-index: 1;
+
+  th, tr {
+    text-align: left;
+    .number {
+      text-align: center;
+    }
+  }
+
+  thead {
+    tr {
+      height: 40px;
+    }
+    &:before {
+      content: '';
+      display: block;
+      height: 40px;
+      width: calc(100% + 45px);
+      // width: calc(100% + 15px);
+      // border-top: 1px solid var(--bg-color);
+      // border-right: 1px solid var(--bg-color);
+      border-top: 1.5px solid #B42625;
+      border-right: 2px solid #B42625;
+      border-left: 2px solid transparent;
+      position: absolute;
+      -webkit-transform: skewX(-45deg);
+      transform: skewX(-45deg);
+      left: -23px;
+    }
+  }
+
+  tbody {
+    tr {
+      background-color: #fff;
+      height: 50px;
+      border-bottom: 5px solid #CFCDCD;
+      .add-button {
+        cursor: pointer;
+      }
+
+      &.split-fields{
+        td {
+          border-right: 5px solid #CFCDCD;
+          input[type="text"] {
+            height: 50px;
+            border: 0;
+            outline: none;
+          }
+          &:last-child{
+            border-right: 0px;
+            // background-color: #CFCDCD;
+          }
+        }
+      }
+
+      // tr last child
+      &:last-child {
+        border-bottom: 0px;
+        // background-color: #CFCDCD;
+      }
+    }
+  }
+  td {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    position: relative;
+    &:last-child{
+      border-right: 0px;
+      // background-color: #CFCDCD;
+    }
+  }
+}
+
+.icons {
+  position: absolute;
+  right: -3rem;
+}
 </style>

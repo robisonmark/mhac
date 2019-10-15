@@ -1,0 +1,88 @@
+/*------------------------------------*\
+    Table
+
+    When building form components
+    follow this patern:
+
+\*------------------------------------*/
+
+table.list {
+  width: 100%;
+  border: 2px solid @color-border;
+  .font-family();
+  font-weight: 600;
+  color: @color-text;
+  // height: 500px;
+  thead{
+    tr{
+      background-color: @color-nav;
+      height: 29px;
+      border-bottom:  2px solid @color-border;
+    }
+    th:before{
+      content: '';
+      display: inline-block;
+      height: 25px;
+      width: 2px;
+      margin: -5px -2px;
+      margin-right: 1rem;
+      background-color: #fff;
+    }
+    th:first-child:before{
+      width: 0;
+      background-color: transparent;
+    }
+  }
+  tbody{
+    tr{
+      height: 50px;
+      &:first-child{
+        td{
+          border-top: 0;
+        }
+      }
+      &:last-child{
+        td{
+          border-bottom: if((nth-child(1)), 0, 2px solid @color-border);
+        }
+      }
+    }
+    td{
+      border-top: 0px solid @color-border;
+      border-right: 2px solid @color-border;
+      border-bottom: 2px solid @color-border;
+      border-left: 2px solid @color-border;
+      &:first-child{
+        border-left: 0;
+        border-right: 0;
+      }
+      &:nth-child(2){
+        border-left: 0;
+      }
+      &:last-child{
+        border-right: 0;
+      }
+      &:before{
+        content: '';
+        display: inline-block;
+        // width: 2px;
+        margin-right: 1rem;
+      }
+      label {
+        display: inline-block;
+      }
+    }
+  }
+  &.tabbed-table{
+    height: 100%;
+    margin-top: -15px;
+    margin-bottom: -15px;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid;
+    tbody{
+      max-height: 52vh;
+      height: auto;
+    }
+  }
+}

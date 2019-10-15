@@ -128,11 +128,11 @@ export default {
         border-right: 7rem solid transparent;
       }
       .logo {
-        width: 14rem;
+        max-width: 14rem;
         height: auto;
         position: absolute;
         right: 0;
-        // transform: skew(45deg);
+        width: 90%;
       }
     }
     .right {
