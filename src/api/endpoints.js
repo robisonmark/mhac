@@ -50,6 +50,33 @@ export class api {
   }
 
   /***
+     * Adds New Player to Roster
+     * @param {object} body - Player JSON Body
+     * @return - JSON Object of players by team
+    ***/
+  static async addPlayer (body) {
+    // let id = ''
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    // if (body.id) {
+    //   id = body.id
+
+    //   delete body.id
+    // }
+    return robros({
+      'url': '/addPlayer',
+      'method': 'POST',
+      'data': body
+    })
+  }
+  /***
      * Get a List of Players
      * @param {string} method - Put or Post. Method sent to the api
      * @param {object} body - Player JSON Body

@@ -36,7 +36,7 @@
               Team Login
             </span>
             <div v-if="showLogin" class="teamlogin">
-              <form>
+              <form v-if="!loggedIn">
                 <label for="username">
                   Username
                 </label>
@@ -49,6 +49,11 @@
                   Login
                 </button>
               </form>
+              <div v-else>
+                <button @click.prevent="signout()">
+                  Signout
+                </button>
+              </div>
             </div>
         </nav>
       </div>
@@ -71,7 +76,8 @@ export default {
   name: 'headerComponent',
   data () {
     return {
-      showLogin: false
+      showLogin: false,
+      loggedIn: false
     }
   },
   mixins: [],
@@ -93,7 +99,12 @@ export default {
   created () {},
   methods: {
     login () {
+      this.loggedIn = true
       this.$router.push('/manage/royals')
+    },
+    signout () {
+      this.loggedIn = false
+      this.$router.push('/')
     }
   }
 }

@@ -29,22 +29,32 @@ export default new Router({
       name: 'home',
       component: home,
       meta: {
+        'section': 'public'
       }
     },
     {
       path: '/compliance',
       name: 'compliance',
-      component: compliance
+      component: compliance,
+      meta: {
+        'section': 'public'
+      }
     },
     {
       path: '/schedules',
       name: 'schedules',
-      component: schedules
+      component: schedules,
+      meta: {
+        'section': 'public'
+      }
     },
     {
       path: '/stats',
       name: 'stats',
-      component: stats
+      component: stats,
+      meta: {
+        'section': 'public'
+      }
     },
     {
       path: '/schools',
@@ -54,14 +64,20 @@ export default new Router({
         {
           path: '/:school',
           name: 'school',
-          component: second
+          component: second,
+          meta: {
+            'section': 'public'
+          }
         }
       ]
     },
     {
       path: '/contact',
       name: 'contact',
-      component: contact
+      component: contact,
+      meta: {
+        'section': 'public'
+      }
     },
     {
       path: '/manage/:team',
@@ -71,27 +87,42 @@ export default new Router({
         {
           path: '',
           name: 'dashboard',
-          component: teamhome
+          component: teamhome,
+          meta: {
+            'section': 'team'
+          }
         },
         {
           path: 'roster',
           name: 'roster',
-          component: roster
+          component: roster,
+          meta: {
+            'section': 'team'
+          }
         },
         {
           path: 'schedule',
           name: 'schedule',
-          component: schedule
+          component: schedule,
+          meta: {
+            'section': 'team'
+          }
         },
         {
           path: 'profile',
           name: 'profile',
-          component: profile
+          component: profile,
+          meta: {
+            'section': 'team'
+          }
         },
         {
           path: 'stats',
           name: 'gamestats',
-          component: gamestats
+          component: gamestats,
+          meta: {
+            'section': 'team'
+          }
         }
       ]
     },
@@ -99,7 +130,9 @@ export default new Router({
       path: '/admin',
       name: 'admin',
       component: TeamManagement,
-      meta: {},
+      meta: {
+        'section': 'admin'
+      },
       children: [
       ]
     }

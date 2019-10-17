@@ -113,7 +113,7 @@ export default {
         ...this.newPlayer,
         'team_id': '8b31d3fa-e233-11e9-a4c2-b827ebcfd443'
       }
-      api.updatePlayer('post', playerJson)
+      api.addPlayer(playerJson)
         .then(response => {
           console.log(response)
         })

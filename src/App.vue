@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="[teamManagement ? 'team-management' : 'front-pages']">
+  <div id="app" :class="this.$route.meta.section">
     <headerComponent :styles="styles"></headerComponent>
     <router-view />
   </div>
@@ -13,7 +13,9 @@ export default {
   data () {
     return {
       teamManagement: Boolean,
-      styles: {}
+      styles: {
+        navColor: '#0C4B75'
+      }
     }
   },
   components: {
@@ -26,8 +28,32 @@ export default {
   },
   watch: {
     $route (to, from) {
+      if (to.meta.section === 'team') {
+        this.styles = {
+          navColor: '#B42625'
+        }
+      } else if (to.meta.section === 'public') {
+        this.styles = {
+          navColor: '#0C4B75'
+        }
+      }
       // check route call
     }
+    // teamManagement: {
+    //   handler (newValue, oldValue) {
+    //     console.log(newValue)
+    //     if (newValue) {
+    //       this.styles = {
+    //         navColor: '#B42625'
+    //       }
+    //     } else {
+    //       this.styles = {
+    //         navColor: '#0C4B75'
+    //       }
+    //     }
+    //   },
+    //   deep: true
+    // }
   },
   created () {
     this.$router.options.routes.forEach((route) => {
@@ -46,38 +72,31 @@ export default {
       }
     })
 
-    if (this.teamManagement) {
-      this.styles = {
-        navColor: '#B42625'
-      }
-    } else {
-      this.styles = {
-        navColor: '#0C4B75'
-      }
-    }
+    // if (this.teamManagement) {
+    //   this.styles = {
+    //     navColor: '#B42625'
+    //   }
+    // } else {
+    //   this.styles = {
+    //     navColor: '#0C4B75'
+    //   }
+    // }
   }
 }
 </script>
 
 <style lang="less">
-#app {
-  /*font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;*/
-  // text-align: center;
-  /*color: #2c3e50;
-  margin-top: 60px;*/
-}
 body {
   min-height: 100vh;
   margin: 0;
 }
 
- .team-management {
+ .team {
     background-color: #CFCDCD;
     overflow: auto;
   }
-  .front-pages {
+  .public {
+    min-height: 100vh;
     /*Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#f4f7f9+0,9fc7e3+21,8cbcde+25,2784c3+100 */
     background: rgb(244,247,249); /* Old browsers */
     background: -moz-linear-gradient(-45deg, rgba(244,247,249,1) 0%, rgba(159,199,227,1) 21%, rgba(140,188,222,1) 25%, rgba(39,132,195,1) 100%); /* FF3.6-15 */

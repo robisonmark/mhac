@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>Profile</h1>
+    <h2>Team Profile</h2>
   </div>
 </template>
 
@@ -17,18 +17,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+h2:after {
+  content: '';
+  display: block;
+  height: 40px;
+  width: 100%;
+  border-top: 1.5px solid #B42625;
+  border-right: 2px solid #B42625;
+  border-left: 2px solid transparent;
+  position: relative;
+  -webkit-transform: skewX(-45deg);
+  transform: skewX(-45deg);
+  left: -23px;
+  margin-top: .6rem;
 }
 </style>

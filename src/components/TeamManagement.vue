@@ -85,6 +85,8 @@ export default {
   }
   .team-management {
     padding: 1rem 4rem;
+    overflow: auto;
+    z-index: 1;
   }
 }
 </style>
