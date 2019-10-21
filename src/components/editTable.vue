@@ -3,15 +3,21 @@
     <thead id="table-head-fixed">
       <tr>
         <!-- <th></th> -->
-        <th v-for="(column, index) in columns" :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
-        <!-- <th></th> -->
+        <template v-for="(column, key, index) in columns">
+          <th v-if="!column.name.toLowerCase().includes('id')"  :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
+        </template>
+        <th></th>
       </tr>
     </thead>
 
     <tbody id="table-body">
       <tr v-for="(data, index) in tabledata" :key="index">
         <!-- <td></td> -->
-        <td v-for="(col, idx) in data" :key="idx" :class="idx">{{col}}</td>
+        <template v-for="(col, key, idx) in data">
+          <td v-if="!key.includes('id')" :key="key" :class="idx">
+            {{data[columns[idx]['field_name']]}}
+          </td>
+        </template>
         <!-- <td></td> -->
         <!-- <td @click.stop.prevent="savedata(data)"><i class="far fa-copy icon"></i></td>
         <td @click.stop.prevent="deletedata(data)"><i class="far fa-trash-alt icon"></i></td> -->
@@ -28,13 +34,15 @@
       <template v-else>
         <tr class="split-fields">
           <!-- <td></td> -->
-          <td v-for="(field, index) in columns" :key="index">
+          <template v-for="(field, index) in columns">
+            <td v-if="!field.field_name.includes('id')" :key="index">
 
-            <input :type="field.type" v-model="value[field.field_name]" />
-            <!-- <input type="text" v-model="value[key]" /> -->
-            <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
-          </td>
-          <!-- <td></td> -->
+              <input :type="field.type" v-model="value[field.field_name]" />
+              <!-- <input type="text" v-model="value[key]" /> -->
+              <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
+            </td>
+            <!-- <td></td> -->
+          </template>
         </tr>
       </template>
     </tbody>
@@ -87,6 +95,7 @@ export default {
     this.$root.$on('saved', payload => {
       this.addNew = false
     })
+
     // await this.getPromosList('username', store.state.user.username)
     // client.getAllVendors().then(response => {
     //   this.vendorTypes = response

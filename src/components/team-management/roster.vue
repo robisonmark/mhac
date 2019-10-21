@@ -36,6 +36,12 @@ export default {
           type: 'text'
         },
         {
+          name: 'ID',
+          icon: '',
+          field_name: 'id',
+          type: ''
+        },
+        {
           name: 'Position',
           icon: '',
           field_name: 'position',
@@ -50,7 +56,7 @@ export default {
         {
           name: 'Birthdate',
           icon: '',
-          field_name: 'birthday',
+          field_name: 'birth_date',
           type: 'text'
         },
         {
@@ -66,15 +72,6 @@ export default {
       newPlayer: {
       },
       roster: [
-        {
-          number: 1,
-          fname: 'Mark',
-          lname: 'Robison',
-          pos: 'SF',
-          age: '32',
-          bday: '04/12/1987',
-          height: '5\'11"'
-        }
       ]
     }
   },
@@ -92,8 +89,9 @@ export default {
   },
   methods: {
     initRoster () {
-      api.getPlayers('8b31d3fa-e233-11e9-a4c2-b827ebcfd443').then(response => {
+      api.getPlayers('8b31d882-e233-11e9-a4c2-b827ebcfd443').then(response => {
         console.log(response)
+        this.roster = response.data
       })
     },
     initNewPlayer () {
@@ -103,16 +101,15 @@ export default {
         'last_name': '',
         'position': '',
         'age': '',
-        'birthday': '',
+        'birth_date': '',
         'height': ''
       }
     },
     save () {
       console.log(this.newPlayer)
-      let playerJson = {
-        ...this.newPlayer,
-        'team_id': '8b31d3fa-e233-11e9-a4c2-b827ebcfd443'
-      }
+      this.newPlayer['team_uuid'] = '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+      let playerJson = this.newPlayer
+
       api.addPlayer(playerJson)
         .then(response => {
           console.log(response)
@@ -124,6 +121,7 @@ export default {
       this.roster.push(this.newPlayer)
       this.initNewPlayer()
       this.$root.$emit('saved')
+      this.$root.$off('save')
     }
   }
 }

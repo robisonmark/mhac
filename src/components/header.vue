@@ -100,6 +100,7 @@ export default {
   methods: {
     login () {
       this.loggedIn = true
+      this.showLogin = false
       this.$router.push('/manage/royals')
     },
     signout () {

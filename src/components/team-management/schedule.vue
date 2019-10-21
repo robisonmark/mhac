@@ -72,6 +72,8 @@ export default {
     })
   },
   methods: {
+    initSchedule () {
+    },
     initNewGame () {
       this.newGame = {
         'home_team': '',

@@ -14,7 +14,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="game in pastGames" :key="game.uuid" :class="{ 'missing':  !game.missing_stats }">
+          <tr v-for="game in pastGames" :key="game.id" :class="{ 'missing':  !game.missing_stats }" @click="enterStats(game.id)">
             <td></td>
             <td>{{game.date}}</td>
             <td>{{game.opponent}}</td>
@@ -85,12 +85,6 @@ export default {
           type: 'number'
         },
         {
-          name: 'FG%',
-          icon: '',
-          field_name: 'fg%',
-          type: 'text'
-        },
-        {
           name: '3PTM',
           icon: '',
           field_name: '3pt_m',
@@ -100,12 +94,6 @@ export default {
           name: '3PTA',
           icon: '',
           field_name: '3pt_a',
-          type: 'number'
-        },
-        {
-          name: '3PT%',
-          icon: '',
-          field_name: '3pt_%',
           type: 'number'
         },
         {
@@ -121,12 +109,6 @@ export default {
           type: 'number'
         },
         {
-          name: 'FT%',
-          icon: '',
-          field_name: 'ft_%',
-          type: 'number'
-        },
-        {
           name: 'RB OF',
           icon: '',
           field_name: 'rb_off',
@@ -136,12 +118,6 @@ export default {
           name: 'RB DE',
           icon: '',
           field_name: 'rb_def',
-          type: 'number'
-        },
-        {
-          name: 'RB TOT',
-          icon: '',
-          field_name: 'rb_tot',
           type: 'number'
         },
         {
@@ -157,27 +133,15 @@ export default {
           type: 'number'
         },
         {
-          name: 'A/T',
-          icon: '',
-          field_name: 'ato',
-          type: 'number'
-        },
-        {
           name: 'BLK',
           icon: '',
           field_name: 'blk',
           type: 'number'
         },
         {
-          name: 'PPG',
+          name: 'STL',
           icon: '',
-          field_name: 'ppg',
-          type: 'number'
-        },
-        {
-          name: 'TPS',
-          icon: '',
-          field_name: 'tps',
+          field_name: 'stl',
           type: 'number'
         }
       ],
@@ -185,36 +149,138 @@ export default {
         'page': 'stats'
       },
       newGameStats: {
+        'game_id': ''
       },
       stats: [
         {
-          '#': 3,
+          'number': 3,
           'last_name': 'O\'neal',
           'gs': true,
           'fg_m': 4,
           'fg_a': 5,
-          'fg_%': 80,
           '3pt_m': 0,
           '3pt_a': 0,
-          '3pt_%': 0,
           'ft_m': 10,
           'ft_a': 18,
-          'ft_%': 55.5,
           'rb_off': 3,
           'rb_def': 10,
-          'rb_tot': 13,
           'a': 2,
           'to': 0,
-          'ato': 2,
           'blk': 1,
-          'ppg': 22,
-          'tps': 0
+          'stl': 2
+        }
+      ],
+      roster: [
+        {
+          birth_date: '1987-12-04',
+          first_name: 'Test_Player_2',
+          height: 'None',
+          id: 'd0e75004-a386-4954-9ae4-ec00ba95bbd1',
+          last_name: 'test',
+          person_type: 'None',
+          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+        },
+        {
+          birth_date: '1987-12-04',
+          first_name: 'Test_Coach_2',
+          height: 'None',
+          id: 'a143e349-1d2c-43a5-b953-261425c04f8c',
+          last_name: 'test',
+          person_type: '2',
+          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+        },
+        {
+          birth_date: '1987-12-04',
+          first_name: 'Test_Coach_2',
+          height: 'None',
+          id: '07774cbd-14e7-48c4-943c-7c1762a02309',
+          last_name: 'test',
+          person_type: '2',
+          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+        },
+        {
+          birth_date: '1987-12-04',
+          first_name: 'Test_Coach_2',
+          height: 'None',
+          id: 'fba2f4f5-417c-4306-8999-808c0f251e2c',
+          last_name: 'test',
+          person_type: '1',
+          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+        },
+        {
+          birth_date: '1987-12-04',
+          first_name: 'Test_Coach_2',
+          height: 'None',
+          id: '4d3d8200-68f3-431d-8e52-5b89da30ea63',
+          last_name: 'test',
+          person_type: '2',
+          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+        },
+        {
+          birth_date: '1987-12-04',
+          first_name: 'Test_Coach_2',
+          height: 'None',
+          id: 'cc57ae28-cc20-4e61-8cc6-99478ca91866',
+          last_name: 'test',
+          person_type: '2',
+          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+        },
+        {
+          birth_date: '1987-12-04',
+          first_name: 'Test_Coach_75',
+          height: 'None',
+          id: '00905a2b-fbce-4871-ab65-3c6719b426bc',
+          last_name: 'test',
+          person_type: '2',
+          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
         }
       ]
     }
   },
   components: {
     'editTable': editTable
+  },
+  methods: {
+    enterStats (gameId) {
+      this.newGameStats.game_id = gameId
+      this.initNewGameStats()
+
+      this.gameSelected = true
+    },
+    initNewGameStats () {
+      let teamInfo = {
+        'team_uuid': '',
+        'team_stats': [
+        ]
+      }
+
+      this.roster.forEach(player => {
+        let playerStat = {
+          'player_uuid': player.id,
+          'stats': {
+            'g': '',
+            'gs': false,
+            'fg_m': '',
+            'fg_a': '',
+            '3pt_m': '',
+            '3pt_a': '',
+            'ft_m': '',
+            'ft_a': '',
+            'rb_off': '',
+            'rb_def': '',
+            'a': '',
+            'to': '',
+            'blk': ''
+          }
+        }
+        teamInfo.team_stats.push(playerStat)
+      })
+
+      this.newGameStats = {
+        ...this.newGameStats,
+        ...teamInfo
+      }
+    }
   }
 }
 </script>
