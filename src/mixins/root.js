@@ -6,6 +6,8 @@ import format from 'date-fns/format'
 export const root = {
   data () {
     return {
+      dateFormatDisplay: 'M/dd/yyyy',
+      dateFormat: 'M/dd/yyyy'
     }
   },
   components: {
@@ -26,7 +28,7 @@ export const root = {
       var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = (dt + Math.random() * 16) % 16 | 0
         dt = Math.floor(dt / 16)
-        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
       })
       return uuid
     },
@@ -35,6 +37,7 @@ export const root = {
         let formattedDates = ''
         if (time === false) {
           if (date) {
+            date = new Date(date)
             formattedDates = format(date, this.dateFormat)
             return formattedDates
           }

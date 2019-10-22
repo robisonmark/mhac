@@ -18,7 +18,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row formBlock">
         <div class="formGroup col-5">
           <label for="street_address">Street Address</label>
           <input type="text" id="street_address" />
@@ -44,7 +44,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row formBlock">
         <div class="formGroup col-4">
           <label for="primary_color">Primary Color</label>
           <input type="text" id="primary_color" />
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row formBlock">
         <div class="formGroup col-5">
           <label for="color_logo">Color Logo</label>
           <input type="file" id="color_logo" />
@@ -87,7 +87,8 @@ h2:after {
   content: '';
   display: block;
   height: 40px;
-  width: 100%;
+  /* width: 100%; */
+  width: calc(100% + 2.4rem);
   border-top: 1.5px solid #B42625;
   border-right: 2px solid #B42625;
   border-left: 2px solid transparent;
@@ -96,5 +97,8 @@ h2:after {
   transform: skewX(-45deg);
   left: -23px;
   margin-top: .6rem;
+}
+form {
+  margin-top: -40px;
 }
 </style>

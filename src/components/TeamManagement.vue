@@ -11,7 +11,7 @@
         <router-link :to="{ path: '/manage/' + team + '/profile'}" tag="li">Team Profile</router-link>
       </ul>
     </nav>
-    <router-view  class="team-management" />
+    <router-view class="team-management" />
     <img class="bottom-logo" src="@/assets/washedout-team-logo/royals-grayscale.png" />
   </div>
 </template>
@@ -40,6 +40,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+h2 {
+  font-size: 1.5rem !important;
+}
 .con-management {
   min-height: calc(100vh - 7rem);
   display: grid;

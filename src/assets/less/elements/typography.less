@@ -3,22 +3,16 @@
 \*------------------------------------*/
 
 // @import (css) url('https://fonts.googleapis.com/css?family=Raleway:400,600,700');
-@import (css) url('https://fonts.googleapis.com/css?family=Lato:400,700,900|Muli|Open+Sans:300,400,600,700|Poppins|Raleway:400,600,700|Roboto:300,400,500,700');
+@import (css) url('https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans:400,500,600,700&display=swap');
 
-@raleway: 'Raleway', sans-serif;
 @open-sans: 'Open Sans', sans-serif;
-@roboto: 'Roboto', sans-serif;
-@lato: 'Lato', sans-serif;
-@poppins: 'Poppins', sans-serif;
-@muli: 'Muli', sans-serif;
-// @heebo: 'Heebo', sans-serif;
-// @catamaran: 'Catamaran', sans-serif;
+@montserrat: 'Montserrat', sans-serif;
+
 
 .font-family{
-	font-family: @lato;
+	font-family: @open-sans;
 	letter-spacing: .02rem;
 }
-// } end of Mark added
 
 // Global Typography
 
@@ -26,7 +20,7 @@ html {
 
 	// Setting dynamic REM size
 	@min-fs : 14px; // Minimum Font Size
-	@max-fs : 18px; // Maximum Font Size
+	@max-fs : 16px; // Maximum Font Size
 	@min-vw : 600px; // Minimum Window width
 	@max-vw : 1240px; // Maximum Window width
 

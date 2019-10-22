@@ -6,6 +6,9 @@
 </template>
 
 <script>
+// api
+import { api } from '../../api/endpoints.js'
+
 // components
 import editTable from '@/components/editTable'
 
@@ -17,32 +20,32 @@ export default {
         {
           name: 'Host',
           icon: '',
-          field_name: 'home_team',
-          type: 'text'
+          field_name: 'host',
+          type: 'customSelect'
         },
         {
           name: 'Opponent',
           icon: '',
           field_name: 'opponent',
-          type: 'text'
+          type: 'select'
         },
         {
           name: 'Time',
           icon: '',
-          field_name: 'time',
-          type: 'text'
+          field_name: 'game_time',
+          type: 'time'
         },
         {
           name: 'Date',
           icon: '',
-          field_name: 'date',
-          type: 'text'
+          field_name: 'game_date',
+          type: 'date'
         },
         {
           name: 'Level',
           icon: '',
           field_name: 'division',
-          type: 'text'
+          type: 'select'
         }
       ],
       config: {
@@ -52,10 +55,10 @@ export default {
       },
       schedule: [
         {
-          'home_team': '@',
-          'opponent': 'Tn Heat',
-          'time': '7:00pm',
-          'date': '12/02/19',
+          'host': '@',
+          'opponent': 'Tennessee Heat',
+          'game_time': '7:00pm',
+          'game_date': '12/02/19',
           'division': 'Boys 18u Basketball'
         }
       ]
@@ -64,7 +67,12 @@ export default {
   components: {
     'editTable': editTable
   },
+  computed: {
+
+  },
   created () {
+    this.initSchedule()
+
     this.initNewGame()
 
     this.$root.$on('save', payload => {
@@ -73,21 +81,34 @@ export default {
   },
   methods: {
     initSchedule () {
+      api.getSchedule('0182b606-ee31-11e9-b8a6-b827ebcfd443').then(response => {
+        console.log(response)
+        // this.schedule = response.data
+      })
     },
     initNewGame () {
       this.newGame = {
         'home_team': '',
-        'opponent': '',
-        'time': '',
-        'date': '',
-        'division': ''
+        'away_team': '',
+        'game_time': '',
+        'game_date': '',
+        'season': '',
+        'neutral_site': ''
         // 'uuid': string,
       }
     },
     save () {
       console.log(this.newGame)
-      // needs a uuid call
-      // below goes into the .then
+      let gameJson = this.newGame
+
+      api.addGame(gameJson)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
       this.schedule.push(this.newGame)
       this.initNewGame()
       this.$root.$emit('saved')

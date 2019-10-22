@@ -4,7 +4,7 @@
       <tr>
         <!-- <th></th> -->
         <template v-for="(column, key, index) in columns">
-          <th v-if="!column.name.toLowerCase().includes('id')"  :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
+          <th v-if="!column.field_name.includes('id')"  :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
         </template>
         <th></th>
       </tr>
@@ -14,8 +14,16 @@
       <tr v-for="(data, index) in tabledata" :key="index">
         <!-- <td></td> -->
         <template v-for="(col, key, idx) in data">
-          <td v-if="!key.includes('id')" :key="key" :class="idx">
-            {{data[columns[idx]['field_name']]}}
+          <td v-if="!key.includes('id')" :key="key + idx" :class="idx">
+            <!-- {{data[columns[idx]['field_name']]}}
+            {{columns[idx]['field_name'].includes('date')}} -->
+            <template v-if="columns[idx]['field_name'].includes('date')">
+              <!-- {{data[columns[idx]['field_name']]}} -->
+              {{formatDates(data[columns[idx]['field_name']], false)}}
+            </template>
+            <template v-else>
+              {{data[columns[idx]['field_name']]}}
+            </template>
           </td>
         </template>
         <!-- <td></td> -->
@@ -35,9 +43,12 @@
         <tr class="split-fields">
           <!-- <td></td> -->
           <template v-for="(field, index) in columns">
-            <td v-if="!field.field_name.includes('id')" :key="index">
+            <td v-if="!field.field_name.includes('id')" :key="index" class="input-con">
+              <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions" trackby="" placeholder="" v-model="value[field.field_name]"></selectbox>
 
-              <input :type="field.type" v-model="value[field.field_name]" />
+              <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
+
+              <input v-else :type="field.type" v-model="value[field.field_name]" />
               <!-- <input type="text" v-model="value[key]" /> -->
               <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
             </td>
@@ -50,14 +61,27 @@
 </template>
 
 <script>
+// components
+import selectbox from './selectbox'
+
+// mixins
+import { root } from '@/mixins/root'
 export default {
   name: 'editTable',
   data () {
     return {
       currentSort: '',
       currentSortDir: 'asc',
-      addNew: false
+      addNew: false,
+      switchPosition: Boolean,
+      switchDisplay: '@'
     }
+  },
+  mixins: [
+    root
+  ],
+  components: {
+    'selectbox': selectbox
   },
   props: [
     'columns',
@@ -66,6 +90,9 @@ export default {
     'value'
   ],
   computed: {
+    selectOptions () {
+      return ['option 1']
+    },
     filteredData () {
       //   return this.tabledata.filter((data) => {
       //     if (data.data_name.toLowerCase().match(this.search.toLowerCase())) {
@@ -181,6 +208,16 @@ export default {
         }
       })
     },
+    changeDisplay () {
+      console.log('test')
+      this.switchPosition = !this.switchPosition
+
+      if (this.switchPosition && this.config.page === 'schedule') {
+        this.switchDisplay = '@'
+      } else {
+        this.switchDisplay = 'vs'
+      }
+    },
     addTo () {
       this.addNew = true
     },
@@ -244,7 +281,7 @@ table {
       &.split-fields{
         td {
           border-right: 5px solid #CFCDCD;
-          input[type="text"] {
+          input {
             height: 50px;
             border: 0;
             outline: none;
@@ -267,13 +304,44 @@ table {
     padding-left: 1rem;
     padding-right: 1rem;
     position: relative;
+    &.input-con {
+      padding: 0;
+    }
     &:last-child{
       border-right: 0px;
       // background-color: #CFCDCD;
     }
   }
 }
+select {
+  border: 0;
+  outline: none;
+}
+.currentCustom {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.3rem;
+  &.vs {
+    font-style: italic;
+    color: #fff;
+    font-size: 1rem;
+    z-index: 1;
+    position: relative;
+    &:after {
+      content: '';
+      height: 1.7rem;
+      width: 1.7rem;
+      position: absolute;
+      border-radius: 50%;
+      background: #8a1d1c;
+      z-index: -1;
+    }
+  }
 
+}
 .icons {
   position: absolute;
   right: -3rem;

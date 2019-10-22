@@ -64,6 +64,12 @@ export default {
           icon: '',
           field_name: 'height',
           type: 'text'
+        },
+        {
+          name: 'Team',
+          icon: '',
+          field_name: 'team_id',
+          type: 'text'
         }
       ],
       config: {
@@ -99,15 +105,17 @@ export default {
         'number': '',
         'first_name': '',
         'last_name': '',
+        'id': '',
         'position': '',
         'age': '',
         'birth_date': '',
-        'height': ''
+        'height': '',
+        'team_id': ''
       }
     },
     save () {
       console.log(this.newPlayer)
-      this.newPlayer['team_uuid'] = '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+      this.newPlayer['team_id'] = '8b31d882-e233-11e9-a4c2-b827ebcfd443'
       let playerJson = this.newPlayer
 
       api.addPlayer(playerJson)

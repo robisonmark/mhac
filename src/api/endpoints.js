@@ -127,5 +127,27 @@ export class api {
       'method': 'GET'
     })
   }
-  getSchedule
+
+  /***
+     * Add Game
+     * @param {string} method - Put or Post. Method sent to the api
+     * @param {object} body - Player JSON Body
+     * @return - JSON Object of players by team
+    ***/
+  static async addGame (body) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    return robros({
+      'url': '/addGame/',
+      'method': 'POST',
+      'data': body
+    })
+  }
 }
