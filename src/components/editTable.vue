@@ -251,22 +251,22 @@ table {
     tr {
       height: 40px;
     }
-    &:before {
-      content: '';
-      display: block;
-      height: 40px;
-      width: calc(100% + 45px);
-      // width: calc(100% + 15px);
-      // border-top: 1px solid var(--bg-color);
-      // border-right: 1px solid var(--bg-color);
-      border-top: 1.5px solid #B42625;
-      border-right: 2px solid #B42625;
-      border-left: 2px solid transparent;
-      position: absolute;
-      -webkit-transform: skewX(-45deg);
-      transform: skewX(-45deg);
-      left: -23px;
-    }
+    // &:before {
+    //   content: '';
+    //   display: block;
+    //   height: 40px;
+    //   width: calc(100% + 45px);
+    //   // width: calc(100% + 15px);
+    //   // border-top: 1px solid var(--bg-color);
+    //   // border-right: 1px solid var(--bg-color);
+    //   border-top: 1.5px solid #B42625;
+    //   border-right: 2px solid #B42625;
+    //   border-left: 2px solid transparent;
+    //   position: absolute;
+    //   -webkit-transform: skewX(-45deg);
+    //   transform: skewX(-45deg);
+    //   left: -23px;
+    // }
   }
 
   tbody {

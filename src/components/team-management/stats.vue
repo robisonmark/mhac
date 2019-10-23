@@ -2,6 +2,7 @@
   <div class="hello">
     <h2>Stats</h2>
     <div class="" v-if="!gameSelected">
+      <!-- add to edit table just rename columns -->
       <table id="table">
         <thead id="table-head-fixed">
           <tr>
@@ -24,6 +25,41 @@
         </tbody>
       </table>
     </div>
+    <div v-else-if="gameSelected && boxscore">
+      <table class="scoreTable">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="text-center">Q1</th>
+            <th class="text-center">Q2</th>
+            <th class="text-center">Q3</th>
+            <th class="text-center">Q4</th>
+            <th class="finalScore text-center">Final</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{gameScore.homeTeam.name}}</td>
+            <td><input type="number" v-model.number="gameScore.homeTeam.q1" />
+            <td><input type="number" v-model.number="gameScore.homeTeam.q2" />
+            <td><input type="number" v-model.number="gameScore.homeTeam.q3" />
+            <td><input type="number" v-model.number="gameScore.homeTeam.q4" />
+            <td class="finalScore text-center">{{gameScore.homeTeam.q1 + gameScore.homeTeam.q2 + gameScore.homeTeam.q3 + gameScore.homeTeam.q4}}</td>
+          </tr>
+          <tr>
+            <td>{{gameScore.awayTeam.name}}</td>
+            <td><input type="number" v-model.number="gameScore.awayTeam.q1" />
+            <td><input type="number" v-model.number="gameScore.awayTeam.q2" />
+            <td><input type="number" v-model.number="gameScore.awayTeam.q3" />
+            <td><input type="number" v-model.number="gameScore.awayTeam.q4" />
+            <td class="finalScore text-center">{{gameScore.awayTeam.q1 + gameScore.awayTeam.q2 + gameScore.awayTeam.q3 + gameScore.awayTeam.q4}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="button">
+        Player Stats
+      </div>
+    </div>
     <div v-else>
       <editTable :columns="columns" :config="config" :tabledata="stats" v-model="newGameStats"></editTable>
     </div>
@@ -38,6 +74,7 @@ export default {
   name: 'stats',
   data () {
     return {
+      boxscore: false,
       gameSelected: false,
       pastGames: [
         {
@@ -234,7 +271,25 @@ export default {
           person_type: '2',
           team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
         }
-      ]
+      ],
+      gameScore: {
+        homeTeam: {
+          name: 'This',
+          q1: '',
+          q2: '',
+          q3: '',
+          q4: '',
+          final: ''
+        },
+        awayTeam: {
+          name: 'That',
+          q1: '',
+          q2: '',
+          q3: '',
+          q4: '',
+          final: ''
+        }
+      }
     }
   },
   components: {
@@ -246,6 +301,8 @@ export default {
       this.initNewGameStats()
 
       this.gameSelected = true
+      // add logic to check home team
+      this.boxscore = true
     },
     initNewGameStats () {
       let teamInfo = {
@@ -287,7 +344,23 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+h2:after {
+  content: '';
+  display: block;
+  height: 40px;
+  /* width: 100%; */
+  width: calc(100% + 2.4rem);
+  border-top: 1.5px solid #B42625;
+  border-right: 2px solid #B42625;
+  border-left: 2px solid transparent;
+  position: relative;
+  -webkit-transform: skewX(-45deg);
+  transform: skewX(-45deg);
+  left: -23px;
+  margin-top: .6rem;
+}
 table {
+  margin-top: -40px;
   width: 100%;
   border-collapse: collapse;
   // border-spacing: 0 5px;
@@ -305,22 +378,22 @@ table {
     tr {
       height: 40px;
     }
-    &:before {
-      content: '';
-      display: block;
-      height: 40px;
-      width: calc(100% + 45px);
-      // width: calc(100% + 15px);
-      // border-top: 1px solid var(--bg-color);
-      // border-right: 1px solid var(--bg-color);
-      border-top: 1.5px solid #B42625;
-      border-right: 2px solid #B42625;
-      border-left: 2px solid transparent;
-      position: absolute;
-      -webkit-transform: skewX(-45deg);
-      transform: skewX(-45deg);
-      left: -23px;
-    }
+    // &:before {
+    //   content: '';
+    //   display: block;
+    //   height: 40px;
+    //   width: calc(100% + 45px);
+    //   // width: calc(100% + 15px);
+    //   // border-top: 1px solid var(--bg-color);
+    //   // border-right: 1px solid var(--bg-color);
+    //   border-top: 1.5px solid #B42625;
+    //   border-right: 2px solid #B42625;
+    //   border-left: 2px solid transparent;
+    //   position: absolute;
+    //   -webkit-transform: skewX(-45deg);
+    //   transform: skewX(-45deg);
+    //   left: -23px;
+    // }
   }
 
   tbody {
@@ -368,5 +441,21 @@ table {
     }
   }
 }
-
+.scoreTable {
+  // max-width: 400px;
+  border-collapse: collapse;
+  tr {
+    border-bottom: 0;
+  }
+  td {
+    padding: 0;
+    -webkit-border-horizontal-spacing: 0px;
+    -webkit-border-vertical-spacing: 0px;
+    input {
+      padding: 0;
+      height: 50px;
+      box-sizing: border-box;
+    }
+  }
+}
 </style>
