@@ -8,6 +8,51 @@ import { robros } from './base'
 
 export class api {
   /***
+     * Get Current Seasons
+     * @param {string} method - Put or Post. Method sent to the api
+     * @param {object} body - Player JSON Body
+     * @return - JSON Object of players by team
+    ***/
+  static async getCurrentSeasons () {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    return robros({
+      'url': '/getCurrentSeasons',
+      'method': 'GET'
+    })
+  }
+
+  /***
+     * Get Standings
+     * @param {string} method - Put or Post. Method sent to the api
+     * @param {object} body - Player JSON Body
+     * @return - JSON Object of players by team
+    ***/
+  static async getStandings (seasonId) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }'
+    let queryParms = seasonId ? '/' + seasonId : ''
+    return robros({
+      'url': '/getStandings' + queryParms,
+      'method': 'GET'
+    })
+  }
+
+  /***
      * Get a List of Teams
      * @param {object} id - ID
      * @return - JSON Object of players by team

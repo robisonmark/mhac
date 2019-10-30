@@ -30,33 +30,30 @@
         <thead>
           <tr>
             <th></th>
-            <th class="text-center">Q1</th>
-            <th class="text-center">Q2</th>
-            <th class="text-center">Q3</th>
-            <th class="text-center">Q4</th>
+            <th v-for="(quarter, key, index) in quarters" :key="index" class="text-center quarter">{{Object.keys(quarter)[0]}}</th>
+            <!-- <th class="text-center">2</th>
+            <th class="text-center">3</th>
+            <th class="text-center">4</th> -->
             <th class="finalScore text-center">Final</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>{{gameScore.homeTeam.name}}</td>
-            <td><input type="number" v-model.number="gameScore.homeTeam.q1" />
-            <td><input type="number" v-model.number="gameScore.homeTeam.q2" />
-            <td><input type="number" v-model.number="gameScore.homeTeam.q3" />
-            <td><input type="number" v-model.number="gameScore.homeTeam.q4" />
-            <td class="finalScore text-center">{{gameScore.homeTeam.q1 + gameScore.homeTeam.q2 + gameScore.homeTeam.q3 + gameScore.homeTeam.q4}}</td>
+            <td class="teamName">{{gameScore.homeTeam.name}}</td>
+            <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]"><input type="number" v-model="gameScore.homeTeam.quarters[key]" />
+            <td class="finalScore text-center">{{gameScore.homeTeam.final}}</td>
           </tr>
           <tr>
-            <td>{{gameScore.awayTeam.name}}</td>
-            <td><input type="number" v-model.number="gameScore.awayTeam.q1" />
-            <td><input type="number" v-model.number="gameScore.awayTeam.q2" />
-            <td><input type="number" v-model.number="gameScore.awayTeam.q3" />
-            <td><input type="number" v-model.number="gameScore.awayTeam.q4" />
-            <td class="finalScore text-center">{{gameScore.awayTeam.q1 + gameScore.awayTeam.q2 + gameScore.awayTeam.q3 + gameScore.awayTeam.q4}}</td>
+            <td class="teamName">{{gameScore.awayTeam.name}}</td>
+            <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter"><input type="number" v-model="gameScore.awayTeam.quarters[key]" />
+            <td class="finalScore text-center">{{gameScore.awayTeam.final}}</td>
           </tr>
         </tbody>
       </table>
-      <div class="button">
+      <div class="button" @click="addOvertime">
+        Add Overtime
+      </div>
+      <div class="button" @click="goToPlayerStats">
         Player Stats
       </div>
     </div>
@@ -272,25 +269,58 @@ export default {
           team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
         }
       ],
+      quarters: [
+        {'1': ''},
+        {'2': ''},
+        {'3': ''},
+        {'4': ''}
+      ],
       gameScore: {
         homeTeam: {
           name: 'This',
-          q1: '',
-          q2: '',
-          q3: '',
-          q4: '',
-          final: ''
+          quarters: [
+            '',
+            '',
+            '',
+            ''
+          ],
+          final: 0
         },
         awayTeam: {
           name: 'That',
-          q1: '',
-          q2: '',
-          q3: '',
-          q4: '',
-          final: ''
+          quarters: [
+            '',
+            '',
+            '',
+            ''
+          ],
+          final: 0
         }
-      }
+      },
+      overtimeCount: 1
     }
+  },
+  watch: {
+    'gameScore.homeTeam.quarters': {
+      handler (newValue) {
+        this.gameScore.homeTeam.final = 0
+        this.gameScore.homeTeam.quarters.forEach(quarter => {
+          this.gameScore.homeTeam.final += isNaN(parseInt(quarter)) ? parseInt(0) : parseInt(quarter)
+        })
+      },
+      deep: true
+    },
+    'gameScore.awayTeam.quarters': {
+      handler (newValue) {
+        this.gameScore.awayTeam.final = 0
+        this.gameScore.awayTeam.quarters.forEach(quarter => {
+          this.gameScore.awayTeam.final += isNaN(parseInt(quarter)) ? parseInt(0) : parseInt(quarter)
+        })
+      },
+      deep: true
+    }
+  },
+  computed: {
   },
   components: {
     'editTable': editTable
@@ -303,6 +333,16 @@ export default {
       this.gameSelected = true
       // add logic to check home team
       this.boxscore = true
+    },
+    addOvertime () {
+      this.quarters.push({['OT' + this.overtimeCount]: ''})
+      this.gameScore.homeTeam.quarters.push({['OT' + this.overtimeCount]: ''})
+      this.gameScore.awayTeam.quarters.push({['OT' + this.overtimeCount]: ''})
+
+      this.overtimeCount++
+    },
+    goToPlayerStats () {
+      this.boxscore = false
     },
     initNewGameStats () {
       let teamInfo = {
@@ -457,5 +497,11 @@ table {
       box-sizing: border-box;
     }
   }
+}
+.quarter {
+  width: 55px;
+}
+.finalScore {
+  width: 75px;
 }
 </style>

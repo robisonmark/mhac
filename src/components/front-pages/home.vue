@@ -1,34 +1,272 @@
 <template>
-  <div class="hello">
-    <h1>Home</h1>
+  <div class="container">
+    <div class="row hero-standings">
+      <div class="col-9">
+        <div class="hero">
+          <div class="tagline">
+            <h2>And so it begins...</h2>
+            <h2>2019-20 is offically under way!</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="standings">
+          <div class="addPadding">
+            <h3>2019-20 Standings</h3>
+            <select v-model="season">
+              <option v-for="sport in seasons" :key="sport.season_id" :value="sport">{{createName(sport)}}</option>
+            </select>
+            <!-- <selectbox :options="seasons" trackby="level" placeholder="Select A Season" v-model="season"></selectbox> -->
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th class="padding"></th>
+                <th class="mw-150px">School</th>
+                <th class="center">Record</th>
+                <th class="center">Last Result</th>
+                <th class="padding"></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td colspan="5" class="section-description">
+                  <template v-if="season">
+                    {{createSeasonDisplay(season)}}
+                  </template>
+                </td>
+              </tr>
+
+              <template v-if="noStandings">
+                <!-- <tr>
+                  <td colspan="5" class="section-description">
+                    No Standings
+                  </td>
+                </tr> -->
+
+                <tr>
+                  <td class="padding"></td>
+                  <td colspan="3">
+                    No Stats have been loaded. Please check back soon.
+                  </td>
+                  <!-- <td>{{team_name}}</td>
+                  <td>{{team_record}}</td>
+                  <td>{{last_result}}</td> -->
+                  <td class="padding"></td>
+                </tr>
+              </template>
+
+              <template v-else>
+                <tr v-for="(standing, idx) in currentStandings" :key="idx">
+                  <td class="padding"></td>
+                  <td class="mw-150px">{{standing.team_name}}</td>
+                  <td class="center">{{standing.wins}}-{{standing.losses}}</td>
+                  <td class="center">--</td>
+                  <td class="padding"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row conference-blurb">
+      <div class="col-9 conference-blurb-content">
+        <h1>Midsouth Homeschool Athletic Conference</h1>
+        <p>The MHAC was founded Reds glove double switch silver slugger swing fenway tigers defensive indifference forkball. Losses cork pine tar cardinals rubber designated hitter losses fastball. Warning track runs triple play fastball visitors, pine tar center fielder. At-bat no-hitter red sox foul line rhubarb home sacrifice bunt pine tar mound. Lineup plate loogy fall classic disabled list rubber double play mendoza line bunt. Shutout hack petey shift friendly confines plunked dead red.</p>
+        <p>Cheese swing shift runs choke up center fielder robbed rotation bat. Save flyout pinch hit on deck mendoza line strike zone run. National pastime baseball card pinch hitter basehit rookie cracker jack backstop cubs. Leadoff grand slam cheese bush league cracker jack moneyball cup of coffee club. Arm batter's box manager mitt unearned run, steal foul. Flyout tapper sacrifice fly cork knuckleball golden sombrero pinch runner unearned run.</p>
+        <p>To inquire about joining the conference please email: email@personinconference.org</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+// api
+import { api } from '../../api/endpoints.js'
+
+// components
+import selectbox from '../selectbox'
+
 export default {
-  name: 'HelloWorld',
+  name: 'home',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      currentStandings: {},
+      noStandings: Boolean,
+      season: ''
+    }
+  },
+  components: {
+    'selectbox': selectbox
+  },
+  computed: {
+    seasons () {
+      return this.$store.state.seasons
+    }
+  },
+  watch: {
+    season: {
+      deep: true,
+      handler (newValue, oldValue) {
+        this.initStandings(newValue.season_id)
+      }
+    }
+  },
+  created () {
+    this.initStandings('')
+  },
+  methods: {
+    initStandings (id) {
+      id = id.length > 1 ? id : ''
+      api.getStandings(id).then(response => {
+        this.noStandings = false
+        this.currentStandings = response.data
+        if (this.season.length === 0) {
+          this.season = this.$store.state.seasons.find(function (level) {
+            if (level.level === '18U Boys') {
+              return level
+            }
+          })
+        }
+      }).catch(err => {
+        if (err.response.data === 'No season found') {
+          this.noStandings = true
+        }
+      })
+    },
+    createName (season) {
+      let nameSplit = season.level.split(' ')
+      return nameSplit[1] + ' ' + nameSplit[0] + ' ' + season.sport
+    },
+    createSeasonDisplay (season) {
+      let nameSplit = season.level.split(' ')
+      let gender = ''
+      if (nameSplit[1] === 'Boys') {
+        gender = 'Boys'
+      } else {
+        gender = 'Girls'
+      }
+
+      return gender + ' ' + nameSplit[0]
+    },
+    getSpecificStandings () {
+      this.initStandings(this.season.season_id)
     }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
+<style scoped lang="less">
+@import '../../assets/less/utils/variables.less';
+
+.hero-standings {
+  margin-top: 3.5rem;
+  height: 51vh;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+.hero {
+  background-color: #021A2B;
+  background: url('../../assets/img/MHAC_2.png');
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  &:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(26,26,26);
+    background: -moz-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
+    background: -webkit-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
+    background: linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1a1a1a",endColorstr="#f2f2f2",GradientType=1);
+  }
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.tagline {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  h2 {
+    font-size: 1.5rem;
+    color: #fff;
+    font-family: @montse;
+    font-weight: 600;
+  }
 }
-a {
-  color: #42b983;
+.addPadding {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.standings {
+  background-color: #fff;
+  width: 100%;
+  overflow-y: auto;
+  height: 51vh;
+  color: #021A2B;
+  h3 {
+    font-size: 1.1rem;
+    padding: 1rem 0;
+    color: #0C4B75;
+  }
+
+  table {
+    width: 100%;
+  }
+  th {
+    font-size: 0.7rem;
+    color: #0C4B75;
+    font-weight: 600;
+  }
+  td{
+    font-size: 0.9rem;
+    color: #0C4B75;
+    font-weight: 600;
+  }
+}
+.section-description{
+ text-align: center;
+ background-color: #2784C3;
+ color: #fff !important;
+ font-size: 1.1rem !important;
+}
+.conference-blurb {
+  background-color: #fff;
+  margin: 2rem 0rem 0;
+  &-content {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    h1 {
+      font-family: @montse;
+      font-weight: 300;
+      font-size: 1.7rem;
+      padding-bottom: .5rem;
+    }
+
+    P {
+      line-height: 1.35;
+      font-size: .9rem;
+    }
+  }
+}
+.padding {
+  width: 1rem;
+}
+.mw-150px {
+  max-width: 150px;
+}
+.center {
+  text-align: center;
+}
+select {
+  font-size: .8rem;
+  height: 2.1rem;
+  margin-bottom: 1rem;
+  color: #021A2B;
+  border-color: #021A2B;
 }
 </style>

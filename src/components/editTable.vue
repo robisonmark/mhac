@@ -44,7 +44,7 @@
           <!-- <td></td> -->
           <template v-for="(field, index) in columns">
             <td v-if="!field.field_name.includes('id')" :key="index" class="input-con">
-              <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions" trackby="" placeholder="" v-model="value[field.field_name]"></selectbox>
+              <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="trackBy(field.field_name)" placeholder="" v-model="value[field.field_name]"></selectbox>
 
               <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
 
@@ -90,9 +90,6 @@ export default {
     'value'
   ],
   computed: {
-    selectOptions () {
-      return ['option 1']
-    },
     filteredData () {
       //   return this.tabledata.filter((data) => {
       //     if (data.data_name.toLowerCase().match(this.search.toLowerCase())) {
@@ -163,6 +160,18 @@ export default {
   //   scrollBody.removeEventListener('scroll', this.setScrollPos)
   // },
   methods: {
+    selectOptions (name) {
+      switch (name) {
+        case 'division':
+          return this.$store.state.seasons
+      }
+    },
+    trackBy (name) {
+      switch (name) {
+        case 'division':
+          return 'level'
+      }
+    },
     setFixedTableHead () {
       let columnCount = 6
       let tableWidth = document.getElementById('table-body').rows[0].clientWidth
@@ -209,7 +218,6 @@ export default {
       })
     },
     changeDisplay () {
-      console.log('test')
       this.switchPosition = !this.switchPosition
 
       if (this.switchPosition && this.config.page === 'schedule') {

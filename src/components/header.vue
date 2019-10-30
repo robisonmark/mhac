@@ -32,9 +32,9 @@
             <a href="">
               <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
             </a>
-            <span @click="showLogin = !showLogin">
-              Team Login
-            </span>
+            <div class="button" @click="showLogin = !showLogin">
+              <span>Login</span>
+            </div>
             <div v-if="showLogin" class="teamlogin">
               <form v-if="!loggedIn">
                 <label for="username">
@@ -64,7 +64,7 @@
           <router-link :to="{ path: '/schedules' }">Schedules</router-link>
           <router-link :to="{ path: '/stats' }">Stats</router-link>
           <router-link :to="{ path: '/schools' }">Schools</router-link>
-          <router-link :to="{ path: '/stats' }">Contact</router-link>
+          <router-link :to="{ path: '/contact' }">Contact</router-link>
         </nav>
       </div>
     </div>
@@ -113,13 +113,21 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+  @import '../assets/less/utils/variables.less';
   header {
     display: grid;
     grid-template-columns: 21% auto;
     // grid-auto-rows: minmax(35px, auto);
+
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    z-index: 5;
+
     .con-logo {
       width: 100%;
-      height: 7rem;
+      // height: 7rem;
+      height: 112px;
       background-color: #fff;
       position: relative;
       display: flex;
@@ -156,8 +164,9 @@ export default {
       background-color: #fff;
       nav {
           a {
-          // height: 85%;
-            height: 1.35rem;
+            // height: 85%;
+            // height: 1.35rem;
+            height: 2.25rem;
             padding: 5px 7px;
             box-sizing: content-box;
           img {
@@ -203,10 +212,21 @@ export default {
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      width: 81%;
+      // width: 81%;
       // width: calc(1380px - 21% - 100px);
+      width: 75%;
       position: relative;
       left: 100px;
+    }
+  }
+  .button {
+    background-color: @conf-blue;
+    color: #fff;
+    padding: .3125rem .625rem;
+    // border-radius: 5px;
+    // transform: skewX(-45deg);
+    &:hover {
+      background-color: @nav-blue;
     }
   }
 </style>

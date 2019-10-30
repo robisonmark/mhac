@@ -1,11 +1,18 @@
 <template>
   <div id="app" :class="this.$route.meta.section">
     <headerComponent :styles="styles"></headerComponent>
-    <router-view />
+    <router-view class="body" />
+    <footer>
+
+    </footer>
   </div>
 </template>
 
 <script>
+// api
+import { api } from './api/endpoints.js'
+
+// components
 import headerComponent from '@/components/header'
 
 export default {
@@ -72,6 +79,8 @@ export default {
       }
     })
 
+    this.initCurrentSeason()
+
     // if (this.teamManagement) {
     //   this.styles = {
     //     navColor: '#B42625'
@@ -81,22 +90,37 @@ export default {
     //     navColor: '#0C4B75'
     //   }
     // }
+  },
+  methods: {
+    initCurrentSeason () {
+      api.getCurrentSeasons().then(response => {
+        console.log(response)
+        this.$store.dispatch('setSeasons', response.data)
+        // this.roster = response.data
+      })
+    }
   }
 }
 </script>
 
 <style lang="less">
-body {
-  min-height: 100vh;
-  margin: 0;
-}
-
+  body {
+    min-height: 100vh;
+    height: 100%;
+  }
+  .body {
+    // margin-top: 112px;
+    padding-top: 112px;
+    color: #021A2B;
+  }
  .team {
     background-color: #CFCDCD;
     overflow: auto;
   }
   .public {
     min-height: 100vh;
+    margin: 0;
+    padding-bottom: 2rem;
     /*Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#f4f7f9+0,9fc7e3+21,8cbcde+25,2784c3+100 */
     background: rgb(244,247,249); /* Old browsers */
     background: -moz-linear-gradient(-45deg, rgba(244,247,249,1) 0%, rgba(159,199,227,1) 21%, rgba(140,188,222,1) 25%, rgba(39,132,195,1) 100%); /* FF3.6-15 */

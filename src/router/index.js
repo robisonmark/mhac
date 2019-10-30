@@ -57,6 +57,14 @@ export default new Router({
       }
     },
     {
+      path: '/contact',
+      name: 'contact',
+      component: contact,
+      meta: {
+        'section': 'public'
+      }
+    },
+    {
       path: '/schools',
       name: 'schools',
       component: schools,
@@ -70,14 +78,6 @@ export default new Router({
           }
         }
       ]
-    },
-    {
-      path: '/contact',
-      name: 'contact',
-      component: contact,
-      meta: {
-        'section': 'public'
-      }
     },
     {
       path: '/manage/:team',

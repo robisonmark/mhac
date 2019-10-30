@@ -44,7 +44,8 @@ h2 {
   font-size: 1.5rem !important;
 }
 .con-management {
-  min-height: calc(100vh - 7rem);
+  // min-height: calc(100vh - 7rem);
+  min-height: 100vh;
   display: grid;
   grid-template-columns: 21% auto;
   // grid-auto-rows: minmax(35px, auto);
