@@ -157,7 +157,7 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getSchedule (season) {
+  static async getSchedule (season, team) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -168,7 +168,7 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/getSchedule/' + season,
+      'url': '/getSchedule/' + season + '/' + team,
       'method': 'GET'
     })
   }
@@ -190,7 +190,7 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/addGame/',
+      'url': '/addGame',
       'method': 'POST',
       'data': body
     })

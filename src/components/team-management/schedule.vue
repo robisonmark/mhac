@@ -1,7 +1,46 @@
 <template>
   <div class="hello">
-    <h2>2019 - 2020 Schedule</h2>
-    <editTable :columns="columns" :config="config" :tabledata="schedule" v-model="newGame"></editTable>
+    <h2>2019 - 2020 Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="" v-model="newGame.season.id"></selectbox></h2>
+    <editTable :columns="columns" :config="config" :tabledata="schedule" v-model="newGame">
+      <template slot="thead">
+        <tr>
+          <th>Host</th>
+          <th>Opponent</th>
+          <th>Time</th>
+          <th>Date</th>
+          <th>Level</th>
+        </tr>
+      </template>
+
+      <template slot="tbody">
+        <tr v-for="(data, index) in schedule" :key="index">
+          <td><span :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</span></td>
+          <td>{{data.opponent.name}}</td>
+          <td>{{data.game_time}}</td>
+          <td>{{formatDates(data.game_date, false)}}</td>
+          <td>{{data.schedule_id}}</td>
+        </tr>
+
+        <tr v-if="!addNew" @click="addTo">
+          <td colspan="7" align="center" class="add-button">
+            <template v-if="$route.name === 'roster'">Edit Roster</template>
+            <template v-else>Add New Game to Schedule</template>
+          </td>
+          <!-- <td></td> -->
+        </tr>
+
+        <template v-else>
+          <tr class="split-fields">
+            <td class="input-con"><div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div></td>
+            <td class="input-con"><selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent"></selectbox></td>
+            <td class="input-con"><input type="time" v-model="newGame.game_time" /></td>
+            <td class="input-con"><input type="date" v-model="newGame.game_date" /></td>
+            <td class="input-con"><span @click="save()" class="icons">SAVE</span></td>
+          </tr>
+        </template>
+      </template>
+    </editTable>
+
   </div>
 </template>
 
@@ -11,6 +50,11 @@ import { api } from '../../api/endpoints.js'
 
 // components
 import editTable from '@/components/editTable'
+import selectbox from '../selectbox'
+
+// mixins
+import { root } from '@/mixins/root'
+import { tablemix } from '@/mixins/table'
 
 export default {
   name: 'schedule',
@@ -27,7 +71,8 @@ export default {
           name: 'Opponent',
           icon: '',
           field_name: 'opponent',
-          type: 'select'
+          type: 'select',
+          track_by: 'name'
         },
         {
           name: 'Time',
@@ -45,7 +90,8 @@ export default {
           name: 'Level',
           icon: '',
           field_name: 'division',
-          type: 'select'
+          type: 'select',
+          track_by: 'name'
         }
       ],
       config: {
@@ -53,22 +99,28 @@ export default {
       },
       newGame: {
       },
-      schedule: [
-        {
-          'host': '@',
-          'opponent': 'Tennessee Heat',
-          'game_time': '7:00pm',
-          'game_date': '12/02/19',
-          'division': 'Boys 18u Basketball'
-        }
-      ]
+      schedule: []
     }
   },
+  mixins: [
+    root,
+    tablemix
+  ],
   components: {
-    'editTable': editTable
+    'editTable': editTable,
+    'selectbox': selectbox
   },
   computed: {
-
+    seasons () {
+      return this.$store.state.seasons
+    },
+    selectOptions () {
+      return this.$store.state.teams.filter(team => {
+        if (team.id !== this.$store.state.user.team_id) {
+          return team
+        }
+      })
+    }
   },
   created () {
     this.initSchedule()
@@ -81,15 +133,37 @@ export default {
   },
   methods: {
     initSchedule () {
-      api.getSchedule('0182b606-ee31-11e9-b8a6-b827ebcfd443').then(response => {
-        console.log(response)
-        // this.schedule = response.data
+      this.$store.state.seasons.filter(season => {
+        // if (season.season_id)
+      })
+      api.getSchedule('01827cc2-ee31-11e9-b8a6-b827ebcfd443', this.$store.state.user.team_id).then(response => {
+        let gameArr = []
+        response.data.forEach(game => {
+          let gameObj = {
+            'host': '',
+            'opponent': '',
+            'game_time': game.game_time,
+            'game_date': game.game_date,
+            'season': '0182b606-ee31-11e9-b8a6-b827ebcfd443'
+          }
+
+          if (game.home_team.id === this.$store.state.user.team_id) {
+            gameObj.host = true
+            gameObj.opponent = game.away_team
+          } else if (game.away_team.id === this.$store.state.user.team_id) {
+            gameObj.host = false
+            gameObj.opponent = game.home_team
+          }
+
+          gameArr.push(gameObj)
+        })
+        this.schedule = gameArr
       })
     },
     initNewGame () {
       this.newGame = {
-        'home_team': '',
-        'away_team': '',
+        'host': true,
+        'opponent': '',
         'game_time': '',
         'game_date': '',
         'season': '',
@@ -97,9 +171,27 @@ export default {
         // 'uuid': string,
       }
     },
+    homeAwayDisplay (game) {
+      this.newGame.host = !this.newGame.host
+    },
     save () {
-      console.log(this.newGame)
-      let gameJson = this.newGame
+      let gameJson = {
+        'home_team': '',
+        'away_team': '',
+        'time': this.newGame.game_time,
+        'date': this.newGame.game_date,
+        'season': this.newGame.season.id,
+        'neutral_site': ''
+      }
+      console.log(this.newGame.host === true)
+      if (this.newGame.host === true) {
+        gameJson.away_team = this.newGame.opponent.id
+        gameJson.home_team = this.$store.state.user.team_id
+      } else {
+        console.log(this.newGame.opponent.id)
+        gameJson.away_team = this.$store.state.user.team_id
+        gameJson.home_team = this.newGame.opponent.id
+      }
 
       api.addGame(gameJson)
         .then(response => {
@@ -136,5 +228,11 @@ h2:after {
 }
 table {
   margin-top: -40px;
+}
+
+#levels {
+  width: 200px;
+  vertical-align: middle;
+  margin-left: 32px;
 }
 </style>

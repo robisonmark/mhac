@@ -19,12 +19,15 @@ const namespaced = true
 const strict = false
 
 const state = {
-  user: {},
+  user: {
+    team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+  },
   userGroups: [],
   userAttributes: Object,
   loaded: false,
   authenticated: false,
   seasons: [],
+  teams: [],
   configOptions: [],
   readWriteAccess: String
 }
@@ -51,6 +54,9 @@ const mutations = {
   set_seasons (state, payload) {
     state.seasons = payload
   },
+  set_teams (state, payload) {
+    state.teams = payload
+  },
   set_configOptions (state, payload) {
     console.log(state)
     console.log(payload)
@@ -73,6 +79,10 @@ const actions = {
 
   setSeasons (context, payload) {
     context.commit('set_seasons', payload)
+  },
+
+  setTeams (context, payload) {
+    context.commit('set_teams', payload)
   },
 
   load (context) {

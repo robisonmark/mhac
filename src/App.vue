@@ -81,6 +81,8 @@ export default {
 
     this.initCurrentSeason()
 
+    this.initTeams()
+
     // if (this.teamManagement) {
     //   this.styles = {
     //     navColor: '#B42625'
@@ -96,6 +98,13 @@ export default {
       api.getCurrentSeasons().then(response => {
         console.log(response)
         this.$store.dispatch('setSeasons', response.data)
+        // this.roster = response.data
+      })
+    },
+    initTeams () {
+      api.getTeams().then(response => {
+        console.log(response)
+        this.$store.dispatch('setTeams', response.data.team)
         // this.roster = response.data
       })
     }

@@ -1,63 +1,71 @@
 <template>
-  <table id="table">
+  <table id="table" name="edittable">
     <thead id="table-head-fixed">
-      <tr>
-        <!-- <th></th> -->
-        <template v-for="(column, key, index) in columns">
-          <th v-if="!column.field_name.includes('id')"  :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
-        </template>
-        <th></th>
-      </tr>
+      <slot name="thead">
+        <tr>
+          <!-- <th></th> -->
+          <template v-for="(column, key, index) in columns">
+            <th v-if="!column.field_name.includes('id')"  :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
+          </template>
+          <th></th>
+        </tr>
+      </slot>
     </thead>
 
-    <tbody id="table-body">
-      <tr v-for="(data, index) in tabledata" :key="index">
-        <!-- <td></td> -->
-        <template v-for="(col, key, idx) in data">
-          <td v-if="!key.includes('id')" :key="key + idx" :class="idx">
-            <!-- {{data[columns[idx]['field_name']]}}
-            {{columns[idx]['field_name'].includes('date')}} -->
-            <template v-if="columns[idx]['field_name'].includes('date')">
-              <!-- {{data[columns[idx]['field_name']]}} -->
-              {{formatDates(data[columns[idx]['field_name']], false)}}
-            </template>
-            <template v-else>
-              {{data[columns[idx]['field_name']]}}
-            </template>
-          </td>
-        </template>
-        <!-- <td></td> -->
-        <!-- <td @click.stop.prevent="savedata(data)"><i class="far fa-copy icon"></i></td>
-        <td @click.stop.prevent="deletedata(data)"><i class="far fa-trash-alt icon"></i></td> -->
-      </tr>
-
-      <tr v-if="!addNew" @click="addTo">
-        <td :colspan="colspan" align="center" class="add-button">
-          <template v-if="$route.name === 'roster'">Edit Roster</template>
-          <template v-else>Add New Game to Schedule</template>
-        </td>
-        <!-- <td></td> -->
-      </tr>
-
-      <template v-else>
-        <tr class="split-fields">
+    <tbody id="table-body" name="tbody">
+      <slot name="tbody">
+        <tr v-for="(data, index) in tabledata" :key="index">
           <!-- <td></td> -->
-          <template v-for="(field, index) in columns">
-            <td v-if="!field.field_name.includes('id')" :key="index" class="input-con">
-              <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="trackBy(field.field_name)" placeholder="" v-model="value[field.field_name]"></selectbox>
-
-              <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
-
-              <input v-else :type="field.type" v-model="value[field.field_name]" />
-              <!-- <input type="text" v-model="value[key]" /> -->
-              <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
+          <template v-for="(col, key, idx) in data">
+            <td v-if="!key.includes('id')" :key="key + idx" :class="idx">
+              <!-- {{data[columns[idx]['field_name']]}}
+              {{columns[idx]['field_name'].includes('date')}} -->
+              <template v-if="columns[idx]['field_name'].includes('date')">
+                <!-- {{data[columns[idx]['field_name']]}} -->
+                {{formatDates(data[columns[idx]['field_name']], false)}}
+              </template>
+              <template v-else-if="typeof(data[columns[idx]['field_name']]) === 'object'">
+                {{data[columns[idx]['field_name']]['name']}}
+              </template>
+              <template v-else>
+                {{data[columns[idx]['field_name']]}}
+              </template>
             </td>
-            <!-- <td></td> -->
           </template>
+          <!-- <td></td> -->
+          <!-- <td @click.stop.prevent="savedata(data)"><i class="far fa-copy icon"></i></td>
+          <td @click.stop.prevent="deletedata(data)"><i class="far fa-trash-alt icon"></i></td> -->
         </tr>
-      </template>
+
+        <tr v-if="!addNew" @click="addTo">
+          <td :colspan="colspan" align="center" class="add-button">
+            <template v-if="$route.name === 'roster'">Edit Roster</template>
+            <template v-else>Add New Game to Schedule</template>
+          </td>
+          <!-- <td></td> -->
+        </tr>
+
+        <template v-else>
+          <tr class="split-fields">
+            <!-- <td></td> -->
+            <template v-for="(field, index) in columns">
+              <td v-if="!field.field_name.includes('id')" :key="index" class="input-con">
+                <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" v-model="value[field.field_name]"></selectbox>
+
+                <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
+
+                <input v-else :type="field.type" v-model="value[field.field_name]" />
+                <!-- <input type="text" v-model="value[key]" /> -->
+                <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
+              </td>
+              <!-- <td></td> -->
+            </template>
+          </tr>
+        </template>
+      </slot>
     </tbody>
   </table>
+
 </template>
 
 <script>
@@ -164,12 +172,20 @@ export default {
       switch (name) {
         case 'division':
           return this.$store.state.seasons
+        case 'opponent':
+          return this.$store.state.teams.filter(team => {
+            if (team.id !== this.$store.state.user.team_id) {
+              return team
+            }
+          })
       }
     },
     trackBy (name) {
       switch (name) {
         case 'division':
           return 'level'
+        case 'opponent':
+          return 'team_name'
       }
     },
     setFixedTableHead () {
