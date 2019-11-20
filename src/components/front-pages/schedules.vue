@@ -143,6 +143,7 @@ h2 {
   top: calc(1.5rem);
   left: -3px;
   z-index: 2;
+  box-shadow: 1px 2px 4px #0C4B75;
   .option {
     padding: .2rem .5rem;
     width: 100%;
@@ -150,6 +151,15 @@ h2 {
     &:hover {
       background-color: lighten(#0C4B75, 10%);
     }
+  }
+}
+.button.ghost {
+  border: 1px solid #fff;
+  width: 4rem;
+  text-align: center;
+  &:hover {
+    background-color: #fff;
+    color: #0C4B75;
   }
 }
 </style>
