@@ -4,7 +4,7 @@
       <div class="logo-color col">
         <img src="@/assets/color-team-logos/royals2.png" alt="Hendersonville Royals"/>
       </div>
-      <div class="col-7">
+      <div class="col-7 top-layer">
         <div class="content-container">
         </div>
       </div>
@@ -29,11 +29,31 @@
 </template>
 
 <script>
+// api
+import { api } from '../../api/endpoints.js'
+
 export default {
   name: 'schools',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
+    }
+  },
+  watch: {
+    $route (to, from) {
+      this.initSchool()
+    }
+  },
+  created () {
+    this.initSchool()
+  },
+  methods: {
+    initSchool () {
+      const slug = this.$route.params.school
+      // console.log(this.$route)
+      api.getTeams(slug).then(response => {
+        console.log(response)
+      })
     }
   }
 }
@@ -73,8 +93,14 @@ export default {
   text-align: right;
   top: 180px;
   height: 290px;
+  color: #fff;
+  a{
+    color: #fff;
+  }
 }
-
+.top-layer {
+  z-index: 1;
+}
 .bottom-logo {
     position: fixed;
     right: 0;

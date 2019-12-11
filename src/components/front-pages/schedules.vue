@@ -8,8 +8,11 @@
           </div>
           <div class="col-6">
             <div class="filters">
-              <div class="custom-select">
-                <div disabled>All Games</div>
+              <div class="custom-select" @click="showDatePicker = !showDatePicker">
+                <div disabled>All Dates</div>
+                <div class="options-menu" @click.stop="showDatePicker = true">
+                  <input class="option noHover" v-show="showDatePicker" type="date" v-model="filterBy.dateRange.start_date"/>
+                </div>
               </div>
 
               <div class="custom-select">
@@ -49,10 +52,15 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       showTeams: false,
+      showDatePicker: false,
       filterBy: {
         team: {
           id: '',
           name: 'All Teams'
+        },
+        dateRange: {
+          start_date: '',
+          end_date: ''
         }
       }
     }
@@ -150,6 +158,9 @@ h2 {
     cursor: pointer;
     &:hover {
       background-color: lighten(#0C4B75, 10%);
+    }
+    &.noHover:hover {
+      background-color: #fff;
     }
   }
 }

@@ -75,8 +75,8 @@
     <div class="row conference-blurb">
       <div class="col-9 conference-blurb-content">
         <h1>Midsouth Homeschool Athletic Conference</h1>
-        <p>The MHAC was founded Reds glove double switch silver slugger swing fenway tigers defensive indifference forkball. Losses cork pine tar cardinals rubber designated hitter losses fastball. Warning track runs triple play fastball visitors, pine tar center fielder. At-bat no-hitter red sox foul line rhubarb home sacrifice bunt pine tar mound. Lineup plate loogy fall classic disabled list rubber double play mendoza line bunt. Shutout hack petey shift friendly confines plunked dead red.</p>
-        <p>Cheese swing shift runs choke up center fielder robbed rotation bat. Save flyout pinch hit on deck mendoza line strike zone run. National pastime baseball card pinch hitter basehit rookie cracker jack backstop cubs. Leadoff grand slam cheese bush league cracker jack moneyball cup of coffee club. Arm batter's box manager mitt unearned run, steal foul. Flyout tapper sacrifice fly cork knuckleball golden sombrero pinch runner unearned run.</p>
+        <p>The MidSouth Homeschool Athletic Conference (MHAC) was formed in 2018, and is part of the Southeast Region for the National Christian HomeSchool Championships.  The MHAC has 8 member teams located in Tennesee, Southern Kentucky, and Northern Alabama.</p>
+        <p>Each year the MHAC holds tournaments in 18U, 16U and 14U age brackets.</p>
         <p>To inquire about joining the conference please email: email@personinconference.org</p>
       </div>
     </div>
@@ -116,6 +116,7 @@ export default {
     }
   },
   created () {
+    console.log(this.$store.state.seasons)
     this.initStandings('')
   },
   methods: {
@@ -140,6 +141,7 @@ export default {
     createName (season) {
       let nameSplit = season.level.split(' ')
       return nameSplit[1] + ' ' + nameSplit[0] + ' ' + season.sport
+      // return season.season_name + ' ' + season.sport
     },
     createSeasonDisplay (season) {
       let nameSplit = season.level.split(' ')
@@ -150,7 +152,8 @@ export default {
         gender = 'Girls'
       }
 
-      return gender + ' ' + nameSplit[0]
+      return gender + ' ' + nameSplit[0] + ' ' + season.sport
+      // return season.season_name + ' ' + season.sport
     },
     getSpecificStandings () {
       this.initStandings(this.season.season_id)

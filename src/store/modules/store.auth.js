@@ -20,6 +20,10 @@ const mutations = {
 }
 
 const actions = {
+  setAuth (context) {
+    context.commit('set_authenticated', context, { root: true })
+  },
+
   async valid (context) {
     let user = store.state.user
     if (Object.entries(user).length === 0 && user.constructor === Object) {

@@ -25,7 +25,7 @@ const state = {
   userGroups: [],
   userAttributes: Object,
   loaded: false,
-  authenticated: false,
+  authenticated: String,
   seasons: [],
   teams: [],
   configOptions: [],
@@ -48,8 +48,7 @@ const mutations = {
     state.loaded = payload
   },
   set_authenticated (state, payload) {
-    console.log(state)
-    console.log(payload)
+    state.authenticated = payload
   },
   set_seasons (state, payload) {
     state.seasons = payload
@@ -68,6 +67,10 @@ const mutations = {
 
 const actions = {
   // ...make.actions(state),
+
+  setAuth (context, payload) {
+    context.commit('set_authenticated', payload)
+  },
 
   setLoaded (context, payload) {
     context.commit('set_loaded', payload)

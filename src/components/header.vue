@@ -32,19 +32,19 @@
             <a href="">
               <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
             </a>
-            <div class="button" @click="showLogin = !showLogin">
+            <div class="button" @click="showLogin = !showLogin" ref="showLogin">
               <span>Login</span>
             </div>
-            <div v-if="showLogin" class="teamlogin">
+            <div v-if="showLogin" class="teamlogin" ref="teamlogin">
               <form v-if="!loggedIn">
                 <label for="username">
                   Username
                 </label>
-                <input type="text" id="username" />
+                <input type="text" id="username" v-model="username" />
                 <label for="password">
                   Password
                 </label>
-                <input type="text" id="password" />
+                <input type="password" id="password" v-model="password" />
                 <button @click.prevent="login()">
                   Login
                 </button>
@@ -63,7 +63,12 @@
           <router-link :to="{ path: '/compliance' }">Compliance</router-link>
           <router-link :to="{ path: '/schedules' }">Schedules</router-link>
           <router-link :to="{ path: '/stats' }">Stats</router-link>
-          <router-link :to="{ path: '/schools' }">Schools</router-link>
+          <div @click="showSchools = !showSchools" ref="schoolDropDown">
+            Schools
+            <ul v-show="showSchools" class="nav_dropdown">
+              <router-link v-for="team in teams" :key="team.id" :to="{ path: '/schools/' + team.slug, params: { school: team.team_name, id: team.id }}" tag="li">{{team.team_name}}</router-link>
+            </ul>
+          </div>
           <router-link :to="{ path: '/contact' }">Contact</router-link>
         </nav>
       </div>
@@ -72,12 +77,18 @@
 </template>
 
 <script>
+import { api } from '@/api/endpoints'
 export default {
+  // login: markrobison630@gmail.com
+  // pw: Baller.03
   name: 'headerComponent',
   data () {
     return {
       showLogin: false,
-      loggedIn: false
+      loggedIn: false,
+      showSchools: false,
+      username: '',
+      password: ''
     }
   },
   mixins: [],
@@ -89,19 +100,43 @@ export default {
     routes () {
       return false
     },
+    teams () {
+      return this.$store.state.teams
+    },
     cssVars () {
       return {
         '--bg-color': this.styles.navColor
       }
     }
   },
+  filters: {
+  },
   watch: {},
   created () {},
   methods: {
+    slugCase (value) {
+      if (!value) return ''
+      value.toLowerCase()
+      value = value.replace(' ', '_')
+      value = value.replace(' ', '_')
+      console.log(value.toLowerCase())
+      return value
+    },
+    closeOpenOption (open) {
+      this[open] = false
+    },
     login () {
-      this.loggedIn = true
-      this.showLogin = false
-      this.$router.push('/manage/royals')
+      console.log(this.$store)
+      api.login(this.username, this.password).then(response => {
+        console.log(response)
+        this.loggedIn = true
+        this.showLogin = false
+        this.$store.dispatch('setAuth', response.data.token)
+        this.$router.push('/manage/royals')
+      })
+        .catch(err => {
+          console.log(err)
+        })
     },
     signout () {
       this.loggedIn = false
@@ -123,11 +158,13 @@ export default {
     top: 0;
     width: 100vw;
     z-index: 5;
+    height: 7rem;
 
     .con-logo {
       width: 100%;
+      height: 100%;
       // height: 7rem;
-      height: 112px;
+      // height: 112px;
       background-color: #fff;
       position: relative;
       display: flex;
@@ -199,9 +236,23 @@ export default {
     .main-nav {
       background-color: var(--bg-color);
       nav {
-        a {
+        a,
+        div {
           color: #fff;
           text-decoration: none;
+          position: relative;
+        }
+        .nav_dropdown {
+          position: absolute;
+          width: 200px;
+          background: white;
+          color: #021A2B;
+          top: 39px;
+          box-shadow: 2px 2px 10px #021A2B;
+          width: 250px;
+          li {
+            padding: 3px 15px;
+          }
         }
       }
     }

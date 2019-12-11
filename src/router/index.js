@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import second from '@/components/second'
+// import second from '@/components/second'
 
 // Front Pages
 // import website from '@/components/website'
@@ -65,19 +65,23 @@ export default new Router({
       }
     },
     {
-      path: '/schools',
+      path: '/schools/:school',
       name: 'schools',
       component: schools,
-      children: [
-        {
-          path: '/:school',
-          name: 'school',
-          component: second,
-          meta: {
-            'section': 'public'
-          }
-        }
-      ]
+      // props: { school: true, id: true },
+      meta: {
+        'section': 'public'
+      }
+      // children: [
+      //   {
+      //     path: '/:school',
+      //     name: 'school',
+      //     component: second,
+      //     meta: {
+      //       'section': 'public'
+      //     }
+      //   }
+      // ]
     },
     {
       path: '/manage/:team',

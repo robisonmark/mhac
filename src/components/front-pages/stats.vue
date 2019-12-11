@@ -8,13 +8,6 @@
           </div>
           <div class="col-6">
             <div class="filters">
-              <div class="custom-select">
-                <div disabled>All Games</div>
-              </div>
-
-              <div class="custom-select">
-                <div disabled>All Levels</div>
-              </div>
 
               <div class="custom-select" @click="showTeams = !showTeams">
                 <div disabled>{{filterBy.team.name}}</div>
@@ -26,6 +19,15 @@
                   </template>
                 </div>
               </div>
+
+              <div class="custom-select">
+                <div disabled>All Levels</div>
+              </div>
+
+              <div class="custom-select">
+                <div disabled>All Games</div>
+              </div>
+
             </div>
           </div>
           <div class="col-2">
