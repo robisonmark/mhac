@@ -31,6 +31,9 @@ export default {
   watch: {
   },
   created () {
+    this.$root.$on('close', payload => {
+      this.open = false
+    })
   },
   mounted () {
   },

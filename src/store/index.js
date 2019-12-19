@@ -28,6 +28,7 @@ const state = {
   authenticated: String,
   seasons: [],
   teams: [],
+  levels: [],
   configOptions: [],
   readWriteAccess: String
 }
@@ -55,6 +56,9 @@ const mutations = {
   },
   set_teams (state, payload) {
     state.teams = payload
+  },
+  set_levels (state, payload) {
+    state.levels = payload
   },
   set_configOptions (state, payload) {
     console.log(state)
@@ -86,6 +90,10 @@ const actions = {
 
   setTeams (context, payload) {
     context.commit('set_teams', payload)
+  },
+
+  setLevels (context, payload) {
+    context.commit('set_levels', payload)
   },
 
   load (context) {

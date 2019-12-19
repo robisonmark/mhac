@@ -37,8 +37,8 @@
           </div>
         </div>
       </div>
-      <div class="col content">
-        <h1>Stats</h1>
+      <div class="col content" align="center">
+        <h4><em>We are working diligently to provide game results.  Please check back soon.</em></h4>
       </div>
     </div>
   </div>

@@ -8,21 +8,28 @@
           </div>
           <div class="col-6">
             <div class="filters">
-              <div class="custom-select" @click="showDatePicker = !showDatePicker">
+              <div class="custom-select" @click="showDatePicker = !showDatePicker, showTeams = false, showLevels = false">
                 <div disabled>All Dates</div>
                 <div class="options-menu" @click.stop="showDatePicker = true">
                   <input class="option noHover" v-show="showDatePicker" type="date" v-model="filterBy.dateRange.start_date"/>
                 </div>
               </div>
 
-              <div class="custom-select">
-                <div disabled>All Levels</div>
+              <div class="custom-select"  @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
+                <div disabled>{{filterBy.level.lvl}}</div>
+                <div class="options-menu">
+                  <template>
+                    <div class="option" v-for="lvl in levels" :key="lvl.id" v-show="showLevels" @click="setLvl(lvl)">
+                      {{lvl.level_name}}
+                    </div>
+                  </template>
+                </div>
               </div>
 
-              <div class="custom-select" @click="showTeams = !showTeams">
+              <div class="custom-select" @click="showTeams = !showTeams, showDatePicker = false, showLevels = false">
                 <div disabled>{{filterBy.team.name}}</div>
                 <div class="options-menu">
-                  <template >
+                  <template>
                     <div class="option" v-for="team in teams" :key="team.id" v-show="showTeams" @click="setTeam(team)">
                       {{team.team_name}} {{team.team_mascot}}
                     </div>
@@ -39,44 +46,150 @@
         </div>
       </div>
       <div class="col content">
-        <h1>Schedules</h1>
+        <div class="row">
+          <div class="col-2">
+            Date/Time
+          </div>
+          <div class="col-1">
+          </div>
+          <div class="col-2" align="center">
+            Away
+          </div>
+          <div class="col-1">
+          </div>
+          <div class="col-2" align="center">
+            Home
+          </div>
+          <div class="col-1">
+          </div>
+          <div class="col-2">
+            Location
+          </div>
+        </div>
+        <div class="row game" v-for="game in games" :key="game.game_id">
+          <div class="col-2 date">
+            {{game.game_date}}
+            <div class="time">{{game.game_time}}</div>
+
+            <!-- {{game.game_date}} {{game.game_time}} -->
+          </div>
+
+          <div class="col-1 score" :class="[(game.final_score.home > game.final_score.away) ? 'winner': 'loser']">
+          </div>
+
+          <div class="col-2 team_info" :class="[(game.final_score.home > game.final_score.away) ? 'winner': 'loser']">
+            <div class="team_name">{{game.away_team.name}}</div>
+            <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
+          </div>
+
+          <div class="col-1">
+            <span class="at">@</span>
+          </div>
+
+          <div class="col-2 team_info">
+            <div class="team_name" :class="[(game.final_score.home < game.final_score.away) ? 'winner': 'loser']">{{game.home_team.name}}</div>
+            <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
+          </div>
+
+          <div class="col-1 score" :class="[(game.final_score.home < game.final_score.away) ? 'winner': 'loser']">
+          </div>
+
+          <div class="col-3 location">
+            <div>{{game.home_team.address_name}}</div>
+            <br/>
+            <div>{{game.home_team.address_lines}}</div>
+            <div>{{game.home_team.city_state_zip}}</div>
+          </div>
+
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+// api
+import { api } from '../../api/endpoints.js'
+
+// mixins
+import { root } from '../../mixins/root'
+
 export default {
   name: 'schedules',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      showTeams: false,
-      showDatePicker: false,
       filterBy: {
         team: {
           id: '',
           name: 'All Teams'
         },
+        level: {
+          id: '',
+          lvl: 'All Levels'
+        },
         dateRange: {
           start_date: '',
           end_date: ''
         }
+      },
+      games: [],
+      showDatePicker: false,
+      showLevels: false,
+      showTeams: false
+    }
+  },
+  mixins: [root],
+  computed: {
+    teams () {
+      const teams = [{slug: '', team_name: 'All Teams'}, ...this.$store.state.teams]
+      return teams
+    },
+    levels () {
+      const levels = [{id: '', level_name: 'All Levels'}, ...this.$store.state.levels]
+      return levels
+    }
+  },
+  watch: {
+    'filterBy.team': {
+      deep: true,
+      handler (newValue, oldValue) {
+        this.initSchedule(newValue.id)
       }
     }
   },
-  computed: {
-    teams () {
-      let teams = [{id: '', team_name: 'All Teams'}, ...this.$store.state.teams]
-      return teams
-    }
+  created () {
+    this.initSchedule()
+
+    this.$root.$on('close', payload => {
+      // this.showDatePicker = false
+      // this.showTeams = false
+    })
   },
   methods: {
+    initSchedule (team) {
+      api.getSchedule(team).then(response => {
+        let fixedData = []
+        response.data.forEach(game => {
+          if (game.game_time === '12:00 AM ') {
+            game.game_time = 'TBD'
+          }
+
+          fixedData.push(game)
+        })
+        this.games = fixedData
+      })
+    },
     setTeam (team) {
-      this.filterBy.team.id = team.id
+      this.filterBy.team.id = team.slug
       this.filterBy.team.name = team.team_name
       // this.showTeams = false
-      console.log(this.showTeams)
+      // console.log(this.showTeams)
+    },
+    setLvl (lvl) {
+      this.filterBy.level.id = lvl.id
+      this.filterBy.level.lvl = lvl.level_name
+      // this.showTeams = false
+      // console.log(this.showTeams)
     }
   }
 }
@@ -172,5 +285,75 @@ h2 {
     background-color: #fff;
     color: #0C4B75;
   }
+}
+.game {
+  padding-top: 1rem;
+  &:after {
+    content: '';
+    border-bottom: 1px solid #707070;
+    width: calc(100% - 2rem);
+    margin: auto;
+    padding-bottom: 1rem;
+  }
+}
+.date {
+  font-family: @lato;
+  font-size: 1.2rem;
+  line-height: 1;
+  .time {
+    padding-top: .8rem;
+    font-weight: 200;
+  }
+}
+.team_info {
+  font-family: @lato;
+  font-weight: 400;
+  font-size: 1.1rem;
+  font-style: italic;
+  text-align: center;
+  line-height: 1.1;
+  .level {
+    display: block;
+    font-size: .9rem;
+    font-weight: 200;
+  }
+  .winner {
+    font-weight: 500;
+  }
+  .loser {
+    font-weight: 200;
+  }
+}
+.at {
+  font-family: @lato;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 2rem;
+  color: @conf-blue;
+}
+.score {
+  font-size: 3rem;
+  &.winner {
+    font-weight: 900;
+    color: #2784C3;
+  }
+  &.loser {
+    font-weight: 100;
+    color: #707070;
+  }
+}
+.location{
+  font-family: @lato;
+  font-weight: 200;
+  line-height: 1.1;
+}
+
+@media print {
+ .filters {
+   display: none;
+ }
+ .button.ghost {
+   display: none;
+ }
 }
 </style>

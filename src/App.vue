@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="this.$route.meta.section">
+  <div id="app" :class="this.$route.meta.section" @click="clickAway()">
     <headerComponent :styles="styles"></headerComponent>
     <router-view class="body" />
     <footer>
@@ -83,6 +83,7 @@ export default {
 
     this.initTeams()
 
+    this.initLevels()
     // if (this.teamManagement) {
     //   this.styles = {
     //     navColor: '#B42625'
@@ -96,17 +97,22 @@ export default {
   methods: {
     initCurrentSeason () {
       api.getCurrentSeasons().then(response => {
-        console.log(response)
         this.$store.dispatch('setSeasons', response.data)
-        // this.roster = response.data
       })
     },
     initTeams () {
       api.getTeams().then(response => {
-        console.log(response)
         this.$store.dispatch('setTeams', response.data.team)
-        // this.roster = response.data
       })
+    },
+    initLevels () {
+      api.getLevels().then(response => {
+        // console.log(response)
+        this.$store.dispatch('setLevels', response.data)
+      })
+    },
+    clickAway () {
+      this.$root.$emit('close', true)
     }
   }
 }

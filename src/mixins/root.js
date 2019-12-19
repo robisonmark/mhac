@@ -7,7 +7,21 @@ export const root = {
   data () {
     return {
       dateFormatDisplay: 'M/dd/yyyy',
-      dateFormat: 'M/dd/yyyy'
+      dateFormat: 'M/dd/yyyy',
+      months: [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ]
     }
   },
   components: {
@@ -42,7 +56,7 @@ export const root = {
             return formattedDates
           }
         } else {
-          formattedDates = format(date, 'YYYY/MM/DD HH:mm:ss')
+          formattedDates = format(date, 'M/dd/yyyy HH:mm')
           return formattedDates
         }
       } else {
