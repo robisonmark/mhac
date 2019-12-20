@@ -190,7 +190,7 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getSchedule (team, season) {
+  static async getSchedule (season, team) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -202,10 +202,10 @@ export class api {
     // }
 
     let addedParams = ''
-    if (team !== undefined && season === undefined) {
-      addedParams = '/' + team
-    } else if (team !== undefined && season !== undefined) {
-      addedParams = '/' + team + '/' + season
+    if (season !== undefined && team === undefined) {
+      addedParams = '/' + season
+    } else if (season !== undefined && team !== undefined) {
+      addedParams = '/' + season + '/' + team
     } else {
       addedParams = ''
     }

@@ -8,25 +8,25 @@
           </div>
           <div class="col-6">
             <div class="filters">
-              <div class="custom-select" @click="showDatePicker = !showDatePicker, showTeams = false, showLevels = false">
+              <!-- <div class="custom-select" @click="showDatePicker = !showDatePicker, showTeams = false, showLevels = false">
                 <div disabled>All Dates</div>
                 <div class="options-menu" @click.stop="showDatePicker = true">
                   <input class="option noHover" v-show="showDatePicker" type="date" v-model="filterBy.dateRange.start_date"/>
                 </div>
-              </div>
+              </div> -->
 
               <div class="custom-select"  @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
-                <div disabled>{{filterBy.level.lvl}}</div>
+                <div disabled>{{filterBy.level.level}}</div>
                 <div class="options-menu">
                   <template>
-                    <div class="option" v-for="lvl in levels" :key="lvl.id" v-show="showLevels" @click="setLvl(lvl)">
-                      {{lvl.level_name}}
+                    <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
+                      {{lvl.level}}
                     </div>
                   </template>
                 </div>
               </div>
 
-              <div class="custom-select" @click="showTeams = !showTeams, showDatePicker = false, showLevels = false">
+              <div class="custom-select" @click="showTeams = !showTeams, showDatePicker = false, showLevels = false" v-show="filterBy.level.season_id !== ''">
                 <div disabled>{{filterBy.team.name}}</div>
                 <div class="options-menu">
                   <template>
@@ -39,7 +39,11 @@
             </div>
           </div>
           <div class="col-2">
-            <div class="button ghost">
+            <div class="print-only right">
+              <div class="print-item">{{filterBy.team.name}}</div>
+              <div class="print-item">{{filterBy.level.level}}</div>
+            </div>
+            <div class="button ghost" @click="print()">
               Print
             </div>
           </div>
@@ -66,42 +70,53 @@
             Location
           </div>
         </div>
-        <div class="row game" v-for="game in games" :key="game.game_id">
-          <div class="col-2 date">
-            {{game.game_date}}
-            <div class="time">{{game.game_time}}</div>
 
-            <!-- {{game.game_date}} {{game.game_time}} -->
+        <template v-if="games.length >= 1">
+          <div class="row game" v-for="game in games" :key="game.game_id">
+            <div class="col-2 date">
+              {{game.game_date}}
+              <div class="time">{{game.game_time}}</div>
+
+              <!-- {{game.game_date}} {{game.game_time}} -->
+            </div>
+
+            <div class="col-1 score" :class="checkResult(game.final_score.home, game.final_score.away)">
+              {{game.final_score.home}}
+            </div>
+
+            <div class="col-2 team_info" :class="checkResult(game.final_score.home, game.final_score.away)">
+              <div class="team_name">{{game.away_team.name}}</div>
+              <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
+            </div>
+
+            <div class="col-1">
+              <span class="at">@</span>
+            </div>
+
+            <div class="col-2 team_info">
+              <div class="team_name" :class="checkResult(game.final_score.away, game.final_score.home)">{{game.home_team.name}}</div>
+              <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
+            </div>
+
+            <div class="col-1 score" :class="checkResult(game.final_score.away, game.final_score.home)">
+              {{game.final_score.away}}
+            </div>
+
+            <div class="col-3 location">
+              <div>{{game.home_team.address_name}}</div>
+              <br/>
+              <div>{{game.home_team.address_lines}}</div>
+              <div>{{game.home_team.city_state_zip}}</div>
+            </div>
+
           </div>
+        </template>
 
-          <div class="col-1 score" :class="[(game.final_score.home > game.final_score.away) ? 'winner': 'loser']">
+        <template v-else>
+          <div class="col" align="center">
+            There are currently no games on the schedule <em v-if="filterBy.team.slug !== '' || filterBy.level.id !== ''">that match your criteria</em>, please keep checking back.
           </div>
-
-          <div class="col-2 team_info" :class="[(game.final_score.home > game.final_score.away) ? 'winner': 'loser']">
-            <div class="team_name">{{game.away_team.name}}</div>
-            <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
-          </div>
-
-          <div class="col-1">
-            <span class="at">@</span>
-          </div>
-
-          <div class="col-2 team_info">
-            <div class="team_name" :class="[(game.final_score.home < game.final_score.away) ? 'winner': 'loser']">{{game.home_team.name}}</div>
-            <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
-          </div>
-
-          <div class="col-1 score" :class="[(game.final_score.home < game.final_score.away) ? 'winner': 'loser']">
-          </div>
-
-          <div class="col-3 location">
-            <div>{{game.home_team.address_name}}</div>
-            <br/>
-            <div>{{game.home_team.address_lines}}</div>
-            <div>{{game.home_team.city_state_zip}}</div>
-          </div>
-
-        </div>
+        </template>
       </div>
     </div>
   </div>
@@ -118,14 +133,16 @@ export default {
   name: 'schedules',
   data () {
     return {
+      currentSort: 'game_date',
+      currentSortDir: 'asc',
       filterBy: {
         team: {
-          id: '',
+          slug: '',
           name: 'All Teams'
         },
         level: {
-          id: '',
-          lvl: 'All Levels'
+          season_id: '',
+          level: 'All Levels'
         },
         dateRange: {
           start_date: '',
@@ -145,7 +162,7 @@ export default {
       return teams
     },
     levels () {
-      const levels = [{id: '', level_name: 'All Levels'}, ...this.$store.state.levels]
+      const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
       return levels
     }
   },
@@ -153,7 +170,13 @@ export default {
     'filterBy.team': {
       deep: true,
       handler (newValue, oldValue) {
-        this.initSchedule(newValue.id)
+        this.initSchedule(this.filterBy.level.season_id, newValue.slug)
+      }
+    },
+    'filterBy.level': {
+      deep: true,
+      handler (newValue, oldValue) {
+        this.initSchedule(newValue.season_id)
       }
     }
   },
@@ -166,30 +189,84 @@ export default {
     })
   },
   methods: {
-    initSchedule (team) {
-      api.getSchedule(team).then(response => {
+    initSchedule (level, team) {
+      api.getSchedule(level, team).then(response => {
         let fixedData = []
         response.data.forEach(game => {
           if (game.game_time === '12:00 AM ') {
             game.game_time = 'TBD'
           }
-
           fixedData.push(game)
         })
         this.games = fixedData
+        this.sortTable('game_date', false)
       })
     },
+    checkResult (me, opponent) {
+      if (me !== null && opponent !== null) {
+        if (me > opponent) {
+          return 'winner'
+        } else {
+          return 'loser'
+        }
+      } else {
+        return ''
+      }
+    },
+    print () {
+      window.print()
+    },
     setTeam (team) {
-      this.filterBy.team.id = team.slug
+      this.filterBy.team.slug = team.slug
       this.filterBy.team.name = team.team_name
       // this.showTeams = false
       // console.log(this.showTeams)
     },
     setLvl (lvl) {
-      this.filterBy.level.id = lvl.id
-      this.filterBy.level.lvl = lvl.level_name
+      this.filterBy.level.season_id = lvl.season_id
+      this.filterBy.level.level = lvl.level
       // this.showTeams = false
       // console.log(this.showTeams)
+    },
+    sortTable (s, nested) {
+      // if s == current sort, reverse
+      this.currentSort = s
+
+      this.games.sort((a, b) => {
+        let modifier = 1
+        if (nested) {
+          if (this.currentSortDir === 'desc') modifier = -1
+          if (a[this.currentSort][nested] !== '') {
+            if (a[this.currentSort][nested] < b[this.currentSort][nested]) return -1 * modifier
+            if (a[this.currentSort][nested] > b[this.currentSort][nested]) return 1 * modifier
+          }
+          return 0
+        } else if (s === 'game_date') {
+          /*
+            this fix is in place because of wanting a string display date
+            function converts the month to a number through an array located in root.js using indexOf
+            it then takes into account the season starting toward the end (october) of the year and rolling into the next.
+            lastly I add in the date to allow to sort by date
+          */
+          a[this.currentSort].split(' ')
+          let monthANumber = this.months.indexOf(a[this.currentSort].split(' ')[0])
+          let monthBNumber = this.months.indexOf(b[this.currentSort].split(' ')[0])
+
+          if (monthANumber <= 9) monthANumber = monthANumber + 12
+          monthANumber = monthANumber + a[this.currentSort].split(' ')[1]
+          monthBNumber = monthBNumber + b[this.currentSort].split(' ')[1]
+
+          if (this.currentSortDir === 'desc') modifier = -1
+          if (monthANumber < monthBNumber) return -1 * modifier
+          if (monthANumber > monthBNumber) return 1 * modifier
+          return 0
+        } else {
+          if (this.currentSortDir === 'desc') modifier = -1
+          if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier
+          if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier
+          return 0
+        }
+      })
     }
   }
 }
@@ -328,7 +405,7 @@ h2 {
   font-family: @lato;
   font-weight: 700;
   font-style: italic;
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: @conf-blue;
 }
 .score {
@@ -346,14 +423,5 @@ h2 {
   font-family: @lato;
   font-weight: 200;
   line-height: 1.1;
-}
-
-@media print {
- .filters {
-   display: none;
- }
- .button.ghost {
-   display: none;
- }
 }
 </style>

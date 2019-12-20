@@ -25,7 +25,8 @@
                 <th class="padding"></th>
                 <th class="mw-150px">School</th>
                 <th class="center">Record</th>
-                <th class="center">Last Result</th>
+                <!-- <th class="center">Last Result</th> -->
+                <th class="center">Games Back</th>
                 <th class="padding"></th>
               </tr>
             </thead>
@@ -63,7 +64,8 @@
                   <td class="padding"></td>
                   <td class="mw-150px">{{standing.team_name}}</td>
                   <td class="center">{{standing.wins}}-{{standing.losses}}</td>
-                  <td class="center">--</td>
+                  <!-- <td class="center">--</td> -->
+                  <th class="center">{{standing.games_behind}}</th>
                   <td class="padding"></td>
                 </tr>
               </template>
@@ -124,7 +126,13 @@ export default {
       id = id.length > 1 ? id : ''
       api.getStandings(id).then(response => {
         this.noStandings = false
+        response.data.forEach(result => {
+          if (result.games_behind !== '') {
+            result.games_behind = Math.round(result.games_behind)
+          }
+        })
         this.currentStandings = response.data
+
         if (this.season.length === 0) {
           this.season = this.$store.state.seasons.find(function (level) {
             if (level.level === '18U Boys') {

@@ -24,3 +24,39 @@ body{
 .page-styles {
   margin-top: 3.5rem;
 }
+.print-only {
+  display: none;
+  visibility: hidden;
+}
+@media print {
+  header,
+  .filters,
+  .button.ghost {
+    display: none !important;
+  }
+  html {
+    font-size: 8pt !important;
+  }
+  .body {
+    margin-top: -112px;
+  }
+
+  .print-only {
+    // color: black;
+    visibility: visible !important;
+    position: relative !important;
+    display: block !important;
+    // float: right;
+    .print-item {
+      position: relative;
+      text-align: right;
+    }
+    &.right {
+      top: 0;
+      right: 0;
+      text-align: right;
+      justify-content: end;
+      align-items: end;
+    }
+  }
+ }
