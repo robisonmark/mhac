@@ -2,10 +2,11 @@
   <div class="container">
     <div class="row">
       <div class="logo-color col">
-        <img src="@/assets/color-team-logos/royals2.png" alt="Hendersonville Royals"/>
+        <!-- <img src="@/assets/color-team-logos/royals2.png" alt="Hendersonville Royals"/> -->
       </div>
       <div class="col-7 top-layer">
         <div class="content-container">
+          Coming Soon!
           <div class="row filter-bar">
             <div class="col">
               <div class="filters">
@@ -58,7 +59,7 @@
           </div>
         </div>
       </div>
-      <div class="team-info">
+      <!-- <div class="team-info">
         <div class="top">
           <a href="hendsonvilleroyals.com">hendsonvilleroyals.com</a>
           <span class="location">Hendersonville, Tn</span>
@@ -70,10 +71,10 @@
             Madison, Tn 37115
           </a>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="bottom-logo">
-      <img class="bottom-logo" src="@/assets/washedout-team-logo/royals-grayscale.png" />
+      <!-- <img class="bottom-logo" src="@/assets/washedout-team-logo/royals-grayscale.png" /> -->
     </div>
   </div>
 </template>

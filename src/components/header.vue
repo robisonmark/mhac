@@ -8,33 +8,33 @@
     <div class="right">
       <div class="top-hat">
         <nav>
-            <a href="">
+            <a href="http://www.wkytrailblazers.com/">
               <img src="../assets/color-team-logos/blazers-dark.png" alt="Link to Team Site" />
             </a>
-            <a href="">
+            <a href="https://d1academy.org/">
               <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
             </a>
-            <a href="">
+            <a href="http://cca-huntsville.org/">
               <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
             </a>
-            <a href="">
+            <a href="https://tnheatsports.com/">
               <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
             </a>
-            <a href="">
+            <a href="https://lifechristianacademy.org/">
               <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
             </a>
-            <a href="">
+            <a href="http://patriot-basketball.com/">
               <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
             </a>
-            <a href="">
+            <a href="http://hendersonvilleroyals.com/">
               <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
             </a>
-            <a href="">
+            <a href="https://www.nccwarriors.com/">
               <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
             </a>
-            <div class="button" @click="showLogin = !showLogin" ref="showLogin">
+            <!-- <div class="button" @click="showLogin = !showLogin" ref="showLogin">
               <span>Login</span>
-            </div>
+            </div> -->
             <div v-if="showLogin" class="teamlogin" ref="teamlogin">
               <form v-if="!loggedIn">
                 <label for="username">
@@ -63,13 +63,14 @@
           <router-link :to="{ path: '/compliance' }">Compliance</router-link>
           <router-link :to="{ path: '/schedules' }">Schedules</router-link>
           <router-link :to="{ path: '/stats' }">Stats</router-link>
-          <div @click="showSchools = !showSchools" ref="schoolDropDown">
-            Schools
+          <!-- <div @click="showSchools = !showSchools" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="checkMouse()"> -->
+          <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown">
+            Schools <font-awesome-icon v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
             <ul v-show="showSchools" class="nav_dropdown">
               <router-link v-for="team in teams" :key="team.id" :to="{ path: '/schools/' + team.slug, params: { school: team.team_name, id: team.id }}" tag="li">{{team.team_name}}</router-link>
             </ul>
           </div>
-          <router-link :to="{ path: '/contact' }">Contact</router-link>
+          <!-- <router-link :to="{ path: '/contact' }">Contact</router-link> -->
         </nav>
       </div>
     </div>
@@ -114,6 +115,11 @@ export default {
   watch: {},
   created () {},
   methods: {
+    checkMouse () {
+      // window.setTimeout(() => {
+      //   this.showSchools = false
+      // }, 500)
+    },
     slugCase (value) {
       if (!value) return ''
       value.toLowerCase()
@@ -279,5 +285,9 @@ export default {
     &:hover {
       background-color: @nav-blue;
     }
+  }
+
+  .dropdown {
+    cursor: pointer;
   }
 </style>
