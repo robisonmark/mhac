@@ -84,6 +84,9 @@ export default {
     this.initTeams()
 
     this.initLevels()
+
+    this.initSchedule()
+
     // if (this.teamManagement) {
     //   this.styles = {
     //     navColor: '#B42625'
@@ -109,6 +112,18 @@ export default {
       api.getLevels().then(response => {
         // console.log(response)
         this.$store.dispatch('setLevels', response.data)
+      })
+    },
+    initSchedule () {
+      api.getSchedule().then(response => {
+        let fixedData = []
+        response.data.forEach(game => {
+          if (game.game_time === '12:00 AM ') {
+            game.game_time = 'TBD'
+          }
+          fixedData.push(game)
+        })
+        this.$store.dispatch('setFullSchedule', fixedData)
       })
     },
     clickAway () {

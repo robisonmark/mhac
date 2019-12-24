@@ -79,6 +79,39 @@ export class api {
   }
 
   /***
+     * Get Game Results
+     * This call returns the game stats, it takes optional parameters of game_id and team_id
+     * @param {string} method - GET
+     * @param {object} body - Player JSON Body
+     * @return - JSON Object of players by team
+    ***/
+  static async getGameResults (gameId, teamId) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }'
+
+    let addedParams = ''
+    if (gameId !== undefined && teamId === undefined) {
+      addedParams = '/' + gameId
+    } else if (gameId !== undefined && teamId !== undefined) {
+      addedParams = '/' + gameId + '/' + teamId
+    } else {
+      addedParams = ''
+    }
+
+    return robros({
+      'url': '/getGameResults' + addedParams,
+      'method': 'GET'
+    })
+  }
+
+  /***
      * Get a List of Teams
      * @param {object} id - ID
      * @return - JSON Object of players by team

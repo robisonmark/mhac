@@ -68,7 +68,7 @@ export default new Router({
       path: '/schools/:school',
       name: 'schools',
       component: schools,
-      // props: { school: true, id: true },
+      props: true,
       meta: {
         'section': 'public'
       }

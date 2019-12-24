@@ -29,6 +29,7 @@ const state = {
   seasons: [],
   teams: [],
   levels: [],
+  fullSchedule: [],
   configOptions: [],
   readWriteAccess: String
 }
@@ -66,6 +67,9 @@ const mutations = {
   },
   set_readWriteAccess (state, payload) {
     state.readWriteAccess = payload
+  },
+  set_fullSchedule (state, payload) {
+    state.fullSchedule = payload
   }
 }
 
@@ -94,6 +98,10 @@ const actions = {
 
   setLevels (context, payload) {
     context.commit('set_levels', payload)
+  },
+
+  setFullSchedule (context, payload) {
+    context.commit('set_fullSchedule', payload)
   },
 
   load (context) {

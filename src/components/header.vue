@@ -7,9 +7,9 @@
     </div>
     <div class="right">
       <div class="top-hat">
-        <nav>
+        <nav class="largeScreen">
             <a href="http://www.wkytrailblazers.com/">
-              <img src="../assets/color-team-logos/blazers-dark.png" alt="Link to Team Site" />
+              <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
             </a>
             <a href="https://d1academy.org/">
               <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
@@ -56,6 +56,59 @@
               </div>
             </div>
         </nav>
+
+        <!-- <nav class="mobileScreen">
+          <div class="dropdown">
+            <a href="http://www.wkytrailblazers.com/">
+              <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
+            </a>
+            <a href="https://d1academy.org/">
+              <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
+            </a>
+            <a href="http://cca-huntsville.org/">
+              <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
+            </a>
+            <a href="https://tnheatsports.com/">
+              <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
+            </a>
+            <a href="https://lifechristianacademy.org/">
+              <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
+            </a>
+            <a href="http://patriot-basketball.com/">
+              <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
+            </a>
+            <a href="http://hendersonvilleroyals.com/">
+              <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
+            </a>
+            <a href="https://www.nccwarriors.com/">
+              <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
+            </a>
+            <div class="button" @click="showLogin = !showLogin" ref="showLogin">
+              <span>Login</span>
+            </div>
+
+          </div>
+           <div v-if="showLogin" class="teamlogin" ref="teamlogin">
+              <form v-if="!loggedIn">
+                <label for="username">
+                  Username
+                </label>
+                <input type="text" id="username" v-model="username" />
+                <label for="password">
+                  Password
+                </label>
+                <input type="password" id="password" v-model="password" />
+                <button @click.prevent="login()">
+                  Login
+                </button>
+              </form>
+              <div v-else>
+                <button @click.prevent="signout()">
+                  Signout
+                </button>
+              </div>
+            </div>
+        </nav> -->
       </div>
       <div class="main-nav">
         <nav>
@@ -63,11 +116,11 @@
           <router-link :to="{ path: '/compliance' }">Compliance</router-link>
           <router-link :to="{ path: '/schedules' }">Schedules</router-link>
           <router-link :to="{ path: '/stats' }">Stats</router-link>
-          <!-- <div @click="showSchools = !showSchools" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="checkMouse()"> -->
-          <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown">
-            Schools <font-awesome-icon v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
+          <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
+          <!-- <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"> -->
+            Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
             <ul v-show="showSchools" class="nav_dropdown">
-              <router-link v-for="team in teams" :key="team.id" :to="{ path: '/schools/' + team.slug, params: { school: team.team_name, id: team.id }}" tag="li">{{team.team_name}}</router-link>
+              <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug, school: team.team_name, id: team.id }}" tag="li">{{team.team_name}}</router-link>
             </ul>
           </div>
           <!-- <router-link :to="{ path: '/contact' }">Contact</router-link> -->
@@ -247,17 +300,27 @@ export default {
           color: #fff;
           text-decoration: none;
           position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+
         }
         .nav_dropdown {
           position: absolute;
           width: 200px;
           background: white;
           color: #021A2B;
-          top: 39px;
+          // top: 39px;
+          top: 55px;
           box-shadow: 2px 2px 10px #021A2B;
           width: 250px;
           li {
             padding: 3px 15px;
+            cursor: pointer;
+            &:hover {
+              background-color: rgba(12, 75, 117, .2)
+            }
           }
         }
       }
@@ -289,5 +352,8 @@ export default {
 
   .dropdown {
     cursor: pointer;
+    .dropIcon {
+      margin-left: .5rem;
+    }
   }
 </style>

@@ -89,6 +89,7 @@ export default {
     }
   }
 }
+// https://www.nchclive.com/guidelines/
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -9,7 +9,7 @@
           </div>
         </div>
       </div>
-      <div class="col">
+      <div class="col-3">
         <div class="standings">
           <div class="addPadding">
             <h3>2019-20 Standings</h3>
