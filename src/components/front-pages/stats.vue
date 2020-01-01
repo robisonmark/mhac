@@ -54,6 +54,39 @@
       <div class="col content" align="center" v-if="message">
         <h4><em>{{this.message}}</em></h4>
       </div>
+
+      <div class="col content" align="center" v-else>
+        <table class="public-stats-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>2pt A</th>
+              <th>2pt M</th>
+              <th>3pt A</th>
+              <th>3pt M</th>
+              <th>FT A</th>
+              <th>FT M</th>
+              <th>A</th>
+              <th>BLK</th>
+              <th>O Reb</th>
+              <th>D Reb</th>
+              <th>Tot Reb</th>
+              <th>STL</th>
+              <th>Total Pts</th>
+            </tr>
+          </thead>
+          <tr v-for="(player, index) in stats" :key="index">
+            <td v-html="player.player_number"></td>
+            <td v-html="player.player_first_name"></td>
+            <td v-html="player.player_last_name"></td>
+            <td v-for="(stat, idx) in player.player_stats" :key="idx">
+              {{stat}}
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -215,7 +248,8 @@ export default {
       message: 'Please select a game to see stats.',
       showGames: false,
       showLevels: false,
-      showTeams: false
+      showTeams: false,
+      stats: []
     }
   },
   computed: {
@@ -292,9 +326,12 @@ export default {
         gameId = this.game[1].game_id
         teamId = this.game[1].home_team.id
       }
-      console.log(gameId, teamId)
       api.getGameResults(gameId, teamId).then(response => {
         console.log(response)
+        if (response.data.length >= 1) {
+          this.message = false
+        }
+        this.stats = response.data
       })
     },
     setLvl (lvl) {
@@ -359,6 +396,7 @@ h2 {
   max-width: 250px;
   padding-right: 25px;
   white-space: nowrap;
+  margin: 0 1rem;
 
   &:before {
     content: '';
@@ -398,6 +436,9 @@ h2 {
   left: -3px;
   z-index: 2;
   box-shadow: 1px 2px 4px #0C4B75;
+  max-height: 45vh;
+  overflow-y: auto;
+
   .option {
     padding: .2rem .5rem;
     width: 100%;
@@ -420,5 +461,8 @@ h2 {
     background-color: #fff;
     color: #0C4B75;
   }
+}
+.public-stats-table  {
+  width: 100%;
 }
 </style>
