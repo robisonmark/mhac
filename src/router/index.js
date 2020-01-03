@@ -65,7 +65,7 @@ export default new Router({
       }
     },
     {
-      path: '/schools/:school',
+      path: '/schools/:slug',
       name: 'schools',
       component: schools,
       props: true,

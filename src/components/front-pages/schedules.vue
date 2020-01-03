@@ -48,8 +48,8 @@
             </div>
           </div>
           <div class="col-2 text-right">
-            <div class="button ghost" @click="print()">
-              Print
+            <div class="button ghost print" @click="print()">
+              <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
             </div>
           </div>
         </div>
@@ -71,13 +71,13 @@
           </div>
           <div class="col-1">
           </div>
-          <div class="col-2">
-            Location
+          <div class="col-3 text-right">
+            <font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location
           </div>
         </div>
 
         <template v-if="games.length >= 1">
-          <div class="row game" v-for="game in games" :key="game.game_id">
+          <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.id }}" tag="div" class="row game" v-for="game in games" :key="game.game_id">
             <div class="col-2 date">
               {{game.game_date}}
               <div class="time">{{game.game_time}}</div>
@@ -109,14 +109,16 @@
               {{game.final_score.home}}
             </div>
 
-            <div class="col-3 location">
+            <div class="col-3 location text-right">
               <div>{{game.home_team.address_name}}</div>
               <br/>
-              <div>{{game.home_team.address_lines}}</div>
-              <div>{{game.home_team.city_state_zip}}</div>
+              <span class="address" :href="'https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip" @click.stop="goToMap('https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip)">
+                <div>{{game.home_team.address_lines}}</div>
+                <div>{{game.home_team.city_state_zip}}</div>
+              </span>
             </div>
 
-          </div>
+          </router-link>
         </template>
 
         <template v-else>
@@ -196,6 +198,9 @@ export default {
     })
   },
   methods: {
+    goToMap (url) {
+      window.location.replace(url)
+    },
     initSchedule (level, team) {
       api.getSchedule(level, team).then(response => {
         let fixedData = []
@@ -358,9 +363,9 @@ h2 {
     }
   }
 }
-.button.ghost {
+.button.ghost.print {
   border: 1px solid #fff;
-  width: 4rem;
+  max-width: 6rem;
   text-align: center;
   &:hover {
     background-color: #fff;
@@ -369,12 +374,16 @@ h2 {
 }
 .game {
   padding-top: 1rem;
+  cursor: pointer;
   &:after {
     content: '';
     border-bottom: 1px solid #707070;
     width: calc(100% - 2rem);
     margin: auto;
     padding-bottom: 1rem;
+  }
+  &:hover {
+    background: #eee;
   }
 }
 .date {
@@ -427,5 +436,12 @@ h2 {
   font-family: @lato;
   font-weight: 200;
   line-height: 1.1;
+  .address{
+    color: #2784C3;
+    &:hover {
+      text-decoration: none;
+      color: lighten(#2784C3, 20%)
+    }
+  }
 }
 </style>

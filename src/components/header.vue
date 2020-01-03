@@ -120,7 +120,7 @@
           <!-- <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"> -->
             Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
             <ul v-show="showSchools" class="nav_dropdown">
-              <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug, school: team.team_name, id: team.id }}" tag="li">{{team.team_name}}</router-link>
+              <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">{{team.team_name}}</router-link>
             </ul>
           </div>
           <!-- <router-link :to="{ path: '/contact' }">Contact</router-link> -->

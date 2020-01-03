@@ -134,7 +134,7 @@ export default {
   },
   methods: {
     initSchool () {
-      const slug = this.$route.params.school
+      const slug = this.$route.params.school.toLowerCase()
       // console.log(this.$route)
       api.getTeams(slug).then(response => {
         console.log(response)

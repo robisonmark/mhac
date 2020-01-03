@@ -54,8 +54,8 @@
             </div>
           </div>
           <div class="col-2 text-right">
-            <div class="button ghost" @click="print()">
-              Print
+            <div class="button ghost print" @click="print()">
+              <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
             </div>
           </div>
         </div>
@@ -366,12 +366,35 @@ export default {
     }
   },
   created () {
+    if (this.$route.query.hasOwnProperty('game') && this.$route.query.hasOwnProperty('home_team')) {
+      this.initStats(this.$route.query.game, this.$route.query.home_team)
+    } else if (this.$route.query.hasOwnProperty('game')) {
+      this.initStats(this.$route.query.game.game_id)
+    } else {
+
+    }
     // this.initStats()
 
     this.$root.$on('close', payload => {
       // this.showDatePicker = false
       // this.showTeams = false
     })
+  },
+  updated () {
+    let self = this
+    if (this.$route.query.hasOwnProperty('game') && this.$route.query.hasOwnProperty('home_team')) {
+      const game = self.games.find(game => {
+        return game.game_id === self.$route.query.game
+      })
+      if (game && self.filterBy.game.game_id === '') {
+        self.setGame(game)
+      }
+
+      if (game && self.filterBy.level.season_id === '') {
+        let level = self.levels.find(level => { return level.level === game.home_team.team_level })
+        self.setLvl(level)
+      }
+    }
   },
   methods: {
     initStats (gameId, teamId) {
@@ -389,6 +412,7 @@ export default {
         } else {
           this.message = 'Stats have not been provided for this team and this game.'
         }
+
         this.stats = response.data
       })
     },
@@ -518,11 +542,10 @@ h2 {
   width: 100%;
   overflow: hidden;
 }
-.button.ghost {
+.button.ghost.print {
   border: 1px solid #fff;
-  width: 4rem;
+  max-width: 6rem;
   text-align: center;
-  display: inline-block;
   &:hover {
     background-color: #fff;
     color: #0C4B75;
