@@ -1,6 +1,15 @@
 <template>
   <div class="container">
     <div class="page-styles">
+      <div class="row print-only align-items-start justify-content-between">
+          <div class="col">
+            <h2>2019 - 2020 Schedule</h2>
+          </div>
+          <div class="col right">
+            <div>{{filterBy.team.name}}</div>
+            <div>{{filterBy.level.level}}</div>
+          </div>
+        </div>
       <div class="col-12">
         <div class="row filter-bar">
           <div class="col-4">
@@ -38,11 +47,7 @@
               </div>
             </div>
           </div>
-          <div class="col-2">
-            <div class="print-only right">
-              <div class="print-item">{{filterBy.team.name}}</div>
-              <div class="print-item">{{filterBy.level.level}}</div>
-            </div>
+          <div class="col-2 text-right">
             <div class="button ghost" @click="print()">
               Print
             </div>
@@ -80,8 +85,9 @@
               <!-- {{game.game_date}} {{game.game_time}} -->
             </div>
 
-            <div class="col-1 score" :class="checkResult(game.final_score.home, game.final_score.away)">
-              {{game.final_score.home}}
+            <!-- AWAY TEAM -->
+            <div class="col-1 score" :class="checkResult(game.final_score.away, game.final_score.home)">
+              {{game.final_score.away}}
             </div>
 
             <div class="col-2 team_info" :class="checkResult(game.final_score.home, game.final_score.away)">
@@ -93,13 +99,14 @@
               <span class="at">@</span>
             </div>
 
+            <!-- HOME TEAM -->
             <div class="col-2 team_info">
-              <div class="team_name" :class="checkResult(game.final_score.away, game.final_score.home)">{{game.home_team.name}}</div>
+              <div class="team_name" :class="checkResult(game.final_score.home, game.final_score.away)">{{game.home_team.name}}</div>
               <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
             </div>
 
-            <div class="col-1 score" :class="checkResult(game.final_score.away, game.final_score.home)">
-              {{game.final_score.away}}
+            <div class="col-1 score" :class="checkResult(game.final_score.home, game.final_score.away)">
+              {{game.final_score.home}}
             </div>
 
             <div class="col-3 location">
@@ -212,9 +219,6 @@ export default {
       } else {
         return ''
       }
-    },
-    print () {
-      window.print()
     },
     setTeam (team) {
       this.filterBy.team.slug = team.slug

@@ -62,6 +62,9 @@ export const root = {
       } else {
         return ''
       }
+    },
+    print () {
+      window.print()
     }
   }
 }

@@ -88,6 +88,7 @@
 <script>
 // api
 import { api } from '../../api/endpoints.js'
+import _ from 'lodash'
 
 // components
 import selectbox from '../selectbox'
@@ -126,12 +127,14 @@ export default {
       id = id.length > 1 ? id : ''
       api.getStandings(id).then(response => {
         this.noStandings = false
-        response.data.forEach(result => {
-          if (result.games_behind !== '') {
-            result.games_behind = Math.round(result.games_behind)
-          }
-        })
-        this.currentStandings = response.data
+        // response.data.forEach(result => {
+        //   if (result.games_behind !== '') {
+        //     result.games_behind = Math.round(result.games_behind)
+        //   }
+        // })
+
+        this.currentStandings = _.sortBy(response.data, [function (o) { return o.games_behind }])
+        // this.currentStandings = response.data
 
         if (this.season.length === 0) {
           this.season = this.$store.state.seasons.find(function (level) {

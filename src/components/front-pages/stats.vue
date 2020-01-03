@@ -1,6 +1,15 @@
 <template>
   <div class="container">
     <div class="page-styles">
+      <div class="row print-only align-items-start justify-content-between">
+        <div class="col-4">
+          <h2>2019 - 2020 Stats</h2>
+        </div>
+        <div class="col right">
+          <div>{{filterBy.game.teams}}</div>
+          <div>{{filterBy.team.name}}</div>
+        </div>
+      </div>
       <div class="col-12">
         <div class="row filter-bar">
           <div class="col-4">
@@ -44,8 +53,8 @@
 
             </div>
           </div>
-          <div class="col-2">
-            <div class="button ghost">
+          <div class="col-2 text-right">
+            <div class="button ghost" @click="print()">
               Print
             </div>
           </div>
@@ -59,32 +68,77 @@
         <table class="public-stats-table">
           <thead>
             <tr>
+              <th colspan="3"></th>
+              <th colspan="3" class="light">FG</th>
+              <th colspan="3" class="dark">3PT</th>
+              <th colspan="3" class="light">FT</th>
+              <th colspan="3" class="dark">Rebounds</th>
+              <th colspan="4"></th>
+            </tr>
+            <tr>
               <th>#</th>
               <th>First Name</th>
               <th>Last Name</th>
-              <th>2pt A</th>
-              <th>2pt M</th>
-              <th>3pt A</th>
-              <th>3pt M</th>
-              <th>FT A</th>
-              <th>FT M</th>
-              <th>A</th>
-              <th>BLK</th>
-              <th>O Reb</th>
-              <th>D Reb</th>
-              <th>Tot Reb</th>
-              <th>STL</th>
-              <th>Total Pts</th>
+              <!-- 2PT -->
+              <th class="stat">A</th>
+              <th class="stat">M</th>
+              <th class="stat">%</th>
+              <!-- 3PT -->
+              <th class="stat">A</th>
+              <th class="stat">M</th>
+              <th class="stat">%</th>
+              <!-- FT -->
+              <th class="stat">A</th>
+              <th class="stat">M</th>
+              <th class="stat">%</th>
+              <!-- Rebounds -->
+              <th class="stat">O</th>
+              <th class="stat">D</th>
+              <th class="stat">Tot</th>
+
+              <th class="stat">A</th>
+              <th class="stat">BLK</th>
+
+              <th class="stat">STL</th>
+              <th class="stat">Total Pts</th>
             </tr>
           </thead>
-          <tr v-for="(player, index) in stats" :key="index">
-            <td v-html="player.player_number"></td>
-            <td v-html="player.player_first_name"></td>
-            <td v-html="player.player_last_name"></td>
-            <td v-for="(stat, idx) in player.player_stats" :key="idx">
-              {{stat}}
-            </td>
-          </tr>
+          <tbody>
+            <tr v-for="(player, index) in stats" :key="index">
+              <td v-html="player.player_number"></td>
+              <td v-html="player.player_first_name"></td>
+              <td v-html="player.player_last_name"></td>
+              <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
+                {{stat}}
+              </td> -->
+
+              <!-- 2PT -->
+              <td class="stat light" v-html="player.player_stats['2PA']"></td>
+              <td class="stat light" v-html="player.player_stats['2PM']"></td>
+              <td class="stat light">{{percentage(player.player_stats['2PA'], player.player_stats['2PM'])}}</td>
+
+              <!-- 3PT -->
+              <td class="stat dark" v-html="player.player_stats['3PA']"></td>
+              <td class="stat dark" v-html="player.player_stats['3PM']"></td>
+              <td class="stat dark">{{percentage(player.player_stats['3PA'], player.player_stats['3PM'])}}</td>
+
+              <!-- FT -->
+              <td class="stat light" v-html="player.player_stats.FTA"></td>
+              <td class="stat light" v-html="player.player_stats.FTM"></td>
+              <td class="stat light">{{percentage(player.player_stats.FTA, player.player_stats.FTM)}}</td>
+
+              <!-- Rebounds -->
+              <td class="stat dark" v-html="player.player_stats.offensive_rebounds"></td>
+              <td class="stat dark" v-html="player.player_stats.defensive_rebounds"></td>
+              <td class="stat dark" v-html="player.player_stats.total_rebounds"></td>
+
+              <td class="stat" v-html="player.player_stats.assists"></td>
+              <td class="stat" v-html="player.player_stats.blocks"></td>
+              <td class="stat" v-html="player.player_stats.steals"></td>
+              <td class="stat" v-html="player.player_stats.total_points"></td>
+
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -94,8 +148,10 @@
 <script>
 // api
 import { api } from '../../api/endpoints.js'
+import _ from 'lodash'
 
 // mixins
+import { root } from '../../mixins/root'
 
 export default {
   name: 'stats',
@@ -252,6 +308,7 @@ export default {
       stats: []
     }
   },
+  mixins: [root],
   computed: {
     teams () {
       // let teams = [{id: '', team_name: 'All Teams'}, ...this.$store.state.teams]
@@ -318,18 +375,19 @@ export default {
   },
   methods: {
     initStats (gameId, teamId) {
-      // console.log(gameId, teamId)
       if (gameId !== undefined && teamId === undefined) {
         teamId = this.games.find(game => { return game.game_id === gameId })
         teamId = teamId.home_team.id
+        this.filterBy.team = _.cloneDeep(this.filterBy.game.home_team)
       } else if (gameId !== undefined && teamId !== undefined) {
-        gameId = this.game[1].game_id
-        teamId = this.game[1].home_team.id
+        // gameId = gameId
+        // teamId = teamId
       }
       api.getGameResults(gameId, teamId).then(response => {
-        console.log(response)
         if (response.data.length >= 1) {
           this.message = false
+        } else {
+          this.message = 'Stats have not been provided for this team and this game.'
         }
         this.stats = response.data
       })
@@ -353,6 +411,13 @@ export default {
       this.filterBy.game.away_team = { 'id': game.away_team.id, 'name': game.away_team.name }
       // this.showTeams = false
       // console.log(this.showTeams)
+    },
+    percentage (attempted, made) {
+      if (attempted >= 1) {
+        return ((made / attempted) * 100).toFixed(1)
+      } else {
+        return 0
+      }
     }
   }
 }
@@ -457,6 +522,7 @@ h2 {
   border: 1px solid #fff;
   width: 4rem;
   text-align: center;
+  display: inline-block;
   &:hover {
     background-color: #fff;
     color: #0C4B75;
@@ -464,5 +530,75 @@ h2 {
 }
 .public-stats-table  {
   width: 100%;
+}
+
+tbody {
+  tr {
+    border-bottom: 1px solid #707070;
+  }
+  td {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    font-family: @open-sans;
+    position: relative;
+    z-index: 1;
+    min-width: 1rem;
+    &.dark {
+      background-color: rgba(2,26,43, .4);
+      color: #231F20;
+      font-weight: 400;
+      font-style: normal;
+    }
+    &.light {
+      background-color: rgba(39,132,195, .3);
+      color: #231F20;
+      font-weight: 400;
+      font-style: normal;
+    }
+  }
+}
+
+.stat {
+  text-align: center;
+}
+th {
+  font-family: @lato;
+  font-weight: 200;
+  font-size: .8rem;
+}
+.dark {
+  background-color: #021A2B;
+  color: white;
+  text-align: center;
+  font-style: italic;
+}
+.light {
+  background-color: #2784C3;
+  color: white;
+  text-align: center;
+  font-style: italic;
+}
+td {
+  &:nth-child(even) {
+    &:after {
+      content: '';
+      background-color: rgba(205,203,203, .46);
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      mix-blend-mode: color-burn;
+    }
+  }
+  &:nth-child(0),
+  &:nth-child(1),
+  &:nth-child(2) {
+    background-color: #fff;
+    &:after {
+      display: none;
+    }
+  }
 }
 </style>

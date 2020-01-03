@@ -31,27 +31,30 @@ body{
 @media print {
   header,
   .filters,
-  .button.ghost {
+  .button.ghost,
+  .filter-bar {
     display: none !important;
   }
   html {
     font-size: 8pt !important;
+    color: black !important;
   }
   .body {
     margin-top: -112px;
+    color: black !important;
   }
 
   .print-only {
-    // color: black;
+    color: black !important;
     visibility: visible !important;
     position: relative !important;
-    display: block !important;
+    display: flex !important;
     // float: right;
     .print-item {
       position: relative;
       text-align: right;
     }
-    &.right {
+    .right {
       top: 0;
       right: 0;
       text-align: right;
