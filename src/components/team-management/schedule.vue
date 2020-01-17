@@ -1,7 +1,8 @@
 <template>
   <div class="hello">
-    <h2>2019 - 2020 Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="" v-model="newGame.season.id"></selectbox></h2>
-    <editTable :columns="columns" :config="config" :tabledata="schedule" v-model="newGame">
+    <h2>2019 - 2020 Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
+    <div class="" v-if="schedule.length === 0">Please Select a level to begin</div>
+    <editTable v-else :columns="columns" :config="config" :tabledata="schedule" v-model="newGame">
       <template slot="thead">
         <tr>
           <th>Host</th>
@@ -17,7 +18,7 @@
           <td><span :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</span></td>
           <td>{{data.opponent.name}}</td>
           <td>{{data.game_time}}</td>
-          <td>{{formatDates(data.game_date, false)}}</td>
+          <td>{{data.game_date}}</td>
           <td>{{data.schedule_id}}</td>
         </tr>
 
@@ -89,7 +90,7 @@ export default {
         {
           name: 'Level',
           icon: '',
-          field_name: 'division',
+          field_name: 'season',
           type: 'select',
           track_by: 'name'
         }
@@ -98,6 +99,12 @@ export default {
         'page': 'schedule'
       },
       newGame: {
+        'host': true,
+        'opponent': '',
+        'game_time': '',
+        'game_date': '',
+        'season': '',
+        'neutral_site': ''
       },
       schedule: []
     }
@@ -122,21 +129,27 @@ export default {
       })
     }
   },
-  created () {
-    this.initSchedule()
+  watch: {
+    newGame: {
+      deep: true,
+      handler (newValue, oldValue) {
+        this.initSchedule(newValue.season.season_id, this.$route.params.slug)
+      }
 
-    this.initNewGame()
+    }
+  },
+  created () {
+    // this.initSchedule()
+
+    // this.initNewGame()
 
     this.$root.$on('save', payload => {
       this.save()
     })
   },
   methods: {
-    initSchedule () {
-      this.$store.state.seasons.filter(season => {
-        // if (season.season_id)
-      })
-      api.getSchedule('01827cc2-ee31-11e9-b8a6-b827ebcfd443', this.$store.state.user.team_id).then(response => {
+    initSchedule (season, slug) {
+      api.getSchedule(season, slug).then(response => {
         let gameArr = []
         response.data.forEach(game => {
           let gameObj = {
@@ -144,13 +157,13 @@ export default {
             'opponent': '',
             'game_time': game.game_time,
             'game_date': game.game_date,
-            'season': '0182b606-ee31-11e9-b8a6-b827ebcfd443'
+            'season': season
           }
 
-          if (game.home_team.id === this.$store.state.user.team_id) {
+          if (game.home_team.slug === this.$store.state.user.slug) {
             gameObj.host = true
             gameObj.opponent = game.away_team
-          } else if (game.away_team.id === this.$store.state.user.team_id) {
+          } else if (game.away_team.slug === this.$store.state.user.slug) {
             gameObj.host = false
             gameObj.opponent = game.home_team
           }
@@ -211,14 +224,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+@teamColor: var(--bg-color);
 h2:after {
   content: '';
   display: block;
   height: 40px;
   /* width: 100%; */
   width: calc(100% + 2.4rem);
-  border-top: 1.5px solid #B42625;
-  border-right: 2px solid #B42625;
+  border-top: 1.5px solid @teamColor;
+  border-right: 2px solid @teamColor;
   border-left: 2px solid transparent;
   position: relative;
   -webkit-transform: skewX(-45deg);

@@ -69,7 +69,7 @@
           <thead>
             <tr>
               <th colspan="3"></th>
-              <th colspan="3" class="light">FG</th>
+              <th colspan="3" class="light">2PT</th>
               <th colspan="3" class="dark">3PT</th>
               <th colspan="3" class="light">FT</th>
               <th colspan="3" class="dark">Rebounds</th>

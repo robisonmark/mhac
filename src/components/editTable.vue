@@ -360,7 +360,7 @@ select {
       width: 1.7rem;
       position: absolute;
       border-radius: 50%;
-      background: #8a1d1c;
+      background: var(--bg-color);
       z-index: -1;
     }
   }

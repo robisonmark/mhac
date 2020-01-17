@@ -47,7 +47,7 @@ export const root = {
       return uuid
     },
     formatDates (date, time) {
-      if (date !== '') {
+      if (date !== '' && date !== 'None') {
         let formattedDates = ''
         if (time === false) {
           if (date) {

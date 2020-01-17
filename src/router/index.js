@@ -84,7 +84,7 @@ export default new Router({
       // ]
     },
     {
-      path: '/manage/:team',
+      path: '/manage/:slug',
       component: TeamManagement,
       meta: {},
       children: [

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { api } from '../../api/endpoints.js'
+// import { api } from '../../api/endpoints.js'
 
 export default {
   name: 'stats',
@@ -15,9 +15,6 @@ export default {
     }
   },
   created () {
-    api.getTeams().then(response => {
-      console.log(response)
-    })
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <header :style="cssVars">
+  <header :style="styles">
     <div class="con-logo">
       <router-link :to="{ path: '/'}" class="con-logo">
         <img class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
@@ -32,9 +32,9 @@
             <a href="https://www.nccwarriors.com/">
               <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
             </a>
-            <!-- <div class="button" @click="showLogin = !showLogin" ref="showLogin">
+            <div class="button" @click="showLogin = !showLogin" ref="showLogin">
               <span>Login</span>
-            </div> -->
+            </div>
             <div v-if="showLogin" class="teamlogin" ref="teamlogin">
               <form v-if="!loggedIn">
                 <label for="username">
@@ -131,7 +131,8 @@
 </template>
 
 <script>
-import { api } from '@/api/endpoints'
+// import { api } from '@/api/endpoints'
+
 export default {
   // login: markrobison630@gmail.com
   // pw: Baller.03
@@ -156,11 +157,6 @@ export default {
     },
     teams () {
       return this.$store.state.teams
-    },
-    cssVars () {
-      return {
-        '--bg-color': this.styles.navColor
-      }
     }
   },
   filters: {
@@ -178,24 +174,22 @@ export default {
       value.toLowerCase()
       value = value.replace(' ', '_')
       value = value.replace(' ', '_')
-      console.log(value.toLowerCase())
       return value
     },
     closeOpenOption (open) {
       this[open] = false
     },
     login () {
-      console.log(this.$store)
-      api.login(this.username, this.password).then(response => {
-        console.log(response)
-        this.loggedIn = true
-        this.showLogin = false
-        this.$store.dispatch('setAuth', response.data.token)
-        this.$router.push('/manage/royals')
-      })
-        .catch(err => {
-          console.log(err)
-        })
+      this.$router.push('/manage/chattanooga_patriots')
+      // api.login(this.username, this.password).then(response => {
+      //   this.loggedIn = true
+      //   this.showLogin = false
+      //   this.$store.dispatch('setAuth', response.data.token)
+      //   this.$router.push('/manage/royals')
+      // })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
     },
     signout () {
       this.loggedIn = false
@@ -215,7 +209,7 @@ export default {
 
     position: fixed;
     top: 0;
-    width: 100vw;
+    width: 100%;
     z-index: 5;
     height: 7rem;
 

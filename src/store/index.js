@@ -20,7 +20,8 @@ const strict = false
 
 const state = {
   user: {
-    team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+    team_id: '35471ff1-7c9b-47b8-9ac6-e33e57d395b7',
+    slug: 'chattanooga_patriots'
   },
   userGroups: [],
   userAttributes: Object,

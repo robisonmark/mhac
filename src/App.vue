@@ -1,6 +1,6 @@
 <template>
   <div id="app" :class="this.$route.meta.section" @click="clickAway()">
-    <headerComponent :styles="styles"></headerComponent>
+    <headerComponent :styles="cssVars"></headerComponent>
     <router-view class="body" />
     <footer>
 
@@ -29,38 +29,28 @@ export default {
     'headerComponent': headerComponent
   },
   computed: {
+    cssVars () {
+      let teamMain = ''
+      if (this.$route.meta.section === 'team') {
+        this.$store.state.teams.forEach(team => {
+          if (team.id === this.$store.state.user.team_id) {
+            teamMain = '#' + team.main_color
+          }
+        })
+        return {
+          '--bg-color': teamMain
+        }
+      } else {
+        return {
+          '--bg-color': '#0C4B75'
+        }
+      }
+    }
     // checkRouteLoc () {
     //   if (this.$route)
     // },
   },
   watch: {
-    $route (to, from) {
-      if (to.meta.section === 'team') {
-        this.styles = {
-          navColor: '#B42625'
-        }
-      } else if (to.meta.section === 'public') {
-        this.styles = {
-          navColor: '#0C4B75'
-        }
-      }
-      // check route call
-    }
-    // teamManagement: {
-    //   handler (newValue, oldValue) {
-    //     console.log(newValue)
-    //     if (newValue) {
-    //       this.styles = {
-    //         navColor: '#B42625'
-    //       }
-    //     } else {
-    //       this.styles = {
-    //         navColor: '#0C4B75'
-    //       }
-    //     }
-    //   },
-    //   deep: true
-    // }
   },
   created () {
     this.$router.options.routes.forEach((route) => {
@@ -140,7 +130,8 @@ export default {
   }
   .body {
     // margin-top: 112px;
-    padding-top: 112px;
+    // padding-top: 112px;
+    padding-top: 7rem;
     color: #021A2B;
   }
  .team {

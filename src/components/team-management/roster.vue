@@ -95,8 +95,8 @@ export default {
   },
   methods: {
     initRoster () {
-      api.getPlayers('8b31d882-e233-11e9-a4c2-b827ebcfd443').then(response => {
-        // console.log(response)
+      api.getPlayers('35471ff1-7c9b-47b8-9ac6-e33e57d395b7').then(response => {
+        console.log(response)
         this.roster = response.data
       })
     },
@@ -115,7 +115,7 @@ export default {
     },
     save () {
       // console.log(this.newPlayer)
-      this.newPlayer['team_id'] = '8b31d882-e233-11e9-a4c2-b827ebcfd443'
+      this.newPlayer['team_id'] = 'd2da3cbd-dbdb-4b40-9002-aefc705d229f'
       let playerJson = this.newPlayer
 
       api.addPlayer(playerJson)
