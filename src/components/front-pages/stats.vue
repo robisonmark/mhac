@@ -60,6 +60,11 @@
           </div>
         </div>
       </div>
+      <!-- <div class="goBack">
+        <span @click="$router.back()">
+          Go Back
+        </span>
+      </div> -->
       <div class="col content" align="center" v-if="message">
         <h4><em>{{this.message}}</em></h4>
       </div>
@@ -567,6 +572,9 @@ export default {
           return 0
         }
       })
+    },
+    goBack () {
+      this.$router.back()
     }
   }
 }

@@ -211,7 +211,7 @@ export default {
           fixedData.push(game)
         })
         this.games = fixedData
-        this.sortTable('game_date', false)
+        // this.sortTable('game_date')
       })
     },
     checkResult (me, opponent) {
