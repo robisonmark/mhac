@@ -94,12 +94,13 @@ export class api {
     //     // console.log(user)
     //   })
     // }'
-    let queryParms = '?'
-    Object.keys(data).forEach(string => {
-      queryParms += string[0] + '=' + string[1]
-    })
+    // let queryParms = '?'
+    // Object.keys(data).forEach(string => {
+    //   // console.log(string)
+    //   // queryParms += string[0] + '=' + string[1]
+    // })
     return robros({
-      'url': '/getSeasonStats' + queryParms,
+      'url': '/getSeasonStats',
       'method': 'GET',
       'params': data
     })

@@ -12,10 +12,10 @@
       </div>
       <div class="col-12">
         <div class="row filter-bar">
-          <div class="col-4">
+          <div class="col-md-4">
             <h2>2019 - 2020 Stats</h2>
           </div>
-          <div class="col-6">
+          <div class="col-md-6">
             <div class="filters">
 
               <div class="custom-select"  @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
@@ -68,7 +68,8 @@
         <table class="public-stats-table">
           <thead>
             <tr>
-              <th colspan="3"></th>
+              <th colspan="4" v-if="compositStats"></th>
+              <th colspan="3" v-else></th>
               <th colspan="3" class="light">2PT</th>
               <th colspan="3" class="dark">3PT</th>
               <th colspan="3" class="light">FT</th>
@@ -76,14 +77,17 @@
               <th colspan="4"></th>
             </tr>
             <tr>
-              <th @click="sortTable('player_number')" :class="[currentSort === 'player_number' ? 'sort' : '']">
+              <th @click="sortTable('player_number')" class="nowrap" :class="[currentSort === 'player_number' ? 'sort' : '']">
                 # <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th @click="sortTable('player_first_name')" :class="[currentSort === 'player_first_name' ? 'sort' : '']">
+              <th @click="sortTable('player_first_name')" class="nowrap" :class="[currentSort === 'player_first_name' ? 'sort' : '']">
                 First Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th @click="sortTable('player_last_name')" :class="[currentSort === 'player_last_name' ? 'sort' : '']">
+              <th @click="sortTable('player_last_name')" class="nowrap" :class="[currentSort === 'player_last_name' ? 'sort' : '']">
                 Last Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th v-if="compositStats" @click="sortTable('team_name')" class="nowrap" :class="[currentSort === 'team_name' ? 'sort' : '']">
+                Team <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
 
               <!-- 2PT -->
@@ -93,7 +97,7 @@
               <th class="stat" @click="sortTable('player_stats','2PM')" :class="[currentSort === 'player_stats' && currentNested === '2PM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', )" :class="[currentSort === 'player_stats' && currentNested === '' ? 'sort' : '']">%
+              <th class="stat" @click="sortTable('player_stats','2P%')" :class="[currentSort === 'player_stats' && currentNested === '2P%' ? 'sort' : '']">%
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <!-- 3PT -->
@@ -103,7 +107,7 @@
               <th class="stat" @click="sortTable('player_stats', '3PM')" :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', )" :class="[currentSort === 'player_stats' && currentNested === '' ? 'sort' : '']">%
+              <th class="stat" @click="sortTable('player_stats', '3P%')" :class="[currentSort === 'player_stats' && currentNested === '3P%' ? 'sort' : '']">%
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <!-- FT -->
@@ -113,7 +117,7 @@
               <th class="stat" @click="sortTable('player_stats', 'FTM')" :class="[currentSort === 'player_stats' && currentNested === 'FTM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', )" :class="[currentSort === 'player_stats' && currentNested === '' ? 'sort' : '']" >%
+              <th class="stat" @click="sortTable('player_stats', 'FT%')" :class="[currentSort === 'player_stats' && currentNested === 'FT%' ? 'sort' : '']" >%
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <!-- Rebounds -->
@@ -134,19 +138,30 @@
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
 
-              <th class="stat" @click="sortTable('player_stats', 'steals')" :class="[currentSort === 'player_stats' && currentNested === 'steals' ? 'sort' : '']">STL
+              <th class="stat" @click="sortTable('player_stats', 'steals')" :class="[currentSort === 'player_stats' && currentNested === 'steals' ? 'sort' : '']">
+                STL
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
+              <th class="stat" v-if="compositStats" @click="sortTable('player_stats', 'turnovers')" :class="[currentSort === 'player_stats' && currentNested === 'turnovers' ? 'sort' : '']">
+                TO
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+
               <th class="stat" @click="sortTable('player_stats', 'total_points')" :class="[currentSort === 'player_stats' && currentNested === 'total_points' ? 'sort' : '']">Total Pts
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" v-if="compositStats" @click="sortTable('player_stats', 'points_per_game')" :class="[currentSort === 'player_stats' && currentNested === 'points_per_game' ? 'sort' : '']">
+                PPG
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(player, index) in stats" :key="index">
-              <td v-html="player.player_number"></td>
-              <td v-html="player.player_first_name"></td>
-              <td v-html="player.player_last_name"></td>
+              <td v-html="player.player_number" class="nowrap"></td>
+              <td v-html="player.player_first_name" class="nowrap"></td>
+              <td v-html="player.player_last_name" class="nowrap"></td>
+              <td v-if="compositStats" v-html="player.team_name" class="nowrap"></td>
               <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
                 {{stat}}
               </td> -->
@@ -174,7 +189,10 @@
               <td class="stat" v-html="player.player_stats.assists"></td>
               <td class="stat" v-html="player.player_stats.blocks"></td>
               <td class="stat" v-html="player.player_stats.steals"></td>
+              <td class="stat" v-if="compositStats" v-html="player.player_stats.turnovers"></td>
+
               <td class="stat" v-html="player.player_stats.total_points"></td>
+              <td class="stat" v-if="compositStats" v-html="player.player_stats.points_per_game.toFixed(2)"></td>
 
             </tr>
           </tbody>
@@ -324,6 +342,7 @@ export default {
           type: 'number'
         }
       ],
+      compositStats: true,
       currentSort: '',
       currentNested: '',
       currentSortDir: 'asc',
@@ -479,7 +498,7 @@ export default {
         } else {
           this.message = 'Stats have not been provided for this team and this game.'
         }
-
+        this.compositStats = false
         this.stats = response.data.player_stats
       })
     },
@@ -575,6 +594,7 @@ export default {
 }
 .content {
   padding: 2rem 1rem;
+  overflow: auto;
 }
 
 h2 {
@@ -588,7 +608,8 @@ h2 {
   display: inline-block;
   position: relative;
   font-size: .8rem;
-  max-width: 250px;
+  // max-width: 250px;
+  max-width: 33%;
   padding-right: 25px;
   white-space: nowrap;
   margin: 0 1rem;
@@ -665,6 +686,7 @@ h2 {
   }
 }
 .public-stats-table  {
+  // overflow-x: auto;
   width: 100%;
 }
 
@@ -678,7 +700,10 @@ tbody {
     font-family: @open-sans;
     position: relative;
     z-index: 1;
-    min-width: 1rem;
+    min-width: 2rem;
+    &.nowrap {
+      white-space: nowrap;
+    }
     &.dark {
       background-color: rgba(2,26,43, .4);
       color: #231F20;
