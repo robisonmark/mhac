@@ -148,10 +148,11 @@ h2 {
     z-index: 0;
   }
   .team-management {
-    padding: 1rem 4rem;
     overflow: auto;
     z-index: 1;
     height: calc(100vh - 7rem);
+    padding-bottom: 5rem;
   }
 }
+
 </style>

@@ -1,211 +1,224 @@
 <template>
   <div class="hello">
-    <header>
+    <header class="contentPad">
       <h2>Stats</h2>
       <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="" v-model="newStats.season"></selectbox>
-      <div class="switch" @click="edit = !edit">
-        <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
-        <span class="focused">Edit</span>
-      </div>
 
-      <div class="switch" @click="edit = !edit">
-        <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+      <div class="buttonCon">
+        <template v-if="selectedGame">
+          <div class="switch" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+            <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
+            <span class="focused">Edit</span>
+          </div>
+
+          <div class="switch" v-if="edit" @click="edit = !edit">
+            <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
+            <span class="focused" v-if="!saving">Save</span>
+            <span v-else>saving...</span>
+
+          </div>
+        </template>
       </div>
     </header>
+    <div class="contentPad">
+      <div class="" v-if="!selectedGame">
+        <!-- add to edit table just rename columns -->
+        <table id="table">
+          <thead id="table-head-fixed">
+            <tr>
+              <th></th>
+              <th>Date</th>
+              <th>Opponent</th>
+              <th>Home Team</th>
+              <th>Missing Stats</th>
+              <th></th>
+            </tr>
+          </thead>
 
-    <div class="" v-if="!selectedGame">
-      <!-- add to edit table just rename columns -->
-      <table id="table">
-        <thead id="table-head-fixed">
-          <tr>
-            <th></th>
-            <th>Date</th>
-            <th>Opponent</th>
-            <th>Home Team</th>
-            <th>Missing Stats</th>
-            <th></th>
-          </tr>
-        </thead>
+          <tbody>
+            <tr v-for="game in pastGames" :key="game.id" :class="{ 'missing':  !game.missing_stats }" @click="enterStats(game)">
+              <td></td>
+              <td>{{game.game_date}}</td>
+              <td>{{game.opponent}}</td>
+              <td>{{game.home_team.name}}</td>
+              <td>{{game.missing_stats}}</td>
+              <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <tbody>
-          <tr v-for="game in pastGames" :key="game.id" :class="{ 'missing':  !game.missing_stats }" @click="enterStats(game)">
-            <td></td>
-            <td>{{game.game_date}}</td>
-            <td>{{game.opponent}}</td>
-            <td>{{game.home_team.name}}</td>
-            <td>{{game.missing_stats}}</td>
-            <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <div v-else-if="selectedGame && boxscore">
 
-    <div v-else-if="selectedGame && boxscore">
-
-      <table class="scoreTable">
-        <thead>
-          <tr>
-            <th colspan="2">Box Score</th>
-            <th v-for="(quarter, key, index) in quarters" :key="index" class="text-center quarter">{{Object.keys(quarter)[0]}}</th>
-            <!-- <th class="text-center">2</th>
-            <th class="text-center">3</th>
-            <th class="text-center">4</th> -->
-            <th class="finalScore text-center">Final</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
-            <td class="teamLogo">{{programInfo(selectedGame.home_team.name).team_mascot}}</td>
-            <td :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
-              <div class="teamName">{{selectedGame.home_team.name}}</div>
-              <div class="mascot">{{programInfo(selectedGame.home_team.name).team_mascot}}</div>
-            </td>
-            <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]"><input type="number" v-model="gameScore.homeTeam.quarters[key]" />
-            <td class="finalScore text-center">{{gameScore.homeTeam.final}}</td>
-          </tr>
-          <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
-            <td class="teamLogo">{{programInfo(selectedGame.away_team.name).team_mascot}}</td>
-            <td class="teamName" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
-              <div class="teamName">{{selectedGame.away_team.name}}</div>
-              <div class="mascot">{{programInfo(selectedGame.away_team.name).team_mascot}}</div>
-            </td>
-            <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter"><input type="number" v-model="gameScore.awayTeam.quarters[key]" />
-            <td class="finalScore text-center">{{gameScore.awayTeam.final}}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="container">
-        <div class="row justify-content-end">
-          <div class="col">
-            <!-- <div class="button" @click="backToGameStats">
-              Back To Games
-            </div> -->
-          </div>
-          <div class="col text-right">
-            <div class="button" @click="addOvertime">
-              Add Overtime
+        <table class="scoreTable">
+          <thead>
+            <tr>
+              <th colspan="2">Box Score</th>
+              <th v-for="(quarter, key, index) in quarters" :key="index" class="text-center quarter">{{Object.keys(quarter)[0]}}</th>
+              <!-- <th class="text-center">2</th>
+              <th class="text-center">3</th>
+              <th class="text-center">4</th> -->
+              <th class="finalScore text-center">Final</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
+              <td class="teamLogo">{{programInfo(selectedGame.home_team.name).team_mascot}}</td>
+              <td :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
+                <div class="teamName">{{selectedGame.home_team.name}}</div>
+                <div class="mascot">{{programInfo(selectedGame.home_team.name).team_mascot}}</div>
+              </td>
+              <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]">
+                <input v-if="edit === true" type="number" v-model="gameScore.homeTeam.quarters[key]" />
+                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>
+              <td class="finalScore text-center">{{gameScore.homeTeam.final}}</td>
+            </tr>
+            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
+              <td class="teamLogo">{{programInfo(selectedGame.away_team.name).team_mascot}}</td>
+              <td class="teamName" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
+                <div class="teamName">{{selectedGame.away_team.name}}</div>
+                <div class="mascot">{{programInfo(selectedGame.away_team.name).team_mascot}}</div>
+              </td>
+              <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter">
+                <input v-if="edit === true" type="number" v-model="gameScore.awayTeam.quarters[key]" />
+                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>
+              <td class="finalScore text-center">{{gameScore.awayTeam.final}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="container">
+          <div class="row justify-content-end">
+            <div class="col">
+              <!-- <div class="button" @click="backToGameStats">
+                Back To Games
+              </div> -->
+            </div>
+            <div class="col text-right">
+              <div class="button" @click="addOvertime">
+                Add Overtime
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div v-if="selectedGame" :id="[boxscore ? 'playerStats' : '']">
-      <editTable :columns="columns" :config="config" :tabledata="stats" v-model="newGameStats">
-        <template slot="thead">
-          <tr>
-            <th colspan="3"></th>
-            <th colspan="3" class="light">2PT</th>
-            <th colspan="3" class="dark">3PT</th>
-            <th colspan="3" class="light">FT</th>
-            <th colspan="3" class="dark">Rebounds</th>
-            <th colspan="4"></th>
-          </tr>
-          <tr>
-            <th class="text-center">#</th>
-            <th class="pad-right">First Name</th>
-            <th class="pad-right">Last Name</th>
-            <!-- 2PT -->
-            <th class="stat">A</th>
-            <th class="stat">M</th>
-            <th class="stat">%</th>
-            <!-- 3PT -->
-            <th class="stat">A</th>
-            <th class="stat">M</th>
-            <th class="stat">%</th>
-            <!-- FT -->
-            <th class="stat">A</th>
-            <th class="stat">M</th>
-            <th class="stat">%</th>
-            <!-- Rebounds -->
-            <th class="stat">O</th>
-            <th class="stat">D</th>
-            <th class="stat">Tot</th>
+      <div v-if="selectedGame" :id="[boxscore ? 'playerStats' : '']">
+        <editTable :columns="columns" :config="config" :tabledata="stats" v-model="newGameStats">
+          <template slot="thead">
+            <tr>
+              <th colspan="3"></th>
+              <th colspan="3" class="light">2PT</th>
+              <th colspan="3" class="dark">3PT</th>
+              <th colspan="3" class="light">FT</th>
+              <th colspan="3" class="dark">Rebounds</th>
+              <th colspan="4"></th>
+            </tr>
+            <tr>
+              <th class="text-center sticky">#</th>
+              <th class="pad-right sticky">First Name</th>
+              <th class="pad-right sticky">Last Name</th>
+              <!-- 2PT -->
+              <th class="stat">A</th>
+              <th class="stat">M</th>
+              <th class="stat">%</th>
+              <!-- 3PT -->
+              <th class="stat">A</th>
+              <th class="stat">M</th>
+              <th class="stat">%</th>
+              <!-- FT -->
+              <th class="stat">A</th>
+              <th class="stat">M</th>
+              <th class="stat">%</th>
+              <!-- Rebounds -->
+              <th class="stat">O</th>
+              <th class="stat">D</th>
+              <th class="stat">Tot</th>
 
-            <th class="stat">A</th>
-            <th class="stat">BLK</th>
+              <th class="stat">A</th>
+              <th class="stat">BLK</th>
 
-            <th class="stat">STL</th>
-            <th class="stat">Total Pts</th>
-          </tr>
-        </template>
+              <th class="stat">STL</th>
+              <th class="stat">Total Pts</th>
+            </tr>
+          </template>
 
-        <template slot="tbody">
-          <tr v-for="(player, index) in newGameStats.player_stats" :key="index">
-            <td class="text-center" v-html="player.player_number"></td>
-            <td class="align-no-pad" v-html="player.player_first_name"></td>
-            <td class="align-no-pad" v-html="player.player_last_name"></td>
-            <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
-              {{stat}}
-            </td> -->
+          <template slot="tbody">
+            <tr v-for="(player, index) in newGameStats.player_stats" :key="index">
+              <td class="text-center sticky" v-html="player.player_number"></td>
+              <td class="align-no-pad sticky" v-html="player.player_first_name"></td>
+              <td class="align-no-pad sticky" v-html="player.player_last_name"></td>
+              <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
+                {{stat}}
+              </td> -->
 
-            <!-- 2PT -->
-            <td class="stat light first">
-              <input v-if="edit === true" type="number" v-model="player.player_stats['2PA']" />
-              <template v-else>{{player.player_stats['2PA']}}</template>
-            </td>
-            <td class="stat light">
-              <input v-if="edit === true" type="number" v-model="player.player_stats['2PM']" />
-              <template v-else>{{player.player_stats['2PM']}}</template>
-            </td>
-            <td class="stat light">{{percentage(player.player_stats['2PA'], player.player_stats['2PM'])}}</td>
+              <!-- 2PT -->
+              <td class="stat light first">
+                <input v-if="edit === true" type="number" v-model="player.player_stats['2PA']" />
+                <template v-else>{{player.player_stats['2PA']}}</template>
+              </td>
+              <td class="stat light">
+                <input v-if="edit === true" type="number" v-model="player.player_stats['2PM']" />
+                <template v-else>{{player.player_stats['2PM']}}</template>
+              </td>
+              <td class="stat light">{{percentage(player.player_stats['2PA'], player.player_stats['2PM'])}}</td>
 
-            <!-- 3PT -->
-            <td class="stat dark">
-              <input v-if="edit === true" type="number" v-model="player.player_stats['3PA']" />
-              <template v-else>{{player.player_stats['3PA']}}</template>
-            </td>
-            <td class="stat dark">
-              <input v-if="edit === true" type="number" v-model="player.player_stats['3PM']" />
-              <template v-else>{{player.player_stats['3PM']}}</template>
-            </td>
-            <td class="stat dark">{{percentage(player.player_stats['3PA'], player.player_stats['3PM'])}}</td>
+              <!-- 3PT -->
+              <td class="stat dark">
+                <input v-if="edit === true" type="number" v-model="player.player_stats['3PA']" />
+                <template v-else>{{player.player_stats['3PA']}}</template>
+              </td>
+              <td class="stat dark">
+                <input v-if="edit === true" type="number" v-model="player.player_stats['3PM']" />
+                <template v-else>{{player.player_stats['3PM']}}</template>
+              </td>
+              <td class="stat dark">{{percentage(player.player_stats['3PA'], player.player_stats['3PM'])}}</td>
 
-            <!-- FT -->
-            <td class="stat light">
-              <input v-if="edit === true" type="number" v-model="player.player_stats.FTA" />
-              <template v-else>{{player.player_stats.FTA}}</template>
-            </td>
-            <td class="stat light">
-              <input v-if="edit === true" type="number" v-model="player.player_stats.FTM" />
-              <template v-else>{{player.player_stats.FTM}}</template>
-            </td>
-            <td class="stat light">{{percentage(player.player_stats.FTA, player.player_stats.FTM)}}</td>
+              <!-- FT -->
+              <td class="stat light">
+                <input v-if="edit === true" type="number" v-model="player.player_stats.FTA" />
+                <template v-else>{{player.player_stats.FTA}}</template>
+              </td>
+              <td class="stat light">
+                <input v-if="edit === true" type="number" v-model="player.player_stats.FTM" />
+                <template v-else>{{player.player_stats.FTM}}</template>
+              </td>
+              <td class="stat light">{{percentage(player.player_stats.FTA, player.player_stats.FTM)}}</td>
 
-            <!-- Rebounds -->
-            <td class="stat dark">
-              <input v-if="edit === true" type="number" v-model="player.player_stats.offensive_rebounds" />
-              <template v-else>{{player.player_stats.offensive_rebounds}}</template>
-            </td>
-            <td class="stat dark">
-              <input v-if="edit === true" type="number" v-model="player.player_stats.defensive_rebounds" />
-              <template v-else>{{player.player_stats.defensive_rebounds}}</template>
-            </td>
-            <td class="stat dark" v-html="player.player_stats.total_rebounds">{{total(player.player_stats.offensive_rebounds, player.player_stats.defensive_rebounds)}}</td>
+              <!-- Rebounds -->
+              <td class="stat dark">
+                <input v-if="edit === true" type="number" v-model="player.player_stats.offensive_rebounds" />
+                <template v-else>{{player.player_stats.offensive_rebounds}}</template>
+              </td>
+              <td class="stat dark">
+                <input v-if="edit === true" type="number" v-model="player.player_stats.defensive_rebounds" />
+                <template v-else>{{player.player_stats.defensive_rebounds}}</template>
+              </td>
+              <td class="stat dark" v-html="player.player_stats.total_rebounds">{{total(player.player_stats.offensive_rebounds, player.player_stats.defensive_rebounds)}}</td>
 
-            <td class="stat">
-              <input v-if="edit === true" type="number" v-model="player.player_stats.assists" />
-              <template v-else>{{player.player_stats.assists}}</template>
-            </td>
-            <td class="stat">
-              <input v-if="edit === true" type="number" v-model="player.player_stats.blocks" />
-              <template v-else>{{player.player_stats.blocks}}</template>
-            </td>
-            <td class="stat">
-              <input v-if="edit === true" type="number" v-model="player.player_stats.steals" />
-              <template v-else>{{player.player_stats.steals}}</template>
-            </td>
-            <td class="stat">
-              <input v-if="edit === true" type="number" v-model="player.player_stats.total_points" />
-              <template v-else>{{player.player_stats.total_points}}</template>
-            </td>
+              <td class="stat">
+                <input v-if="edit === true" type="number" v-model="player.player_stats.assists" />
+                <template v-else>{{player.player_stats.assists}}</template>
+              </td>
+              <td class="stat">
+                <input v-if="edit === true" type="number" v-model="player.player_stats.blocks" />
+                <template v-else>{{player.player_stats.blocks}}</template>
+              </td>
+              <td class="stat">
+                <input v-if="edit === true" type="number" v-model="player.player_stats.steals" />
+                <template v-else>{{player.player_stats.steals}}</template>
+              </td>
+              <td class="stat">
+                <input v-if="edit === true" type="number" v-model="player.player_stats.total_points" />
+                <template v-else>{{player.player_stats.total_points}}</template>
+              </td>
 
-          </tr>
-        </template>
+            </tr>
+          </template>
 
-      </editTable>
-      <div class="button" @click="backToGameStats">
-        Back To Games
+        </editTable>
+        <div class="button" @click="backToGameStats">
+          Back To Games
+        </div>
       </div>
     </div>
   </div>
@@ -429,6 +442,8 @@ export default {
           team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
         }
       ],
+      saved: false,
+      saving: false,
       selectedGame: false,
       stats: [
       ]
@@ -617,46 +632,75 @@ export default {
 <style scoped lang="less">
 @teamColor: var(--bg-color);
 header {
-  display: inline-block;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
   width: 100%;
+  padding-top: 1rem;
+  margin-bottom: .5rem;
+  position: sticky;
+    top: 0;
+    z-index: 2;
+    left: 0;
+    background: #CFCDCD;
   h2 {
     display: inline-block;
   }
+  .buttonCon {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    // height: 3rem;
+}
   .switch {
+    // height: 100%;
     // display: inline-block;
-    float: right;
+    // float: right;
+    line-height: 1;
+    transition: ease-in-out .3s all;
     [class^="fa-"],
     .icon {
       width: 1.5rem;
       height: 1.5rem;
     }
+    &:hover {
+      transition: ease-in-out .3s all;
+      transform: scale(1.3);
+    }
+    &.selected {
+      color: var(--team-second);
+      svg {
+        filter: drop-shadow(2px 3px 6px var(--team-second));
+      }
+    }
   }
-  &:after {
-    content: '';
-    display: block;
-    height: 40px;
-    /* width: 100%; */
-    width: calc(100% + 2.4rem);
-    border-top: 1.5px solid @teamColor;
-    border-right: 2px solid @teamColor;
-    border-left: 2px solid transparent;
-    position: relative;
-    -webkit-transform: skewX(-45deg);
-    transform: skewX(-45deg);
-    left: -23px;
-    margin-top: .6rem;
-  }
+  // h2:after {
+  //   content: '';
+  //   display: block;
+  //   height: 40px;
+  //   /* width: 100%; */
+  //   width: calc(100% + 2.4rem);
+  //   border-top: 1.5px solid @teamColor;
+  //   border-right: 2px solid @teamColor;
+  //   border-left: 2px solid transparent;
+  //   position: relative;
+  //   -webkit-transform: skewX(-45deg);
+  //   transform: skewX(-45deg);
+  //   left: -23px;
+  //   margin-top: .6rem;
+  // }
 }
 
 .ghostHover (@color) {
-  margin-top: .5rem;
-  margin-bottom: .5rem;
+  // margin-top: .5rem;
+  // margin-bottom: .5rem;
   // border-color: @color;
   color: @color;
   white-space: nowrap;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
   position: relative;
   overflow: hidden;
   padding-left: calc(.8rem - 4px);
@@ -668,25 +712,31 @@ header {
   }
 
   .focused {
+    color: var(--team-second);
     display: inline-block;
-    width: 0px;
+    // width: 0px;
+    height: 0px;
     position: relative;
-    left: 2rem;
-    transition: ease-in-out .5s all;
+    // left: 2rem;
+    bottom: -2rem;
+    transform: scale(.85);
+    // transition: ease-in-out .5s all;
   }
   &:hover {
     .focused {
-      width: 100%;
-      left: 0rem;
-      padding-left: .5rem;
+      // width: 100%;
+      height: 100%;
+      // left: 0rem;
+      bottom: 0;
+      // padding-left: .5rem;
       transition: ease-in-out .5s all;
     }
   }
 }
 .switch {
-  background-color: var(--bg-color);
-  border-color: var(--bg-color);
-  .ghostHover(#fff)
+  // background-color: var(--bg-color);
+  // border-color: var(--bg-color);
+  .ghostHover(@teamColor)
 }
 table {
   margin-top: -40px;
@@ -830,9 +880,7 @@ table {
   margin-left: 32px;
 }
 
-#playerStats {
-  margin-top: 5rem;
-  table{
+table{
     margin-top: 0;
     &:before {
       content: '';
@@ -852,6 +900,9 @@ table {
       right: -20px;
     }
   }
+
+#playerStats {
+  margin-top: 5rem;
 }
 .dark {
   background-color: var(--team-second);
@@ -888,6 +939,12 @@ table {
   &:last-child{
     border-right: 0px;
     // background-color: #CFCDCD;
+  }
+}
+td, th {
+  &.sticky {
+    position: sticky;
+    // left: 0;
   }
 }
 // }

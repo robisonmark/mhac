@@ -150,4 +150,8 @@ export default {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4f7f9', endColorstr='#2784c3',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
     background-attachment: fixed;
   }
+
+  .contentPad {
+      padding: 0rem 4rem;
+    }
 </style>

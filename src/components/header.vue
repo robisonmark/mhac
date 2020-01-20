@@ -32,9 +32,9 @@
             <a href="https://www.nccwarriors.com/">
               <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
             </a>
-            <div class="button" @click="showLogin = !showLogin" ref="showLogin">
+            <!-- <div class="button" @click="showLogin = !showLogin" ref="showLogin">
               <span>Login</span>
-            </div>
+            </div> -->
             <div v-if="showLogin" class="teamlogin" ref="teamlogin">
               <form v-if="!loggedIn">
                 <label for="username">

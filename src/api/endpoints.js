@@ -79,6 +79,33 @@ export class api {
   }
 
   /***
+     * Get Season Standings
+     * @param {string} method - GET
+     * @param {object} data - Stat JSON Body
+     * @return - JSON Object of players by team
+    ***/
+  static async getSeasonStats (data) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }'
+    let queryParms = '?'
+    Object.keys(data).forEach(string => {
+      queryParms += string[0] + '=' + string[1]
+    })
+    return robros({
+      'url': '/getSeasonStats' + queryParms,
+      'method': 'GET',
+      'params': data
+    })
+  }
+
+  /***
      * Get Game Results
      * This call returns the game stats, it takes optional parameters of game_id and team_id
      * @param {string} method - GET

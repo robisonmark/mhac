@@ -40,7 +40,7 @@
                 </div>
               </div>
 
-              <div class="custom-select" v-if="filterBy.game.game_id !== ''" @click="showTeams = !showTeams">
+              <div class="custom-select"  :disabled="filterBy.game.game_id === ''" @click="showTeams = !showTeams">
                 <div class="selected" disabled>{{filterBy.team.name}}</div>
                 <div class="options-menu">
                   <template >
@@ -76,31 +76,70 @@
               <th colspan="4"></th>
             </tr>
             <tr>
-              <th>#</th>
-              <th>First Name</th>
-              <th>Last Name</th>
+              <th @click="sortTable('player_number')" :class="[currentSort === 'player_number' ? 'sort' : '']">
+                # <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th @click="sortTable('player_first_name')" :class="[currentSort === 'player_first_name' ? 'sort' : '']">
+                First Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th @click="sortTable('player_last_name')" :class="[currentSort === 'player_last_name' ? 'sort' : '']">
+                Last Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+
               <!-- 2PT -->
-              <th class="stat">A</th>
-              <th class="stat">M</th>
-              <th class="stat">%</th>
+              <th class="stat" @click="sortTable('player_stats', '2PA')" :class="[currentSort === 'player_stats' && currentNested === '2PA' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats','2PM')" :class="[currentSort === 'player_stats' && currentNested === '2PM' ? 'sort' : '']">M
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', )" :class="[currentSort === 'player_stats' && currentNested === '' ? 'sort' : '']">%
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
               <!-- 3PT -->
-              <th class="stat">A</th>
-              <th class="stat">M</th>
-              <th class="stat">%</th>
+              <th class="stat" @click="sortTable('player_stats', '3PA')" :class="[currentSort === 'player_stats' && currentNested === '3PA' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', '3PM')" :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', )" :class="[currentSort === 'player_stats' && currentNested === '' ? 'sort' : '']">%
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
               <!-- FT -->
-              <th class="stat">A</th>
-              <th class="stat">M</th>
-              <th class="stat">%</th>
+              <th class="stat" @click="sortTable('player_stats', 'FTA')" :class="[currentSort === 'player_stats' && currentNested === 'FTA' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'FTM')" :class="[currentSort === 'player_stats' && currentNested === 'FTM' ? 'sort' : '']">M
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', )" :class="[currentSort === 'player_stats' && currentNested === '' ? 'sort' : '']" >%
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
               <!-- Rebounds -->
-              <th class="stat">O</th>
-              <th class="stat">D</th>
-              <th class="stat">Tot</th>
+              <th class="stat" @click="sortTable('player_stats', 'offensive_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'offensive_rebounds' ? 'sort' : '']">O
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'defensive_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'defensive_rebounds' ? 'sort' : '']">D
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'total_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'total_rebounds' ? 'sort' : '']">Tot
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
 
-              <th class="stat">A</th>
-              <th class="stat">BLK</th>
+              <th class="stat" @click="sortTable('player_stats', 'assists')" :class="[currentSort === 'player_stats' && currentNested === 'assists' ? 'sort' : '']">AST
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'blocks')" :class="[currentSort === 'player_stats' && currentNested === 'blocks' ? 'sort' : '']">BLK
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
 
-              <th class="stat">STL</th>
-              <th class="stat">Total Pts</th>
+              <th class="stat" @click="sortTable('player_stats', 'steals')" :class="[currentSort === 'player_stats' && currentNested === 'steals' ? 'sort' : '']">STL
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'total_points')" :class="[currentSort === 'player_stats' && currentNested === 'total_points' ? 'sort' : '']">Total Pts
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -130,7 +169,7 @@
               <!-- Rebounds -->
               <td class="stat dark" v-html="player.player_stats.offensive_rebounds"></td>
               <td class="stat dark" v-html="player.player_stats.defensive_rebounds"></td>
-              <td class="stat dark" v-html="player.player_stats.total_rebounds"></td>
+              <td class="stat dark">{{totalRebounds(player.player_stats.total_rebounds, player.player_stats.offensive_rebounds, player.player_stats.defensive_rebounds)}}</td>
 
               <td class="stat" v-html="player.player_stats.assists"></td>
               <td class="stat" v-html="player.player_stats.blocks"></td>
@@ -285,6 +324,9 @@ export default {
           type: 'number'
         }
       ],
+      currentSort: '',
+      currentNested: '',
+      currentSortDir: 'asc',
       filterBy: {
         team: {
           id: '',
@@ -292,7 +334,7 @@ export default {
         },
         level: {
           season_id: '',
-          level: 'All Levels'
+          level: ''
         },
         game: {
           game_id: '',
@@ -301,7 +343,7 @@ export default {
           away_team: ''
         }
       },
-      message: 'Please select a game to see stats.',
+      message: 'Please filter to see results.',
       showGames: false,
       showLevels: false,
       showTeams: false,
@@ -319,7 +361,8 @@ export default {
       return teams
     },
     levels () {
-      const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
+      // const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
+      const levels = [...this.$store.state.seasons]
       return levels
     },
     games () {
@@ -344,6 +387,8 @@ export default {
         }
       })
     }
+    // stats () {
+    // }
   },
   watch: {
     'filterBy.team': {
@@ -355,6 +400,7 @@ export default {
     'filterBy.level': {
       deep: true,
       handler (newValue, oldValue) {
+        this.initSeasonStats()
         // this.filterList(newValue.season_id)
       }
     },
@@ -362,6 +408,15 @@ export default {
       deep: true,
       handler (newValue, oldValue) {
         this.initStats(newValue.game_id)
+      }
+    },
+    levels: {
+      deep: true,
+      handler (newValue, oldValue) {
+        this.filterBy.level = {
+          season_id: newValue[0].season_id,
+          level: newValue[0].level
+        }
       }
     }
   },
@@ -371,9 +426,7 @@ export default {
     } else if (this.$route.query.hasOwnProperty('game')) {
       this.initStats(this.$route.query.game.game_id)
     } else {
-
     }
-    // this.initStats()
 
     this.$root.$on('close', payload => {
       // this.showDatePicker = false
@@ -397,6 +450,20 @@ export default {
     }
   },
   methods: {
+    initSeasonStats () {
+      let data = {
+        season_id: this.filterBy.level.season_id
+      }
+      api.getSeasonStats(data).then(response => {
+        if (response.data.length >= 1) {
+          this.message = false
+        } else {
+          this.message = 'Stats have not been provided for this team and this game.'
+        }
+
+        this.stats = response.data
+      })
+    },
     initStats (gameId, teamId) {
       if (gameId !== undefined && teamId === undefined) {
         teamId = this.games.find(game => { return game.game_id === gameId })
@@ -407,13 +474,13 @@ export default {
         // teamId = teamId
       }
       api.getGameResults(gameId, teamId).then(response => {
-        if (response.data.length >= 1) {
+        if (response.data.player_stats.length >= 1) {
           this.message = false
         } else {
           this.message = 'Stats have not been provided for this team and this game.'
         }
 
-        this.stats = response.data
+        this.stats = response.data.player_stats
       })
     },
     setLvl (lvl) {
@@ -442,6 +509,45 @@ export default {
       } else {
         return 0
       }
+    },
+    totalRebounds (rebounds, off, def) {
+      if (rebounds === null) {
+        return off + def
+      } else {
+        return rebounds
+      }
+    },
+    sortTable (s, nested) {
+      // if s == current sort, reverse
+      if (nested) {
+        if (nested === this.currentNested) {
+          this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc'
+        }
+        this.currentSort = s
+        this.currentNested = nested
+      } else {
+        if (s === this.currentSort) {
+          this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc'
+        }
+        this.currentSort = s
+      }
+
+      this.stats.sort((a, b) => {
+        let modifier = 1
+        if (nested) {
+          if (this.currentSortDir === 'desc') modifier = -1
+          if (a[this.currentSort][nested] !== '') {
+            if (a[this.currentSort][nested] < b[this.currentSort][nested]) return -1 * modifier
+            if (a[this.currentSort][nested] > b[this.currentSort][nested]) return 1 * modifier
+          }
+          return 0
+        } else {
+          if (this.currentSortDir === 'desc') modifier = -1
+          if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier
+          if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier
+          return 0
+        }
+      })
     }
   }
 }
@@ -486,6 +592,13 @@ h2 {
   padding-right: 25px;
   white-space: nowrap;
   margin: 0 1rem;
+
+  &[disabled='disabled'] {
+    color: #bbb;
+     &:before {
+       border-color: #bbb transparent transparent transparent
+     }
+  }
 
   &:before {
     content: '';
@@ -588,6 +701,25 @@ th {
   font-family: @lato;
   font-weight: 200;
   font-size: .8rem;
+  cursor: pointer;
+  .icon {
+    display: none;
+  }
+  &.sort {
+    font-weight: 600;
+    color: #021A2B;
+    .icon {
+      display: inline-block;
+    }
+    .asc {
+      transform: rotate(180deg);
+      transition: ease-in-out .3s all;
+    }
+    .dsc {
+      // transform: rotate(180deg);
+      transition: ease-in-out .3s all;
+    }
+  }
 }
 .dark {
   background-color: #021A2B;
