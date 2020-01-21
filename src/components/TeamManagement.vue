@@ -1,6 +1,9 @@
 <template>
   <div class="con-management">
     <nav class="sidebar">
+      <div v-if="admin" class="admin">
+        <selectbox id="teams" :options="teams" :trackby="'team_name'" placeholder="" v-model="selectedTeam"></selectbox>
+      </div>
       <div class="team-logo">
         <img src="@/assets/color-team-logos/royals.png" />
       </div>
@@ -17,6 +20,9 @@
 </template>
 
 <script>
+// components
+import selectbox from './selectbox'
+
 export default {
   name: 'TeamManagement',
   data () {
@@ -25,7 +31,11 @@ export default {
       teamLogo: '',
       // teamColor: '#B42625',
       fontSecondary: '#fff'
+      // selectedTeam: {}
     }
+  },
+  components: {
+    'selectbox': selectbox
   },
   computed: {
     cssVars () {
@@ -44,6 +54,34 @@ export default {
         '--team-second': teamSecond,
         '--hover-color': this.darken(teamMain, 15),
         '--active-color': this.lighten(teamMain, 10)
+      }
+    },
+    admin () {
+      if (this.$store.state.userGroups.includes('Admin')) {
+        return true
+      } else {
+        return false
+      }
+    },
+    teams () {
+      return this.$store.state.teams
+    },
+    selectedTeam: {
+      get: function () {
+        return this.$store.state.teams.forEach(team => {
+          if (team.slug === this.$route.params.slug) {
+            return team
+          }
+        })
+      },
+      set: function (newValue) {
+        let user = {
+          team_id: newValue.id,
+          slug: newValue.slug
+        }
+        this.team = newValue.slug
+        this.$store.dispatch('setUser', user)
+        this.$router.push('/manage/' + newValue.slug)
       }
     }
   },
@@ -89,6 +127,10 @@ export default {
 @teamColor: var(--bg-color);
 @hoverColor: var(--hover-color);
 @activeColor: var(--active-color);
+.admin {
+  display: block;
+  padding: 1rem;
+}
 h2 {
   font-size: 1.5rem !important;
 }

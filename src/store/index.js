@@ -23,7 +23,7 @@ const state = {
     team_id: '35471ff1-7c9b-47b8-9ac6-e33e57d395b7',
     slug: 'chattanooga_patriots'
   },
-  userGroups: [],
+  userGroups: ['Admin'],
   userAttributes: Object,
   loaded: false,
   authenticated: String,
@@ -75,7 +75,9 @@ const mutations = {
 }
 
 const actions = {
-  // ...make.actions(state),
+  setUser (context, payload) {
+    context.commit('set_user', payload)
+  },
 
   setAuth (context, payload) {
     context.commit('set_authenticated', payload)
