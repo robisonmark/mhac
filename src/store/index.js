@@ -20,9 +20,10 @@ const strict = false
 
 const state = {
   user: {
-    team_id: '35471ff1-7c9b-47b8-9ac6-e33e57d395b7',
-    slug: 'chattanooga_patriots'
+    team_id: String,
+    slug: String
   },
+  teamAssocLvl: {},
   userGroups: ['Admin'],
   userAttributes: Object,
   loaded: false,
@@ -39,6 +40,9 @@ const mutations = {
   // make.mutations(state)
   set_user (state, payload) {
     state.user = payload
+  },
+  set_teamAssocLvl (state, payload) {
+    state.teamAssocLvl = payload
   },
   set_userGroups (state, payload) {
     state.userGroups = payload
@@ -77,6 +81,10 @@ const mutations = {
 const actions = {
   setUser (context, payload) {
     context.commit('set_user', payload)
+  },
+
+  setTeamAssocLvl (context, payload) {
+    context.commit('set_teamAssocLvl', payload)
   },
 
   setAuth (context, payload) {

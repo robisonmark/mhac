@@ -119,7 +119,7 @@ export default {
     }
   },
   created () {
-    console.log(this.$store.state.seasons)
+    // console.log(this.$store.state.seasons)
     this.initStandings('')
   },
   methods: {

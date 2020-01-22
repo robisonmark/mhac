@@ -2,7 +2,7 @@
   <div class="hello">
     <header class="contentPad">
       <h2>Stats</h2>
-      <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="" v-model="newStats.season"></selectbox>
+      <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newStats.season"></selectbox>
 
       <div class="buttonCon">
         <template v-if="selectedGame">
@@ -11,7 +11,7 @@
             <span class="focused">Edit</span>
           </div>
 
-          <div class="switch" v-if="edit" @click="edit = !edit">
+          <div class="switch" v-if="edit" @click="saveStats()">
             <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
             <span class="focused" v-if="!saving">Save</span>
             <span v-else>saving...</span>
@@ -69,7 +69,7 @@
                 <div class="mascot">{{programInfo(selectedGame.home_team.name).team_mascot}}</div>
               </td>
               <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]">
-                <input v-if="edit === true" type="number" v-model="gameScore.homeTeam.quarters[key]" />
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.homeTeam.quarters[key]" />
                 <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>
               <td class="finalScore text-center">{{gameScore.homeTeam.final}}</td>
             </tr>
@@ -80,7 +80,7 @@
                 <div class="mascot">{{programInfo(selectedGame.away_team.name).team_mascot}}</div>
               </td>
               <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter">
-                <input v-if="edit === true" type="number" v-model="gameScore.awayTeam.quarters[key]" />
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.awayTeam.quarters[key]" />
                 <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>
               <td class="finalScore text-center">{{gameScore.awayTeam.final}}</td>
             </tr>
@@ -114,31 +114,101 @@
               <th colspan="4"></th>
             </tr>
             <tr>
-              <th class="text-center sticky">#</th>
-              <th class="pad-right sticky">First Name</th>
-              <th class="pad-right sticky">Last Name</th>
+              <!-- <th class="text-center sticky" @click="sortTable('player_number')">#</th>
+              <th class="pad-right sticky" @click="sortTable('first_name')">First Name</th>
+              <th class="pad-right sticky" @click="sortTable('last_name')">Last Name</th> -->
               <!-- 2PT -->
-              <th class="stat">A</th>
-              <th class="stat">M</th>
-              <th class="stat">%</th>
+              <!-- <th class="stat" @click="sortTable('player_stats', '2PA')">M</th>
+              <th class="stat" >A</th>
+              <th class="stat">%</th> -->
               <!-- 3PT -->
+              <!-- <th class="stat">M</th>
               <th class="stat">A</th>
-              <th class="stat">M</th>
-              <th class="stat">%</th>
+              <th class="stat">%</th> -->
               <!-- FT -->
+              <!-- <th class="stat">M</th>
               <th class="stat">A</th>
-              <th class="stat">M</th>
-              <th class="stat">%</th>
+              <th class="stat">%</th> -->
               <!-- Rebounds -->
-              <th class="stat">O</th>
+              <!-- <th class="stat">O</th>
               <th class="stat">D</th>
-              <th class="stat">Tot</th>
+              <th class="stat">Tot</th> -->
 
-              <th class="stat">A</th>
-              <th class="stat">BLK</th>
+              <!-- <th class="stat">To</th>
+              <th class="stat">Ast</th>
+              <th class="stat">Blk</th> -->
 
-              <th class="stat">STL</th>
-              <th class="stat">Total Pts</th>
+              <!-- <th class="stat">Stl</th>
+              <th class="stat">Total Pts</th> -->
+              <th @click="sortTable('player_number')" class="nowrap" :class="[currentSort === 'player_number' ? 'sort' : '']">
+                # <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th @click="sortTable('player_first_name')" class="nowrap" :class="[currentSort === 'player_first_name' ? 'sort' : '']">
+                First Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th @click="sortTable('player_last_name')" class="nowrap" :class="[currentSort === 'player_last_name' ? 'sort' : '']">
+                Last Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <!-- 2PT -->
+              <th class="stat" @click="sortTable('player_stats', '2PA')" :class="[currentSort === 'player_stats' && currentNested === '2PA' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats','2PM')" :class="[currentSort === 'player_stats' && currentNested === '2PM' ? 'sort' : '']">M
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats','2P%')" :class="[currentSort === 'player_stats' && currentNested === '2P%' ? 'sort' : '']">%
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <!-- 3PT -->
+              <th class="stat" @click="sortTable('player_stats', '3PA')" :class="[currentSort === 'player_stats' && currentNested === '3PA' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', '3PM')" :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', '3P%')" :class="[currentSort === 'player_stats' && currentNested === '3P%' ? 'sort' : '']">%
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <!-- FT -->
+              <th class="stat" @click="sortTable('player_stats', 'FTA')" :class="[currentSort === 'player_stats' && currentNested === 'FTA' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'FTM')" :class="[currentSort === 'player_stats' && currentNested === 'FTM' ? 'sort' : '']">M
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'FT%')" :class="[currentSort === 'player_stats' && currentNested === 'FT%' ? 'sort' : '']" >%
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <!-- Rebounds -->
+              <th class="stat" @click="sortTable('player_stats', 'offensive_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'offensive_rebounds' ? 'sort' : '']">O
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'defensive_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'defensive_rebounds' ? 'sort' : '']">D
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'total_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'total_rebounds' ? 'sort' : '']">Tot
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+
+              <th class="stat" @click="sortTable('player_stats', 't')" :class="[currentSort === 'player_stats' && currentNested === 'turnovers' ? 'sort' : '']">
+                TO
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'assists')" :class="[currentSort === 'player_stats' && currentNested === 'assists' ? 'sort' : '']">AST
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+              <th class="stat" @click="sortTable('player_stats', 'blocks')" :class="[currentSort === 'player_stats' && currentNested === 'blocks' ? 'sort' : '']">BLK
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+
+              <th class="stat" @click="sortTable('player_stats', 'steals')" :class="[currentSort === 'player_stats' && currentNested === 'steals' ? 'sort' : '']">
+                STL
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
+
+              <th class="stat" @click="sortTable('player_stats', 'total_points')" :class="[currentSort === 'player_stats' && currentNested === 'total_points' ? 'sort' : '']">Total Pts
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th>
             </tr>
           </template>
 
@@ -153,67 +223,102 @@
 
               <!-- 2PT -->
               <td class="stat light first">
-                <input v-if="edit === true" type="number" v-model="player.player_stats['2PA']" />
-                <template v-else>{{player.player_stats['2PA']}}</template>
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['2PM']" />
+                <template v-else>{{player.player_stats['2PM']}}</template>
               </td>
               <td class="stat light">
-                <input v-if="edit === true" type="number" v-model="player.player_stats['2PM']" />
-                <template v-else>{{player.player_stats['2PM']}}</template>
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['2PA']" />
+                <template v-else>{{player.player_stats['2PA']}}</template>
               </td>
               <td class="stat light">{{percentage(player.player_stats['2PA'], player.player_stats['2PM'])}}</td>
 
               <!-- 3PT -->
               <td class="stat dark">
-                <input v-if="edit === true" type="number" v-model="player.player_stats['3PA']" />
-                <template v-else>{{player.player_stats['3PA']}}</template>
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['3PM']" />
+                <template v-else>{{player.player_stats['3PM']}}</template>
               </td>
               <td class="stat dark">
-                <input v-if="edit === true" type="number" v-model="player.player_stats['3PM']" />
-                <template v-else>{{player.player_stats['3PM']}}</template>
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['3PA']" />
+                <template v-else>{{player.player_stats['3PA']}}</template>
               </td>
               <td class="stat dark">{{percentage(player.player_stats['3PA'], player.player_stats['3PM'])}}</td>
 
               <!-- FT -->
               <td class="stat light">
-                <input v-if="edit === true" type="number" v-model="player.player_stats.FTA" />
-                <template v-else>{{player.player_stats.FTA}}</template>
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.FTM" />
+                <template v-else>{{player.player_stats.FTM}}</template>
               </td>
               <td class="stat light">
-                <input v-if="edit === true" type="number" v-model="player.player_stats.FTM" />
-                <template v-else>{{player.player_stats.FTM}}</template>
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.FTA" />
+                <template v-else>{{player.player_stats.FTA}}</template>
               </td>
               <td class="stat light">{{percentage(player.player_stats.FTA, player.player_stats.FTM)}}</td>
 
               <!-- Rebounds -->
               <td class="stat dark">
-                <input v-if="edit === true" type="number" v-model="player.player_stats.offensive_rebounds" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.offensive_rebounds" />
                 <template v-else>{{player.player_stats.offensive_rebounds}}</template>
               </td>
               <td class="stat dark">
-                <input v-if="edit === true" type="number" v-model="player.player_stats.defensive_rebounds" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.defensive_rebounds" />
                 <template v-else>{{player.player_stats.defensive_rebounds}}</template>
               </td>
-              <td class="stat dark" v-html="player.player_stats.total_rebounds">{{total(player.player_stats.offensive_rebounds, player.player_stats.defensive_rebounds)}}</td>
+              <td class="stat dark">
+                <template v-if="edit === true">{{totalRebounds(player.player_stats.offensive_rebounds, player.player_stats.defensive_rebounds)}}</template>
+                <template v-else>{{player.player_stats.total_rebounds}}</template>
+              </td>
 
               <td class="stat">
-                <input v-if="edit === true" type="number" v-model="player.player_stats.assists" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.to" />
+                <template v-else>{{player.player_stats.assists}}</template>
+              </td>
+
+              <td class="stat">
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.assists" />
                 <template v-else>{{player.player_stats.assists}}</template>
               </td>
               <td class="stat">
-                <input v-if="edit === true" type="number" v-model="player.player_stats.blocks" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.blocks" />
                 <template v-else>{{player.player_stats.blocks}}</template>
               </td>
               <td class="stat">
-                <input v-if="edit === true" type="number" v-model="player.player_stats.steals" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.steals" />
                 <template v-else>{{player.player_stats.steals}}</template>
               </td>
               <td class="stat">
-                <input v-if="edit === true" type="number" v-model="player.player_stats.total_points" />
+                <template v-if="edit === true">{{totalPoints(player.player_stats['2PM'], player.player_stats['3PM'], player.player_stats.FTM)}}</template>
                 <template v-else>{{player.player_stats.total_points}}</template>
               </td>
 
             </tr>
           </template>
+
+          <tfoot slot="tfoot">
+            <tr>
+              <td colspan="3"></td>
+              <td>{{teamTotal('2PM')}}</td>
+              <td>{{teamTotal('2PA')}}</td>
+              <td>%</td>
+
+              <td>{{teamTotal('3PM')}}</td>
+              <td>{{teamTotal('3PA')}}</td>
+              <td>%</td>
+
+              <td>{{teamTotal('FTM')}}</td>
+              <td>{{teamTotal('FTA')}}</td>
+              <td>%</td>
+
+              <td>{{teamTotal('offensive_rebounds')}}</td>
+              <td>{{teamTotal('defensive_rebounds')}}</td>
+              <td>{{teamTotal('total_rebounds')}}</td>
+
+              <td>{{teamTotal('to')}}</td>
+              <td>{{teamTotal('assists')}}</td>
+              <td>{{teamTotal('blocks')}}</td>
+              <td>{{teamTotal('steals')}}</td>
+              <td>{{teamTotal('total_points')}}</td>
+            </tr>
+          </tfoot>
 
         </editTable>
         <div class="button" @click="backToGameStats">
@@ -227,6 +332,8 @@
 <script>
 // api
 import { api } from '../../api/endpoints.js'
+import _ from 'lodash'
+import { mapState } from 'vuex'
 
 // components
 import editTable from '@/components/editTable'
@@ -240,6 +347,7 @@ export default {
   data () {
     return {
       boxscore: false,
+      compositStats: true, // what is this?
       columns: [
         {
           name: '#',
@@ -341,6 +449,9 @@ export default {
       config: {
         'page': 'stats'
       },
+      currentNested: '',
+      currentSort: '',
+      currentSortDir: 'asc',
       edit: false,
       gameScore: {
         homeTeam: {
@@ -366,7 +477,8 @@ export default {
         season: ''
       },
       newGameStats: {
-        'game_id': ''
+        'game_id': '',
+        'player_stats': []
       },
       overtimeCount: 1,
       pastGames: [
@@ -378,69 +490,6 @@ export default {
         {'4': ''}
       ],
       roster: [
-        {
-          birth_date: '1987-12-04',
-          first_name: 'Test_Player_2',
-          height: 'None',
-          id: 'd0e75004-a386-4954-9ae4-ec00ba95bbd1',
-          last_name: 'test',
-          person_type: 'None',
-          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
-        },
-        {
-          birth_date: '1987-12-04',
-          first_name: 'Test_Coach_2',
-          height: 'None',
-          id: 'a143e349-1d2c-43a5-b953-261425c04f8c',
-          last_name: 'test',
-          person_type: '2',
-          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
-        },
-        {
-          birth_date: '1987-12-04',
-          first_name: 'Test_Coach_2',
-          height: 'None',
-          id: '07774cbd-14e7-48c4-943c-7c1762a02309',
-          last_name: 'test',
-          person_type: '2',
-          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
-        },
-        {
-          birth_date: '1987-12-04',
-          first_name: 'Test_Coach_2',
-          height: 'None',
-          id: 'fba2f4f5-417c-4306-8999-808c0f251e2c',
-          last_name: 'test',
-          person_type: '1',
-          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
-        },
-        {
-          birth_date: '1987-12-04',
-          first_name: 'Test_Coach_2',
-          height: 'None',
-          id: '4d3d8200-68f3-431d-8e52-5b89da30ea63',
-          last_name: 'test',
-          person_type: '2',
-          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
-        },
-        {
-          birth_date: '1987-12-04',
-          first_name: 'Test_Coach_2',
-          height: 'None',
-          id: 'cc57ae28-cc20-4e61-8cc6-99478ca91866',
-          last_name: 'test',
-          person_type: '2',
-          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
-        },
-        {
-          birth_date: '1987-12-04',
-          first_name: 'Test_Coach_75',
-          height: 'None',
-          id: '00905a2b-fbce-4871-ab65-3c6719b426bc',
-          last_name: 'test',
-          person_type: '2',
-          team_id: '8b31d882-e233-11e9-a4c2-b827ebcfd443'
-        }
       ],
       saved: false,
       saving: false,
@@ -473,6 +522,13 @@ export default {
         })
       },
       deep: true
+    },
+    user (newValue, oldValue) {
+      if (this.newStats.season_id) {
+        this.initSchedule(this.newStats.season_id, this.team)
+      } else {
+        this.selectedGame = false
+      }
     }
   },
   computed: {
@@ -481,7 +537,11 @@ export default {
     },
     team () {
       return this.$route.params.slug
-    }
+    },
+    teamAssocLvl () {
+      return this.$store.state.teamAssocLvl.season_team_ids
+    },
+    ...mapState(['user'])
   },
   // mixins: [
   //   root
@@ -502,10 +562,10 @@ export default {
           //   game.game_time = 'TBD'
           // }
           if (game.home_team.slug === this.team) {
-            game['opponent'] = game.home_team.name
+            game['opponent'] = game.away_team.name
             game['rosterId'] = game.home_team.id
           } else {
-            game['opponent'] = game.away_team.name
+            game['opponent'] = game.home_team.name
             game['rosterId'] = game.away_team.id
           }
           fixedData.push(game)
@@ -606,6 +666,42 @@ export default {
         this.newGameStats = response.data
       })
     },
+    saveStats () {
+      this.saving = true
+      let finalScores = {'final_scores': {}}
+      let stats = {}
+      if (this.boxscore === true) {
+        finalScores.final_scores = {
+          'home_score': this.gameScore.homeTeam.final,
+          'away_score': this.gameScore.awayTeam.final
+        }
+        stats = {...finalScores}
+      }
+      // this.newGameStats['scores'] = {
+      //   'home_score': this.gameScore.homeTeam.final,
+      //   'away_score': this.gameScore.awayTeam.final
+      // }
+      let playerStats = _.cloneDeep(this.newGameStats)
+
+      let flattenedStats = []
+      playerStats.player_stats.forEach(player => {
+        let newPlayer = {...player, ...player.player_stats}
+        delete newPlayer.player_stats
+
+        flattenedStats.push(newPlayer)
+        // console.log(player)
+      })
+
+      playerStats.player_stats = flattenedStats
+
+      stats = {...stats, ...playerStats}
+      // console.log(stats)
+      api.addGameResults(this.newGameStats.game_id, stats)
+        .then(response => {
+          console.log(response)
+          this.saved = true
+        })
+    },
     percentage (attempted, made) {
       if (attempted >= 1) {
         return ((made / attempted) * 100).toFixed(1)
@@ -613,7 +709,24 @@ export default {
         return 0
       }
     },
-    total (val1, val2) {
+    teamTotal (stat) {
+      let total = 0
+      this.newGameStats.player_stats.forEach(player => {
+        // console.log(player)
+        // console.log(_.get(player, stat))
+        total += parseInt(_.get(player.player_stats, stat))
+      })
+
+      return total
+    },
+    totalPoints (twos, threes, fts) {
+      let twoPT = twos * 2
+      let threePT = threes * 3
+      let ftPT = fts * 1
+
+      return twoPT + threePT + ftPT
+    },
+    totalRebounds (val1, val2) {
       if (val1 === undefined) {
         val1 = 0
       }
@@ -622,8 +735,41 @@ export default {
         val2 = 0
       }
 
-      return val1 + val2
+      return parseInt(val1) + parseInt(val2)
+    },
+    sortTable (s, nested) {
+      // if s == current sort, reverse
+      if (nested) {
+        if (nested === this.currentNested) {
+          this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc'
+        }
+        this.currentSort = s
+        this.currentNested = nested
+      } else {
+        if (s === this.currentSort) {
+          this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc'
+        }
+        this.currentSort = s
+      }
+
+      this.newGameStats.player_stats.sort((a, b) => {
+        let modifier = 1
+        if (nested) {
+          if (this.currentSortDir === 'desc') modifier = -1
+          if (a[this.currentSort][nested] !== '') {
+            if (a[this.currentSort][nested] < b[this.currentSort][nested]) return -1 * modifier
+            if (a[this.currentSort][nested] > b[this.currentSort][nested]) return 1 * modifier
+          }
+          return 0
+        } else {
+          if (this.currentSortDir === 'desc') modifier = -1
+          if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier
+          if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier
+          return 0
+        }
+      })
     }
+
   }
 }
 </script>
@@ -903,6 +1049,7 @@ table{
 
 #playerStats {
   margin-top: 5rem;
+  // overflow: auto;
 }
 .dark {
   background-color: var(--team-second);
@@ -945,6 +1092,31 @@ td, th {
   &.sticky {
     position: sticky;
     // left: 0;
+  }
+}
+
+th {
+  // font-family: @lato;
+  font-weight: 200;
+  font-size: .8rem;
+  cursor: pointer;
+  .icon {
+    display: none;
+  }
+  &.sort {
+    font-weight: 600;
+    color: #021A2B;
+    .icon {
+      display: inline-block;
+    }
+    .asc {
+      transform: rotate(180deg);
+      transition: ease-in-out .3s all;
+    }
+    .dsc {
+      // transform: rotate(180deg);
+      transition: ease-in-out .3s all;
+    }
   }
 }
 // }

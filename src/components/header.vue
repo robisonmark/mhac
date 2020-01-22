@@ -353,9 +353,9 @@ export default {
     }
   }
 
-  @media @tablet-max {
-    .largeScreen {
-      display: none;
-    }
-  }
+  // @media @tablet-max {
+  //   .largeScreen {
+  //     display: none;
+  //   }
+  // }
 </style>

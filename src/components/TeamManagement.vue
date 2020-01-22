@@ -20,6 +20,9 @@
 </template>
 
 <script>
+// api
+import { api } from '../api/endpoints.js'
+
 // components
 import selectbox from './selectbox'
 
@@ -68,10 +71,13 @@ export default {
     },
     selectedTeam: {
       get: function () {
-        return this.$store.state.teams.forEach(team => {
-          if (team.slug === this.$route.params.slug) {
-            return team
+        return this.$store.state.teams.find(team => {
+          let user = {
+            team_id: team.id,
+            slug: team.slug
           }
+          this.$store.dispatch('setUser', user)
+          return team.slug === this.$route.params.slug
         })
       },
       set: function (newValue) {
@@ -81,9 +87,15 @@ export default {
         }
         this.team = newValue.slug
         this.$store.dispatch('setUser', user)
-        this.$router.push('/manage/' + newValue.slug)
+        const routeName = this.$route.name
+
+        this.$router.push({name: routeName, params: { slug: newValue.slug }})
+        this.getSeasonTeams(newValue.slug)
       }
     }
+  },
+  created () {
+    this.getSeasonTeams(this.$route.params.slug)
   },
   methods: {
     // Credit to Jose Reyes @ https://codepen.io/jreyesgs/pens/
@@ -117,6 +129,13 @@ export default {
       amount = parseInt((255 * amount) / 100)
       color = `#${this.subtractLight(color.substring(0, 2), amount)}${this.subtractLight(color.substring(2, 4), amount)}${this.subtractLight(color.substring(4, 6), amount)}`
       return color
+    },
+
+    getSeasonTeams (slug) {
+      api.getSeasonTeams(slug)
+        .then(response => {
+          this.$store.dispatch('setTeamAssocLvl', response.data)
+        })
     }
   }
 }
