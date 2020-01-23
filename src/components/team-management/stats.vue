@@ -63,7 +63,7 @@
           </thead>
           <tbody>
             <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
-              <td class="teamLogo">{{programInfo(selectedGame.home_team.name).team_mascot}}</td>
+              <td class="teamLogo"><img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.home_team.name).logo_color" /></td>
               <td :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
                 <div class="teamName">{{selectedGame.home_team.name}}</div>
                 <div class="mascot">{{programInfo(selectedGame.home_team.name).team_mascot}}</div>
@@ -74,7 +74,7 @@
               <td class="finalScore text-center">{{gameScore.homeTeam.final}}</td>
             </tr>
             <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
-              <td class="teamLogo">{{programInfo(selectedGame.away_team.name).team_mascot}}</td>
+              <td class="teamLogo"><img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.away_team.name).logo_color" /></td>
               <td class="teamName" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
                 <div class="teamName">{{selectedGame.away_team.name}}</div>
                 <div class="mascot">{{programInfo(selectedGame.away_team.name).team_mascot}}</div>
@@ -256,33 +256,33 @@
 
               <!-- Rebounds -->
               <td class="stat dark">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.offensive_rebounds" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.OREB" />
                 <template v-else>{{player.player_stats.offensive_rebounds}}</template>
               </td>
               <td class="stat dark">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.defensive_rebounds" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.DREB" />
                 <template v-else>{{player.player_stats.defensive_rebounds}}</template>
               </td>
               <td class="stat dark">
-                <template v-if="edit === true">{{totalRebounds(player.player_stats.offensive_rebounds, player.player_stats.defensive_rebounds)}}</template>
+                <template v-if="edit === true">{{totalRebounds(player.player_stats.OREB, player.player_stats.DREB)}}</template>
                 <template v-else>{{player.player_stats.total_rebounds}}</template>
               </td>
 
               <td class="stat">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.to" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.TO" />
                 <template v-else>{{player.player_stats.assists}}</template>
               </td>
 
               <td class="stat">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.assists" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.AST" />
                 <template v-else>{{player.player_stats.assists}}</template>
               </td>
               <td class="stat">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.blocks" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.BLK" />
                 <template v-else>{{player.player_stats.blocks}}</template>
               </td>
               <td class="stat">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.steals" />
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.STEAL" />
                 <template v-else>{{player.player_stats.steals}}</template>
               </td>
               <td class="stat">
@@ -777,6 +777,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @teamColor: var(--bg-color);
+
 header {
   display: flex;
   flex-flow: row wrap;
@@ -996,6 +997,9 @@ table {
     padding: 0;
     -webkit-border-horizontal-spacing: 0px;
     -webkit-border-vertical-spacing: 0px;
+    height: 50px;
+    overflow: hidden;
+
     &.teamLogo {
       text-align: center;
     }
@@ -1012,6 +1016,10 @@ table {
       &:nth-child(even) input{
         background-color: rgba(255,255,255, .8);
       }
+  }
+  .boxScoreImg{
+    height: 55px;
+    width: auto;
   }
 }
 .quarter {

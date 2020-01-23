@@ -5,7 +5,7 @@
         <selectbox id="teams" :options="teams" :trackby="'team_name'" placeholder="" v-model="selectedTeam"></selectbox>
       </div>
       <div class="team-logo">
-        <img src="@/assets/color-team-logos/royals.png" />
+        <img :src="'/static/color-team-logos/' + selectedTeam.logo_color" />
       </div>
       <ul :style="cssVars">
         <router-link :to="{ path: '/manage/' + team + '/roster'}" tag="li">Roster</router-link>
@@ -15,7 +15,7 @@
       </ul>
     </nav>
     <router-view class="team-management" :style="cssVars" />
-    <img class="bottom-logo" src="@/assets/washedout-team-logo/royals-grayscale.png" />
+    <img class="bottom-logo" :src="'/static/washedout-team-logo/' + selectedTeam.logo_grey" />
   </div>
 </template>
 
