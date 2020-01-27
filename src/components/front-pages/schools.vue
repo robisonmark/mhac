@@ -2,32 +2,33 @@
   <div class="container">
     <div class="row">
       <div class="logo-color col">
-        <!-- <img src="@/assets/color-team-logos/royals2.png" alt="Hendersonville Royals"/> -->
+        <!-- <div class="image-con"> -->
+          <img v-if="program.logo_color" :src="'/static/color-team-logos/' + program.logo_color" :alt="program.team_name + ' ' + program.team_mascot"/>
+        <!-- </div> -->
       </div>
-      <div class="col-7 top-layer">
+      <div class="col-8 top-layer">
         <div class="content-container">
-          Coming Soon!
           <div class="row filter-bar">
             <div class="col">
               <div class="filters">
-                <div class="custom-select"  @click="showSeasons = !showSeasons, showSections = false">
-                  <div disabled>{{filterBy.seasons.season}}</div>
+                <div class="custom-select"  @click.stop="showSeasons = !showSeasons, showSections = false">
+                  <div disabled>{{filterBy.team.level_name}}</div>
                   <div class="options-menu">
                     <template>
-                      <div class="option" v-for="season in seasons" :key="season.id" v-show="showSeasons" @click="setSeason(season)">
-                        {{createSeasonDisplay(season)}}
+                      <div class="option" v-for="season in teamAssocLvl" :key="season.id" v-show="showSeasons" @click="filterBy.team = season">
+                        {{season.level_name}}
                       </div>
                     </template>
                   </div>
                 </div>
 
-                <div class="custom-select" @click="showSections = !showSections, showSeasons = false">
-                  <div disabled>{{filterBy.team.name}}</div>
+                <div class="custom-select" @click.stop="showSections = !showSections, showSeasons = false">
+                  <div disabled>{{selectedSection}}</div>
                   <div class="options-menu">
                     <template>
-                      <!-- <div class="option" v-for="team in teams" :key="team.id" v-show="showTeams" @click="setTeam(team)">
-                        {{team.team_name}} {{team.team_mascot}}
-                      </div> -->
+                      <div class="option" v-for="(section, index) in sections" :key="index" v-show="showSections" @click="selectedSection = section">
+                        {{section}}
+                      </div>
                     </template>
                   </div>
                 </div>
@@ -37,6 +38,9 @@
           </div>
 
           <div class="content-divider">
+            <div class="button ghost print" @click="print()">
+              <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
+            </div>
           </div>
 
           <div v-if="selectedSection === 'Schedule'">
@@ -49,10 +53,55 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="game in games" :key="game.id">
-                  <td></td>
-                  <td v-html="game.location"></td>
-                  <td v-html="game.final_score"></td>
+                <tr v-for="game in schedule" :key="game.id">
+                  <td>
+                    <div class="game--date">{{game.game_date}}  / <span class="font-weight-light">{{game.game_time}}</span></div>
+                    <div class="game--opponent">
+                      <span v-if="game.host">vs</span>
+                      <span v-else>@</span>
+
+                      <b v-html="game.opponent.name"></b>
+                    </div>
+                  </td>
+                  <td class="game--location">
+                    {{game.location.name}}
+                    <br />
+
+                    <a class="address" :href="'https://maps.google.com/?q=' + game.location.street + ' ' + game.location.city_state_zip" @click.stop="goToMap('https://maps.google.com/?q=' + game.location.street + ' ' + game.location.city_state_zip)">
+                      <div>{{game.location.street}}</div>
+                      <div>{{game.location.city_state_zip}}</div>
+                    </a>
+
+                  </td>
+                  <td>
+                    <span v-if="Object.keys(game.results).length >= 1">
+                      <span class="win_loss">{{game.results.win_loss}}</span> {{game.results.home}} - {{game.results.away}}
+                    </span>
+                    <div v-else class="text-center"> -- </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div v-else-if="selectedSection === 'Roster'">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Position</th>
+                  <th>Age</th>
+                  <th>Height</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="player in roster" :key="player.id">
+                  <td v-html="player.number"></td>
+                  <td>{{player.first_name}} {{player.last_name}}</td>
+                  <td v-html="player.position"></td>
+                  <td v-html="player.age"></td>
+                  <td v-html="player.height"></td>
                 </tr>
               </tbody>
             </table>
@@ -74,7 +123,7 @@
       </div> -->
     </div>
     <div class="bottom-logo">
-      <!-- <img class="bottom-logo" src="@/assets/washedout-team-logo/royals-grayscale.png" /> -->
+      <img v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey" :alt="program.team_name + ' ' + program.team_mascot"/>
     </div>
   </div>
 </template>
@@ -82,6 +131,7 @@
 <script>
 // api
 import { api } from '../../api/endpoints.js'
+import _ from 'lodash'
 
 export default {
   name: 'schools',
@@ -89,8 +139,8 @@ export default {
     return {
       filterBy: {
         team: {
-          id: '',
-          name: 'All Teams'
+          season_team_id: '',
+          level_name: ''
         },
         seasons: {
           id: '3323edf0-d806-4e32-9fd2-cb698a27b3a9',
@@ -101,21 +151,50 @@ export default {
           end_date: ''
         }
       },
+      fullRoster: [],
+      program: {},
+      roster: [],
+      schedule: [],
       sections: [
         'Schedule',
-        'Roster',
-        'Staff'
+        'Roster'
+        // 'Staff'
       ],
       selectedSection: 'Schedule',
       showDatePicker: false,
       showSeasons: false,
-      showSections: false
+      showSections: false,
+      teamAssocLvl: []
     }
   },
   computed: {
     seasons () {
       const seasons = [...this.$store.state.seasons]
       return seasons
+    },
+    selectedTeam: {
+      get: function () {
+        return this.$store.state.teams.find(team => {
+          let user = {
+            team_id: team.id,
+            slug: team.slug
+          }
+          this.$store.dispatch('setUser', user)
+          return team.slug === this.$route.params.slug
+        })
+      },
+      set: function (newValue) {
+        let user = {
+          team_id: newValue.id,
+          slug: newValue.slug
+        }
+        this.team = newValue.slug
+        this.$store.dispatch('setUser', user)
+        const routeName = this.$route.name
+
+        this.$router.push({name: routeName, params: { slug: newValue.slug }})
+        this.getSeasonTeams(newValue.slug)
+      }
     }
   },
   watch: {
@@ -125,19 +204,134 @@ export default {
     'filterBy.team': {
       deep: true,
       handler (newValue, oldValue) {
-        this.initSchedule(newValue.id)
+        if (this.selectedSection === 'Schedule') {
+          let season = this.seasons.filter(season => { return season.level === newValue.level_name })
+
+          this.initLeveledSchedule(season[0].season_id, this.$route.params.slug)
+        } else if (this.selectedSection === 'Roster') {
+          this.initLeveledRoster(newValue.season_team_id)
+        }
+      }
+    },
+    selectedSection: {
+      deep: true,
+      handler (newValue, oldValue) {
+        if (newValue === 'Schedule') {
+          this.initLeveledSchedule(this.filterBy.team.season_team_id, this.$route.params.slug)
+        } else if (newValue === 'Roster') {
+          this.initLeveledRoster(this.filterBy.team.season_team_id)
+        }
       }
     }
   },
   created () {
     this.initSchool()
+
+    this.$root.$on('close', payload => {
+      this.showSeasons = false
+      this.showSections = false
+    })
   },
   methods: {
     initSchool () {
-      const slug = this.$route.params.school.toLowerCase()
+      const slug = this.$route.params.slug
       // console.log(this.$route)
       api.getTeams(slug).then(response => {
-        console.log(response)
+        this.program = response.data.team[0]
+        this.initRoster(this.program.id)
+        this.getSeasonTeams(this.$route.params.slug)
+      })
+    },
+    initRoster (id) {
+      api.getPlayers(id).then(response => {
+        // response.data.forEach(player => {
+        //   player.number = player.number
+        // })
+        this.roster = response.data
+        this.fullRoster = _.cloneDeep(this.roster)
+      })
+    },
+    getSeasonTeams (slug) {
+      api.getSeasonTeams(slug)
+        .then(response => {
+          this.teamAssocLvl = response.data.season_team_ids
+
+          this.filterBy.team = response.data.season_team_ids[0]
+
+          // this.initLeveledSchedule(response.data.season_team_ids[0])
+          // this.$store.dispatch('setTeamAssocLvl', response.data)
+        })
+    },
+    initLeveledRoster (lvlId) {
+      api.getRoster(lvlId).then(response => {
+        let rosterArr = []
+        this.fullRoster.forEach(player => {
+          response.data.forEach(lvlPlayer => {
+            if (player.id === lvlPlayer.player_id) {
+              rosterArr.push(player)
+            }
+          })
+        })
+
+        this.roster = rosterArr
+      })
+    },
+    initLeveledSchedule (season, slug) {
+      api.getSchedule(season, slug).then(response => {
+        let gameArr = []
+        response.data.forEach(game => {
+          let gameObj = {
+            'host': '',
+            'opponent': '',
+            'game_time': game.game_time,
+            'game_date': game.game_date,
+            'location': {},
+            'results': {},
+            'id': game.game_id
+          }
+
+          if (game.home_team.slug === this.$route.params.slug) {
+            gameObj.host = true
+            gameObj.opponent = game.away_team
+            if (game.final_score.home !== null) {
+              if (game.final_score.home > game.final_score.away) {
+                gameObj.results = {
+                  'win_loss': 'W'
+                }
+              } else if (game.final_score.home < game.final_score.away) {
+                gameObj.results = {
+                  'win_loss': 'L'
+                }
+              }
+            }
+          } else if (game.away_team.slug === this.$route.params.slug) {
+            gameObj.host = false
+            gameObj.opponent = game.home_team
+            if (game.final_score.home !== null) {
+              if (game.final_score.home > game.final_score.away) {
+                gameObj.results = {
+                  'win_loss': 'W'
+                }
+              } else if (game.final_score.home < game.final_score.away) {
+                gameObj.results = {
+                  'win_loss': 'L'
+                }
+              }
+            }
+          }
+
+          gameObj.location = {
+            'street': game.home_team.address_lines,
+            'city_state_zip': game.home_team.city_state_zip,
+            'name': game.home_team.address_name}
+
+          if (game.final_score.home !== null) {
+            gameObj.results = {...gameObj.results, ...game.final_score}
+          }
+
+          gameArr.push(gameObj)
+        })
+        this.schedule = gameArr
       })
     },
     createSeasonDisplay (season) {
@@ -156,7 +350,7 @@ export default {
       this.filterBy.seasons.id = season.id
       this.filterBy.season.season = season.level_name
       // this.showTeams = false
-      console.log(this.showTeams)
+      // console.log(this.showTeams)
     }
   }
 }
@@ -164,8 +358,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+@import '../../assets/less/elements/typography.less';
 .logo-color {
-  height: 25rem;
+  height: 20rem;
   min-width: 20rem;
   width: 16%;
   background-color: #fff;
@@ -179,13 +374,14 @@ export default {
   box-shadow: 9px 6px 9px rgba(0, 0, 0, 0.16);
   // margin-top: 1rem;
   img {
-    height: 72%;
+    max-width: 98%;
+    max-height: 72%;
   }
 }
 .content-container {
   width: 100%;
   border-radius: 15px;
-  height: 152vh;
+  // height: 152vh;
   background-color: #0C4B75;
   margin-top: 3rem;
   margin-left: -2rem;
@@ -193,6 +389,34 @@ export default {
   padding-left: 2rem;
   padding-right: 1rem;
   padding-top: 1rem;
+  color: #fff;
+  font-family: @lato;
+  min-height: 75vh;
+}
+.content-divider {
+  width: 100%;
+  // height: 2rem;
+  margin-top: .7rem;
+  margin-bottom: .7rem;
+  background: #fff;
+  color: #021A2B;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+   padding: 0 1rem;
+}
+.button.ghost.print {
+  border: 1px solid #021A2B;
+  max-width: 6rem;
+  text-align: center;
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+  display: inline-block;
+  padding: 0 1rem;
+  &:hover {
+    background-color: #021A2B;
+    color: #fff;
+  }
 }
 .team-info {
   width: 16%;
@@ -214,8 +438,13 @@ export default {
   right: 0;
   bottom: 0;
   max-height: 30rem;
+  max-width: 24rem;
   z-index: 0;
   opacity: .6;
+  img {
+    max-width: 98%;
+    max-height: 72%;
+  }
 }
 .filter-bar {
   color: #fff;
@@ -283,5 +512,45 @@ export default {
       background-color: #fff;
     }
   }
+}
+table {
+  width: 100%;
+  thead th{
+    font-size: 1.1rem;
+    font-weight: 100;
+  }
+  tr{
+    vertical-align: top;
+    border-bottom: 1px solid #2784C3;
+  }
+  td {
+    line-height: 1.5;
+    padding: .5rem 0;
+  }
+}
+.game {
+  &--date {
+    font-size: .85rem;
+  }
+  &--opponent span{
+    // font-size: .95rem;
+    font-style: italic;
+    font-weight: 100;
+  }
+  &--location {
+    font-size: .90rem;
+    font-style: italic;
+    line-height: 1.3;
+    .address {
+      text-decoration: none;
+      color: #fff;
+      font-style: normal;
+      font-size: .80rem;
+      line-height: 1.2;
+    }
+  }
+}
+.win_loss {
+  padding-right: .5rem;
 }
 </style>

@@ -1,5 +1,5 @@
 import { store } from '../../store/index'
-import { Auth } from 'aws-amplify'
+// import { Auth } from 'aws-amplify'
 
 // Initial "state"
 const state = {
@@ -25,22 +25,25 @@ const actions = {
   },
 
   async valid (context) {
-    let user = store.state.user
-    if (Object.entries(user).length === 0 && user.constructor === Object) {
-      let valid = await Auth.currentAuthenticatedUser({ bypassCache: false })
-        .then(response => {
-          context.dispatch('load', response, { root: true })
-          context.commit('set_valid', true)
-          return true
-        })
-        .catch(() => {
-          context.commit('set_valid', false)
-          return false
-        })
-      return valid
-    } else {
-      context.dispatch('load', user, { root: true })
-      context.commit('set_valid', true)
+    // let user = store.state.user
+    // if (Object.entries(user).length === 0 && user.constructor === Object) {
+    //   let valid = await Auth.currentAuthenticatedUser({ bypassCache: false })
+    //     .then(response => {
+    //       context.dispatch('load', response, { root: true })
+    //       context.commit('set_valid', true)
+    //       return true
+    //     })
+    //     .catch(() => {
+    //       context.commit('set_valid', false)
+    //       return false
+    //     })
+    //   return valid
+    // } else {
+    //   context.dispatch('load', user, { root: true })
+    //   context.commit('set_valid', true)
+    //   return true
+    // }
+    if (store.getters.authenticated !== '') {
       return true
     }
   },

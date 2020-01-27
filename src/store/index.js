@@ -7,13 +7,13 @@ import Vuex from 'vuex'
 
 // Modules
 // import es from './modules/store.es'
-// import auth from './modules/store.auth'
+import auth from './modules/store.auth'
 // import form from './modules/store.form'
 
 Vue.use(Vuex)
 
 const namespaced = true
-// const modules = { auth }
+const modules = { auth }
 // const plugins = [ pathify.plugin ]
 // const strict = process.env.NODE_ENV !== 'production'
 const strict = false
@@ -27,7 +27,7 @@ const state = {
   userGroups: ['Admin'],
   userAttributes: Object,
   loaded: false,
-  authenticated: String,
+  authenticated: '',
   seasons: [],
   teams: [],
   levels: [],
@@ -151,7 +151,7 @@ export const store = new Vuex.Store({
   state,
   strict,
   actions,
-  // modules,
+  modules,
   getters,
   mutations,
   namespaced

@@ -353,7 +353,7 @@ export default {
         },
         level: {
           season_id: '',
-          level: ''
+          level: 'All Levels'
         },
         game: {
           game_id: '',

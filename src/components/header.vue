@@ -32,26 +32,30 @@
             <a href="https://www.nccwarriors.com/">
               <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
             </a>
-            <div class="button" @click="showLogin = !showLogin" ref="showLogin">
-              <span>Login</span>
+            <div class="button" @click="toggleLogin" ref="showLogin">
+              <span v-if="!loggedIn">Login</span>
+              <span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span>
             </div>
+
             <div v-if="showLogin" class="teamlogin" ref="teamlogin">
               <form v-if="!loggedIn">
                 <label for="username">
                   Username
                 </label>
-                <input type="text" id="username" v-model="username" />
+                <input type="text" id="username" v-model="username" @click.stop />
                 <label for="password">
                   Password
                 </label>
-                <input type="password" id="password" v-model="password" />
-                <button @click.prevent="login()">
-                  Login
+                <input type="password" id="password" v-model="password" @click.stop />
+                <button @click.prevent.stop="login()" class="login">
+                  <font-awesome-icon :icon="['fas', 'basketball-ball']" :class="{'animate': thinking}"></font-awesome-icon> Login
                 </button>
               </form>
-              <div v-else>
-                <button @click.prevent="signout()">
-                  Signout
+              <div v-else class="text-right">
+                <!-- <router-link :to="{name: 'teamDashboard', params: { slug: team.slug.toLowerCase() }}">Go To Team Dashboard</router-link> -->
+                <router-link :to="{name: 'teamDashboard', params: { slug: 'hendersonville_royals' }}">Go To Team Dashboard</router-link>
+                <button @click.prevent="signout()" class="login">
+                  <font-awesome-icon :icon="['fas', 'basketball-ball']"></font-awesome-icon> Signout
                 </button>
               </div>
             </div>
@@ -131,7 +135,8 @@
 </template>
 
 <script>
-// import { api } from '@/api/endpoints'
+import { api } from '@/api/endpoints'
+import _ from 'lodash'
 
 export default {
   // login: markrobison630@gmail.com
@@ -140,8 +145,9 @@ export default {
   data () {
     return {
       showLogin: false,
-      loggedIn: false,
+      // loggedIn: false,
       showSchools: false,
+      thinking: false,
       username: '',
       password: ''
     }
@@ -157,13 +163,35 @@ export default {
     },
     teams () {
       return this.$store.state.teams
+    },
+    loggedIn: {
+      get: function () {
+        // let auth =
+        return this.$store.getters.authenticated !== ''
+      },
+      set: function () {
+
+      }
     }
   },
   filters: {
   },
   watch: {},
-  created () {},
+  created () {
+    this.$root.$on('close', payload => {
+      this.showLogin = false
+    })
+  },
   methods: {
+    toggleLogin () {
+      let isOpen = _.cloneDeep(this.showLogin)
+      // this.$root.$emit('close')
+
+      // this.open = !isOpen
+      window.setTimeout(() => {
+        this.showLogin = !isOpen
+      }, 1)
+    },
     checkMouse () {
       // window.setTimeout(() => {
       //   this.showSchools = false
@@ -180,20 +208,25 @@ export default {
       this[open] = false
     },
     login () {
-      this.$router.push('/manage/chattanooga_patriots')
-      // api.login(this.username, this.password).then(response => {
-      //   this.loggedIn = true
-      //   this.showLogin = false
-      //   this.$store.dispatch('setAuth', response.data.token)
-      //   this.$router.push('/manage/royals')
-      // })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
+      this.thinking = true
+      // this.$router.push('/manage/chattanooga_patriots')
+      api.login(this.username, this.password).then(response => {
+        // console.log(response)
+        this.loggedIn = true
+        this.showLogin = false
+        this.$store.dispatch('setAuth', response.data.token)
+        this.$router.push('/manage/hendersonville_royals')
+      })
+        .catch(err => {
+          console.log(err)
+        })
     },
     signout () {
       this.loggedIn = false
-      this.$router.push('/')
+      this.$store.dispatch('setAuth', '')
+      if (this.$route.meta.section !== 'public') {
+        this.$router.push('/')
+      }
     }
   }
 }
@@ -335,14 +368,26 @@ export default {
       left: 100px;
     }
   }
-  .button {
+  .button,
+  button,
+  [type="button"] {
     background-color: @conf-blue;
     color: #fff;
     padding: .3125rem .625rem;
+    border-style: unset;
+    white-space: nowrap;
     // border-radius: 5px;
     // transform: skewX(-45deg);
     &:hover {
       background-color: @nav-blue;
+    }
+  }
+
+  @keyframes fa-spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}
+  .login {
+    margin-top: .5rem;
+    .animate {
+      animation: fa-spin 4s infinite linear;
     }
   }
 

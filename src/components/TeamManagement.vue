@@ -5,7 +5,7 @@
         <selectbox id="teams" :options="teams" :trackby="'team_name'" placeholder="" v-model="selectedTeam"></selectbox>
       </div>
       <div class="team-logo">
-        <img :src="'/static/color-team-logos/' + selectedTeam.logo_color" />
+        <img :src="teamLogo" />
       </div>
       <ul :style="cssVars">
         <router-link :to="{ path: '/manage/' + team + '/roster'}" tag="li">Roster</router-link>
@@ -15,7 +15,7 @@
       </ul>
     </nav>
     <router-view class="team-management" :style="cssVars" />
-    <img class="bottom-logo" :src="'/static/washedout-team-logo/' + selectedTeam.logo_grey" />
+    <img class="bottom-logo" :src="greyLogo" />
   </div>
 </template>
 
@@ -30,9 +30,10 @@ export default {
   name: 'TeamManagement',
   data () {
     return {
+      greyLogo: '',
       team: this.$route.params.slug,
-      teamLogo: '',
       // teamColor: '#B42625',
+      teamLogo: '',
       fontSecondary: '#fff'
       // selectedTeam: {}
     }
@@ -92,6 +93,12 @@ export default {
         this.$router.push({name: routeName, params: { slug: newValue.slug }})
         this.getSeasonTeams(newValue.slug)
       }
+    }
+  },
+  watch: {
+    selectedTeam (newValue, oldValue) {
+      this.teamLogo = '/static/color-team-logos/' + newValue.logo_color
+      this.greyLogo = '/static/washedout-team-logo/' + newValue.logo_grey
     }
   },
   created () {
@@ -163,6 +170,8 @@ h2 {
     background-color: #fff;
     .team-logo {
       width: 100%;
+      min-height: 10rem;
+      display: flex;
       img {
         width: 75%;
         display: block;
@@ -205,7 +214,7 @@ h2 {
     position: fixed;
     right: 0;
     bottom: 0;
-    max-height: 19rem;
+    max-height: 15rem;
     z-index: 0;
   }
   .team-management {

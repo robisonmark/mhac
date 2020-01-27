@@ -6,6 +6,10 @@
 
       <div class="buttonCon">
         <template v-if="selectedGame">
+          <div class="switch" @click="backToGameStats">
+            <font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Back To Games
+          </div>
+
           <div class="switch" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
             <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
             <span class="focused">Edit</span>
@@ -25,7 +29,7 @@
         <!-- add to edit table just rename columns -->
         <table id="table">
           <thead id="table-head-fixed">
-            <tr>
+            <tr class="rowOne">
               <th></th>
               <th>Date</th>
               <th>Opponent</th>
@@ -52,7 +56,7 @@
 
         <table class="scoreTable">
           <thead>
-            <tr>
+            <tr class="rowOne">
               <th colspan="2">Box Score</th>
               <th v-for="(quarter, key, index) in quarters" :key="index" class="text-center quarter">{{Object.keys(quarter)[0]}}</th>
               <!-- <th class="text-center">2</th>
@@ -63,18 +67,26 @@
           </thead>
           <tbody>
             <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
-              <td class="teamLogo"><img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.home_team.name).logo_color" /></td>
+              <td class="teamLogo">
+                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).secondary_color}">
+                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.home_team.name).logo_color" />
+                </div>
+              </td>
               <td :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
                 <div class="teamName">{{selectedGame.home_team.name}}</div>
                 <div class="mascot">{{programInfo(selectedGame.home_team.name).team_mascot}}</div>
               </td>
-              <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]">
+              <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter">
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.homeTeam.quarters[key]" />
                 <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>
               <td class="finalScore text-center">{{gameScore.homeTeam.final}}</td>
             </tr>
             <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
-              <td class="teamLogo"><img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.away_team.name).logo_color" /></td>
+              <td class="teamLogo">
+                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).secondary_color}">
+                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.away_team.name).logo_color" />
+                </div>
+              </td>
               <td class="teamName" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
                 <div class="teamName">{{selectedGame.away_team.name}}</div>
                 <div class="mascot">{{programInfo(selectedGame.away_team.name).team_mascot}}</div>
@@ -95,7 +107,7 @@
             </div>
             <div class="col text-right">
               <div class="button" @click="addOvertime">
-                Add Overtime
+                <font-awesome-icon :icon="['fas', 'stopwatch']" class="icon"></font-awesome-icon> Add Overtime
               </div>
             </div>
           </div>
@@ -105,7 +117,7 @@
       <div v-if="selectedGame" :id="[boxscore ? 'playerStats' : '']">
         <editTable :columns="columns" :config="config" :tabledata="stats" v-model="newGameStats">
           <template slot="thead">
-            <tr>
+            <tr class="rowOne">
               <th colspan="3"></th>
               <th colspan="3" class="light">2PT</th>
               <th colspan="3" class="dark">3PT</th>
@@ -113,7 +125,7 @@
               <th colspan="3" class="dark">Rebounds</th>
               <th colspan="4"></th>
             </tr>
-            <tr>
+            <tr class="rowTwo">
               <!-- <th class="text-center sticky" @click="sortTable('player_number')">#</th>
               <th class="pad-right sticky" @click="sortTable('first_name')">First Name</th>
               <th class="pad-right sticky" @click="sortTable('last_name')">Last Name</th> -->
@@ -140,7 +152,7 @@
 
               <!-- <th class="stat">Stl</th>
               <th class="stat">Total Pts</th> -->
-              <th @click="sortTable('player_number')" class="nowrap" :class="[currentSort === 'player_number' ? 'sort' : '']">
+              <th @click="sortTable('player_number')" class="nowrap text-center" :class="[currentSort === 'player_number' ? 'sort' : '']">
                 # <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <th @click="sortTable('player_first_name')" class="nowrap" :class="[currentSort === 'player_first_name' ? 'sort' : '']">
@@ -149,59 +161,63 @@
               <th @click="sortTable('player_last_name')" class="nowrap" :class="[currentSort === 'player_last_name' ? 'sort' : '']">
                 Last Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
+
               <!-- 2PT -->
-              <th class="stat" @click="sortTable('player_stats', '2PA')" :class="[currentSort === 'player_stats' && currentNested === '2PA' ? 'sort' : '']">A
+              <th class="stat" @click="sortTable('player_stats','2PM')" :class="[currentSort === 'player_stats' && currentNested === '2PM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats','2PM')" :class="[currentSort === 'player_stats' && currentNested === '2PM' ? 'sort' : '']">M
+              <th class="stat" @click="sortTable('player_stats', '2PA')" :class="[currentSort === 'player_stats' && currentNested === '2PA' ? 'sort' : '']">A
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <th class="stat" @click="sortTable('player_stats','2P%')" :class="[currentSort === 'player_stats' && currentNested === '2P%' ? 'sort' : '']">%
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
+
               <!-- 3PT -->
-              <th class="stat" @click="sortTable('player_stats', '3PA')" :class="[currentSort === 'player_stats' && currentNested === '3PA' ? 'sort' : '']">A
+              <th class="stat" @click="sortTable('player_stats', '3PM')" :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', '3PM')" :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
+              <th class="stat" @click="sortTable('player_stats', '3PA')" :class="[currentSort === 'player_stats' && currentNested === '3PA' ? 'sort' : '']">A
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <th class="stat" @click="sortTable('player_stats', '3P%')" :class="[currentSort === 'player_stats' && currentNested === '3P%' ? 'sort' : '']">%
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
+
               <!-- FT -->
-              <th class="stat" @click="sortTable('player_stats', 'FTA')" :class="[currentSort === 'player_stats' && currentNested === 'FTA' ? 'sort' : '']">A
+              <th class="stat" @click="sortTable('player_stats', 'FTM')" :class="[currentSort === 'player_stats' && currentNested === 'FTM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'FTM')" :class="[currentSort === 'player_stats' && currentNested === 'FTM' ? 'sort' : '']">M
+              <th class="stat" @click="sortTable('player_stats', 'FTA')" :class="[currentSort === 'player_stats' && currentNested === 'FTA' ? 'sort' : '']">A
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <th class="stat" @click="sortTable('player_stats', 'FT%')" :class="[currentSort === 'player_stats' && currentNested === 'FT%' ? 'sort' : '']" >%
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
+
               <!-- Rebounds -->
-              <th class="stat" @click="sortTable('player_stats', 'offensive_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'offensive_rebounds' ? 'sort' : '']">O
+              <th class="stat" @click="sortTable('player_stats', 'OREB')" :class="[currentSort === 'player_stats' && currentNested === 'OREB' ? 'sort' : '']">O
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'defensive_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'defensive_rebounds' ? 'sort' : '']">D
+              <th class="stat" @click="sortTable('player_stats', 'DREB')" :class="[currentSort === 'player_stats' && currentNested === 'DREB' ? 'sort' : '']">D
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <th class="stat" @click="sortTable('player_stats', 'total_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'total_rebounds' ? 'sort' : '']">Tot
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
 
-              <th class="stat" @click="sortTable('player_stats', 't')" :class="[currentSort === 'player_stats' && currentNested === 'turnovers' ? 'sort' : '']">
+              <th class="stat" @click="sortTable('player_stats', 'TO')" :class="[currentSort === 'player_stats' && currentNested === 'TO' ? 'sort' : '']">
                 TO
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'assists')" :class="[currentSort === 'player_stats' && currentNested === 'assists' ? 'sort' : '']">AST
+              <th class="stat" @click="sortTable('player_stats', 'AST')" :class="[currentSort === 'player_stats' && currentNested === 'AST' ? 'sort' : '']">AST
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'blocks')" :class="[currentSort === 'player_stats' && currentNested === 'blocks' ? 'sort' : '']">BLK
+              <th class="stat" @click="sortTable('player_stats', 'BLK')" :class="[currentSort === 'player_stats' && currentNested === 'BLK' ? 'sort' : '']">BLK
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
 
-              <th class="stat" @click="sortTable('player_stats', 'steals')" :class="[currentSort === 'player_stats' && currentNested === 'steals' ? 'sort' : '']">
+              <th class="stat" @click="sortTable('player_stats', 'STEAL')" :class="[currentSort === 'player_stats' && currentNested === 'STEAL' ? 'sort' : '']">
                 STL
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
@@ -257,11 +273,11 @@
               <!-- Rebounds -->
               <td class="stat dark">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.OREB" />
-                <template v-else>{{player.player_stats.offensive_rebounds}}</template>
+                <template v-else>{{player.player_stats.OREB}}</template>
               </td>
               <td class="stat dark">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.DREB" />
-                <template v-else>{{player.player_stats.defensive_rebounds}}</template>
+                <template v-else>{{player.player_stats.DREB}}</template>
               </td>
               <td class="stat dark">
                 <template v-if="edit === true">{{totalRebounds(player.player_stats.OREB, player.player_stats.DREB)}}</template>
@@ -270,20 +286,20 @@
 
               <td class="stat">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.TO" />
-                <template v-else>{{player.player_stats.assists}}</template>
+                <template v-else>{{player.player_stats.AST}}</template>
               </td>
 
               <td class="stat">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.AST" />
-                <template v-else>{{player.player_stats.assists}}</template>
+                <template v-else>{{player.player_stats.AST}}</template>
               </td>
               <td class="stat">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.BLK" />
-                <template v-else>{{player.player_stats.blocks}}</template>
+                <template v-else>{{player.player_stats.BLK}}</template>
               </td>
               <td class="stat">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.STEAL" />
-                <template v-else>{{player.player_stats.steals}}</template>
+                <template v-else>{{player.player_stats.STEAL}}</template>
               </td>
               <td class="stat">
                 <template v-if="edit === true">{{totalPoints(player.player_stats['2PM'], player.player_stats['3PM'], player.player_stats.FTM)}}</template>
@@ -308,22 +324,19 @@
               <td>{{teamTotal('FTA')}}</td>
               <td>%</td>
 
-              <td>{{teamTotal('offensive_rebounds')}}</td>
-              <td>{{teamTotal('defensive_rebounds')}}</td>
+              <td>{{teamTotal('OREB')}}</td>
+              <td>{{teamTotal('DREB')}}</td>
               <td>{{teamTotal('total_rebounds')}}</td>
 
               <td>{{teamTotal('to')}}</td>
-              <td>{{teamTotal('assists')}}</td>
-              <td>{{teamTotal('blocks')}}</td>
-              <td>{{teamTotal('steals')}}</td>
+              <td>{{teamTotal('AST')}}</td>
+              <td>{{teamTotal('BLK')}}</td>
+              <td>{{teamTotal('STEAL')}}</td>
               <td>{{teamTotal('total_points')}}</td>
             </tr>
           </tfoot>
 
         </editTable>
-        <div class="button" @click="backToGameStats">
-          Back To Games
-        </div>
       </div>
     </div>
   </div>
@@ -499,8 +512,17 @@ export default {
     }
   },
   watch: {
+    '$store.state.teamAssocLvl': {
+      handler (newValue) {
+        this.resetStats()
+        // this.newStats.season = ''
+        this.initSchedule(this.newStats.season.season_id, this.team)
+      },
+      deep: true
+    },
     'newStats.season': {
       handler (newValue) {
+        this.resetStats()
         this.initSchedule(newValue.season_id, this.team)
       },
       deep: true
@@ -642,9 +664,15 @@ export default {
       this.overtimeCount++
     },
     backToGameStats () {
+      // this.resetStats()
       this.newGameStats.game_id = ''
       this.selectedGame = false
       this.boxscore = false
+      this.currentNested = ''
+      this.currentSort = ''
+      this.currentSortDir = 'asc'
+      this.selectedGame = false
+      this.roster = []
     },
     goToPlayerStats () {
       this.boxscore = false
@@ -665,6 +693,14 @@ export default {
         // }
         this.newGameStats = response.data
       })
+    },
+    resetStats () {
+      this.currentNested = ''
+      this.currentSort = ''
+      this.currentSortDir = 'asc'
+      this.selectedGame = false
+      this.roster = []
+      this.pastGames = []
     },
     saveStats () {
       this.saving = true
@@ -699,7 +735,13 @@ export default {
       api.addGameResults(this.newGameStats.game_id, stats)
         .then(response => {
           console.log(response)
+          this.saving = false
+
           this.saved = true
+          window.setTimeout(() => {
+            this.edit = false
+            this.saved = false
+          }, 3000)
         })
     },
     percentage (attempted, made) {
@@ -777,6 +819,21 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @teamColor: var(--bg-color);
+
+.dark {
+  background-color: var(--team-second);
+  color: white;
+  text-align: center;
+  font-style: italic;
+  font-weight: 200;
+}
+.light {
+  background-color: var(--bg-color);
+  color: white;
+  text-align: center;
+  font-style: italic;
+  font-weight: 200;
+}
 
 header {
   display: flex;
@@ -903,11 +960,35 @@ table {
   thead {
     tr {
       height: 40px;
+      &.rowOne {
+        th {
+          position: sticky;
+          top: 60px;
+          background-color: #CFCDCD;
+          &.dark {
+            .dark;
+          }
+          &.light {
+            .light;
+          }
+        }
+      }
+      &.rowTwo {
+        th {
+          position: sticky;
+          top: 99px;
+          background-color: #CFCDCD;
+        }
+      }
     }
     th {
       font-weight: 200;
       line-height: 1;
       white-space: nowrap;
+      padding-left: 1rem;
+      padding-right: 1rem;
+
+      z-index: 4;
       &.pad-right {
         padding-right: 1rem;
       }
@@ -1002,6 +1083,16 @@ table {
 
     &.teamLogo {
       text-align: center;
+      .imgCon {
+          position: relative;
+          height: 50px;
+          background-color: rgba(255, 255, 255, 0.2);
+          width: 150px;
+          margin: auto;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+      }
     }
     input {
       text-align: center;
@@ -1011,19 +1102,25 @@ table {
       box-sizing: border-box;
     }
     &:nth-child(odd) input{
-        background-color: rgba(255,255,255, .6);
-      }
-      &:nth-child(even) input{
-        background-color: rgba(255,255,255, .8);
-      }
+      background-color: rgba(255,255,255, .6);
+    }
+    &:nth-child(even) input{
+      background-color: rgba(255,255,255, .8);
+    }
   }
-  .boxScoreImg{
-    height: 55px;
+  .boxScoreImg {
+    height: 3.5rem;;
     width: auto;
   }
 }
 .quarter {
   width: 55px;
+      &:nth-child(odd){
+      background-color: rgba(255,255,255, .6);
+    }
+    &:nth-child(even){
+      background-color: rgba(255,255,255, .8);
+    }
 }
 .finalScore {
   width: 75px;
@@ -1052,6 +1149,7 @@ table{
       /* margin-top: 0.6rem; */
       top: 0;
       right: -20px;
+      z-index: 5;
     }
   }
 
