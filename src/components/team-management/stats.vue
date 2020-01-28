@@ -679,19 +679,11 @@ export default {
     },
     initNewGameStats (rosterId) {
       api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
-        // console.log(response)
-        // roster = this.initRoster(response.data.team_id)
-
-        // let teamInfo = {
-        //   'team_uuid': '',
-        //   'team_stats': roster
-        // }
-
-        // this.newGameStats = {
-        //   ...this.newGameStats,
-        //   ...teamInfo
-        // }
         this.newGameStats = response.data
+        if (this.newGameStats.final_scores.home_score !== null) {
+          this.gameScore.homeTeam.final = this.newGameStats.final_scores.home_score
+          this.gameScore.awayTeam.final = this.newGameStats.final_scores.away_score
+        }
       })
     },
     resetStats () {

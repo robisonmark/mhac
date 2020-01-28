@@ -117,6 +117,7 @@
       <div class="main-nav">
         <nav>
           <router-link :to="{ path: '/' }">Home</router-link>
+          <router-link :to="{ path: '/tournament2020' }">Tournament Central</router-link>
           <router-link :to="{ path: '/compliance' }">Compliance</router-link>
           <router-link :to="{ path: '/schedules' }">Schedules</router-link>
           <router-link :to="{ path: '/stats' }">Stats</router-link>
@@ -124,7 +125,10 @@
           <!-- <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"> -->
             Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
             <ul v-show="showSchools" class="nav_dropdown">
-              <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">{{team.team_name}}</router-link>
+              <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">
+                <!-- <span class="imgCon"><img :src="'/static/color-team-logos/' + team.logo_color" :alt="team.team_name + ' ' + team.team_mascot"/></span>  -->
+                {{team.team_name}}
+              </router-link>
             </ul>
           </div>
           <!-- <router-link :to="{ path: '/contact' }">Contact</router-link> -->
@@ -328,12 +332,18 @@ export default {
         div {
           color: #fff;
           text-decoration: none;
-          position: relative;
+          // position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100%;
-
+            flex-grow: 1;
+            // &.router-link-exact-active{
+            &:hover{
+              background-color: #fff;
+              color: var(--bg-color);
+              font-weight: 600;
+            }
         }
         .nav_dropdown {
           position: absolute;
@@ -341,12 +351,24 @@ export default {
           background: white;
           color: #021A2B;
           // top: 39px;
-          top: 55px;
-          box-shadow: 2px 2px 10px #021A2B;
+          top: 4.5rem;
+          box-shadow: 2px 4px 8px 0px #021A2B;
           width: 250px;
+          right: 0;
+          width: 100%;
+          columns: 2;
+          font-weight: 400;
           li {
             padding: 3px 15px;
             cursor: pointer;
+            .imgCon {
+              height: 60px;
+              width: 50px
+            }
+            img {
+              max-width: 100%;
+              max-height: 100%;
+            }
             &:hover {
               background-color: rgba(12, 75, 117, .2)
             }

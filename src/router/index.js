@@ -5,6 +5,7 @@ import Router from 'vue-router'
 // Front Pages
 // import website from '@/components/website'
 import home from '@/components/front-pages/home'
+import tournament from '@/components/front-pages/tournament'
 import compliance from '@/components/front-pages/compliance'
 import schedules from '@/components/front-pages/schedules'
 import stats from '@/components/front-pages/stats'
@@ -30,6 +31,15 @@ export const router = new Router({
       path: '/',
       name: 'home',
       component: home,
+      meta: {
+        'requiresAuth': false,
+        'section': 'public'
+      }
+    },
+    {
+      path: '/tournament2020',
+      name: 'tournament',
+      component: tournament,
       meta: {
         'requiresAuth': false,
         'section': 'public'
