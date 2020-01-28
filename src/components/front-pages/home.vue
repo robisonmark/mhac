@@ -77,9 +77,9 @@
     <div class="row conference-blurb">
       <div class="col-9 conference-blurb-content">
         <h1>Midsouth Homeschool Athletic Conference</h1>
-        <p>The MidSouth Homeschool Athletic Conference (MHAC) was formed in 2018, and is part of the Southeast Region for the National Christian HomeSchool Championships.  The MHAC has 8 member teams located in Tennesee, Southern Kentucky, and Northern Alabama.</p>
-        <p>Each year the MHAC holds tournaments in 18U, 16U and 14U age brackets.</p>
-        <p>To inquire about joining the conference please email: email@personinconference.org</p>
+        <p>The MidSouth Homeschool Athletic Conference (MHAC) was formed in 2018, and is part of the Southeast Region for the National Christian HomeSchool Championships.  The MHAC has 8 member teams located in Tennesee, Southern Kentucky, and Northern Alabama. These teams currently compete in Boys and Girls 18U Basketball, and Boys 16U and 14U Basketball.</p>
+        <p>Each year the MHAC holds tournaments in each 18U, 16U and 14U age brackets.</p>
+        <!-- <p>To inquire about joining the conference please email: email@personinconference.org</p> -->
 
         <h3>For Information on the 2020 Tournament please go to <router-link :to="{ 'path': '/tournament2020' }">Tournament Central</router-link></h3>
       </div>
