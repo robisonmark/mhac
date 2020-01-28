@@ -3,7 +3,7 @@
      <div class="page-styles">
       <h2>MHAC Conference Tournament Information - 2020</h2>
       <h5><a href="/static/docs/MHAC Conference 2020 Tournament.pdf" class="download" download>Download Tournament Packet</a></h5>
-      <p>The 2019-2020 MHAC Conference Tournament will be being Thursday Feburary 6th at <a href="https://welch.edu/">Welch College</a> in Gallatin, Tennessee. Games being at 8:00am CST at the <a href="https://goo.gl/maps/tBuQfnHmC19ZZste9">Welch College Gym</a>.  Please <a href="/static/docs/MHAC Conference 2020 Tournament.pdf" class="download" download>download the tournament packet</a> for more information.</p>
+      <p>The 2019-2020 MHAC Conference Tournament will be beginning Thursday Feburary 6th at <a href="https://welch.edu/">Welch College</a> in Gallatin, Tennessee. Games begin at 8:00am CST at the <a href="https://goo.gl/maps/tBuQfnHmC19ZZste9">Welch College Gym</a>.  Please <a href="/static/docs/MHAC Conference 2020 Tournament.pdf" class="download" download>download the tournament packet</a> for more information.</p>
       <p>Because of our initial growth we are using a second gym the first day where the initial 14u games will be played.  It is First Baptist Church Hendersonville.  <a href="https://goo.gl/maps/jkkQnVX1KjcR7VpH9">106 Bluegrass Commons Blvd, Hendersonville, TN 37075</a>.  The 14u families will report to that gym directly Thursday morning.</p>
       <div class="tournamentSchedule">
         <table>
