@@ -158,7 +158,7 @@ export default {
   .body {
     // margin-top: 112px;
     // padding-top: 112px;
-    padding-top: 7rem;
+    // padding-top: 7rem;
     color: #021A2B;
   }
  .team {

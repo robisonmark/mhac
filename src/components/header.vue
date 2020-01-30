@@ -1,6 +1,6 @@
 <template>
   <header :style="styles">
-    <div class="container">
+    <div class="container container--header">
       <div class="con-logo">
         <router-link :to="{ path: '/'}" class="">
           <img class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
@@ -271,8 +271,8 @@
               Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
               <ul v-show="showSchools" class="nav_dropdown">
                 <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">
-                  <!-- <span class="imgCon"><img :src="'/static/color-team-logos/' + team.logo_color" :alt="team.team_name + ' ' + team.team_mascot"/></span>  -->
                   {{team.team_name}}
+                  <!-- <span class="imgCon"><img :src="'/static/color-team-logos/' + team.logo_color" :alt="team.team_name + ' ' + team.team_mascot"/></span> -->
                 </router-link>
               </ul>
             </span>
@@ -408,7 +408,7 @@ export default {
 
     }
 
-    .container {
+    .container--header {
       height: 7rem;
       display: flex;
       justify-content: space-between;
@@ -504,7 +504,7 @@ export default {
         flex-direction: column;
         position: relative;
         width: 100%;
-        z-index: 1;
+        z-index: 2;
         flex-grow: 1;
       }
       ul {
@@ -515,6 +515,7 @@ export default {
         width: 100%;
         justify-content: flex-end;
         align-items: center;
+        margin-bottom: 0; // Fix for margin-block-end in chrome
         li {
           // height: 85%;
           // height: 1.35rem;
@@ -556,7 +557,7 @@ export default {
         }
       }
 
-      @media @phone {
+      @media @tablet-max {
         nav {
           z-index: 2;
           width: 100%;
@@ -638,6 +639,7 @@ export default {
       // background-color: #fff;
       display: flex;
       flex-flow: row;
+      z-index: 1;
       // align-items: stretch;
       // width: 100%;
       // justify-content: center;
@@ -671,21 +673,39 @@ export default {
         }
 
         .nav_dropdown {
-          position: absolute;
+          // position: fixed;
         //   width: 200px;
-          background: white;
-          color: #021A2B;
+          // background: rgba(255,255,255, 0.95);
+          color: #2A2A2A;
           // top: 39px;
           top: 4.5rem;
-          box-shadow: 2px 4px 8px 0px #021A2B;
-          width: 250px;
+          // top: 7rem;
+          box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
+          // width: 250px;
           right: 0;
-          width: 100%;
-          columns: 2;
+          // width: 100%;
+          // columns: 2;
+          position: absolute;
+          width: auto;
           font-weight: 400;
+          text-align: right;
+          white-space: nowrap;
+          background: rgba(255,255,255, 0.95);
+          font-size: .9rem;
+          letter-spacing: -.2px;
           li {
-            padding: 3px 15px;
+            padding: .2rem 1rem;
             cursor: pointer;
+            font-family: 'Lato';
+            &:after {
+              // content: '';
+              // display: inline-block;
+              height: 1px;
+              background: var(--bg-color);
+              width: calc(100% + .75rem);
+              margin-right: -.5rem;
+              float: right;
+            }
             .imgCon {
               height: 60px;
               width: 50px
@@ -695,7 +715,8 @@ export default {
               max-height: 100%;
             }
             &:hover {
-              background-color: rgba(12, 75, 117, .2)
+              color: @conf-blue;
+              // background-color: rgba(12, 75, 117, .2)
             }
           }
         }
