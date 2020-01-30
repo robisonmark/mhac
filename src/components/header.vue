@@ -121,7 +121,7 @@
           <router-link :to="{ path: '/compliance' }">Compliance</router-link>
           <router-link :to="{ path: '/schedules' }">Schedules</router-link>
           <router-link :to="{ path: '/stats' }">Stats</router-link>
-          <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
+          <div class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
           <!-- <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"> -->
             Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
             <ul v-show="showSchools" class="nav_dropdown">
@@ -187,6 +187,11 @@ export default {
     })
   },
   methods: {
+    displayDrop () {
+      console.log('touched')
+      this.showSchools = !this.showSchools
+      console.log('made it past')
+    },
     toggleLogin () {
       let isOpen = _.cloneDeep(this.showLogin)
       // this.$root.$emit('close')
@@ -299,7 +304,10 @@ export default {
             padding: 5px 7px;
             box-sizing: content-box;
           img {
-            height: 100%;
+            // height: 100%;
+            max-height: 95%;
+            max-width: 3rem;
+            vertical-align: bottom;
           }
         }
       }

@@ -578,8 +578,8 @@ export default {
 .page-styles{
   min-height: 100vh;
   background-color: #fff;
-  margin-right: 1rem;
-  margin-left: 1rem;
+  // margin-right: 1rem;
+  // margin-left: 1rem;
 }
 .filter-bar {
   background-color: @nav-blue;

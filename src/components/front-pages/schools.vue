@@ -122,7 +122,7 @@
         </div>
       </div> -->
     </div>
-    <div class="bottom-logo">
+    <div class="bottom-logo" ref="bottomLogo" v-stickBottom>
       <img v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey" :alt="program.team_name + ' ' + program.team_mascot"/>
     </div>
   </div>
@@ -168,6 +168,14 @@ export default {
     }
   },
   computed: {
+    footerLoc: {
+      get: function () {
+        return document.getElementById('publicMainFooter').getBoundingClientRect().top
+      },
+      set: function () {
+        return document.getElementById('publicMainFooter').getBoundingClientRect().top
+      }
+    },
     seasons () {
       const seasons = [...this.$store.state.seasons]
       return seasons
@@ -226,21 +234,39 @@ export default {
   },
   created () {
     this.initSchool()
-
     this.$root.$on('close', payload => {
       this.showSeasons = false
       this.showSections = false
     })
   },
   methods: {
-    initSchool () {
+    async initSchool () {
       const slug = this.$route.params.slug
-      // console.log(this.$route)
-      api.getTeams(slug).then(response => {
-        this.program = response.data.team[0]
-        this.initRoster(this.program.id)
-        this.getSeasonTeams(this.$route.params.slug)
-      })
+
+      await api.getTeams(slug)
+        .then(response => {
+          this.program = response.data.team[0]
+          this.initRoster(this.program.id)
+          this.getSeasonTeams(this.$route.params.slug)
+        })
+
+      // window.addEventListener('scroll', this.watchLogoPos)
+    },
+    watchLogoPos () {
+      let footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
+      let bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
+
+      console.log('top: ', document.getElementById('publicMainFooter').scrollTop)
+      console.log('y: ', footerTop.y)
+      console.log('bottom: ', bottomLogoPos.y)
+      console.log('bool: ', footerTop.top <= (bottomLogoPos.bottom))
+      console.log('pos: ', (bottomLogoPos.y - footerTop.y) + 'px')
+
+      if (footerTop.top <= bottomLogoPos.bottom) {
+        this.$refs.bottomLogo.style.bottom = (bottomLogoPos.bottom - footerTop.top) + 'px'
+      } else {
+        this.$refs.bottomLogo.style.removeProperty('bottom')
+      }
     },
     initRoster (id) {
       api.getPlayers(id).then(response => {
@@ -362,6 +388,7 @@ export default {
 .logo-color {
   height: 20rem;
   min-width: 20rem;
+  margin-left: 1rem;
   width: 16%;
   background-color: #fff;
   display: flex;
@@ -379,7 +406,7 @@ export default {
   }
 }
 .content-container {
-  width: 100%;
+  width: calc(100% + 2rem);
   border-radius: 15px;
   // height: 152vh;
   background-color: #0C4B75;

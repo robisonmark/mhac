@@ -1,9 +1,33 @@
 <template>
   <div id="app" :class="this.$route.meta.section" @click="clickAway()">
     <headerComponent :styles="cssVars"></headerComponent>
-    <router-view class="body" />
-    <footer>
-
+    <main>
+      <router-view class="body" />
+      <footer class="container fixed-footer">
+        <div class="row justify-content-end">
+          <div class="col-3 copy">
+            <!-- <div class="content"> -->
+              Midsouth Homeschool Athletic Conference &copy; {{ new Date().getFullYear() }}
+            <!-- </div> -->
+          </div>
+        </div>
+      </footer>
+    </main>
+    <footer v-if="this.$route.meta.section === 'public'" class="main-footer" id="publicMainFooter">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col conference conference-info">
+            <img class="conference conference-logo" src="/static/washedout-team-logo/mhac-greyscale.png" />
+            <p>&copy; {{ new Date().getFullYear() }} Midsouth Homeschool Athletic Conference</p>
+            <p>All Rights Reserved | Terms of Service | Privacy Policy</p>
+          </div>
+          <div class="col-4">
+            <div class="border">
+              <img class="robros" src="/static/robros/robros-logo.png" />
+            </div>
+          </div>
+        </div>
+      </div>
     </footer>
   </div>
 </template>
@@ -128,6 +152,9 @@ export default {
     min-height: 100vh;
     height: 100%;
   }
+  main {
+    position: relative;
+  }
   .body {
     // margin-top: 112px;
     // padding-top: 112px;
@@ -141,7 +168,7 @@ export default {
   .public {
     min-height: 100vh;
     margin: 0;
-    padding-bottom: 2rem;
+    // padding-bottom: 2rem;
     /*Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#f4f7f9+0,9fc7e3+21,8cbcde+25,2784c3+100 */
     background: rgb(244,247,249); /* Old browsers */
     background: -moz-linear-gradient(-45deg, rgba(244,247,249,1) 0%, rgba(159,199,227,1) 21%, rgba(140,188,222,1) 25%, rgba(39,132,195,1) 100%); /* FF3.6-15 */
@@ -149,9 +176,62 @@ export default {
     background: linear-gradient(135deg, rgba(244,247,249,1) 0%,rgba(159,199,227,1) 21%,rgba(140,188,222,1) 25%,rgba(39,132,195,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4f7f9', endColorstr='#2784c3',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
     background-attachment: fixed;
+
   }
 
   .contentPad {
-      padding: 0rem 4rem;
+    padding: 0rem 4rem;
+  }
+
+  .fixed-footer {
+    position: sticky;
+    bottom: 1rem;
+    text-align: right;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    .copy {
+      margin-right: .5rem;
+      font-size: 10px;
     }
+    // padding-right: .5rem;
+  }
+
+  .main-footer {
+    background-color: #2A2A2A;
+    height: 405px;
+    display: flex;
+    align-items: center;
+
+    .conference {
+      &-info {
+        color: #fff;
+        p {
+          line-height: 1.5;
+          margin-bottom: 0;
+        }
+      }
+      &-logo {
+        max-width: 20rem;
+        margin-bottom: 2rem;
+      }
+    }
+    .border {
+      width: 100%;
+      display: flex;
+      align-items: center;
+
+      &:before {
+        content: '';
+        width: 3px;
+        height: 169px;
+        margin-right: 2rem;
+        background-color: #fff;
+        display: inline-block;
+      }
+    }
+    .robros {
+      width: 100%;
+      max-width: calc(100% - 3px - 2rem);
+    }
+  }
 </style>

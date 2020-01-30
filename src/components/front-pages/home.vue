@@ -83,6 +83,10 @@
 
         <h3>For Information on the 2020 Tournament please go to <router-link :to="{ 'path': '/tournament2020' }">Tournament Central</router-link></h3>
       </div>
+
+      <!-- <footer class="col-12 text-right">
+        Midsouth Homeschool Athletic Conference &copy; {{ new Date().getFullYear() }}
+      </footer> -->
     </div>
   </div>
 </template>
@@ -253,6 +257,8 @@ export default {
 .conference-blurb {
   background-color: #fff;
   margin: 2rem 0rem 0;
+  clip: rect(auto, auto, auto, auto);
+
   &-content {
     padding-top: 1rem;
     padding-bottom: 1rem;
@@ -284,5 +290,11 @@ select {
   margin-bottom: 1rem;
   color: #021A2B;
   border-color: #021A2B;
+}
+footer {
+  position: relative;
+  bottom: 2rem;
+  // width: 100%;
+  // padding-right: 1rem;
 }
 </style>
