@@ -13,6 +13,116 @@
               <img v-show="!collapse" class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
               <div>Schools <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon></div>
             </div>
+    <!-- <div class="con-logo">
+      <router-link :to="{ path: '/'}" class="con-logo">
+        <img class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
+      </router-link>
+    </div>
+    <div class="right">
+      <div class="top-hat">
+        <nav class="largeScreen"> -->
+          <ul>
+            <li>
+              <a href="http://www.wkytrailblazers.com/">
+                <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
+              </a>
+            </li>
+            <li>
+              <a href="https://d1academy.org/">
+                <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
+              </a>
+            </li>
+            <li>
+              <a href="http://cca-huntsville.org/">
+                <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
+              </a>
+            </li>
+            <li>
+              <a href="https://tnheatsports.com/">
+                <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
+              </a>
+            </li>
+            <li>
+              <a href="https://lifechristianacademy.org/">
+                <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
+              </a>
+            </li>
+            <li>
+              <a href="http://patriot-basketball.com/">
+                <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
+              </a>
+            </li>
+            <li>
+              <a href="http://hendersonvilleroyals.com/">
+                <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
+              </a>
+            </li>
+            <li>
+              <a href="https://www.nccwarriors.com/">
+                <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
+              </a>
+            </li>
+            <li>
+              <div class="button" @click="toggleLogin" ref="showLogin">
+                <span v-if="!loggedIn">Login</span>
+                <span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span>
+              </div>
+            </li>
+          </ul>
+
+            <div v-if="showLogin" class="teamlogin" ref="teamlogin">
+              <form v-if="!loggedIn">
+                <label for="username">
+                  Username
+                </label>
+                <input type="text" id="username" v-model="username" @click.stop />
+                <label for="password">
+                  Password
+                </label>
+                <input type="password" id="password" v-model="password" @click.stop />
+                <button @click.prevent.stop="login()" class="login">
+                  <font-awesome-icon :icon="['fas', 'basketball-ball']" :class="{'animate': thinking}"></font-awesome-icon> Login
+                </button>
+              </form>
+              <div v-else class="text-right">
+                <!-- <router-link :to="{name: 'teamDashboard', params: { slug: team.slug.toLowerCase() }}">Go To Team Dashboard</router-link> -->
+                <router-link :to="{name: 'teamDashboard', params: { slug: 'hendersonville_royals' }}">Go To Team Dashboard</router-link>
+                <button @click.prevent="signout()" class="login">
+                  <font-awesome-icon :icon="['fas', 'basketball-ball']"></font-awesome-icon> Signout
+                </button>
+              </div>
+            </div>
+        </nav>
+
+        <!-- <nav class="mobileScreen">
+          <div class="dropdown">
+            <a href="http://www.wkytrailblazers.com/">
+              <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
+            </a>
+            <a href="https://d1academy.org/">
+              <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
+            </a>
+            <a href="http://cca-huntsville.org/">
+              <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
+            </a>
+            <a href="https://tnheatsports.com/">
+              <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
+            </a>
+            <a href="https://lifechristianacademy.org/">
+              <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
+            </a>
+            <a href="http://patriot-basketball.com/">
+              <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
+            </a>
+            <a href="http://hendersonvilleroyals.com/">
+              <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
+            </a>
+            <a href="https://www.nccwarriors.com/">
+              <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
+            </a>
+            <div class="button" @click="showLogin = !showLogin" ref="showLogin">
+              <span>Login</span>
+            </div>
             <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
               <li>
                 <a href="http://www.wkytrailblazers.com/">
@@ -70,11 +180,11 @@
                   </div>
                 </a>
               </li>
-            </ul>
+            </ul> -->
               <!-- <div class="button" @click="showLogin = !showLogin" ref="showLogin">
                 <span>Login</span>
               </div> -->
-              <div v-if="showLogin" class="teamlogin" ref="teamlogin">
+              <!-- <div v-if="showLogin" class="teamlogin" ref="teamlogin">
                 <form v-if="!loggedIn">
                   <label for="username">
                     Username
@@ -94,7 +204,7 @@
                   </button>
                 </div>
               </div>
-          </nav>
+          </nav> -->
 
           <!-- <nav class="mobileScreen">
             <div class="dropdown">
@@ -151,39 +261,33 @@
         </div>
         <div class="main-nav">
           <nav>
-            <!-- <ul> -->
-              <!-- <li> -->
-                <router-link :to="{ path: '/' }">Home</router-link>
-              <!-- </li> -->
-              <!-- <li> -->
-                <router-link :to="{ path: '/compliance' }">Compliance</router-link>
-              <!-- </li> -->
-              <!-- <li> -->
-                <router-link :to="{ path: '/schedules' }">Schedules</router-link>
-              <!-- </li> -->
-              <!-- <li> -->
-                <router-link :to="{ path: '/stats' }">Stats</router-link>
-              <!-- </li> -->
-              <!-- <li> -->
-                <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
-                <!-- <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"> -->
-                  Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
-                  <ul v-show="showSchools" class="nav_dropdown">
-                    <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">{{team.team_name}}</router-link>
-                  </ul>
-                </div>
-              <!-- </li> -->
-            <!-- </ul> -->
+            <router-link :to="{ path: '/' }">Home</router-link>
+            <router-link :to="{ path: '/tournament2020' }">Tournament Central</router-link>
+            <router-link :to="{ path: '/compliance' }">Compliance</router-link>
+            <router-link :to="{ path: '/schedules' }">Schedules</router-link>
+            <router-link :to="{ path: '/stats' }">Stats</router-link>
+            <span class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
+            <!-- <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"> -->
+              Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
+              <ul v-show="showSchools" class="nav_dropdown">
+                <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">
+                  <!-- <span class="imgCon"><img :src="'/static/color-team-logos/' + team.logo_color" :alt="team.team_name + ' ' + team.team_mascot"/></span>  -->
+                  {{team.team_name}}
+                </router-link>
+              </ul>
+            </span>
             <!-- <router-link :to="{ path: '/contact' }">Contact</router-link> -->
           </nav>
         </div>
       </div>
+
     </div>
   </header>
 </template>
 
 <script>
-// import { api } from '@/api/endpoints'
+import { api } from '@/api/endpoints'
+import _ from 'lodash'
 
 export default {
   // login: markrobison630@gmail.com
@@ -193,8 +297,9 @@ export default {
     return {
       collapse: true,
       showLogin: false,
-      loggedIn: false,
+      // loggedIn: false,
       showSchools: false,
+      thinking: false,
       username: '',
       password: ''
     }
@@ -210,13 +315,40 @@ export default {
     },
     teams () {
       return this.$store.state.teams
+    },
+    loggedIn: {
+      get: function () {
+        // let auth =
+        return this.$store.getters.authenticated !== ''
+      },
+      set: function () {
+
+      }
     }
   },
   filters: {
   },
   watch: {},
-  created () {},
+  created () {
+    this.$root.$on('close', payload => {
+      this.showLogin = false
+    })
+  },
   methods: {
+    displayDrop () {
+      console.log('touched')
+      this.showSchools = !this.showSchools
+      console.log('made it past')
+    },
+    toggleLogin () {
+      let isOpen = _.cloneDeep(this.showLogin)
+      // this.$root.$emit('close')
+
+      // this.open = !isOpen
+      window.setTimeout(() => {
+        this.showLogin = !isOpen
+      }, 1)
+    },
     checkMouse () {
       // window.setTimeout(() => {
       //   this.showSchools = false
@@ -233,20 +365,25 @@ export default {
       this[open] = false
     },
     login () {
-      this.$router.push('/manage/chattanooga_patriots')
-      // api.login(this.username, this.password).then(response => {
-      //   this.loggedIn = true
-      //   this.showLogin = false
-      //   this.$store.dispatch('setAuth', response.data.token)
-      //   this.$router.push('/manage/royals')
-      // })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
+      this.thinking = true
+      // this.$router.push('/manage/chattanooga_patriots')
+      api.login(this.username, this.password).then(response => {
+        // console.log(response)
+        this.loggedIn = true
+        this.showLogin = false
+        this.$store.dispatch('setAuth', response.data.token)
+        this.$router.push('/manage/hendersonville_royals')
+      })
+        .catch(err => {
+          console.log(err)
+        })
     },
     signout () {
       this.loggedIn = false
-      this.$router.push('/')
+      this.$store.dispatch('setAuth', '')
+      if (this.$route.meta.section !== 'public') {
+        this.$router.push('/')
+      }
     }
   }
 }
@@ -326,8 +463,8 @@ export default {
       display: grid;
       grid-auto-rows: 2.5rem 4.5rem;
       flex-grow: 1;
-      max-width: 825px;
-      padding-right: 1rem;
+      // max-width: 825px;
+      // padding-right: 1rem;
       // position: relative;
       // &:before {
       //   border-top: 7rem solid #fff;
@@ -343,12 +480,12 @@ export default {
     }
     .top-hat {
       height: 100%;
-      background-color: #fff;
+      // background-color: #fff;
       display: flex;
-      flex-flow: column;
-      align-items: stretch;
-      width: 100%;
-      justify-content: center;
+      flex-flow: row;
+      // align-items: stretch;
+      // width: 100%;
+      // justify-content: center;
       &:before {
           content: '';
           height: 2.5rem;
@@ -357,22 +494,44 @@ export default {
           top: 0;
           left: 0;
           background: #fff;
+          z-index: 1;
       }
       .mobile-drop {
         display: none;
       }
+      & nav {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        width: 100%;
+        z-index: 1;
+        flex-grow: 1;
+      }
       ul {
+        display: flex;
+        flex-flow: row;
+        /* flex-grow: 1; */
+        height: 100%;
+        width: 100%;
+        justify-content: flex-end;
+        align-items: center;
         li {
           // height: 85%;
           // height: 1.35rem;
           height: 2.25rem;
-          padding: 5px 7px;
+          padding: 0 1rem;
           box-sizing: content-box;
           div {
             height: 2.25rem;
           }
           img {
-            height: 100%;
+            // height: 100%;
+            max-height: 95%;
+            max-width: 3rem;
+            vertical-align: bottom;
+          }
+          &:last-child {
+            padding-right: 0;
           }
         }
       }
@@ -475,48 +634,66 @@ export default {
     }
 
     .main-nav {
-      // background-color: var(--bg-color);
-      // display: flex;
-      // justify-content: center;
+      height: 100%;
+      // background-color: #fff;
       display: flex;
-      flex-flow: column;
-      align-items: stretch;
-      width: 100%;
-      nav {
-        // height: 100%;
-        // li{
-          // display: flex;
-          //   justify-content: center;
-          //   align-items: center;
-          //   height: 100%;
+      flex-flow: row;
+      // align-items: stretch;
+      // width: 100%;
+      // justify-content: center;
 
-          a,
-          div {
-            color: #fff;
-            text-decoration: none;
-            // position: relative;
-            // height: 100%;
-            display: flex;
-            flex-flow: row wrap;
-            justify-content: center;
-            align-items: center;
+      nav {
+        display: flex;
+        // flex-direction: column;
+        position: relative;
+        width: 100%;
+        z-index: 1;
+        flex-grow: 1;
+
+        a,
+        span {
+          color: #fff;
+          text-decoration: none;
+          // position: relative;
+          // height: 100%;
+          display: flex;
+          flex-flow: row wrap;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          flex-grow: 1;
+          // &.router-link-exact-active{
+          &:hover{
+            background-color: #fff;
+            color: var(--bg-color);
+            font-weight: 600;
           }
-          div {
-            display: inline-block;
-          }
-        // }
+        }
+
         .nav_dropdown {
           position: absolute;
         //   width: 200px;
           background: white;
           color: #021A2B;
-        //   // top: 39px;
-        //   top: 55px;
-          box-shadow: 2px 2px 10px #021A2B;
-        //   width: 250px;
+          // top: 39px;
+          top: 4.5rem;
+          box-shadow: 2px 4px 8px 0px #021A2B;
+          width: 250px;
+          right: 0;
+          width: 100%;
+          columns: 2;
+          font-weight: 400;
           li {
             padding: 3px 15px;
             cursor: pointer;
+            .imgCon {
+              height: 60px;
+              width: 50px
+            }
+            img {
+              max-width: 100%;
+              max-height: 100%;
+            }
             &:hover {
               background-color: rgba(12, 75, 117, .2)
             }
@@ -524,6 +701,72 @@ export default {
         }
       }
     }
+    // .main-nav {
+    //   // background-color: var(--bg-color);
+    //   // display: flex;
+    //   // justify-content: center;
+    //   display: flex;
+    //   flex-flow: column;
+    //   align-items: stretch;
+    //   width: 100%;
+    //   nav {
+    //     // height: 100%;
+    //     // li{
+    //       // display: flex;
+    //       //   justify-content: center;
+    //       //   align-items: center;
+    //       //   height: 100%;
+
+    //       a,
+    //       div {
+    //         color: #fff;
+    //         text-decoration: none;
+    //         // position: relative;
+    //         // height: 100%;
+    //         display: flex;
+    //         flex-flow: row wrap;
+    //         justify-content: center;
+    //         align-items: center;
+    //         height: 100%;
+    //         flex-grow: 1;
+    //         // &.router-link-exact-active{
+    //         &:hover{
+    //           background-color: #fff;
+    //           color: var(--bg-color);
+    //           font-weight: 600;
+    //         }
+    //     }
+    //     .nav_dropdown {
+    //       position: absolute;
+    //     //   width: 200px;
+    //       background: white;
+    //       color: #021A2B;
+    //       // top: 39px;
+    //       top: 4.5rem;
+    //       box-shadow: 2px 4px 8px 0px #021A2B;
+    //       width: 250px;
+    //       right: 0;
+    //       width: 100%;
+    //       columns: 2;
+    //       font-weight: 400;
+    //       li {
+    //         padding: 3px 15px;
+    //         cursor: pointer;
+    //         .imgCon {
+    //           height: 60px;
+    //           width: 50px
+    //         }
+    //         img {
+    //           max-width: 100%;
+    //           max-height: 100%;
+    //         }
+    //         &:hover {
+    //           background-color: rgba(12, 75, 117, .2)
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     ul.top-hat__list {
       height: 100%;
@@ -538,14 +781,26 @@ export default {
       // left: 100px;
     }
   }
-  .button {
+  .button,
+  button,
+  [type="button"] {
     background-color: @conf-blue;
     color: #fff;
     padding: .3125rem .625rem;
+    border-style: unset;
+    white-space: nowrap;
     // border-radius: 5px;
     // transform: skewX(-45deg);
     &:hover {
       background-color: @nav-blue;
+    }
+  }
+
+  @keyframes fa-spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}
+  .login {
+    margin-top: .5rem;
+    .animate {
+      animation: fa-spin 4s infinite linear;
     }
   }
 

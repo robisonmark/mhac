@@ -1,46 +1,51 @@
 <template>
   <div class="hello">
-    <h2>2019 - 2020 Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
-    <div class="" v-if="schedule.length === 0">Please Select a level to begin</div>
-    <editTable v-else :columns="columns" :config="config" :tabledata="schedule" v-model="newGame">
-      <template slot="thead">
-        <tr>
-          <th>Host</th>
-          <th>Opponent</th>
-          <th>Time</th>
-          <th>Date</th>
-          <th>Level</th>
-        </tr>
-      </template>
+    <header class="contentPad">
+      <h2>2019 - 2020 Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
+    </header>
 
-      <template slot="tbody">
-        <tr v-for="(data, index) in schedule" :key="index">
-          <td><span :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</span></td>
-          <td>{{data.opponent.name}}</td>
-          <td>{{data.game_time}}</td>
-          <td>{{data.game_date}}</td>
-          <td>{{data.schedule_id}}</td>
-        </tr>
-
-        <tr v-if="!addNew" @click="addTo">
-          <td colspan="7" align="center" class="add-button">
-            <template v-if="$route.name === 'roster'">Edit Roster</template>
-            <template v-else>Add New Game to Schedule</template>
-          </td>
-          <!-- <td></td> -->
-        </tr>
-
-        <template v-else>
-          <tr class="split-fields">
-            <td class="input-con"><div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div></td>
-            <td class="input-con"><selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent"></selectbox></td>
-            <td class="input-con"><input type="time" v-model="newGame.game_time" /></td>
-            <td class="input-con"><input type="date" v-model="newGame.game_date" /></td>
-            <td class="input-con"><span @click="save()" class="icons">SAVE</span></td>
+    <div class="contentPad">
+      <div class="" v-if="schedule.length === 0">Please Select a level to begin</div>
+      <editTable v-else :columns="columns" :config="config" :tabledata="schedule" v-model="newGame">
+        <template slot="thead">
+          <tr>
+            <th>Host</th>
+            <th>Opponent</th>
+            <th>Time</th>
+            <th>Date</th>
+            <th>Level</th>
           </tr>
         </template>
-      </template>
-    </editTable>
+
+        <template slot="tbody">
+          <tr v-for="(data, index) in schedule" :key="index">
+            <td><span :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</span></td>
+            <td>{{data.opponent.name}}</td>
+            <td>{{data.game_time}}</td>
+            <td>{{data.game_date}}</td>
+            <td>{{data.schedule_id}}</td>
+          </tr>
+
+          <tr v-if="!addNew" @click="addTo">
+            <td colspan="7" align="center" class="add-button">
+              <template v-if="$route.name === 'roster'">Edit Roster</template>
+              <template v-else>Add New Game to Schedule</template>
+            </td>
+            <!-- <td></td> -->
+          </tr>
+
+          <template v-else>
+            <tr class="split-fields">
+              <td class="input-con"><div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div></td>
+              <td class="input-con"><selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent"></selectbox></td>
+              <td class="input-con"><input type="time" v-model="newGame.game_time" /></td>
+              <td class="input-con"><input type="date" v-model="newGame.game_date" /></td>
+              <td class="input-con"><span @click="save()" class="icons">SAVE</span></td>
+            </tr>
+          </template>
+        </template>
+      </editTable>
+    </div>
 
   </div>
 </template>

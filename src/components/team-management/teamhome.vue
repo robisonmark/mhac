@@ -1,6 +1,6 @@
 <template>
-  <div class="hello">
-    <h2>Team Home</h2>
+  <div class="contentPad">
+    <h2>Welcome to your new Team Management Portal</h2>
   </div>
 </template>
 

@@ -1,8 +1,11 @@
 <template>
   <div class="con-management">
     <nav class="sidebar">
+      <div v-if="admin" class="admin">
+        <selectbox id="teams" :options="teams" :trackby="'team_name'" placeholder="" v-model="selectedTeam"></selectbox>
+      </div>
       <div class="team-logo">
-        <img src="@/assets/color-team-logos/royals.png" />
+        <img :src="teamLogo" />
       </div>
       <ul :style="cssVars">
         <router-link :to="{ path: '/manage/' + team + '/roster'}" tag="li">Roster</router-link>
@@ -12,20 +15,31 @@
       </ul>
     </nav>
     <router-view class="team-management" :style="cssVars" />
-    <img class="bottom-logo" src="@/assets/washedout-team-logo/royals-grayscale.png" />
+    <img class="bottom-logo" :src="greyLogo" />
   </div>
 </template>
 
 <script>
+// api
+import { api } from '../api/endpoints.js'
+
+// components
+import selectbox from './selectbox'
+
 export default {
   name: 'TeamManagement',
   data () {
     return {
+      greyLogo: '',
       team: this.$route.params.slug,
-      teamLogo: '',
       // teamColor: '#B42625',
+      teamLogo: '',
       fontSecondary: '#fff'
+      // selectedTeam: {}
     }
+  },
+  components: {
+    'selectbox': selectbox
   },
   computed: {
     cssVars () {
@@ -45,7 +59,50 @@ export default {
         '--hover-color': this.darken(teamMain, 15),
         '--active-color': this.lighten(teamMain, 10)
       }
+    },
+    admin () {
+      if (this.$store.state.userGroups.includes('Admin')) {
+        return true
+      } else {
+        return false
+      }
+    },
+    teams () {
+      return this.$store.state.teams
+    },
+    selectedTeam: {
+      get: function () {
+        return this.$store.state.teams.find(team => {
+          let user = {
+            team_id: team.id,
+            slug: team.slug
+          }
+          this.$store.dispatch('setUser', user)
+          return team.slug === this.$route.params.slug
+        })
+      },
+      set: function (newValue) {
+        let user = {
+          team_id: newValue.id,
+          slug: newValue.slug
+        }
+        this.team = newValue.slug
+        this.$store.dispatch('setUser', user)
+        const routeName = this.$route.name
+
+        this.$router.push({name: routeName, params: { slug: newValue.slug }})
+        this.getSeasonTeams(newValue.slug)
+      }
     }
+  },
+  watch: {
+    selectedTeam (newValue, oldValue) {
+      this.teamLogo = '/static/color-team-logos/' + newValue.logo_color
+      this.greyLogo = '/static/washedout-team-logo/' + newValue.logo_grey
+    }
+  },
+  created () {
+    this.getSeasonTeams(this.$route.params.slug)
   },
   methods: {
     // Credit to Jose Reyes @ https://codepen.io/jreyesgs/pens/
@@ -79,6 +136,13 @@ export default {
       amount = parseInt((255 * amount) / 100)
       color = `#${this.subtractLight(color.substring(0, 2), amount)}${this.subtractLight(color.substring(2, 4), amount)}${this.subtractLight(color.substring(4, 6), amount)}`
       return color
+    },
+
+    getSeasonTeams (slug) {
+      api.getSeasonTeams(slug)
+        .then(response => {
+          this.$store.dispatch('setTeamAssocLvl', response.data)
+        })
     }
   }
 }
@@ -89,6 +153,10 @@ export default {
 @teamColor: var(--bg-color);
 @hoverColor: var(--hover-color);
 @activeColor: var(--active-color);
+.admin {
+  display: block;
+  padding: 1rem;
+}
 h2 {
   font-size: 1.5rem !important;
 }
@@ -102,6 +170,8 @@ h2 {
     background-color: #fff;
     .team-logo {
       width: 100%;
+      min-height: 10rem;
+      display: flex;
       img {
         width: 75%;
         display: block;
@@ -144,7 +214,7 @@ h2 {
     position: fixed;
     right: 0;
     bottom: 0;
-    max-height: 19rem;
+    max-height: 15rem;
     z-index: 0;
   }
   .team-management {

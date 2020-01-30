@@ -64,6 +64,9 @@
         </template>
       </slot>
     </tbody>
+
+    <slot name="tfoot">
+    </slot>
   </table>
 
 </template>

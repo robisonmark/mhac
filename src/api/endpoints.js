@@ -140,6 +140,38 @@ export class api {
   }
 
   /***
+     * Get Game Results
+     * This call returns the game stats, it takes optional parameters of game_id and team_id
+     * @param {string} method - GET
+     * @param {object} body - Player JSON Body
+     * @return - JSON Object of players by team
+    ***/
+  static async addGameResults (gameId, stats) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }'
+
+    let addedParams = ''
+    if (gameId !== undefined) {
+      addedParams = '/' + gameId
+    } else {
+      return 'Error'
+    }
+
+    return robros({
+      'url': '/addGameResults' + addedParams,
+      'method': 'POST',
+      'data': stats
+    })
+  }
+
+  /***
      * Get a List of Teams
      * @param {object} id - ID
      * @return - JSON Object of players by team
@@ -189,6 +221,27 @@ export class api {
   }
 
   /***
+     * Get a List of Players by Team Level ID
+     * @param {object} team - Team UUID
+     * @return - JSON Object of players by team
+    ***/
+  static async getRoster (level) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    return robros({
+      'url': '/getRoster/' + level,
+      'method': 'GET'
+    })
+  }
+
+  /***
      * Adds New Player to Roster
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
@@ -215,14 +268,14 @@ export class api {
       'data': body
     })
   }
+
   /***
      * Get a List of Players
      * @param {string} method - Put or Post. Method sent to the api
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async updatePlayer (method, body) {
-    let id = ''
+  static async updatePlayer (id, body) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -232,15 +285,10 @@ export class api {
     //     // console.log(user)
     //   })
     // }
-    method = method.toUpperCase()
-    if (body.id) {
-      id = body.id
 
-      delete body.id
-    }
     return robros({
       'url': '/updatePlayer/' + id,
-      'method': method,
+      'method': 'POST',
       'data': body
     })
   }
@@ -295,6 +343,29 @@ export class api {
     // }
     return robros({
       'url': '/getLevels',
+      'method': 'GET'
+    })
+  }
+
+  /***
+     * Get Season Teams - This call returns the levels associated with each program,
+     * returning their unique id
+     * @param {string} method - Get
+     * @param {string} slug - Team Slug
+     * @return - JSON Object of players by team
+    ***/
+  static async getSeasonTeams (slug) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    return robros({
+      'url': '/getSeasonTeams/' + slug,
       'method': 'GET'
     })
   }

@@ -7,26 +7,27 @@ import Vuex from 'vuex'
 
 // Modules
 // import es from './modules/store.es'
-// import auth from './modules/store.auth'
+import auth from './modules/store.auth'
 // import form from './modules/store.form'
 
 Vue.use(Vuex)
 
 const namespaced = true
-// const modules = { auth }
+const modules = { auth }
 // const plugins = [ pathify.plugin ]
 // const strict = process.env.NODE_ENV !== 'production'
 const strict = false
 
 const state = {
   user: {
-    team_id: '35471ff1-7c9b-47b8-9ac6-e33e57d395b7',
-    slug: 'chattanooga_patriots'
+    team_id: String,
+    slug: String
   },
-  userGroups: [],
+  teamAssocLvl: {},
+  userGroups: ['Admin'],
   userAttributes: Object,
   loaded: false,
-  authenticated: String,
+  authenticated: '',
   seasons: [],
   teams: [],
   levels: [],
@@ -39,6 +40,9 @@ const mutations = {
   // make.mutations(state)
   set_user (state, payload) {
     state.user = payload
+  },
+  set_teamAssocLvl (state, payload) {
+    state.teamAssocLvl = payload
   },
   set_userGroups (state, payload) {
     state.userGroups = payload
@@ -75,7 +79,13 @@ const mutations = {
 }
 
 const actions = {
-  // ...make.actions(state),
+  setUser (context, payload) {
+    context.commit('set_user', payload)
+  },
+
+  setTeamAssocLvl (context, payload) {
+    context.commit('set_teamAssocLvl', payload)
+  },
 
   setAuth (context, payload) {
     context.commit('set_authenticated', payload)
@@ -141,7 +151,7 @@ export const store = new Vuex.Store({
   state,
   strict,
   actions,
-  // modules,
+  modules,
   getters,
   mutations,
   namespaced

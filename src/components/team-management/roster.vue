@@ -1,16 +1,71 @@
 <template>
   <div class="hello">
-    <h2>Current Roster</h2>
-    <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer"></editTable>
+    <header class="contentPad">
+      <h2>Current Roster</h2>
+      <selectbox id="levels" :options="teamAssocLvl" :trackby="'level_name'" placeholder="Select Level" v-model="rosterLvl"></selectbox>
+
+      <div class="buttonCon">
+        <div class="switch" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+          <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
+          <span class="focused">Edit</span>
+        </div>
+
+        <div class="switch" v-if="edit" @click="updatePlayers()">
+          <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
+          <span class="focused" v-if="!saving">Save</span>
+          <span v-else>saving...</span>
+
+        </div>
+      </div>
+    </header>
+    <div class="contentPad">
+      <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
+        <template slot="tbody" v-if="edit">
+          <tr v-for="(player, index) in roster" :key="index">
+            <td class="stat first">
+              <input type="number" min="0" v-model.number="player.player_number" @input="addToUpdateList(index)" />
+              <!-- <template v-else>{{player.player_stats['2PM']}}</template> -->
+            </td>
+            <td class="stat">
+              <input type="text" v-model="player.first_name" />
+              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+            </td>
+            <td class="stat">
+              <input type="text" v-model="player.last_name" />
+              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+            </td>
+            <td class="stat">
+              <input type="text" v-model="player.position" />
+              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+            </td>
+            <td class="stat">
+              <!-- <input type="number" v-model.number="player" /> -->
+              <template>{{age()}}</template>
+            </td>
+            <td class="stat">
+              <input type="date" v-model="player.birth_date" />
+              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+            </td>
+            <td class="stat">
+              <input type="text" v-model="player.height" />
+              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+            </td>
+          </tr>
+        </template>
+      </editTable>
+    </div>
   </div>
 </template>
 
 <script>
 // api
 import { api } from '../../api/endpoints.js'
+import { mapState } from 'vuex'
+import _ from 'lodash'
 
 // components
 import editTable from '@/components/editTable'
+import selectbox from '../selectbox'
 
 export default {
   name: 'roster',
@@ -20,7 +75,7 @@ export default {
         {
           name: 'Number',
           icon: '',
-          field_name: 'number',
+          field_name: 'player_number',
           type: 'text'
         },
         {
@@ -75,14 +130,45 @@ export default {
       config: {
         'page': 'roster'
       },
+      edit: false,
+      fullRoster: [],
       newPlayer: {
       },
       roster: [
-      ]
+      ],
+      rosterLvl: '',
+      saved: false,
+      saving: false,
+      updated: []
     }
   },
   components: {
-    'editTable': editTable
+    'editTable': editTable,
+    'selectbox': selectbox
+  },
+  watch: {
+    user (newValue, oldValue) {
+      this.initRoster()
+    },
+    rosterLvl: {
+      deep: true,
+      handler (newValue, oldValue) {
+        this.initLeveledRoster(newValue.season_team_id)
+      }
+    }
+    // 'roster.height': {
+    //   deep: true,
+    //   handler (newValue, oldValue) {
+    //     console.log(newValue)
+    //     this.updated.push(newValue)
+    //   }
+    // }
+  },
+  computed: {
+    teamAssocLvl () {
+      return this.$store.state.teamAssocLvl.season_team_ids
+    },
+    ...mapState(['user'])
   },
   created () {
     this.initRoster()
@@ -95,9 +181,26 @@ export default {
   },
   methods: {
     initRoster () {
-      api.getPlayers('35471ff1-7c9b-47b8-9ac6-e33e57d395b7').then(response => {
-        console.log(response)
+      api.getPlayers(this.$store.state.user.team_id).then(response => {
+        // response.data.forEach(player => {
+        //   player.number = player.number
+        // })
         this.roster = response.data
+        this.fullRoster = _.cloneDeep(this.roster)
+      })
+    },
+    initLeveledRoster (lvlId) {
+      api.getRoster(lvlId).then(response => {
+        let rosterArr = []
+        this.fullRoster.forEach(player => {
+          response.data.forEach(lvlPlayer => {
+            if (player.id === lvlPlayer.player_id) {
+              rosterArr.push(player)
+            }
+          })
+        })
+
+        this.roster = rosterArr
       })
     },
     initNewPlayer () {
@@ -113,9 +216,25 @@ export default {
         'team_id': ''
       }
     },
+    age () {
+      return 'Fix'
+    },
+    addToUpdateList (id) {
+      this.updated.push(id)
+    },
+    updatePlayers () {
+      this.updated.forEach(index => {
+        let playerId = this.roster[index].id
+        console.log(playerId)
+        // api.updatePlayer(playerId, this.roster[index])
+        //   .then(response => {
+        //     console.log(response)
+        //   })
+      })
+    },
     save () {
       // console.log(this.newPlayer)
-      this.newPlayer['team_id'] = 'd2da3cbd-dbdb-4b40-9002-aefc705d229f'
+      this.newPlayer['team_id'] = this.$store.state.user.team_id
       let playerJson = this.newPlayer
 
       api.addPlayer(playerJson)
@@ -136,5 +255,172 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="less" scoped>
+@teamColor: var(--bg-color);
+header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 1rem;
+  margin-bottom: .5rem;
+  position: sticky;
+    top: 0;
+    z-index: 2;
+    left: 0;
+    background: #CFCDCD;
+  h2 {
+    display: inline-block;
+  }
+  .buttonCon {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    // height: 3rem;
+  }
+}
+
+table {
+  margin-top: -40px;
+  width: 100%;
+  border-collapse: collapse;
+  // border-spacing: 0 5px;
+  position: relative;
+  z-index: 1;
+
+  th, tr {
+    text-align: left;
+    .number {
+      text-align: center;
+    }
+  }
+
+  thead {
+    tr {
+      height: 40px;
+    }
+    th {
+      font-weight: 200;
+      line-height: 1;
+      white-space: nowrap;
+      &.pad-right {
+        padding-right: 1rem;
+      }
+    }
+    // &:before {
+    //   content: '';
+    //   display: block;
+    //   height: 40px;
+    //   width: calc(100% + 45px);
+    //   // width: calc(100% + 15px);
+    //   // border-top: 1px solid var(--bg-color);
+    //   // border-right: 1px solid var(--bg-color);
+    //   border-top: 1.5px solid #B42625;
+    //   border-right: 2px solid #B42625;
+    //   border-left: 2px solid transparent;
+    //   position: absolute;
+    //   -webkit-transform: skewX(-45deg);
+    //   transform: skewX(-45deg);
+    //   left: -23px;
+    // }
+  }
+
+  tbody {
+    tr {
+      background-color: #fff;
+      height: 50px;
+      border-bottom: 5px solid #CFCDCD;
+      .add-button {
+        cursor: pointer;
+      }
+
+      &.split-fields{
+        td {
+          border-right: 5px solid #CFCDCD;
+          input[type="text"] {
+            height: 50px;
+            border: 0;
+            outline: none;
+          }
+          &:last-child{
+            border-right: 0px;
+            // background-color: #CFCDCD;
+          }
+        }
+      }
+
+      // tr last child
+      &:last-child {
+        border-bottom: 0px;
+        // background-color: #CFCDCD;
+      }
+
+      &.missing {
+        background-color: #F0E9E9;
+      }
+    }
+  }
+  td {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    position: relative;
+    &:last-child{
+      border-right: 0px;
+      // background-color: #CFCDCD;
+    }
+    &.align-no-pad {
+      padding-left: 0;
+    }
+  }
+}
+
+table{
+  margin-top: 0;
+  &:before {
+    content: '';
+    display: block;
+    height: 40px;
+    width: 100%;
+    width: calc(100% + 2.4rem);
+    border-top: 1.5px solid @teamColor;
+    border-right: 2px solid @teamColor;
+    border-left: 2px solid transparent;
+    position: absolute;
+    -webkit-transform: skewX(-45deg);
+    transform: skewX(-45deg);
+    /* left: -23px; */
+    /* margin-top: 0.6rem; */
+    top: 0;
+    right: -20px;
+  }
+}
+
+.stat{
+  // td {
+  border-right: 5px solid #CFCDCD;
+  text-align: center;
+  padding: 0;
+  min-width: 50px;
+  input {
+    font-weight: 400;
+    height: 50px;
+    border: 0;
+    outline: none;
+    text-align: center;
+  }
+  &.first{
+    border-left: 5px solid #CFCDCD;
+    // background-color: #CFCDCD;
+  }
+  &:last-child{
+    border-right: 0px;
+    // background-color: #CFCDCD;
+  }
+}
+
+#levels {
+  width: 200px;
+  vertical-align: middle;
+  margin-left: 32px;
+}
 </style>

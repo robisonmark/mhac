@@ -91,6 +91,7 @@
             </div>
 
             <div class="col-2 team_info" :class="checkResult(game.final_score.home, game.final_score.away)">
+              <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.name).logo_color" />
               <div class="team_name">{{game.away_team.name}}</div>
               <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
             </div>
@@ -101,6 +102,7 @@
 
             <!-- HOME TEAM -->
             <div class="col-2 team_info">
+              <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.name).logo_color" />
               <div class="team_name" :class="checkResult(game.final_score.home, game.final_score.away)">{{game.home_team.name}}</div>
               <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
             </div>
@@ -276,6 +278,17 @@ export default {
           return 0
         }
       })
+    },
+    programInfo (teamName) {
+      const team = this.$store.state.teams.filter(team => {
+        // console.log(team)
+        if (team.team_name === teamName) {
+          // console.log(team)
+          return team
+        }
+      })
+      // console.log(team[0].team_mascot)
+      return team[0]
     }
   }
 }
@@ -284,11 +297,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @import '../../assets/less/utils/variables.less';
+.team_img {
+  height: 2.5rem;
+  // width: 6rem;
+  margin-bottom: .5rem;
+}
 .page-styles{
   min-height: 100vh;
   background-color: #fff;
-  margin-right: 1rem;
-  margin-left: 1rem;
+  // margin-right: 1rem;
+  // margin-left: 1rem;
 }
 .filter-bar {
   background-color: @nav-blue;
