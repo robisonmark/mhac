@@ -10,8 +10,8 @@
         <div class="top-hat">
           <nav class="schoolNav">
             <div class="mobile-drop" @click="collapse = !collapse">
-              <img v-show="!collapse" class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
-              <div>Schools <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon></div>
+
+              <div>Members <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon></div>
             </div>
     <!-- <div class="con-logo">
       <router-link :to="{ path: '/'}" class="con-logo">
@@ -21,7 +21,8 @@
     <div class="right">
       <div class="top-hat">
         <nav class="largeScreen"> -->
-          <ul>
+          <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
+            <img v-show="!collapse" class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
             <li>
               <a href="http://www.wkytrailblazers.com/">
                 <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
@@ -92,175 +93,14 @@
                 </button>
               </div>
             </div>
-        </nav>
-
-        <!-- <nav class="mobileScreen">
-          <div class="dropdown">
-            <a href="http://www.wkytrailblazers.com/">
-              <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
-            </a>
-            <a href="https://d1academy.org/">
-              <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
-            </a>
-            <a href="http://cca-huntsville.org/">
-              <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
-            </a>
-            <a href="https://tnheatsports.com/">
-              <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
-            </a>
-            <a href="https://lifechristianacademy.org/">
-              <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
-            </a>
-            <a href="http://patriot-basketball.com/">
-              <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
-            </a>
-            <a href="http://hendersonvilleroyals.com/">
-              <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
-            </a>
-            <a href="https://www.nccwarriors.com/">
-              <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
-            </a>
-            <div class="button" @click="showLogin = !showLogin" ref="showLogin">
-              <span>Login</span>
-            </div>
-            <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
-              <li>
-                <a href="http://www.wkytrailblazers.com/">
-                  <div>
-                    <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a href="https://d1academy.org/">
-                  <div>
-                    <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a href="http://cca-huntsville.org/">
-                  <div>
-                    <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a href="https://tnheatsports.com/">
-                  <div>
-                    <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a href="https://lifechristianacademy.org/">
-                  <div>
-                    <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a href="http://patriot-basketball.com/">
-                  <div>
-                    <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a href="http://hendersonvilleroyals.com/">
-                  <div>
-                    <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a href="https://www.nccwarriors.com/">
-                  <div>
-                    <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
-                  </div>
-                </a>
-              </li>
-            </ul> -->
-              <!-- <div class="button" @click="showLogin = !showLogin" ref="showLogin">
-                <span>Login</span>
-              </div> -->
-              <!-- <div v-if="showLogin" class="teamlogin" ref="teamlogin">
-                <form v-if="!loggedIn">
-                  <label for="username">
-                    Username
-                  </label>
-                  <input type="text" id="username" v-model="username" />
-                  <label for="password">
-                    Password
-                  </label>
-                  <input type="password" id="password" v-model="password" />
-                  <button @click.prevent="login()">
-                    Login
-                  </button>
-                </form>
-                <div v-else>
-                  <button @click.prevent="signout()">
-                    Signout
-                  </button>
-                </div>
-              </div>
-          </nav> -->
-
-          <!-- <nav class="mobileScreen">
-            <div class="dropdown">
-              <a href="http://www.wkytrailblazers.com/">
-                <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
-              </a>
-              <a href="https://d1academy.org/">
-                <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
-              </a>
-              <a href="http://cca-huntsville.org/">
-                <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
-              </a>
-              <a href="https://tnheatsports.com/">
-                <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
-              </a>
-              <a href="https://lifechristianacademy.org/">
-                <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
-              </a>
-              <a href="http://patriot-basketball.com/">
-                <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
-              </a>
-              <a href="http://hendersonvilleroyals.com/">
-                <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
-              </a>
-              <a href="https://www.nccwarriors.com/">
-                <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
-              </a>
-              <div class="button" @click="showLogin = !showLogin" ref="showLogin">
-                <span>Login</span>
-              </div>
-
-            </div>
-            <div v-if="showLogin" class="teamlogin" ref="teamlogin">
-                <form v-if="!loggedIn">
-                  <label for="username">
-                    Username
-                  </label>
-                  <input type="text" id="username" v-model="username" />
-                  <label for="password">
-                    Password
-                  </label>
-                  <input type="password" id="password" v-model="password" />
-                  <button @click.prevent="login()">
-                    Login
-                  </button>
-                </form>
-                <div v-else>
-                  <button @click.prevent="signout()">
-                    Signout
-                  </button>
-                </div>
-              </div>
-          </nav> -->
+          </nav>
         </div>
         <div class="main-nav">
-          <nav>
+
+          <nav :class="[openMenu ? 'open' : 'close']">
+            <div class="hamburger" @click="openMenu = !openMenu">
+            <font-awesome-icon :icon="['fas', 'bars']" class="icon"></font-awesome-icon>
+          </div>
             <router-link :to="{ path: '/' }">Home</router-link>
             <router-link :to="{ path: '/tournament2020' }">Tournament Central</router-link>
             <router-link :to="{ path: '/compliance' }">Compliance</router-link>
@@ -296,6 +136,7 @@ export default {
   data () {
     return {
       collapse: true,
+      openMenu: false,
       showLogin: false,
       // loggedIn: false,
       showSchools: false,
@@ -558,25 +399,27 @@ export default {
       }
 
       @media @tablet-max {
+        display: none;
         nav {
           z-index: 2;
           width: 100%;
           display: flex;
           justify-content: center;
+          position: static;
         }
         .mobile-drop {
           z-index: 3;
-          background: #fff;
+          // background: #fff;
           height: 2.5rem;
           width: 100%;
           display: flex;
           position: absolute;
-          justify-content: space-around;
+          justify-content: flex-end;
           top: 0;
           left: 0;
           align-items: center;
-          img {
-            height: 1.5rem;
+          div {
+            margin-right: 1rem;
           }
           // max-width: 80%;
           // text-align: center;
@@ -585,12 +428,20 @@ export default {
           z-index: 1;
           flex-flow: row wrap;
           position: absolute;
-          background: #fff;
-          top: 2.5rem;
+          // background: #fff;
+          // top: 2.5rem;
           left: 0;
           width: 100%;
           height: auto;
           align-items: flex-start;
+
+          .logo {
+            height: 1.5rem;
+            position: absolute;
+            left: 1rem;
+            top: -2rem;
+          }
+
           li {
             border: 1px solid @conf-blue;
             width: 33.333%;
@@ -601,6 +452,7 @@ export default {
             position: relative;
             flex: 0 1 auto;
             flex-grow: 1;
+            background: #fff;
             a {
               position: absolute;
               top: 0;
@@ -610,15 +462,16 @@ export default {
               display: flex;
               align-items: center;
               justify-content: center;
-              div {
-                position: relative;
+              // div {
+              //   position: relative;
                 img {
-                  height: 100%;
-                  width: 100%;
-                  max-width: 50px;
-                  max-height: 36px;
+                  // height: 100%;
+                  // width: 100%;
+                  // max-width: 50px;
+                  // max-height: 36px;
+                  max-width: 6rem;
                 }
-              }
+              // }
             }
           }
 
@@ -629,6 +482,7 @@ export default {
           }
           &.open {
             transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+            top: 2.5rem;
           }
         }
       }
@@ -721,85 +575,61 @@ export default {
           }
         }
       }
-    }
-    // .main-nav {
-    //   // background-color: var(--bg-color);
-    //   // display: flex;
-    //   // justify-content: center;
-    //   display: flex;
-    //   flex-flow: column;
-    //   align-items: stretch;
-    //   width: 100%;
-    //   nav {
-    //     // height: 100%;
-    //     // li{
-    //       // display: flex;
-    //       //   justify-content: center;
-    //       //   align-items: center;
-    //       //   height: 100%;
 
-    //       a,
-    //       div {
-    //         color: #fff;
-    //         text-decoration: none;
-    //         // position: relative;
-    //         // height: 100%;
-    //         display: flex;
-    //         flex-flow: row wrap;
-    //         justify-content: center;
-    //         align-items: center;
-    //         height: 100%;
-    //         flex-grow: 1;
-    //         // &.router-link-exact-active{
-    //         &:hover{
-    //           background-color: #fff;
-    //           color: var(--bg-color);
-    //           font-weight: 600;
-    //         }
-    //     }
-    //     .nav_dropdown {
-    //       position: absolute;
-    //     //   width: 200px;
-    //       background: white;
-    //       color: #021A2B;
-    //       // top: 39px;
-    //       top: 4.5rem;
-    //       box-shadow: 2px 4px 8px 0px #021A2B;
-    //       width: 250px;
-    //       right: 0;
-    //       width: 100%;
-    //       columns: 2;
-    //       font-weight: 400;
-    //       li {
-    //         padding: 3px 15px;
-    //         cursor: pointer;
-    //         .imgCon {
-    //           height: 60px;
-    //           width: 50px
-    //         }
-    //         img {
-    //           max-width: 100%;
-    //           max-height: 100%;
-    //         }
-    //         &:hover {
-    //           background-color: rgba(12, 75, 117, .2)
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+       @media @tablet-max {
+        position: absolute;
+        left: 0;
+        width: 100%;
 
-    ul.top-hat__list {
-      height: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      // width: 81%;
-      // width: calc(1380px - 21% - 100px);
-      // width: 75%;
-      position: relative;
-      // left: 100px;
+        .hamburger {
+          color: #fff;
+          display: flex;
+          align-items: center;
+          position: relative;
+          width: 100%;
+          justify-content: flex-end;
+          position: fixed;
+          right: 1rem;
+          transform: translate(0px, 1rem);
+          .icon {
+            height: 1.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            width: 1.5rem;
+            right: 1rem;
+            transform: rotate(-45deg);
+            transform-origin: center;
+          }
+        }
+        .close {
+          // display: none !important;
+          position: absolute;
+          left: 0;
+          top: 7rem;
+          background-color: var(--bg-color);
+          flex-flow: column;
+          height: calc(100vh - 7rem);
+          transform: rotate(-135deg) translate3d(-38px, 445px, 0px);
+          transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+
+        .open {
+          position: absolute;
+          left: 0;
+          top: 7rem;
+          background-color: var(--bg-color);
+          flex-flow: column;
+          height: calc(100vh - 7rem);
+          transform: rotate(0) translate3d(0px, 0px, 0px);
+          transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+          a,
+          span {
+            height: auto;
+            flex-grow: 0;
+            justify-content: flex-start;
+          }
+        }
+      }
     }
   }
   .button,
