@@ -122,7 +122,7 @@
         </div>
       </div> -->
     </div>
-    <div class="bottom-logo" ref="bottomLogo" v-stickBottom>
+    <div class="bottom-logo" ref="bottomLogo">
       <img v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey" :alt="program.team_name + ' ' + program.team_mascot"/>
     </div>
   </div>
@@ -461,8 +461,10 @@ export default {
   z-index: 1;
 }
 .bottom-logo {
-  position: fixed;
+  // position: fixed;
+  position: sticky;
   right: 0;
+  left: 100%;
   bottom: 0;
   max-height: 30rem;
   max-width: 24rem;

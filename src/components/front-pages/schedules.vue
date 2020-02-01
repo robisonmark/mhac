@@ -23,6 +23,7 @@
                   <input class="option noHover" v-show="showDatePicker" type="date" v-model="filterBy.dateRange.start_date"/>
                 </div>
               </div> -->
+              <div class="holder"></div>
 
               <div class="custom-select"  @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
                 <div disabled>{{filterBy.level.level}}</div>
@@ -35,7 +36,7 @@
                 </div>
               </div>
 
-              <div class="custom-select" @click="showTeams = !showTeams, showDatePicker = false, showLevels = false" v-show="filterBy.level.season_id !== ''">
+              <div class="custom-select" :disabled="filterBy.level.season_id === ''" @click="showTeams = !showTeams, showDatePicker = false, showLevels = false">
                 <div disabled>{{filterBy.team.name}}</div>
                 <div class="options-menu">
                   <template>
@@ -359,6 +360,14 @@ h2 {
     top: 0;
     left: .5rem;
   }
+
+  &[disabled='disabled'] {
+    color: #bbb;
+     &:before {
+       border-color: #bbb transparent transparent transparent
+     }
+  }
+
 }
 .options-menu {
   position: absolute;
