@@ -22,6 +22,28 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 /* ********************************* *\
           Configuration
 \* ********************************* */
+function setLogoPosType (el) {
+  console.log('scrolling')
+  let footer = document.getElementById('publicMainFooter')
+  let footerOffset = footer.offsetTop
+  let footerPos = footer.getBoundingClientRect().y
+  if (el.offsetTop + el.getBoundingClientRect().height >= footerPos) {
+    el.style.position = 'absolute'
+  }
+  if (window.pageYOffset + window.innerHeight < footerOffset) {
+    el.style.position = 'fixed'
+  }
+}
+Vue.directive('stickBottom', {
+  bind (el) {
+    window.addEventListener('scroll', e => {
+      setLogoPosType(el)
+    })
+  },
+  unbind (el) {
+    window.removeEventListener('scroll', setLogoPosType)
+  }
+})
 
 /* ********************************* *\
           Init Components

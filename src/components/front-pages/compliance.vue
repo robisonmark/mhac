@@ -99,8 +99,8 @@ export default {
   min-height: 100vh;
   background-color: #fff;
   padding: 2rem 1rem;
-  margin-right: 1rem;
-  margin-left: 1rem;
+  // margin-right: 1rem;
+  // margin-left: 1rem;
 }
 
 .intro {

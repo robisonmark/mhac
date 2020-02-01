@@ -335,7 +335,10 @@ export default {
             team1: 'Winner Game 1',
             team2: 'Winner Game 2'
           },
-          location: '1045 Bison Trail, Gallatin, TN 370665',
+          location: {
+            address: '1045 Bison Trail, Gallatin, TN 37066',
+            name: 'Welch College Gym'
+          },
           level: '14U Boys'
         },
         {
@@ -576,8 +579,8 @@ export default {
   min-height: 100vh;
   background-color: #fff;
   padding: 2rem 1rem;
-  margin-right: 1rem;
-  margin-left: 1rem;
+  // margin-right: 1rem;
+  // margin-left: 1rem;
 }
 h5 {
   padding-top: 1rem;

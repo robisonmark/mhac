@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row hero-standings">
-      <div class="col-9">
+      <div class="col-md-8 col-lg-9">
         <div class="hero">
           <div class="tagline">
             <h2>And so it begins...</h2>
@@ -9,7 +9,7 @@
           </div>
         </div>
       </div>
-      <div class="col-3">
+      <div class="col-md-4 col-lg-3">
         <div class="standings">
           <div class="addPadding">
             <h3>2019-20 Standings</h3>
@@ -75,7 +75,7 @@
       </div>
     </div>
     <div class="row conference-blurb">
-      <div class="col-9 conference-blurb-content">
+      <div class="col-md-9 conference-blurb-content">
         <h1>Midsouth Homeschool Athletic Conference</h1>
         <p>The MidSouth Homeschool Athletic Conference (MHAC) was formed in 2018, and is part of the Southeast Region for the National Christian HomeSchool Championships.  The MHAC has 8 member teams located in Tennesee, Southern Kentucky, and Northern Alabama. These teams currently compete in Boys and Girls 18U Basketball, and Boys 16U and 14U Basketball.</p>
         <p>Each year the MHAC holds tournaments in each 18U, 16U and 14U age brackets.</p>
@@ -83,6 +83,10 @@
 
         <h3>For Information on the 2020 Tournament please go to <router-link :to="{ 'path': '/tournament2020' }">Tournament Central</router-link></h3>
       </div>
+
+      <!-- <footer class="col-12 text-right">
+        Midsouth Homeschool Athletic Conference &copy; {{ new Date().getFullYear() }}
+      </footer> -->
     </div>
   </div>
 </template>
@@ -178,10 +182,14 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @import '../../assets/less/utils/variables.less';
+@import '../../assets/less/utils/breakpoints.less';
 
 .hero-standings {
   margin-top: 3.5rem;
   height: 51vh;
+  @media @phone {
+    height: auto;
+  }
 }
 .hero {
   background-color: #021A2B;
@@ -189,7 +197,7 @@ export default {
   background-size: cover;
   background-position: center;
   width: 100%;
-  height: 100%;
+  height: 51vh;
   position: relative;
   &:before {
     content: '';
@@ -201,6 +209,9 @@ export default {
     background: -webkit-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
     background: linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1a1a1a",endColorstr="#f2f2f2",GradientType=1);
+  }
+  @media @phone {
+    order: 2;
   }
 }
 .tagline {
@@ -253,6 +264,8 @@ export default {
 .conference-blurb {
   background-color: #fff;
   margin: 2rem 0rem 0;
+  clip: rect(auto, auto, auto, auto);
+
   &-content {
     padding-top: 1rem;
     padding-bottom: 1rem;
@@ -284,5 +297,11 @@ select {
   margin-bottom: 1rem;
   color: #021A2B;
   border-color: #021A2B;
+}
+footer {
+  position: relative;
+  bottom: 2rem;
+  // width: 100%;
+  // padding-right: 1rem;
 }
 </style>
