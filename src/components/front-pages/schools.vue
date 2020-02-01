@@ -334,11 +334,11 @@ export default {
             gameObj.host = false
             gameObj.opponent = game.home_team
             if (game.final_score.home !== null) {
-              if (game.final_score.home > game.final_score.away) {
+              if (game.final_score.home < game.final_score.away) {
                 gameObj.results = {
                   'win_loss': 'W'
                 }
-              } else if (game.final_score.home < game.final_score.away) {
+              } else if (game.final_score.home > game.final_score.away) {
                 gameObj.results = {
                   'win_loss': 'L'
                 }

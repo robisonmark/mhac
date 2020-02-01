@@ -3,15 +3,13 @@
     <headerComponent :styles="cssVars"></headerComponent>
     <main>
       <router-view class="body" />
-      <footer class="container fixed-footer">
+      <!-- <footer class="container fixed-footer">
         <div class="row justify-content-end">
           <div class="col-3 copy">
-            <!-- <div class="content"> -->
               Midsouth Homeschool Athletic Conference &copy; {{ new Date().getFullYear() }}
-            <!-- </div> -->
           </div>
         </div>
-      </footer>
+      </footer> -->
     </main>
     <footer v-if="this.$route.meta.section === 'public'" class="main-footer" id="publicMainFooter">
       <div class="container">
@@ -21,7 +19,7 @@
             <p>&copy; {{ new Date().getFullYear() }} Midsouth Homeschool Athletic Conference</p>
             <p>All Rights Reserved | Terms of Service | Privacy Policy</p>
           </div>
-          <div class="col-4">
+          <div class="col-md-4">
             <div class="border">
               <img class="robros" src="/static/robros/robros-logo.png" />
             </div>
@@ -148,6 +146,7 @@ export default {
 </script>
 
 <style lang="less">
+@import './assets/less/utils/breakpoints.less';
   body {
     min-height: 100vh;
     height: 100%;
@@ -169,12 +168,12 @@ export default {
     min-height: 100vh;
     margin: 0;
     // padding-bottom: 2rem;
-    /*Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#f4f7f9+0,9fc7e3+21,8cbcde+25,2784c3+100 */
-    background: rgb(244,247,249); /* Old browsers */
-    background: -moz-linear-gradient(-45deg, rgba(244,247,249,1) 0%, rgba(159,199,227,1) 21%, rgba(140,188,222,1) 25%, rgba(39,132,195,1) 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(-45deg, rgba(244,247,249,1) 0%,rgba(159,199,227,1) 21%,rgba(140,188,222,1) 25%,rgba(39,132,195,1) 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(135deg, rgba(244,247,249,1) 0%,rgba(159,199,227,1) 21%,rgba(140,188,222,1) 25%,rgba(39,132,195,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4f7f9', endColorstr='#2784c3',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#2784c3+49,1e5799+100,2784c3+100 */
+    background: #2784c3; /* Old browsers */
+    background: -moz-linear-gradient(-45deg, #2784c3 49%, #1e5799 100%, #2784c3 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, #2784c3 49%,#1e5799 100%,#2784c3 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, #2784c3 49%,#1e5799 100%,#2784c3 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2784c3', endColorstr='#2784c3',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
     background-attachment: fixed;
 
   }
@@ -203,6 +202,7 @@ export default {
     align-items: center;
 
     .conference {
+
       &-info {
         color: #fff;
         p {
@@ -213,6 +213,9 @@ export default {
       &-logo {
         max-width: 20rem;
         margin-bottom: 2rem;
+      }
+      @media @phone {
+        line-height: 0;
       }
     }
     .border {
@@ -228,10 +231,26 @@ export default {
         background-color: #fff;
         display: inline-block;
       }
+      @media @phone {
+        flex-flow: column;
+        &:before {
+          content: '';
+          width: 65%;
+          height: 2px;
+          background-color: #fff;
+          display: block;
+          clear: both;
+          margin-top: 2rem;
+          margin-bottom: 2rem;
+        }
+      }
     }
     .robros {
       width: 100%;
       max-width: calc(100% - 3px - 2rem);
+      @media @phone {
+        max-width: calc(100% - 3px - 5rem);
+      }
     }
   }
 </style>

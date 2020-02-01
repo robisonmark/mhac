@@ -21,55 +21,57 @@
     <div class="right">
       <div class="top-hat">
         <nav class="largeScreen"> -->
-          <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
-            <img v-show="!collapse" class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
-            <li>
-              <a href="http://www.wkytrailblazers.com/">
-                <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
-              </a>
-            </li>
-            <li>
-              <a href="https://d1academy.org/">
-                <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
-              </a>
-            </li>
-            <li>
-              <a href="http://cca-huntsville.org/">
-                <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
-              </a>
-            </li>
-            <li>
-              <a href="https://tnheatsports.com/">
-                <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
-              </a>
-            </li>
-            <li>
-              <a href="https://lifechristianacademy.org/">
-                <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
-              </a>
-            </li>
-            <li>
-              <a href="http://patriot-basketball.com/">
-                <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
-              </a>
-            </li>
-            <li>
-              <a href="http://hendersonvilleroyals.com/">
-                <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
-              </a>
-            </li>
-            <li>
-              <a href="https://www.nccwarriors.com/">
-                <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
-              </a>
-            </li>
-            <li>
-              <div class="button" @click="toggleLogin" ref="showLogin">
-                <span v-if="!loggedIn">Login</span>
-                <span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span>
-              </div>
-            </li>
-          </ul>
+          <div class="schoolMenuCon" :class="[collapse === true ? 'collapse' : 'open']">
+            <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
+              <!-- <img v-show="!collapse" class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" /> -->
+              <li>
+                <a href="http://www.wkytrailblazers.com/">
+                  <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
+                </a>
+              </li>
+              <li>
+                <a href="https://d1academy.org/">
+                  <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
+                </a>
+              </li>
+              <li>
+                <a href="http://cca-huntsville.org/">
+                  <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
+                </a>
+              </li>
+              <li>
+                <a href="https://tnheatsports.com/">
+                  <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
+                </a>
+              </li>
+              <li>
+                <a href="https://lifechristianacademy.org/">
+                  <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
+                </a>
+              </li>
+              <li>
+                <a href="http://patriot-basketball.com/">
+                  <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
+                </a>
+              </li>
+              <li>
+                <a href="http://hendersonvilleroyals.com/">
+                  <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
+                </a>
+              </li>
+              <li>
+                <a href="https://www.nccwarriors.com/">
+                  <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
+                </a>
+              </li>
+              <li>
+                <div class="button" @click="toggleLogin" ref="showLogin">
+                  <span v-if="!loggedIn">Login</span>
+                  <span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span>
+                </div>
+              </li>
+            </ul>
+          </div>
 
             <div v-if="showLogin" class="teamlogin" ref="teamlogin">
               <form v-if="!loggedIn">
@@ -95,12 +97,11 @@
             </div>
           </nav>
         </div>
-        <div class="main-nav">
-
-          <nav :class="[openMenu ? 'open' : 'close']">
-            <div class="hamburger" @click="openMenu = !openMenu">
-            <font-awesome-icon :icon="['fas', 'bars']" class="icon"></font-awesome-icon>
+        <div class="main-nav" :class="[openMenu ? 'open' : 'close']">
+          <div class="hamburger" @click="openMenu = !openMenu">
+            <font-awesome-icon :icon="openMenu ? ['fas', 'times'] : ['fas', 'bars']" class="icon"></font-awesome-icon>
           </div>
+          <nav :class="[openMenu ? 'open' : 'close']">
             <router-link :to="{ path: '/' }">Home</router-link>
             <router-link :to="{ path: '/tournament2020' }">Tournament Central</router-link>
             <router-link :to="{ path: '/compliance' }">Compliance</router-link>
@@ -173,13 +174,13 @@ export default {
   created () {
     this.$root.$on('close', payload => {
       this.showLogin = false
+      // this.collapse = false
+      // this.open = false
     })
   },
   methods: {
     displayDrop () {
-      console.log('touched')
       this.showSchools = !this.showSchools
-      console.log('made it past')
     },
     toggleLogin () {
       let isOpen = _.cloneDeep(this.showLogin)
@@ -281,6 +282,9 @@ export default {
         right: -15px;
         background: #fff;
       }
+      @media @phone {
+        padding: 0 4rem 0 1rem;
+      }
       // &:after {
       //   content: '';
       //   display: block;
@@ -324,6 +328,7 @@ export default {
       // background-color: #fff;
       display: flex;
       flex-flow: row;
+      align-items: center;
       // align-items: stretch;
       // width: 100%;
       // justify-content: center;
@@ -399,7 +404,7 @@ export default {
       }
 
       @media @tablet-max {
-        display: none;
+        // display: none;
         nav {
           z-index: 2;
           width: 100%;
@@ -429,10 +434,10 @@ export default {
           flex-flow: row wrap;
           position: absolute;
           // background: #fff;
-          // top: 2.5rem;
-          left: 0;
+          top: 7rem;
+          right: 0;
           width: 100%;
-          height: auto;
+          width: 500px;
           align-items: flex-start;
 
           .logo {
@@ -474,16 +479,56 @@ export default {
               // }
             }
           }
+        }
+
+          .schoolMenuCon {
+            width: 100%;
+            position: absolute;
+            top: 0;
+            right: 0;
+            overflow: hidden;
+            &.collapse {
+              transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+              height: 0;
+              ul {
+                transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+                height: 0;
+              }
+            }
+            &.open {
+              transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+              height: 100vh;
+              ul {
+                // transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+                height: auto;
+                &:before {
+                  content: '';
+                  height: 100vh;
+                  width: 100vw;
+                  position: absolute;
+                  background: rgba(0,0,0, 0.8);
+                }
+              }
+            }
+          }
 
           &.collapse {
             transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-            top: -9999px;
+            // top: -9999px;
+
             // display: none;
           }
           &.open {
             transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-            top: 2.5rem;
+            // top: 2.5rem;
+
           }
+        }
+      // }
+
+      @media @phone {
+        ul {
+          width: 100%;
         }
       }
     }
@@ -505,7 +550,9 @@ export default {
         width: 100%;
         z-index: 1;
         flex-grow: 1;
-
+        .icon {
+          display: none;
+        }
         a,
         span {
           color: #fff;
@@ -528,7 +575,7 @@ export default {
 
         .nav_dropdown {
           // position: fixed;
-        //   width: 200px;
+          //   width: 200px;
           // background: rgba(255,255,255, 0.95);
           color: #2A2A2A;
           // top: 39px;
@@ -575,11 +622,23 @@ export default {
           }
         }
       }
+      .hamburger {
+        display: none;
+      }
 
        @media @tablet-max {
-        position: absolute;
-        left: 0;
-        width: 100%;
+        // position: relative;
+        // left: 0;
+        // width: 100%;
+        &.open:before {
+          content: '';
+          height: 100vh;
+          width: 100vw;
+          position: absolute;
+          top: 7rem;
+          left: 0;
+          background: rgba(0,0,0, 0.8);
+        }
 
         .hamburger {
           color: #fff;
@@ -588,17 +647,17 @@ export default {
           position: relative;
           width: 100%;
           justify-content: flex-end;
-          position: fixed;
+          // position: fixed;
           right: 1rem;
-          transform: translate(0px, 1rem);
+          // transform: translate(0px, 1rem);
           .icon {
             height: 1.5rem;
             width: 1.5rem;
             height: 1.5rem;
             width: 1.5rem;
             right: 1rem;
-            transform: rotate(-45deg);
-            transform-origin: center;
+            // transform: rotate(-45deg);
+            // transform-origin: center;
           }
         }
         .close {
@@ -608,9 +667,12 @@ export default {
           top: 7rem;
           background-color: var(--bg-color);
           flex-flow: column;
-          height: calc(100vh - 7rem);
-          transform: rotate(-135deg) translate3d(-38px, 445px, 0px);
+          height: 0;
+          overflow: hidden;
+          // transform: rotate(-135deg) translate3d(-38px, 445px, 0px);
+          // transform: rotate(-135deg) translate3d(87px, 0px, 0px);
           transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+          // transform-origin: top right;
         }
 
         .open {
@@ -619,17 +681,42 @@ export default {
           top: 7rem;
           background-color: var(--bg-color);
           flex-flow: column;
-          height: calc(100vh - 7rem);
+          // height: calc(100vh - 7rem);
+          height: 200px;
           transform: rotate(0) translate3d(0px, 0px, 0px);
           transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-          a,
-          span {
-            height: auto;
-            flex-grow: 0;
-            justify-content: flex-start;
+          // transform-origin: top right;
+          .icon {
+             transform: rotate(0)
+          }
+          .dropdown {
+            position: relative;
+            ul {
+              position: absolute;
+              left: 0;
+              top: 35px;
+              font-size: 14px;
+              li {
+                max-height: 35px;
+              }
+            }
           }
         }
+        nav a,
+        nav span {
+            // height: auto;
+            flex-grow: 0;
+            justify-content: flex-start;
+                padding-left: 1rem;
+          }
       }
+
+      @media @phone {
+        // width: 250px;
+        right: 0;
+        left: unset;
+      }
+
     }
   }
   .button,
