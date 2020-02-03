@@ -193,7 +193,7 @@ export default {
 }
 .hero {
   background-color: #021A2B;
-  background: url('../../assets/img/MHAC_2.png');
+  background: url('../../assets/img/MHAC_2-optimized.png');
   background-size: cover;
   background-position: center;
   width: 100%;
