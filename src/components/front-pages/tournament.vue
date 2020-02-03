@@ -119,7 +119,7 @@ export default {
         {
           game: '1',
           date: 'Feburary 6th',
-          time: '9:00 am',
+          time: '10:00 am',
           matchup: {
             team1: 'Seed 5',
             team2: 'Seed 4'
@@ -133,7 +133,7 @@ export default {
         {
           game: '2',
           date: 'Feburary 6th',
-          time: '10:00 am',
+          time: '11:00 am',
           matchup: {
             team1: 'Seed 6',
             team2: 'Seed 3'
@@ -147,7 +147,7 @@ export default {
         {
           game: '3',
           date: 'Feburary 6th',
-          time: '11:00 am',
+          time: '12:00 pm',
           matchup: {
             team1: 'Seed 7',
             team2: 'Seed 2'
@@ -161,7 +161,7 @@ export default {
         {
           game: '4',
           date: 'Feburary 6th',
-          time: '12:00 pm',
+          time: '1:00 pm',
           matchup: {
             team1: 'Seed 8',
             team2: 'Seed 1'
