@@ -21,7 +21,7 @@
           </div>
           <div class="col-md-4">
             <div class="border">
-              <img class="robros" src="/static/robros/robros-logo.png" />
+              <img class="robros" src="/static/robros/robros-logo-optimized.png" />
             </div>
           </div>
         </div>

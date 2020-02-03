@@ -2,20 +2,20 @@
   <div class="container">
     <div class="page-styles">
       <div class="row print-only align-items-start justify-content-between">
-          <div class="col">
-            <h2>2019 - 2020 Schedule</h2>
-          </div>
-          <div class="col right">
-            <div>{{filterBy.team.name}}</div>
-            <div>{{filterBy.level.level}}</div>
-          </div>
+        <div class="col">
+          <h2>2019 - 2020 Schedule</h2>
         </div>
+        <div class="col right">
+          <div>{{filterBy.team.name}}</div>
+          <div>{{filterBy.level.level}}</div>
+        </div>
+      </div>
       <div class="col-12">
         <div class="row filter-bar">
-          <div class="col-4">
+          <div class="col-md-4">
             <h2>2019 - 2020 Schedule</h2>
           </div>
-          <div class="col-6">
+          <div class="col-md-6">
             <div class="filters">
               <!-- <div class="custom-select" @click="showDatePicker = !showDatePicker, showTeams = false, showLevels = false">
                 <div disabled>All Dates</div>
@@ -23,7 +23,6 @@
                   <input class="option noHover" v-show="showDatePicker" type="date" v-model="filterBy.dateRange.start_date"/>
                 </div>
               </div> -->
-              <div class="holder"></div>
 
               <div class="custom-select"  @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
                 <div disabled>{{filterBy.level.level}}</div>
@@ -46,9 +45,11 @@
                   </template>
                 </div>
               </div>
+
+              <div class="holder"></div>
             </div>
           </div>
-          <div class="col-2 text-right">
+          <div class="col-md-2 text-right">
             <div class="button ghost print" @click="print()">
               <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
             </div>
@@ -298,13 +299,14 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @import '../../assets/less/utils/variables.less';
+@import '../../assets/less/utils/breakpoints.less';
 .team_img {
   height: 2.5rem;
   // width: 6rem;
   margin-bottom: .5rem;
 }
 .page-styles{
-  min-height: 100vh;
+  // min-height: 100vh;
   background-color: #fff;
   // margin-right: 1rem;
   // margin-left: 1rem;
@@ -319,9 +321,21 @@ export default {
     flex-flow: row;
     justify-content: space-evenly;
   }
+  @media @phone {
+    height: auto;
+    padding: 1rem 0;
+    .filters {
+      min-height: 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
 }
 .content {
   padding: 2rem 1rem;
+  height: calc(100vh - 13.5rem);
+  overflow: auto;
 }
 
 h2 {

@@ -72,16 +72,16 @@
       <div class="col content" align="center" v-else>
         <table class="public-stats-table">
           <thead>
-            <tr>
+            <tr class="rowOne">
               <th colspan="4" v-if="compositStats"></th>
               <th colspan="3" v-else></th>
               <th colspan="3" class="light">2PT</th>
               <th colspan="3" class="dark">3PT</th>
               <th colspan="3" class="light">FT</th>
               <th colspan="3" class="dark">Rebounds</th>
-              <th colspan="4"></th>
+              <th colspan="6"></th>
             </tr>
-            <tr>
+            <tr class="rowTwo">
               <th @click="sortTable('player_number')" class="nowrap" :class="[currentSort === 'player_number' ? 'sort' : '']">
                 # <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
@@ -584,7 +584,7 @@ export default {
 <style scoped lang="less">
 @import '../../assets/less/utils/variables.less';
 .page-styles{
-  min-height: 100vh;
+  // min-height: 100vh;
   background-color: #fff;
   // margin-right: 1rem;
   // margin-left: 1rem;
@@ -603,6 +603,7 @@ export default {
 .content {
   padding: 2rem 1rem;
   overflow: auto;
+  height: calc(100vh - 13.5rem);
 }
 
 h2 {
@@ -734,6 +735,17 @@ th {
   font-family: @lato;
   font-weight: 200;
   font-size: .8rem;
+  position: sticky;
+  z-index: 2;
+  background-color: #fff;
+
+  .rowOne & {
+    top: -2rem;
+    height: 1rem;
+  }
+  .rowTwo & {
+    top: -.8rem;
+  }
   cursor: pointer;
   .icon {
     display: none;
