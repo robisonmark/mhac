@@ -3,7 +3,7 @@
      <div class="page-styles">
       <h2>MHAC Conference Tournament Information - 2020</h2>
       <h5><a href="/static/docs/MHAC Conference 2020 Tournament.pdf" class="download" download>Download Tournament Packet</a></h5>
-      <p>The 2019-2020 MHAC Conference Tournament will be being Thursday Feburary 6th at <a href="https://welch.edu/">Welch College</a> in Gallatin, Tennessee. Games being at 8:00am CST at the <a href="https://goo.gl/maps/tBuQfnHmC19ZZste9">Welch College Gym</a>.  Please <a href="/static/docs/MHAC Conference 2020 Tournament.pdf" class="download" download>download the tournament packet</a> for more information.</p>
+      <p>The 2019-2020 MHAC Conference Tournament will be beginning Thursday Feburary 6th at <a href="https://welch.edu/">Welch College</a> in Gallatin, Tennessee. Games begin at 8:00am CST at the <a href="https://goo.gl/maps/tBuQfnHmC19ZZste9">Welch College Gym</a>.  Please <a href="/static/docs/MHAC Conference 2020 Tournament.pdf" class="download" download>download the tournament packet</a> for more information.</p>
       <p>Because of our initial growth we are using a second gym the first day where the initial 14u games will be played.  It is First Baptist Church Hendersonville.  <a href="https://goo.gl/maps/jkkQnVX1KjcR7VpH9">106 Bluegrass Commons Blvd, Hendersonville, TN 37075</a>.  The 14u families will report to that gym directly Thursday morning.</p>
       <div class="tournamentSchedule">
         <table>
@@ -121,8 +121,8 @@ export default {
           date: 'Feburary 6th',
           time: '10:00 am',
           matchup: {
-            team1: 'Seed 5',
-            team2: 'Seed 4'
+            team1: 'Chattanooga Patriots',
+            team2: 'Tennessee Heat'
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -135,8 +135,8 @@ export default {
           date: 'Feburary 6th',
           time: '11:00 am',
           matchup: {
-            team1: 'Seed 6',
-            team2: 'Seed 3'
+            team1: 'Covenant Christian Academy',
+            team2: 'Nashville Warriors'
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -149,8 +149,8 @@ export default {
           date: 'Feburary 6th',
           time: '12:00 pm',
           matchup: {
-            team1: 'Seed 7',
-            team2: 'Seed 2'
+            team1: 'Hendersonville Royals',
+            team2: 'Daniel 1 Academy'
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -163,8 +163,8 @@ export default {
           date: 'Feburary 6th',
           time: '1:00 pm',
           matchup: {
-            team1: 'Seed 8',
-            team2: 'Seed 1'
+            team1: 'Life Christian Academy',
+            team2: 'Western Kentucky Trailblazers'
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -177,8 +177,8 @@ export default {
           date: 'Feburary 6th',
           time: '8:00 am',
           matchup: {
-            team1: 'Seed 5',
-            team2: 'Seed 4'
+            team1: 'Nashville Warriors',
+            team2: 'Chattanooga Patriots'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -191,8 +191,8 @@ export default {
           date: 'Feburary 6th',
           time: '9:30 am',
           matchup: {
-            team1: 'Seed 6',
-            team2: 'Seed 3'
+            team1: 'Tennessee Heat',
+            team2: 'Hendersonville Royals'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -205,8 +205,8 @@ export default {
           date: 'Feburary 6th',
           time: '11:00 am',
           matchup: {
-            team1: 'Seed 7',
-            team2: 'Seed 2'
+            team1: 'Covenant Christian Academy',
+            team2: 'Western Kentucky Trailblazers'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -219,8 +219,8 @@ export default {
           date: 'Feburary 6th',
           time: '12:30 pm',
           matchup: {
-            team1: 'Seed 8',
-            team2: 'Seed 1'
+            team1: 'Daniel 1 Academy',
+            team2: 'Life Christian Academy'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -233,8 +233,8 @@ export default {
           date: 'Feburary 6th',
           time: '2:00 pm',
           matchup: {
-            team1: 'Seed 5',
-            team2: 'Seed 4'
+            team1: 'Daniel 1 Academy',
+            team2: 'Hendersonville Royals'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -247,8 +247,8 @@ export default {
           date: 'Feburary 6th',
           time: '3:00 pm',
           matchup: {
-            team1: 'Seed 6',
-            team2: 'Seed 3'
+            team1: 'Covenant Christian Academy',
+            team2: 'Western Kentucky Trailblazers'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -261,8 +261,8 @@ export default {
           date: 'Feburary 6th',
           time: '4:00 pm',
           matchup: {
-            team1: 'Seed 7',
-            team2: 'Seed 2'
+            team1: 'Life Christian Academy',
+            team2: 'Chattanooga Patriots'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -275,7 +275,7 @@ export default {
           date: 'Feburary 6th',
           time: '12:30 pm',
           matchup: {
-            team1: 'Seed 1',
+            team1: 'Western Kentucky Trailblazers',
             team2: 'Bye'
           },
           location: {
