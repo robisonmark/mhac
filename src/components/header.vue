@@ -3,7 +3,7 @@
     <div class="container container--header">
       <div class="con-logo">
         <router-link :to="{ path: '/'}" class="">
-          <img class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
+          <img class="logo" src="/static/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
         </router-link>
       </div>
       <div class="right">
@@ -15,7 +15,7 @@
             </div>
     <!-- <div class="con-logo">
       <router-link :to="{ path: '/'}" class="con-logo">
-        <img class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
+        <img class="logo" src="/static/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
       </router-link>
     </div>
     <div class="right">
@@ -23,45 +23,45 @@
         <nav class="largeScreen"> -->
           <div class="schoolMenuCon" :class="[collapse === true ? 'collapse' : 'open']">
             <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
-              <!-- <img v-show="!collapse" class="logo" src="../assets/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" /> -->
+              <!-- <img v-show="!collapse" class="logo" src="/static/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" /> -->
               <li>
                 <a href="http://www.wkytrailblazers.com/">
-                  <img src="../assets/color-team-logos/blazers.png" alt="Link to Team Site" />
+                  <img src="/static/color-team-logos/blazers.png" alt="Link to Team Site" />
                 </a>
               </li>
               <li>
                 <a href="https://d1academy.org/">
-                  <img src="../assets/color-team-logos/d1a.png" alt="Link to Team Site" />
+                  <img src="/static/color-team-logos/d1a.png" alt="Link to Team Site" />
                 </a>
               </li>
               <li>
                 <a href="http://cca-huntsville.org/">
-                  <img src="../assets/color-team-logos/falcons.png" alt="Link to Team Site" />
+                  <img src="/static/color-team-logos/falcons.png" alt="Link to Team Site" />
                 </a>
               </li>
               <li>
                 <a href="https://tnheatsports.com/">
-                  <img src="../assets/color-team-logos/heat.png" alt="Link to Team Site" />
+                  <img src="/static/color-team-logos/heat.png" alt="Link to Team Site" />
                 </a>
               </li>
               <li>
                 <a href="https://lifechristianacademy.org/">
-                  <img src="../assets/color-team-logos/lca.png" alt="Link to Team Site" />
+                  <img src="/static/color-team-logos/lca.png" alt="Link to Team Site" />
                 </a>
               </li>
               <li>
                 <a href="http://patriot-basketball.com/">
-                  <img src="../assets/color-team-logos/patriots.png" alt="Link to Team Site" />
+                  <img src="/static/color-team-logos/patriots.png" alt="Link to Team Site" />
                 </a>
               </li>
               <li>
                 <a href="http://hendersonvilleroyals.com/">
-                  <img src="../assets/color-team-logos/royals.png" alt="Link to Team Site" />
+                  <img src="/static/color-team-logos/royals.png" alt="Link to Team Site" />
                 </a>
               </li>
               <li>
                 <a href="https://www.nccwarriors.com/">
-                  <img src="../assets/color-team-logos/warriors.png" alt="Link to Team Site" />
+                  <img src="/static/color-team-logos/warriors.png" alt="Link to Team Site" />
                 </a>
               </li>
               <li>
@@ -265,7 +265,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 0 6rem 0 0rem;
+      padding: 0 6rem 0 rem;
       // left: -4%;
       // left: 0;
       // transform: skew(-45deg);
