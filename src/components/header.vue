@@ -3,7 +3,7 @@
     <div class="container container--header">
       <div class="con-logo">
         <router-link :to="{ path: '/'}" class="">
-          <img class="logo" src="/static/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
+          <img class="logo" src="/static/color-team-logos/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
         </router-link>
       </div>
       <div class="right">
