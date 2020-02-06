@@ -265,7 +265,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 0 6rem 0 rem;
+      padding: 0 6rem 0 0rem;
       // left: -4%;
       // left: 0;
       // transform: skew(-45deg);
