@@ -33,7 +33,8 @@ export const router = new Router({
       component: home,
       meta: {
         'requiresAuth': false,
-        'section': 'public'
+        'section': 'public',
+        'title': 'MHAC | Mid South Homeschool Athletics'
       }
     },
     {
@@ -42,7 +43,8 @@ export const router = new Router({
       component: tournament,
       meta: {
         'requiresAuth': false,
-        'section': 'public'
+        'section': 'public',
+        'title': '2020 Season Tournament | Mid South Homeschool Athletics'
       }
     },
     {
@@ -51,7 +53,8 @@ export const router = new Router({
       component: compliance,
       meta: {
         'requiresAuth': false,
-        'section': 'public'
+        'section': 'public',
+        'title': 'Compliance | Mid South Homeschool Athletics'
       }
     },
     {
@@ -60,7 +63,8 @@ export const router = new Router({
       component: schedules,
       meta: {
         'requiresAuth': false,
-        'section': 'public'
+        'section': 'public',
+        'title': '2019-2020 Schedule | Mid South Homeschool Athletics'
       }
     },
     {
@@ -69,7 +73,8 @@ export const router = new Router({
       component: stats,
       meta: {
         'requiresAuth': false,
-        'section': 'public'
+        'section': 'public',
+        'title': '2019-2020 Stats | Mid South Homeschool Athletics'
       }
     },
     {
@@ -78,7 +83,8 @@ export const router = new Router({
       component: contact,
       meta: {
         'requiresAuth': false,
-        'section': 'public'
+        'section': 'public',
+        'title': 'Contact Us | Mid South Homeschool Athletics'
       }
     },
     {
@@ -88,7 +94,8 @@ export const router = new Router({
       props: true,
       meta: {
         'requiresAuth': false,
-        'section': 'public'
+        'section': 'public',
+        'title': 'Schools | Mid South Homeschool Athletics'
       }
       // children: [
       //   {
@@ -178,12 +185,10 @@ router.beforeResolve(async (to, from, next) => {
     // For routes requiring authentication ( has "meta.requiresAuth" property )
     if (to.meta.requiresAuth === true) {
       let validSession = await Promise.resolve(store.dispatch('valid'))
-      console.log(validSession)
       if (validSession === true) {
         return next()
       } else {
         return next('/')
-        // window.location.replace(process.env.ACCOUNT_LOC)
       }
     }
     return next()

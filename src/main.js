@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
@@ -23,7 +24,6 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
           Configuration
 \* ********************************* */
 function setLogoPosType (el) {
-  console.log('scrolling')
   let footer = document.getElementById('publicMainFooter')
   let footerOffset = footer.offsetTop
   let footerPos = footer.getBoundingClientRect().y
@@ -60,4 +60,15 @@ new Vue({
   store,
   components: { App },
   template: '<App/>'
+})
+
+/* ********************************* *\
+          Google Analytics
+\* ********************************* */
+ga('set', 'page', router.currentRoute.path)
+ga('send', 'pageview')
+
+router.afterEach((to, from) => {
+  ga('set', 'page', to.path)
+  ga('send', 'pageview')
 })
