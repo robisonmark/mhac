@@ -230,9 +230,9 @@ export default {
           time: '1:00 pm',
           matchup: {
             team1: 'Life Christian Academy',
-            scoreTeam1: '',
+            scoreTeam1: '24',
             team2: 'Western Kentucky Trailblazers',
-            scoreTeam2: ''
+            scoreTeam2: '68'
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
