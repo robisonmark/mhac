@@ -13,13 +13,14 @@
         <table>
           <thead>
             <tr class="levelHead">
-              <td colspan="5">14U Boys</td>
+              <td colspan="6">14U Boys</td>
             <tr>
             <tr>
               <th>Game #</th>
               <th>Date</th>
               <th>Time</th>
               <th>Matchup</th>
+              <th class="final">Final Score</th>
               <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
             </tr>
           </thead>
@@ -29,6 +30,15 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>{{game.matchup.team1}} vs. {{game.matchup.team2}}</td>
+              <td class="final">
+                <template v-if="game.matchup.scoreTeam1">
+                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
+                  <div>{{results(game.matchup)}}</div>
+                </template>
+                <template v-else>
+                  --
+                </template>
+              </td>
               <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
             </tr>
           </tbody>
@@ -37,13 +47,14 @@
         <table>
           <thead>
             <tr class="levelHead">
-              <td colspan="5">16U Boys</td>
+              <td colspan="6">16U Boys</td>
             <tr>
             <tr>
               <th>Game #</th>
               <th>Date</th>
               <th>Time</th>
               <th>Matchup</th>
+              <th class="final">Final Score</th>
               <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
             </tr>
           </thead>
@@ -53,6 +64,15 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>{{game.matchup.team1}} vs. {{game.matchup.team2}}</td>
+              <td class="final">
+                <template v-if="game.matchup.scoreTeam1">
+                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
+                  <div>{{results(game.matchup)}}</div>
+                </template>
+                <template v-else>
+                  --
+                </template>
+              </td>
               <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
             </tr>
           </tbody>
@@ -61,13 +81,14 @@
         <table>
           <thead>
             <tr class="levelHead">
-              <td colspan="5">18U Boys</td>
+              <td colspan="6">18U Boys</td>
             <tr>
             <tr>
               <th>Game #</th>
               <th>Date</th>
               <th>Time</th>
               <th>Matchup</th>
+              <th class="final">Final Score</th>
               <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
             </tr>
           </thead>
@@ -77,6 +98,15 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>{{game.matchup.team1}} vs. {{game.matchup.team2}}</td>
+              <td class="final">
+                <template v-if="game.matchup.scoreTeam1">
+                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
+                  <div>{{results(game.matchup)}}</div>
+                </template>
+                <template v-else>
+                  --
+                </template>
+              </td>
               <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
             </tr>
           </tbody>
@@ -85,13 +115,14 @@
         <table>
           <thead>
             <tr class="levelHead">
-              <td colspan="5">18U Girls</td>
+              <td colspan="6">18U Girls</td>
             <tr>
             <tr>
               <th>Game #</th>
               <th>Date</th>
               <th>Time</th>
               <th>Matchup</th>
+              <th class="final">Final Score</th>
               <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
             </tr>
           </thead>
@@ -101,6 +132,15 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>{{game.matchup.team1}} vs. {{game.matchup.team2}}</td>
+              <td class="final">
+                <template v-if="game.matchup.scoreTeam1">
+                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
+                  <div>{{results(game.matchup)}}</div>
+                </template>
+                <template v-else>
+                  --
+                </template>
+              </td>
               <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
             </tr>
           </tbody>
@@ -126,7 +166,9 @@ export default {
           time: '10:00 am',
           matchup: {
             team1: 'Chattanooga Patriots',
-            team2: 'Tennessee Heat'
+            scoreTeam1: '',
+            team2: 'Tennessee Heat',
+            scoreTeam2: ''
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -140,7 +182,9 @@ export default {
           time: '11:00 am',
           matchup: {
             team1: 'Covenant Christian Academy',
-            team2: 'Nashville Warriors'
+            scoreTeam1: '',
+            team2: 'Nashville Warriors',
+            scoreTeam2: ''
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -154,7 +198,9 @@ export default {
           time: '12:00 pm',
           matchup: {
             team1: 'Hendersonville Royals',
-            team2: 'Daniel 1 Academy'
+            scoreTeam1: '',
+            team2: 'Daniel 1 Academy',
+            scoreTeam2: ''
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -168,7 +214,9 @@ export default {
           time: '1:00 pm',
           matchup: {
             team1: 'Life Christian Academy',
-            team2: 'Western Kentucky Trailblazers'
+            scoreTeam1: '',
+            team2: 'Western Kentucky Trailblazers',
+            scoreTeam2: ''
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -182,7 +230,9 @@ export default {
           time: '8:00 am',
           matchup: {
             team1: 'Nashville Warriors',
-            team2: 'Chattanooga Patriots'
+            scoreTeam1: '25',
+            team2: 'Chattanooga Patriots',
+            scoreTeam2: '35'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -196,7 +246,9 @@ export default {
           time: '9:30 am',
           matchup: {
             team1: 'Tennessee Heat',
-            team2: 'Hendersonville Royals'
+            scoreTeam1: '',
+            team2: 'Hendersonville Royals',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -210,7 +262,9 @@ export default {
           time: '11:00 am',
           matchup: {
             team1: 'Covenant Christian Academy',
-            team2: 'Western Kentucky Trailblazers'
+            scoreTeam1: '',
+            team2: 'Western Kentucky Trailblazers',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -224,7 +278,9 @@ export default {
           time: '12:30 pm',
           matchup: {
             team1: 'Daniel 1 Academy',
-            team2: 'Life Christian Academy'
+            scoreTeam1: '',
+            team2: 'Life Christian Academy',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -238,7 +294,9 @@ export default {
           time: '2:00 pm',
           matchup: {
             team1: 'Daniel 1 Academy',
-            team2: 'Hendersonville Royals'
+            scoreTeam1: '',
+            team2: 'Hendersonville Royals',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -252,7 +310,9 @@ export default {
           time: '3:00 pm',
           matchup: {
             team1: 'Covenant Christian Academy',
-            team2: 'Western Kentucky Trailblazers'
+            scoreTeam1: '',
+            team2: 'Western Kentucky Trailblazers',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -266,7 +326,9 @@ export default {
           time: '4:00 pm',
           matchup: {
             team1: 'Life Christian Academy',
-            team2: 'Chattanooga Patriots'
+            scoreTeam1: '',
+            team2: 'Chattanooga Patriots',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -280,7 +342,9 @@ export default {
           time: '12:30 pm',
           matchup: {
             team1: 'Western Kentucky Trailblazers',
-            team2: 'Bye'
+            scoreTeam1: '',
+            team2: 'Bye',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -295,7 +359,9 @@ export default {
           time: '8:00 am',
           matchup: {
             team1: 'Loser Game 2',
-            team2: 'Loser Game 3'
+            scoreTeam1: '',
+            team2: 'Loser Game 3',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -309,7 +375,9 @@ export default {
           time: '9:00 am',
           matchup: {
             team1: 'Loser Game 1',
-            team2: 'Loser Game 4'
+            scoreTeam1: '',
+            team2: 'Loser Game 4',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -323,7 +391,9 @@ export default {
           time: '10:00 am',
           matchup: {
             team1: 'Winner Game 2',
-            team2: 'Winner Game 3'
+            scoreTeam1: '',
+            team2: 'Winner Game 3',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -337,7 +407,9 @@ export default {
           time: '11:00 am',
           matchup: {
             team1: 'Winner Game 1',
-            team2: 'Winner Game 2'
+            scoreTeam1: '',
+            team2: 'Winner Game 2',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -351,7 +423,9 @@ export default {
           time: '12:00 pm',
           matchup: {
             team1: 'Winner Game 10',
-            team2: 'Winner Game 11'
+            scoreTeam1: '',
+            team2: 'Winner Game 11',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -365,7 +439,9 @@ export default {
           time: '1:00 pm',
           matchup: {
             team1: 'Winner Game 9',
-            team2: '#1 Seed'
+            scoreTeam1: '',
+            team2: '#1 Seed',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -379,7 +455,9 @@ export default {
           time: '2:00 pm',
           matchup: {
             team1: 'Seed 3',
-            team2: 'Seed 2'
+            scoreTeam1: '',
+            team2: 'Seed 2',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -393,7 +471,9 @@ export default {
           time: '3:30 pm',
           matchup: {
             team1: 'Seed 4',
-            team2: 'Seed 1'
+            scoreTeam1: '',
+            team2: 'Seed 1',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -407,7 +487,9 @@ export default {
           time: '5:00 pm',
           matchup: {
             team1: 'Loser Game 6',
-            team2: 'Loser Game 7'
+            scoreTeam1: '',
+            team2: 'Loser Game 7',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -421,7 +503,9 @@ export default {
           time: '6:30 pm',
           matchup: {
             team1: 'Loser Game 5',
-            team2: 'Loser Game 8'
+            scoreTeam1: '',
+            team2: 'Loser Game 8',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -435,7 +519,9 @@ export default {
           time: '8:10 pm',
           matchup: {
             team1: 'Winner Game 6',
-            team2: 'Winner Game 7'
+            scoreTeam1: '',
+            team2: 'Winner Game 7',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -449,7 +535,9 @@ export default {
           time: '9:40 pm',
           matchup: {
             team1: 'Winner Game 5',
-            team2: 'Winner Game 8'
+            scoreTeam1: '',
+            team2: 'Winner Game 8',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -463,7 +551,9 @@ export default {
           time: '8:00 am',
           matchup: {
             team1: 'Loser Game 10',
-            team2: 'Loser Game 11'
+            scoreTeam1: '',
+            team2: 'Loser Game 11',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -477,7 +567,9 @@ export default {
           time: '9:00 am',
           matchup: {
             team1: 'Loser Game 19',
-            team2: 'Loser Game 20'
+            scoreTeam1: '',
+            team2: 'Loser Game 20',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -491,7 +583,9 @@ export default {
           time: '10:00 am',
           matchup: {
             team1: 'Loser Game 9',
-            team2: 'Winner Game 25'
+            scoreTeam1: '',
+            team2: 'Winner Game 25',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -505,7 +599,9 @@ export default {
           time: '12:00 pm',
           matchup: {
             team1: 'Winner Game 15',
-            team2: 'Winner Game 16'
+            scoreTeam1: '',
+            team2: 'Winner Game 16',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -519,7 +615,9 @@ export default {
           time: '2:00 pm',
           matchup: {
             team1: 'Winner Game 17',
-            team2: 'Winner Game 18'
+            scoreTeam1: '',
+            team2: 'Winner Game 18',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -533,7 +631,9 @@ export default {
           time: '4:00 pm',
           matchup: {
             team1: 'Winner Game 19',
-            team2: 'Winner Game 20'
+            scoreTeam1: '',
+            team2: 'Winner Game 20',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -547,7 +647,9 @@ export default {
           time: '6:00 pm',
           matchup: {
             team1: 'Winner Game 23',
-            team2: 'Winner Game 24'
+            scoreTeam1: '',
+            team2: 'Winner Game 24',
+            scoreTeam2: ''
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -573,6 +675,15 @@ export default {
     }
   },
   created () {
+  },
+  methods: {
+    results (matchup) {
+      if (parseInt(matchup.scoreTeam1) > parseInt(matchup.scoreTeam2)) {
+        return matchup.team1
+      } else {
+        return matchup.team2
+      }
+    }
   }
 }
 </script>
@@ -606,6 +717,12 @@ table {
   tbody tr {
     border-bottom: 1px solid #CFCDCD;
     // padding:.75rem;
+  }
+}
+.final {
+  text-align: right;
+  div{
+    font-style: italic;
   }
 }
 .levelHead {
