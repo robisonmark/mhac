@@ -534,7 +534,7 @@ export default {
           date: 'Feburary 7th',
           time: '9:40 pm',
           matchup: {
-            team1: 'Winner Game 5',
+            team1: 'Chattanooga Patriots',
             scoreTeam1: '',
             team2: 'Winner Game 8',
             scoreTeam2: ''
