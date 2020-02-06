@@ -29,7 +29,11 @@
               <td>{{game.game}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
-              <td>{{game.matchup.team1}} vs. {{game.matchup.team2}}</td>
+              <td>
+                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                vs.
+                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+              </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -63,7 +67,11 @@
               <td>{{game.game}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
-              <td>{{game.matchup.team1}} vs. {{game.matchup.team2}}</td>
+              <td>
+                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                vs.
+                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+              </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -97,7 +105,11 @@
               <td>{{game.game}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
-              <td>{{game.matchup.team1}} vs. {{game.matchup.team2}}</td>
+              <td>
+                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                vs.
+                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+              </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -131,7 +143,11 @@
               <td>{{game.game}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
-              <td>{{game.matchup.team1}} vs. {{game.matchup.team2}}</td>
+              <td>
+                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                vs.
+                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+              </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -166,9 +182,9 @@ export default {
           time: '10:00 am',
           matchup: {
             team1: 'Chattanooga Patriots',
-            scoreTeam1: '',
+            scoreTeam1: '17',
             team2: 'Tennessee Heat',
-            scoreTeam2: ''
+            scoreTeam2: '36'
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -182,9 +198,9 @@ export default {
           time: '11:00 am',
           matchup: {
             team1: 'Covenant Christian Academy',
-            scoreTeam1: '',
+            scoreTeam1: '49',
             team2: 'Nashville Warriors',
-            scoreTeam2: ''
+            scoreTeam2: '23'
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -198,9 +214,9 @@ export default {
           time: '12:00 pm',
           matchup: {
             team1: 'Hendersonville Royals',
-            scoreTeam1: '',
+            scoreTeam1: '35',
             team2: 'Daniel 1 Academy',
-            scoreTeam2: ''
+            scoreTeam2: '52'
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -230,9 +246,9 @@ export default {
           time: '8:00 am',
           matchup: {
             team1: 'Nashville Warriors',
-            scoreTeam1: '25',
+            scoreTeam1: '33',
             team2: 'Chattanooga Patriots',
-            scoreTeam2: '35'
+            scoreTeam2: '53'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -246,9 +262,9 @@ export default {
           time: '9:30 am',
           matchup: {
             team1: 'Tennessee Heat',
-            scoreTeam1: '',
+            scoreTeam1: '53',
             team2: 'Hendersonville Royals',
-            scoreTeam2: ''
+            scoreTeam2: '55'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -262,9 +278,9 @@ export default {
           time: '11:00 am',
           matchup: {
             team1: 'Covenant Christian Academy',
-            scoreTeam1: '',
+            scoreTeam1: '40',
             team2: 'Western Kentucky Trailblazers',
-            scoreTeam2: ''
+            scoreTeam2: '50'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -358,9 +374,9 @@ export default {
           date: 'Feburary 7th',
           time: '8:00 am',
           matchup: {
-            team1: 'Loser Game 2',
+            team1: 'Nashville Warriors',
             scoreTeam1: '',
-            team2: 'Loser Game 3',
+            team2: 'Hendersonville Royals',
             scoreTeam2: ''
           },
           location: {
@@ -374,7 +390,7 @@ export default {
           date: 'Feburary 7th',
           time: '9:00 am',
           matchup: {
-            team1: 'Loser Game 1',
+            team1: 'Chattanooga Patriots',
             scoreTeam1: '',
             team2: 'Loser Game 4',
             scoreTeam2: ''
@@ -390,9 +406,9 @@ export default {
           date: 'Feburary 7th',
           time: '10:00 am',
           matchup: {
-            team1: 'Winner Game 2',
+            team1: 'Covenant Christian Academy',
             scoreTeam1: '',
-            team2: 'Winner Game 3',
+            team2: 'Daniel 1 Academy',
             scoreTeam2: ''
           },
           location: {
@@ -406,9 +422,9 @@ export default {
           date: 'Feburary 7th',
           time: '11:00 am',
           matchup: {
-            team1: 'Winner Game 1',
+            team1: 'Tennessee Heat',
             scoreTeam1: '',
-            team2: 'Winner Game 2',
+            team2: 'Covenant Christian Academy',
             scoreTeam2: ''
           },
           location: {
@@ -486,9 +502,9 @@ export default {
           date: 'Feburary 7th',
           time: '5:00 pm',
           matchup: {
-            team1: 'Loser Game 6',
+            team1: 'Tennessee Heat',
             scoreTeam1: '',
-            team2: 'Loser Game 7',
+            team2: 'Covenant Christian Academy',
             scoreTeam2: ''
           },
           location: {
@@ -502,7 +518,7 @@ export default {
           date: 'Feburary 7th',
           time: '6:30 pm',
           matchup: {
-            team1: 'Loser Game 5',
+            team1: 'Nashville Warriors',
             scoreTeam1: '',
             team2: 'Loser Game 8',
             scoreTeam2: ''
@@ -518,9 +534,9 @@ export default {
           date: 'Feburary 7th',
           time: '8:10 pm',
           matchup: {
-            team1: 'Winner Game 6',
+            team1: 'Hendersonville Royals',
             scoreTeam1: '',
-            team2: 'Winner Game 7',
+            team2: 'Western Kentucky Trailblazers',
             scoreTeam2: ''
           },
           location: {
@@ -718,6 +734,9 @@ table {
     border-bottom: 1px solid #CFCDCD;
     // padding:.75rem;
   }
+}
+.winner {
+  font-weight: 600;
 }
 .final {
   text-align: right;
