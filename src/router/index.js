@@ -20,6 +20,11 @@ import schedule from '@/components/team-management/schedule'
 import gamestats from '@/components/team-management/stats'
 import profile from '@/components/team-management/profile'
 
+// Admin Components
+import admin from '@/components/admin'
+import login from '@/components/admin/login'
+import adminTournament from '@/components/admin/tournament'
+
 import { store } from '../store/index'
 
 Vue.use(Router)
@@ -166,12 +171,30 @@ export const router = new Router({
     {
       path: '/admin',
       name: 'admin',
-      component: TeamManagement,
+      component: admin,
       meta: {
         'requiresAuth': true,
         'section': 'admin'
       },
       children: [
+        {
+          path: 'login',
+          name: 'login',
+          component: login,
+          meta: {
+            'requiresAuth': false,
+            'section': 'admin'
+          }
+        },
+        {
+          path: 'tournament',
+          name: 'adminTournament',
+          component: adminTournament,
+          meta: {
+            'requiresAuth': true,
+            'section': 'admin'
+          }
+        }
       ]
     }
     // NEED ERROR ROUTES and THINK THROUGH NON INDEXING PAGES
@@ -188,7 +211,11 @@ router.beforeResolve(async (to, from, next) => {
       if (validSession === true) {
         return next()
       } else {
-        return next('/')
+        if (to.meta.section === 'admin') {
+          return next('/admin/login')
+        } else {
+          return next('/')
+        }
       }
     }
     return next()

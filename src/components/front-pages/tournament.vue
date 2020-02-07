@@ -165,6 +165,18 @@
       <div class="sponsors">
       </div>
     </div>
+    <div class="bracketModal" v-if="showBracket">
+      <div class="custom-select"  @click="showLevels = !showLevels">
+        <div disabled>{{filterBy.level.level}}</div>
+        <div class="options-menu">
+          <template>
+            <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
+              {{lvl.level}}
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -175,6 +187,20 @@ export default {
   name: 'tournament2020',
   data () {
     return {
+      filterBy: {
+        team: {
+          slug: '',
+          name: 'All Teams'
+        },
+        level: {
+          season_id: '',
+          level: 'All Levels'
+        },
+        dateRange: {
+          start_date: '',
+          end_date: ''
+        }
+      },
       games: [
         {
           game: '1',
@@ -673,10 +699,15 @@ export default {
           },
           level: '18U Boys'
         }
-      ]
+      ],
+      showBracket: false
     }
   },
   computed: {
+    levels () {
+      const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
+      return levels
+    },
     fourteenUBoys () {
       return this.games.filter(game => { return game.level === '14U Boys' })
     },

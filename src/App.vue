@@ -1,6 +1,6 @@
 <template>
   <div id="app" :class="this.$route.meta.section" @click="clickAway()">
-    <headerComponent :styles="cssVars"></headerComponent>
+    <headerComponent :styles="cssVars" v-if="this.$route.meta.section !== 'admin'"></headerComponent>
     <main>
       <router-view class="body" />
       <!-- <footer class="container fixed-footer">

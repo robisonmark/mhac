@@ -1,6 +1,22 @@
 import { store } from '../../store/index'
 // import { Auth } from 'aws-amplify'
 
+function getCookie (cname) {
+  var name = cname + '='
+  var decodedCookie = decodeURIComponent(document.cookie)
+  var ca = decodedCookie.split(';')
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i]
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1)
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length)
+    }
+  }
+  return ''
+}
+
 // Initial "state"
 const state = {
   loaded: false,
@@ -20,9 +36,6 @@ const mutations = {
 }
 
 const actions = {
-  setAuth (context) {
-    context.commit('set_authenticated', context, { root: true })
-  },
 
   async valid (context) {
     // let user = store.state.user
@@ -45,6 +58,15 @@ const actions = {
     // }
     if (store.getters.authenticated !== '') {
       return true
+    } else {
+      let cookie = getCookie('"mhacauth')
+      if (cookie) {
+        console.log(cookie)
+        context.dispatch('setAuth', cookie, { root: true })
+        return true
+      } else {
+        return false
+      }
     }
   },
 
