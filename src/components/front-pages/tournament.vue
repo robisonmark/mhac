@@ -224,9 +224,9 @@ export default {
           time: '11:00 am',
           matchup: {
             team1: 'Covenant Christian Academy',
-            scoreTeam1: '49',
+            scoreTeam1: '23',
             team2: 'Nashville Warriors',
-            scoreTeam2: '23'
+            scoreTeam2: '49'
           },
           location: {
             address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
@@ -320,9 +320,9 @@ export default {
           time: '12:30 pm',
           matchup: {
             team1: 'Daniel 1 Academy',
-            scoreTeam1: '',
+            scoreTeam1: '29',
             team2: 'Life Christian Academy',
-            scoreTeam2: ''
+            scoreTeam2: '60'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -336,9 +336,9 @@ export default {
           time: '2:00 pm',
           matchup: {
             team1: 'Daniel 1 Academy',
-            scoreTeam1: '',
+            scoreTeam1: '55',
             team2: 'Hendersonville Royals',
-            scoreTeam2: ''
+            scoreTeam2: '47'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
@@ -400,7 +400,7 @@ export default {
           date: 'Feburary 7th',
           time: '8:00 am',
           matchup: {
-            team1: 'Nashville Warriors',
+            team1: 'Covenant Christian Academy',
             scoreTeam1: '',
             team2: 'Hendersonville Royals',
             scoreTeam2: ''
@@ -418,7 +418,7 @@ export default {
           matchup: {
             team1: 'Chattanooga Patriots',
             scoreTeam1: '',
-            team2: 'Loser Game 4',
+            team2: 'Life Christian Academy',
             scoreTeam2: ''
           },
           location: {
@@ -432,7 +432,7 @@ export default {
           date: 'Feburary 7th',
           time: '10:00 am',
           matchup: {
-            team1: 'Covenant Christian Academy',
+            team1: 'Nashville Warriors',
             scoreTeam1: '',
             team2: 'Daniel 1 Academy',
             scoreTeam2: ''
@@ -450,7 +450,7 @@ export default {
           matchup: {
             team1: 'Tennessee Heat',
             scoreTeam1: '',
-            team2: 'Covenant Christian Academy',
+            team2: 'Western Kentucky Trailblazers',
             scoreTeam2: ''
           },
           location: {
@@ -496,9 +496,9 @@ export default {
           date: 'Feburary 7th',
           time: '2:00 pm',
           matchup: {
-            team1: 'Seed 3',
+            team1: 'Covenant Christian Academy',
             scoreTeam1: '',
-            team2: 'Seed 2',
+            team2: ' Nashville Warriors',
             scoreTeam2: ''
           },
           location: {
@@ -512,9 +512,9 @@ export default {
           date: 'Feburary 7th',
           time: '3:30 pm',
           matchup: {
-            team1: 'Seed 4',
+            team1: 'Daniel 1 Academy',
             scoreTeam1: '',
-            team2: 'Seed 1',
+            team2: 'Chatanooga Patriots',
             scoreTeam2: ''
           },
           location: {
@@ -546,7 +546,7 @@ export default {
           matchup: {
             team1: 'Nashville Warriors',
             scoreTeam1: '',
-            team2: 'Loser Game 8',
+            team2: 'Daniel 1 Academy',
             scoreTeam2: ''
           },
           location: {
@@ -558,7 +558,7 @@ export default {
         {
           game: '23',
           date: 'Feburary 7th',
-          time: '8:10 pm',
+          time: '8:00 pm',
           matchup: {
             team1: 'Hendersonville Royals',
             scoreTeam1: '',
@@ -574,11 +574,11 @@ export default {
         {
           game: '24',
           date: 'Feburary 7th',
-          time: '9:40 pm',
+          time: '9:30 pm',
           matchup: {
             team1: 'Chattanooga Patriots',
             scoreTeam1: '',
-            team2: 'Winner Game 8',
+            team2: 'Life Christian Academy',
             scoreTeam2: ''
           },
           location: {
