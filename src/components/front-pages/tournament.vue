@@ -352,9 +352,9 @@ export default {
           time: '3:00 pm',
           matchup: {
             team1: 'Covenant Christian Academy',
-            scoreTeam1: '',
-            team2: 'Western Kentucky Trailblazers',
-            scoreTeam2: ''
+            scoreTeam1: '41',
+            team2: 'Tennessee Heat',
+            scoreTeam2: '43'
           },
           location: {
             address: '1045 Bison Trail, Gallatin, TN 37066',
