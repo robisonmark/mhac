@@ -225,26 +225,20 @@ export default {
           // console.log(game.matchup)
           let winner = ''
           let loser = ''
+          let level = ''
           if (game.matchup.hasOwnProperty('scoreTeam1')) {
             winner = this.results(game.matchup)
             loser = game.matchup.team1 === winner ? game.matchup.team2 : game.matchup.team1
+            level = game.level
           }
 
-          let nextGameWinner = newValue.find(next => {
-            console.log(next.matchup.team1)
-            if (next.level === game.level) {
-              return next.matchup.team1 === 'Winner Game ' + game.game ? next.matchup.team1 : next.matchup.team2
-            }
-          })
-          let nextGameLoser = newValue.find(next => {
-            //
-            if (next.level === game.level) {
-              return next.matchup.team1 === 'Loser Game ' + game.game ? next.matchup.team1 : next.matchup.team2
-            }
-          })
+          // console.log(winner)
+          console.log(loser)
+          console.log(level)
 
-          // console.log(nextGameWinner)
-          // console.log(nextGameLoser)
+          let nextGameForWinner = this.games.filter(item => item.matchup.team1 === 'Winner Game ' + game.game)
+
+          console.log(nextGameForWinner)
         })
       }
     }
