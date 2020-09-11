@@ -225,7 +225,7 @@ export default {
     }
   },
   watch: {
-    }
+
   },
   created () {
     this.initTourney()
