@@ -48,10 +48,10 @@
               <td>{{game.time}}</td>
               <td>
                 <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" />
+                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
                 vs.
                 <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" />
+                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
               </td>
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
@@ -88,10 +88,10 @@
               <td>{{game.time}}</td>
               <td>
                 <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" />
+                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
                 vs.
                 <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" />
+                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
               </td>
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
@@ -128,10 +128,10 @@
               <td>{{game.time}}</td>
               <td>
                 <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" />
+                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
                 vs.
                 <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" />
+                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
               </td>
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
@@ -162,16 +162,19 @@
             </tr>
           </thead>
           <tbody>
+            <!-- <template>
+              <tableRow v-model="game"></tableRow>
+            </template> -->
             <tr v-for="(game, index) in eighteenUGirls" :key="index">
               <td>{{game.game}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
                 <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" />
+                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
                 vs.
                 <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" />
+                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
               </td>
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
@@ -192,12 +195,16 @@
 
 <script>
 import { api } from '@/api/endpoints'
+import _ from 'lodash'
 
 export default {
   data () {
     return {
-      games: []
+      game: [],
+      oldBracket: []
     }
+  },
+  components: {
   },
   computed: {
     levels () {
@@ -218,29 +225,6 @@ export default {
     }
   },
   watch: {
-    games: {
-      deep: true,
-      handler (newValue, oldValue) {
-        newValue.forEach(game => {
-          // console.log(game.matchup)
-          let winner = ''
-          let loser = ''
-          let level = ''
-          if (game.matchup.hasOwnProperty('scoreTeam1')) {
-            winner = this.results(game.matchup)
-            loser = game.matchup.team1 === winner ? game.matchup.team2 : game.matchup.team1
-            level = game.level
-          }
-
-          // console.log(winner)
-          console.log(loser)
-          console.log(level)
-
-          let nextGameForWinner = this.games.filter(item => item.matchup.team1 === 'Winner Game ' + game.game)
-
-          console.log(nextGameForWinner)
-        })
-      }
     }
   },
   created () {
@@ -256,6 +240,52 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    updateBracket (game) {
+      // this.oldBracket = _.cloneDeep(this.games)
+      if (game.matchup.scoreTeam1 !== '' && game.matchup.scoreTeam2 !== '') {
+        let winner = this.results(game.matchup)
+        let loser = game.matchup.team1 === winner ? game.matchup.team2 : game.matchup.team1
+
+        let winnerStr = 'Winner Game'
+        let loserStr = 'Loser Game'
+        let gameNumber = game.game
+
+        winnerStr = winnerStr.concat(' ', gameNumber)
+        loserStr = loserStr.concat(' ', gameNumber)
+
+        this.games.forEach(indGame => {
+          if (indGame.matchup.team1 === winnerStr) {
+            this.oldBracket.push(_.cloneDeep(indGame))
+            indGame.matchup.team1 = winner
+          } else if (indGame.matchup.team2 === winnerStr) {
+            this.oldBracket.push(_.cloneDeep(indGame))
+            indGame.matchup.team2 = winner
+          }
+        })
+
+        this.games.forEach(indGame => {
+          if (indGame.matchup.team1 === loserStr) {
+            this.oldBracket.push(_.cloneDeep(indGame))
+            indGame.matchup.team1 = loser
+          } else if (indGame.matchup.team2 === loserStr) {
+            this.oldBracket.push(_.cloneDeep(indGame))
+            indGame.matchup.team2 = loser
+          }
+        })
+      } else if (this.oldBracket.length > 0) {
+        this.games.forEach(indGame => {
+          if (indGame.game === this.oldBracket[0].game) {
+            indGame.matchup.team1 = this.oldBracket[0].matchup.team1
+            indGame.matchup.team2 = this.oldBracket[0].matchup.team2
+          }
+
+          if (indGame.game === this.oldBracket[1].game) {
+            indGame.matchup.team1 = this.oldBracket[1].matchup.team1
+            indGame.matchup.team2 = this.oldBracket[1].matchup.team2
+          }
+        })
+      }
     },
     results (matchup) {
       if (parseInt(matchup.scoreTeam1) > parseInt(matchup.scoreTeam2)) {

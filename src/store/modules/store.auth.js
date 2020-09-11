@@ -61,7 +61,6 @@ const actions = {
     } else {
       let cookie = getCookie('"mhacauth')
       if (cookie) {
-        console.log(cookie)
         context.dispatch('setAuth', cookie, { root: true })
         return true
       } else {
