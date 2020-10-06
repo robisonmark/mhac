@@ -8,9 +8,9 @@
 import axios from 'axios'
 // import _ from 'lodash'
 
-export let robros = axios.create({
-  'baseURL': process.env.API_ENDPOINT,
-  'withCredentials': false
+export const robros = axios.create({
+  baseURL: process.env.VUE_APP_API_ENDPOINT,
+  withCredentials: false
 })
 
 /* ********************************* *\

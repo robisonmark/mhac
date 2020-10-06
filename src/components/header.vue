@@ -64,11 +64,10 @@
                   <img src="/static/color-team-logos/warriors.png" alt="Link to Team Site" />
                 </a>
               </li>
-              <li>
-                <div class="button" @click="toggleLogin" ref="showLogin">
+              <li class="button button--login" @click="goToLogin()" ref="showLogin">
                   <span v-if="!loggedIn">Login</span>
-                  <span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span>
-                </div>
+                  <!--<span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span>-->
+                  <span v-else>Logout</span>
               </li>
             </ul>
           </div>
@@ -130,9 +129,9 @@
 import { api } from '@/api/endpoints'
 import _ from 'lodash'
 
+import { Auth } from 'aws-amplify'
+
 export default {
-  // login: markrobison630@gmail.com
-  // pw: Baller.03
   name: 'headerComponent',
   data () {
     return {
@@ -160,8 +159,7 @@ export default {
     },
     loggedIn: {
       get: function () {
-        // let auth =
-        return this.$store.getters.authenticated !== ''
+        return this.$store.getters.loggedIn
       },
       set: function () {
 
@@ -179,22 +177,23 @@ export default {
     })
   },
   methods: {
-    displayDrop () {
-      this.showSchools = !this.showSchools
-    },
-    toggleLogin () {
-      let isOpen = _.cloneDeep(this.showLogin)
-      // this.$root.$emit('close')
-
-      // this.open = !isOpen
-      window.setTimeout(() => {
-        this.showLogin = !isOpen
-      }, 1)
-    },
     checkMouse () {
       // window.setTimeout(() => {
       //   this.showSchools = false
       // }, 500)
+    },
+    closeOpenOption (open) {
+      this[open] = false
+    },
+    displayDrop () {
+      this.showSchools = !this.showSchools
+    },
+    goToLogin () {
+      if (!this.loggedIn) {
+        this.$router.push({ name: 'login' })
+      } else {
+        this.signout()
+      }
     },
     slugCase (value) {
       if (!value) return ''
@@ -203,8 +202,14 @@ export default {
       value = value.replace(' ', '_')
       return value
     },
-    closeOpenOption (open) {
-      this[open] = false
+    toggleLogin () {
+      const isOpen = _.cloneDeep(this.showLogin)
+      // this.$root.$emit('close')
+
+      // this.open = !isOpen
+      window.setTimeout(() => {
+        this.showLogin = !isOpen
+      }, 1)
     },
     login () {
       this.thinking = true
@@ -220,12 +225,15 @@ export default {
           console.log(err)
         })
     },
-    signout () {
-      this.loggedIn = false
-      this.$store.dispatch('setAuth', '')
-      if (this.$route.meta.section !== 'public') {
-        this.$router.push('/')
-      }
+    async signout () {
+      await Auth.signOut({ global: true })
+        .then(() => {
+          this.$store.commit('set_valid', false)
+          this.$store.commit('set_loggedIn', false)
+          if (this.$route.meta.section !== 'public') {
+            this.$router.push('/')
+          }
+        })
     }
   }
 }
@@ -377,9 +385,6 @@ export default {
             max-width: 3rem;
             vertical-align: bottom;
           }
-          &:last-child {
-            padding-right: 0;
-          }
         }
       }
       .teamlogin {
@@ -458,7 +463,7 @@ export default {
             flex: 0 1 auto;
             flex-grow: 1;
             background: #fff;
-            a {
+            a, span {
               position: absolute;
               top: 0;
               left: 0;
@@ -731,6 +736,19 @@ export default {
     // transform: skewX(-45deg);
     &:hover {
       background-color: @nav-blue;
+      span {
+        background-color: @nav-blue;
+      }
+    }
+  }
+
+  .button--login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+    span {
+      background-color: @conf-blue;
     }
   }
 

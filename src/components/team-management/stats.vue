@@ -460,7 +460,7 @@ export default {
         }
       ],
       config: {
-        'page': 'stats'
+        page: 'stats'
       },
       currentNested: '',
       currentSort: '',
@@ -490,17 +490,17 @@ export default {
         season: ''
       },
       newGameStats: {
-        'game_id': '',
-        'player_stats': []
+        game_id: '',
+        player_stats: []
       },
       overtimeCount: 1,
       pastGames: [
       ],
       quarters: [
-        {'1': ''},
-        {'2': ''},
-        {'3': ''},
-        {'4': ''}
+        { 1: '' },
+        { 2: '' },
+        { 3: '' },
+        { 4: '' }
       ],
       roster: [
       ],
@@ -569,8 +569,8 @@ export default {
   //   root
   // ],
   components: {
-    'editTable': editTable,
-    'selectbox': selectbox
+    editTable: editTable,
+    selectbox: selectbox
   },
   created () {
     // this.initSchedule()
@@ -578,17 +578,17 @@ export default {
   methods: {
     initSchedule (level, team) {
       api.getSchedule(level, team).then(response => {
-        let fixedData = []
+        const fixedData = []
         response.data.forEach(game => {
           // if (game.game_time === '12:00 AM ') {
           //   game.game_time = 'TBD'
           // }
           if (game.home_team.slug === this.team) {
-            game['opponent'] = game.away_team.name
-            game['rosterId'] = game.home_team.id
+            game.opponent = game.away_team.name
+            game.rosterId = game.home_team.id
           } else {
-            game['opponent'] = game.home_team.name
-            game['rosterId'] = game.away_team.id
+            game.opponent = game.home_team.name
+            game.rosterId = game.away_team.id
           }
           fixedData.push(game)
         })
@@ -609,27 +609,27 @@ export default {
     },
     initRoster (id) {
       api.getPlayers(id).then(response => {
-        let roster = []
+        const roster = []
         response.data.forEach(player => {
-          let rosterObj = {
-            'player_id': player.uuid,
-            'player_number': player.number,
-            'player_last_name': player.last_name,
-            'player_first_name': player.first_name,
-            'player_stats': {
+          const rosterObj = {
+            player_id: player.uuid,
+            player_number: player.number,
+            player_last_name: player.last_name,
+            player_first_name: player.first_name,
+            player_stats: {
               // 'gs': false,
               '2PM': '',
               '2PA': '',
               '3PM': '',
               '3PA': '',
-              'FTM': '',
-              'FTA': '',
-              'OREB': '',
-              'DREB': '',
-              'AST': '',
-              'TO': '',
-              'BLK': '',
-              'STEAL': ''
+              FTM: '',
+              FTA: '',
+              OREB: '',
+              DREB: '',
+              AST: '',
+              TO: '',
+              BLK: '',
+              STEAL: ''
             }
           }
           roster.push(rosterObj)
@@ -657,9 +657,9 @@ export default {
       }
     },
     addOvertime () {
-      this.quarters.push({['OT' + this.overtimeCount]: ''})
-      this.gameScore.homeTeam.quarters.push({['OT' + this.overtimeCount]: ''})
-      this.gameScore.awayTeam.quarters.push({['OT' + this.overtimeCount]: ''})
+      this.quarters.push({ ['OT' + this.overtimeCount]: '' })
+      this.gameScore.homeTeam.quarters.push({ ['OT' + this.overtimeCount]: '' })
+      this.gameScore.awayTeam.quarters.push({ ['OT' + this.overtimeCount]: '' })
 
       this.overtimeCount++
     },
@@ -696,24 +696,24 @@ export default {
     },
     saveStats () {
       this.saving = true
-      let finalScores = {'final_scores': {}}
+      const finalScores = { final_scores: {} }
       let stats = {}
       if (this.boxscore === true) {
         finalScores.final_scores = {
-          'home_score': this.gameScore.homeTeam.final,
-          'away_score': this.gameScore.awayTeam.final
+          home_score: this.gameScore.homeTeam.final,
+          away_score: this.gameScore.awayTeam.final
         }
-        stats = {...finalScores}
+        stats = { ...finalScores }
       }
       // this.newGameStats['scores'] = {
       //   'home_score': this.gameScore.homeTeam.final,
       //   'away_score': this.gameScore.awayTeam.final
       // }
-      let playerStats = _.cloneDeep(this.newGameStats)
+      const playerStats = _.cloneDeep(this.newGameStats)
 
-      let flattenedStats = []
+      const flattenedStats = []
       playerStats.player_stats.forEach(player => {
-        let newPlayer = {...player, ...player.player_stats}
+        const newPlayer = { ...player, ...player.player_stats }
         delete newPlayer.player_stats
 
         flattenedStats.push(newPlayer)
@@ -722,7 +722,7 @@ export default {
 
       playerStats.player_stats = flattenedStats
 
-      stats = {...stats, ...playerStats}
+      stats = { ...stats, ...playerStats }
       // console.log(stats)
       api.addGameResults(this.newGameStats.game_id, stats)
         .then(response => {
@@ -754,9 +754,9 @@ export default {
       return total
     },
     totalPoints (twos, threes, fts) {
-      let twoPT = twos * 2
-      let threePT = threes * 3
-      let ftPT = fts * 1
+      const twoPT = twos * 2
+      const threePT = threes * 3
+      const ftPT = fts * 1
 
       return twoPT + threePT + ftPT
     },

@@ -1,21 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import EventBus from '../eventbus'
-// import { make, call } from 'vuex-pathify'
-// import { make } from 'vuex-pathify'
-// import pathify from '../config/store.pathify'
 
 // Modules
-// import es from './modules/store.es'
 import auth from './modules/store.auth'
-// import form from './modules/store.form'
 
 Vue.use(Vuex)
 
 const namespaced = true
 const modules = { auth }
-// const plugins = [ pathify.plugin ]
-// const strict = process.env.NODE_ENV !== 'production'
 const strict = false
 
 const state = {
@@ -23,8 +15,9 @@ const state = {
     team_id: String,
     slug: String
   },
+  userData: {},
   teamAssocLvl: {},
-  userGroups: ['Admin'],
+  userGroups: [],
   userAttributes: Object,
   loaded: false,
   authenticated: '',
@@ -126,6 +119,9 @@ const getters = {
   // make.getters(state)
   user (state) {
     return state.user
+  },
+  team () {
+    return state.teams[0].slug
   },
   userGroups (state) {
     return state.userGroups

@@ -128,7 +128,7 @@ export default {
         }
       ],
       config: {
-        'page': 'roster'
+        page: 'roster'
       },
       edit: false,
       fullRoster: [],
@@ -143,8 +143,8 @@ export default {
     }
   },
   components: {
-    'editTable': editTable,
-    'selectbox': selectbox
+    editTable: editTable,
+    selectbox: selectbox
   },
   watch: {
     user (newValue, oldValue) {
@@ -191,7 +191,7 @@ export default {
     },
     initLeveledRoster (lvlId) {
       api.getRoster(lvlId).then(response => {
-        let rosterArr = []
+        const rosterArr = []
         this.fullRoster.forEach(player => {
           response.data.forEach(lvlPlayer => {
             if (player.id === lvlPlayer.player_id) {
@@ -205,15 +205,15 @@ export default {
     },
     initNewPlayer () {
       this.newPlayer = {
-        'number': '',
-        'first_name': '',
-        'last_name': '',
-        'id': '',
-        'position': '',
-        'age': '',
-        'birth_date': '',
-        'height': '',
-        'team_id': ''
+        number: '',
+        first_name: '',
+        last_name: '',
+        id: '',
+        position: '',
+        age: '',
+        birth_date: '',
+        height: '',
+        team_id: ''
       }
     },
     age () {
@@ -224,7 +224,7 @@ export default {
     },
     updatePlayers () {
       this.updated.forEach(index => {
-        let playerId = this.roster[index].id
+        const playerId = this.roster[index].id
         console.log(playerId)
         // api.updatePlayer(playerId, this.roster[index])
         //   .then(response => {
@@ -234,8 +234,8 @@ export default {
     },
     save () {
       // console.log(this.newPlayer)
-      this.newPlayer['team_id'] = this.$store.state.user.team_id
-      let playerJson = this.newPlayer
+      this.newPlayer.team_id = this.$store.state.user.team_id
+      const playerJson = this.newPlayer
 
       api.addPlayer(playerJson)
         .then(response => {

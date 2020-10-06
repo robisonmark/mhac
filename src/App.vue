@@ -48,7 +48,7 @@ export default {
     }
   },
   components: {
-    'headerComponent': headerComponent
+    headerComponent: headerComponent
   },
   computed: {
     cssVars () {
@@ -128,7 +128,7 @@ export default {
     },
     initSchedule () {
       api.getSchedule().then(response => {
-        let fixedData = []
+        const fixedData = []
         response.data.forEach(game => {
           if (game.game_time === '12:00 AM ') {
             game.game_time = 'TBD'

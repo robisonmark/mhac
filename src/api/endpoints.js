@@ -24,11 +24,11 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/login/',
-      'method': 'POST',
-      'data': {
-        'email': username,
-        'password': password
+      url: '/login/',
+      method: 'POST',
+      data: {
+        email: username,
+        password: password
       }
     })
   }
@@ -50,8 +50,8 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/getCurrentSeasons',
-      'method': 'GET'
+      url: '/getCurrentSeasons',
+      method: 'GET'
     })
   }
 
@@ -71,10 +71,10 @@ export class api {
     //     // console.log(user)
     //   })
     // }'
-    let queryParms = seasonId ? '/' + seasonId : ''
+    const queryParms = seasonId ? '/' + seasonId : ''
     return robros({
-      'url': '/getStandings' + queryParms,
-      'method': 'GET'
+      url: '/getStandings' + queryParms,
+      method: 'GET'
     })
   }
 
@@ -100,9 +100,9 @@ export class api {
     //   // queryParms += string[0] + '=' + string[1]
     // })
     return robros({
-      'url': '/getSeasonStats',
-      'method': 'GET',
-      'params': data
+      url: '/getSeasonStats',
+      method: 'GET',
+      params: data
     })
   }
 
@@ -134,8 +134,8 @@ export class api {
     }
 
     return robros({
-      'url': '/getGameResults' + addedParams,
-      'method': 'GET'
+      url: '/getGameResults' + addedParams,
+      method: 'GET'
     })
   }
 
@@ -165,9 +165,9 @@ export class api {
     }
 
     return robros({
-      'url': '/addGameResults' + addedParams,
-      'method': 'POST',
-      'data': stats
+      url: '/addGameResults' + addedParams,
+      method: 'POST',
+      data: stats
     })
   }
 
@@ -194,8 +194,8 @@ export class api {
     }
 
     return robros({
-      'url': '/getTeams' + addedParams,
-      'method': 'GET'
+      url: '/getTeams' + addedParams,
+      method: 'GET'
     })
   }
 
@@ -215,8 +215,8 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/getPlayers/' + team,
-      'method': 'GET'
+      url: '/getPlayers/' + team,
+      method: 'GET'
     })
   }
 
@@ -236,8 +236,8 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/getRoster/' + level,
-      'method': 'GET'
+      url: '/getRoster/' + level,
+      method: 'GET'
     })
   }
 
@@ -263,9 +263,9 @@ export class api {
     //   delete body.id
     // }
     return robros({
-      'url': '/addPlayer',
-      'method': 'POST',
-      'data': body
+      url: '/addPlayer',
+      method: 'POST',
+      data: body
     })
   }
 
@@ -287,9 +287,9 @@ export class api {
     // }
 
     return robros({
-      'url': '/updatePlayer/' + id,
-      'method': 'POST',
-      'data': body
+      url: '/updatePlayer/' + id,
+      method: 'POST',
+      data: body
     })
   }
 
@@ -320,8 +320,8 @@ export class api {
     }
 
     return robros({
-      'url': '/getSchedule' + addedParams,
-      'method': 'GET'
+      url: '/getSchedule' + addedParams,
+      method: 'GET'
     })
   }
 
@@ -342,8 +342,8 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/getLevels',
-      'method': 'GET'
+      url: '/getLevels',
+      method: 'GET'
     })
   }
 
@@ -365,8 +365,8 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/getSeasonTeams/' + slug,
-      'method': 'GET'
+      url: '/getSeasonTeams/' + slug,
+      method: 'GET'
     })
   }
 
@@ -387,9 +387,9 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/addGame',
-      'method': 'POST',
-      'data': body
+      url: '/addGame',
+      method: 'POST',
+      data: body
     })
   }
 
@@ -410,8 +410,8 @@ export class api {
     //   })
     // }
     return robros({
-      'url': '/getTournamentInformation',
-      'method': 'GET'
+      url: '/getTournamentInformation',
+      method: 'GET'
     })
   }
 }
