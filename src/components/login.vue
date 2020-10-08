@@ -39,7 +39,7 @@ export default {
   methods: {
     goToTeamManagement () {
       const team = this.$store.getters.team
-      this.$router.push({ name: 'teamManagement', params: { slug: team } })
+      this.$router.push({ name: 'teamDashboard', params: { slug: team } })
     }
   },
   beforeDestroy () {
