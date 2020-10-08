@@ -16,8 +16,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import '@aws-amplify/ui-vue'
 import Amplify from 'aws-amplify'
 import awsconfig from './aws-exports'
+import awsCookieStorage from '@/config/aws-cookieStorage'
 
-Amplify.configure(awsconfig)
+Amplify.configure({ ...awsconfig, ...awsCookieStorage })
 
 /* ********************************* *\
      Global Component Registration
