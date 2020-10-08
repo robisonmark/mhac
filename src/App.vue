@@ -3,13 +3,6 @@
     <headerComponent :styles="cssVars" v-if="this.$route.meta.section !== 'admin'"></headerComponent>
     <main>
       <router-view class="body" />
-      <!-- <footer class="container fixed-footer">
-        <div class="row justify-content-end">
-          <div class="col-3 copy">
-              Midsouth Homeschool Athletic Conference &copy; {{ new Date().getFullYear() }}
-          </div>
-        </div>
-      </footer> -->
     </main>
     <footer v-if="this.$route.meta.section === 'public'" class="main-footer" id="publicMainFooter">
       <div class="container">
@@ -68,11 +61,6 @@ export default {
         }
       }
     }
-    // checkRouteLoc () {
-    //   if (this.$route)
-    // },
-  },
-  watch: {
   },
   created () {
     this.$router.options.routes.forEach((route) => {
@@ -85,9 +73,6 @@ export default {
             this.teamManagement = false
           }
         })
-      //   this.teamManagement = true
-      // } else {
-      //   this.teamManagement = false
       }
     })
 
@@ -98,16 +83,6 @@ export default {
     this.initLevels()
 
     this.initSchedule()
-
-    // if (this.teamManagement) {
-    //   this.styles = {
-    //     navColor: '#B42625'
-    //   }
-    // } else {
-    //   this.styles = {
-    //     navColor: '#0C4B75'
-    //   }
-    // }
   },
   methods: {
     initCurrentSeason () {
@@ -122,7 +97,6 @@ export default {
     },
     initLevels () {
       api.getLevels().then(response => {
-        // console.log(response)
         this.$store.dispatch('setLevels', response.data)
       })
     },
@@ -155,9 +129,6 @@ export default {
     position: relative;
   }
   .body {
-    // margin-top: 112px;
-    // padding-top: 112px;
-    // padding-top: 7rem;
     color: #021A2B;
   }
  .team {
@@ -167,8 +138,6 @@ export default {
   .public {
     min-height: 100vh;
     margin: 0;
-    // padding-bottom: 2rem;
-    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#2784c3+49,1e5799+100,2784c3+100 */
     background: #2784c3; /* Old browsers */
     background: -moz-linear-gradient(-45deg, #2784c3 49%, #1e5799 100%, #2784c3 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(-45deg, #2784c3 49%,#1e5799 100%,#2784c3 100%); /* Chrome10-25,Safari5.1-6 */
@@ -192,7 +161,6 @@ export default {
       margin-right: .5rem;
       font-size: 10px;
     }
-    // padding-right: .5rem;
   }
 
   .main-footer {
