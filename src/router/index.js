@@ -136,10 +136,10 @@ export const router = new Router({
     },
     {
       path: '/manage/:slug',
-      name: 'teamManagement',
       component: TeamManagement,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        section: 'team'
       },
       children: [
         {
