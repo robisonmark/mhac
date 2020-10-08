@@ -1,3 +1,4 @@
+// TODO: Clickaway on menu
 <template>
   <header :style="styles">
     <div class="container container--header">
@@ -10,89 +11,63 @@
         <div class="top-hat">
           <nav class="schoolNav">
             <div class="mobile-drop" @click="collapse = !collapse">
-
               <div>Members <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon></div>
             </div>
-    <!-- <div class="con-logo">
-      <router-link :to="{ path: '/'}" class="con-logo">
-        <img class="logo" src="/static/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
-      </router-link>
-    </div>
-    <div class="right">
-      <div class="top-hat">
-        <nav class="largeScreen"> -->
-          <div class="schoolMenuCon" :class="[collapse === true ? 'collapse' : 'open']">
-            <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
-              <!-- <img v-show="!collapse" class="logo" src="/static/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" /> -->
-              <li>
-                <a href="http://www.wkytrailblazers.com/">
-                  <img src="/static/color-team-logos/blazers.png" alt="Link to Team Site" />
-                </a>
-              </li>
-              <li>
-                <a href="https://d1academy.org/">
-                  <img src="/static/color-team-logos/d1a.png" alt="Link to Team Site" />
-                </a>
-              </li>
-              <li>
-                <a href="http://cca-huntsville.org/">
-                  <img src="/static/color-team-logos/falcons.png" alt="Link to Team Site" />
-                </a>
-              </li>
-              <li>
-                <a href="https://tnheatsports.com/">
-                  <img src="/static/color-team-logos/heat.png" alt="Link to Team Site" />
-                </a>
-              </li>
-              <li>
-                <a href="https://lifechristianacademy.org/">
-                  <img src="/static/color-team-logos/lca.png" alt="Link to Team Site" />
-                </a>
-              </li>
-              <li>
-                <a href="http://patriot-basketball.com/">
-                  <img src="/static/color-team-logos/patriots.png" alt="Link to Team Site" />
-                </a>
-              </li>
-              <li>
-                <a href="http://hendersonvilleroyals.com/">
-                  <img src="/static/color-team-logos/royals.png" alt="Link to Team Site" />
-                </a>
-              </li>
-              <li>
-                <a href="https://www.nccwarriors.com/">
-                  <img src="/static/color-team-logos/warriors.png" alt="Link to Team Site" />
-                </a>
-              </li>
-              <li class="button button--login" @click="goToLogin()" ref="showLogin">
+            <div class="schoolMenuCon" :class="[collapse === true ? 'collapse' : 'open']">
+              <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
+                <li>
+                  <a href="http://www.wkytrailblazers.com/">
+                    <img src="/static/color-team-logos/blazers.png" alt="Link to Team Site" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://d1academy.org/">
+                    <img src="/static/color-team-logos/d1a.png" alt="Link to Team Site" />
+                  </a>
+                </li>
+                <li>
+                  <a href="http://cca-huntsville.org/">
+                    <img src="/static/color-team-logos/falcons.png" alt="Link to Team Site" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://tnheatsports.com/">
+                    <img src="/static/color-team-logos/heat.png" alt="Link to Team Site" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://lifechristianacademy.org/">
+                    <img src="/static/color-team-logos/lca.png" alt="Link to Team Site" />
+                  </a>
+                </li>
+                <li>
+                  <a href="http://patriot-basketball.com/">
+                    <img src="/static/color-team-logos/patriots.png" alt="Link to Team Site" />
+                  </a>
+                </li>
+                <li>
+                  <a href="http://hendersonvilleroyals.com/">
+                    <img src="/static/color-team-logos/royals.png" alt="Link to Team Site" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.nccwarriors.com/">
+                    <img src="/static/color-team-logos/warriors.png" alt="Link to Team Site" />
+                  </a>
+                </li>
+                <li class="button button--login" @click="goToLogin()" ref="showLogin">
                   <span v-if="!loggedIn">Login</span>
-                  <!--<span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span>-->
-                  <span v-else>Logout</span>
-              </li>
-            </ul>
-          </div>
-
-            <div v-if="showLogin" class="teamlogin" ref="teamlogin">
-              <form v-if="!loggedIn">
-                <label for="username">
-                  Username
-                </label>
-                <input type="text" id="username" v-model="username" @click.stop />
-                <label for="password">
-                  Password
-                </label>
-                <input type="password" id="password" v-model="password" @click.stop />
-                <button @click.prevent.stop="login()" class="login">
-                  <font-awesome-icon :icon="['fas', 'basketball-ball']" :class="{'animate': thinking}"></font-awesome-icon> Login
-                </button>
-              </form>
-              <div v-else class="text-right">
-                <!-- <router-link :to="{name: 'teamDashboard', params: { slug: team.slug.toLowerCase() }}">Go To Team Dashboard</router-link> -->
-                <router-link :to="{name: 'teamDashboard', params: { slug: 'hendersonville_royals' }}">Go To Team Dashboard</router-link>
-                <button @click.prevent="signout()" class="login">
-                  <font-awesome-icon :icon="['fas', 'basketball-ball']"></font-awesome-icon> Signout
-                </button>
-              </div>
+                  <!-- <span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span> -->
+                  <span v-else>
+                    <template v-if="isPublic">
+                      Team Management
+                    </template>
+                    <template v-else>
+                      Logout
+                    </template>
+                  </span>
+                </li>
+              </ul>
             </div>
           </nav>
         </div>
@@ -116,7 +91,6 @@
                 </router-link>
               </ul>
             </span>
-            <!-- <router-link :to="{ path: '/contact' }">Contact</router-link> -->
           </nav>
         </div>
       </div>
@@ -138,7 +112,6 @@ export default {
       collapse: true,
       openMenu: false,
       showLogin: false,
-      // loggedIn: false,
       showSchools: false,
       thinking: false,
       username: '',
@@ -164,6 +137,9 @@ export default {
       set: function () {
 
       }
+    },
+    isPublic () {
+      return this.$route.meta.section === 'public'
     }
   },
   filters: {
@@ -190,10 +166,18 @@ export default {
     },
     goToLogin () {
       if (!this.loggedIn) {
-        this.$router.push({ name: 'login' })
+        if (this.$route.name !== 'login') {
+          this.$router.push({ name: 'login' })
+        }
       } else {
-        this.signout()
+        if (this.isPublic) {
+          const team = this.$store.getters.team
+          this.$router.push({ name: 'teamDashboard', params: { slug: team } })
+        } else {
+          this.signout()
+        }
       }
+      this.collapse = true
     },
     slugCase (value) {
       if (!value) return ''
@@ -204,18 +188,13 @@ export default {
     },
     toggleLogin () {
       const isOpen = _.cloneDeep(this.showLogin)
-      // this.$root.$emit('close')
-
-      // this.open = !isOpen
       window.setTimeout(() => {
         this.showLogin = !isOpen
       }, 1)
     },
     login () {
       this.thinking = true
-      // this.$router.push('/manage/chattanooga_patriots')
       api.login(this.username, this.password).then(response => {
-        // console.log(response)
         this.loggedIn = true
         this.showLogin = false
         this.$store.dispatch('setAuth', response.data.token)
@@ -244,10 +223,6 @@ export default {
   @import '../assets/less/utils/variables.less';
   @import '../assets/less/utils/breakpoints.less';
   header {
-    // display: grid;
-    // grid-template-columns: minmax(10rem, 21%) auto;
-    // grid-auto-rows: minmax(35px, auto);
-
     position: sticky;
     top: 0;
     width: 100%;
@@ -264,19 +239,11 @@ export default {
       justify-content: space-between;
     }
     .con-logo {
-      // width: 100%;
-      // height: 100%;
-      // height: 7rem;
-      // height: 112px;
-      // background-color: #fff;
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 0 6rem 0 0rem;
-      // left: -4%;
-      // left: 0;
-      // transform: skew(-45deg);
       &:before {
         content: '';
         display: block;
@@ -293,22 +260,9 @@ export default {
       @media @phone {
         padding: 0 4rem 0 1rem;
       }
-      // &:after {
-      //   content: '';
-      //   display: block;
-      //   width: 0;
-      //   height: 0;
-      //   position: absolute;
-      //   top: 0;
-      //   left: 100%;
-      //   border-top: 7rem solid #fff;
-      //   border-right: 7rem solid transparent;
-      // }
       .logo {
         max-width: 14rem;
         height: auto;
-        // position: absolute;
-        // right: 0;
         width: 90%;
       }
     }
@@ -316,30 +270,12 @@ export default {
       display: grid;
       grid-auto-rows: 2.5rem 4.5rem;
       flex-grow: 1;
-      // max-width: 825px;
-      // padding-right: 1rem;
-      // position: relative;
-      // &:before {
-      //   border-top: 7rem solid #fff;
-      //   border-right: 7rem solid transparent;
-      //   content: '';
-      //   display: block;
-      //   width: 0;
-      //   height: 0;
-      //   position: absolute;
-      //   top: 0;
-      //   left: 0;
-      // }
     }
     .top-hat {
       height: 100%;
-      // background-color: #fff;
       display: flex;
       flex-flow: row;
       align-items: center;
-      // align-items: stretch;
-      // width: 100%;
-      // justify-content: center;
       &:before {
           content: '';
           height: 2.5rem;
@@ -364,15 +300,12 @@ export default {
       ul {
         display: flex;
         flex-flow: row;
-        /* flex-grow: 1; */
         height: 100%;
         width: 100%;
         justify-content: flex-end;
         align-items: center;
         margin-bottom: 0; // Fix for margin-block-end in chrome
         li {
-          // height: 85%;
-          // height: 1.35rem;
           height: 2.25rem;
           padding: 0 1rem;
           box-sizing: content-box;
@@ -380,7 +313,6 @@ export default {
             height: 2.25rem;
           }
           img {
-            // height: 100%;
             max-height: 95%;
             max-width: 3rem;
             vertical-align: bottom;
@@ -409,7 +341,6 @@ export default {
       }
 
       @media @tablet-max {
-        // display: none;
         nav {
           z-index: 2;
           width: 100%;
@@ -419,7 +350,6 @@ export default {
         }
         .mobile-drop {
           z-index: 3;
-          // background: #fff;
           height: 2.5rem;
           width: 100%;
           display: flex;
@@ -431,14 +361,11 @@ export default {
           div {
             margin-right: 1rem;
           }
-          // max-width: 80%;
-          // text-align: center;
         }
         ul{
           z-index: 1;
           flex-flow: row wrap;
           position: absolute;
-          // background: #fff;
           top: 7rem;
           right: 0;
           width: 100%;
@@ -456,7 +383,6 @@ export default {
             border: 1px solid @conf-blue;
             width: 33.333%;
             padding-bottom: 33.333%;
-            // padding: 1rem .5rem;
             height: 50px;
             box-sizing: border-box;
             position: relative;
@@ -472,65 +398,50 @@ export default {
               display: flex;
               align-items: center;
               justify-content: center;
-              // div {
-              //   position: relative;
-                img {
-                  // height: 100%;
-                  // width: 100%;
-                  // max-width: 50px;
-                  // max-height: 36px;
-                  max-width: 6rem;
-                }
-              // }
+              img {
+                max-width: 6rem;
+              }
             }
           }
         }
 
-          .schoolMenuCon {
-            width: 100%;
-            position: absolute;
-            top: 0;
-            right: 0;
-            overflow: hidden;
-            &.collapse {
+        .schoolMenuCon {
+          width: 100%;
+          position: absolute;
+          top: 0;
+          right: 0;
+          overflow: hidden;
+          &.collapse {
+            transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+            height: 0;
+            ul {
               transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
               height: 0;
-              ul {
-                transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-                height: 0;
-              }
             }
-            &.open {
-              transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-              height: 100vh;
-              ul {
-                // transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-                height: auto;
-                &:before {
-                  content: '';
-                  height: 100vh;
-                  width: 100vw;
-                  position: absolute;
-                  background: rgba(0,0,0, 0.8);
-                }
-              }
-            }
-          }
-
-          &.collapse {
-            transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-            // top: -9999px;
-
-            // display: none;
           }
           &.open {
-            transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-            // top: 2.5rem;
-
+            transition: height .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+            height: 100vh;
+            ul {
+              height: auto;
+              &:before {
+                content: '';
+                height: 100vh;
+                width: 100vw;
+                position: absolute;
+                background: rgba(0,0,0, 0.8);
+              }
+            }
           }
         }
-      // }
 
+        &.collapse {
+          transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+        &.open {
+          transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+      }
       @media @phone {
         ul {
           width: 100%;
@@ -540,17 +451,12 @@ export default {
 
     .main-nav {
       height: 100%;
-      // background-color: #fff;
       display: flex;
       flex-flow: row;
       z-index: 1;
-      // align-items: stretch;
-      // width: 100%;
-      // justify-content: center;
 
       nav {
         display: flex;
-        // flex-direction: column;
         position: relative;
         width: 100%;
         z-index: 1;
@@ -562,15 +468,12 @@ export default {
         span {
           color: #fff;
           text-decoration: none;
-          // position: relative;
-          // height: 100%;
           display: flex;
           flex-flow: row wrap;
           justify-content: center;
           align-items: center;
           height: 100%;
           flex-grow: 1;
-          // &.router-link-exact-active{
           &:hover{
             background-color: #fff;
             color: var(--bg-color);
@@ -579,18 +482,10 @@ export default {
         }
 
         .nav_dropdown {
-          // position: fixed;
-          //   width: 200px;
-          // background: rgba(255,255,255, 0.95);
           color: #2A2A2A;
-          // top: 39px;
           top: 4.5rem;
-          // top: 7rem;
           box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
-          // width: 250px;
           right: 0;
-          // width: 100%;
-          // columns: 2;
           position: absolute;
           width: auto;
           font-weight: 400;
@@ -604,8 +499,6 @@ export default {
             cursor: pointer;
             font-family: 'Lato';
             &:after {
-              // content: '';
-              // display: inline-block;
               height: 1px;
               background: var(--bg-color);
               width: calc(100% + .75rem);
@@ -622,7 +515,6 @@ export default {
             }
             &:hover {
               color: @conf-blue;
-              // background-color: rgba(12, 75, 117, .2)
             }
           }
         }
@@ -632,9 +524,6 @@ export default {
       }
 
        @media @tablet-max {
-        // position: relative;
-        // left: 0;
-        // width: 100%;
         &.open:before {
           content: '';
           height: 100vh;
@@ -652,21 +541,16 @@ export default {
           position: relative;
           width: 100%;
           justify-content: flex-end;
-          // position: fixed;
           right: 1rem;
-          // transform: translate(0px, 1rem);
           .icon {
             height: 1.5rem;
             width: 1.5rem;
             height: 1.5rem;
             width: 1.5rem;
             right: 1rem;
-            // transform: rotate(-45deg);
-            // transform-origin: center;
           }
         }
         .close {
-          // display: none !important;
           position: absolute;
           left: 0;
           top: 7rem;
@@ -674,10 +558,7 @@ export default {
           flex-flow: column;
           height: 0;
           overflow: hidden;
-          // transform: rotate(-135deg) translate3d(-38px, 445px, 0px);
-          // transform: rotate(-135deg) translate3d(87px, 0px, 0px);
           transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-          // transform-origin: top right;
         }
 
         .open {
@@ -686,13 +567,11 @@ export default {
           top: 7rem;
           background-color: var(--bg-color);
           flex-flow: column;
-          // height: calc(100vh - 7rem);
           height: 200px;
           transform: rotate(0) translate3d(0px, 0px, 0px);
           transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
-          // transform-origin: top right;
           .icon {
-             transform: rotate(0)
+            transform: rotate(0)
           }
           .dropdown {
             position: relative;
@@ -709,15 +588,13 @@ export default {
         }
         nav a,
         nav span {
-            // height: auto;
-            flex-grow: 0;
-            justify-content: flex-start;
-                padding-left: 1rem;
-          }
+          flex-grow: 0;
+          justify-content: flex-start;
+          padding-left: 1rem;
+        }
       }
 
       @media @phone {
-        // width: 250px;
         right: 0;
         left: unset;
       }
@@ -732,8 +609,6 @@ export default {
     padding: .3125rem .625rem;
     border-style: unset;
     white-space: nowrap;
-    // border-radius: 5px;
-    // transform: skewX(-45deg);
     &:hover {
       background-color: @nav-blue;
       span {
