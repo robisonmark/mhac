@@ -25,7 +25,7 @@
 
 <script>
 // api
-import { api } from './api/endpoints.js'
+// import { api } from './api/endpoints.js'
 
 // components
 import headerComponent from '@/components/header'
@@ -63,7 +63,13 @@ export default {
     }
   },
   beforeCreate () {
+    this.$store.dispatch('setSeasons')
+
     this.$store.dispatch('setTeams')
+
+    this.$store.dispatch('setLevels')
+
+    this.$store.dispatch('setFullSchedule')
   },
   created () {
     this.$router.options.routes.forEach((route) => {
@@ -78,43 +84,8 @@ export default {
         })
       }
     })
-
-    this.initCurrentSeason()
-
-    // this.initTeams()
-
-    this.initLevels()
-
-    this.initSchedule()
   },
   methods: {
-    initCurrentSeason () {
-      api.getCurrentSeasons().then(response => {
-        this.$store.dispatch('setSeasons', response.data)
-      })
-    },
-    // initTeams () {
-    //   api.getTeams().then(response => {
-    //     this.$store.dispatch('setTeams', response.data.team)
-    //   })
-    // },
-    initLevels () {
-      api.getLevels().then(response => {
-        this.$store.dispatch('setLevels', response.data)
-      })
-    },
-    initSchedule () {
-      api.getSchedule().then(response => {
-        const fixedData = []
-        response.data.forEach(game => {
-          if (game.game_time === '12:00 AM ') {
-            game.game_time = 'TBD'
-          }
-          fixedData.push(game)
-        })
-        this.$store.dispatch('setFullSchedule', fixedData)
-      })
-    },
     clickAway () {
       this.$root.$emit('close', true)
     }

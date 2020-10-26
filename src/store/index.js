@@ -95,8 +95,10 @@ const actions = {
     context.commit('set_readWriteAccess', payload)
   },
 
-  setSeasons (context, payload) {
-    context.commit('set_seasons', payload)
+  async setSeasons (context, payload) {
+    await api.getCurrentSeasons().then(response => {
+      context.commit('set_seasons', response.data)
+    })
   },
 
   async setTeams (context) {
@@ -105,12 +107,23 @@ const actions = {
     })
   },
 
-  setLevels (context, payload) {
-    context.commit('set_levels', payload)
+  async setLevels (context, payload) {
+    await api.getLevels().then(response => {
+      context.commit('set_levels', response.data)
+    })
   },
 
-  setFullSchedule (context, payload) {
-    context.commit('set_fullSchedule', payload)
+  async setFullSchedule (context, payload) {
+    await api.getSchedule().then(response => {
+      const fixedData = []
+      response.data.forEach(game => {
+        if (game.game_time === '12:00 AM ') {
+          game.game_time = 'TBD'
+        }
+        fixedData.push(game)
+      })
+      context.commit('set_fullSchedule', fixedData)
+    })
   },
 
   load (context) {
@@ -127,6 +140,15 @@ const getters = {
   },
   team () {
     return state.teams[0].slug
+  },
+  teams () {
+    return state.teams
+  },
+  levels () {
+    return state.levels
+  },
+  schedule () {
+    return state.fullSchedule
   },
   userGroups (state) {
     return state.userGroups
