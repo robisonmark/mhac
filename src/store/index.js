@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+// api
+import { api } from '@/api/endpoints.js'
+
 // Modules
 import auth from './modules/store.auth'
 
@@ -96,8 +99,10 @@ const actions = {
     context.commit('set_seasons', payload)
   },
 
-  setTeams (context, payload) {
-    context.commit('set_teams', payload)
+  async setTeams (context) {
+    await api.getTeams().then(response => {
+      context.commit('set_teams', response.data)
+    })
   },
 
   setLevels (context, payload) {

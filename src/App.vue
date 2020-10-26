@@ -62,6 +62,9 @@ export default {
       }
     }
   },
+  beforeCreate () {
+    this.$store.dispatch('setTeams')
+  },
   created () {
     this.$router.options.routes.forEach((route) => {
       if (route.children) {
@@ -78,7 +81,7 @@ export default {
 
     this.initCurrentSeason()
 
-    this.initTeams()
+    // this.initTeams()
 
     this.initLevels()
 
@@ -90,11 +93,11 @@ export default {
         this.$store.dispatch('setSeasons', response.data)
       })
     },
-    initTeams () {
-      api.getTeams().then(response => {
-        this.$store.dispatch('setTeams', response.data.team)
-      })
-    },
+    // initTeams () {
+    //   api.getTeams().then(response => {
+    //     this.$store.dispatch('setTeams', response.data.team)
+    //   })
+    // },
     initLevels () {
       api.getLevels().then(response => {
         this.$store.dispatch('setLevels', response.data)
