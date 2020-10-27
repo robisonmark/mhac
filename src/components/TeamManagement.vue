@@ -164,7 +164,7 @@ h2 {
   // min-height: calc(100vh - 7rem);
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 21% auto;
+  grid-template-columns: 15rem auto;
   // grid-auto-rows: minmax(35px, auto);
   .sidebar {
     background-color: #fff;

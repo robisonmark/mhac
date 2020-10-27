@@ -136,10 +136,10 @@ export const router = new Router({
     },
     {
       path: '/manage/:slug',
-      name: 'teamManagement',
       component: TeamManagement,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        section: 'team'
       },
       children: [
         {
@@ -225,8 +225,8 @@ export const router = new Router({
 router.beforeResolve(async (to, from, next) => {
   if (Object.prototype.hasOwnProperty.call(to, 'meta')) {
     if (Object.prototype.hasOwnProperty.call(to.meta, 'title') && to.meta.title) document.title = to.meta.title
+    const validSession = await Promise.resolve(store.dispatch('valid'))
     if (to.meta.requiresAuth === true) {
-      const validSession = await Promise.resolve(store.dispatch('valid'))
       if (validSession === true) {
         return next()
       } else {

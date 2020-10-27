@@ -82,9 +82,9 @@
         <!-- <p>To inquire about joining the conference please email: email@personinconference.org</p> -->
         <h3>NCHBC Southeast Regional Tournament </h3>
         <P>Congratulations to WKy Trailblazer's 14U Boys and NCC Warriors 16U Girls on winning the Southeast Region Championships!</p>
-        
+
         <p>LCA Lions 18U boys and NCC Warriors 18U Girls both ended the tournaments with 2nd place finishes!</p>
-        
+
         <p>A big shout out to the other teams competing in this weekend's tournament. </p>
         <br />
         <p>NCC Warriors 18U Boys<br />
