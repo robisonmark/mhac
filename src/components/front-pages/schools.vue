@@ -183,7 +183,7 @@ export default {
     selectedTeam: {
       get: function () {
         return this.$store.state.teams.find(team => {
-          let user = {
+          const user = {
             team_id: team.id,
             slug: team.slug
           }
@@ -192,7 +192,7 @@ export default {
         })
       },
       set: function (newValue) {
-        let user = {
+        const user = {
           team_id: newValue.id,
           slug: newValue.slug
         }
@@ -200,7 +200,7 @@ export default {
         this.$store.dispatch('setUser', user)
         const routeName = this.$route.name
 
-        this.$router.push({name: routeName, params: { slug: newValue.slug }})
+        this.$router.push({ name: routeName, params: { slug: newValue.slug } })
         this.getSeasonTeams(newValue.slug)
       }
     }
@@ -213,7 +213,7 @@ export default {
       deep: true,
       handler (newValue, oldValue) {
         if (this.selectedSection === 'Schedule') {
-          let season = this.seasons.filter(season => { return season.level === newValue.level_name })
+          const season = this.seasons.filter(season => { return season.level === newValue.level_name })
 
           this.initLeveledSchedule(season[0].season_id, this.$route.params.slug)
         } else if (this.selectedSection === 'Roster') {
@@ -253,8 +253,8 @@ export default {
       // window.addEventListener('scroll', this.watchLogoPos)
     },
     watchLogoPos () {
-      let footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
-      let bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
+      const footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
+      const bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
 
       console.log('top: ', document.getElementById('publicMainFooter').scrollTop)
       console.log('y: ', footerTop.y)
@@ -290,7 +290,7 @@ export default {
     },
     initLeveledRoster (lvlId) {
       api.getRoster(lvlId).then(response => {
-        let rosterArr = []
+        const rosterArr = []
         this.fullRoster.forEach(player => {
           response.data.forEach(lvlPlayer => {
             if (player.id === lvlPlayer.player_id) {
@@ -304,16 +304,16 @@ export default {
     },
     initLeveledSchedule (season, slug) {
       api.getSchedule(season, slug).then(response => {
-        let gameArr = []
+        const gameArr = []
         response.data.forEach(game => {
-          let gameObj = {
-            'host': '',
-            'opponent': '',
-            'game_time': game.game_time,
-            'game_date': game.game_date,
-            'location': {},
-            'results': {},
-            'id': game.game_id
+          const gameObj = {
+            host: '',
+            opponent: '',
+            game_time: game.game_time,
+            game_date: game.game_date,
+            location: {},
+            results: {},
+            id: game.game_id
           }
 
           if (game.home_team.slug === this.$route.params.slug) {
@@ -322,11 +322,11 @@ export default {
             if (game.final_score.home !== null) {
               if (game.final_score.home > game.final_score.away) {
                 gameObj.results = {
-                  'win_loss': 'W'
+                  win_loss: 'W'
                 }
               } else if (game.final_score.home < game.final_score.away) {
                 gameObj.results = {
-                  'win_loss': 'L'
+                  win_loss: 'L'
                 }
               }
             }
@@ -336,23 +336,24 @@ export default {
             if (game.final_score.home !== null) {
               if (game.final_score.home < game.final_score.away) {
                 gameObj.results = {
-                  'win_loss': 'W'
+                  win_loss: 'W'
                 }
               } else if (game.final_score.home > game.final_score.away) {
                 gameObj.results = {
-                  'win_loss': 'L'
+                  win_loss: 'L'
                 }
               }
             }
           }
 
           gameObj.location = {
-            'street': game.home_team.address_lines,
-            'city_state_zip': game.home_team.city_state_zip,
-            'name': game.home_team.address_name}
+            street: game.home_team.address_lines,
+            city_state_zip: game.home_team.city_state_zip,
+            name: game.home_team.address_name
+          }
 
           if (game.final_score.home !== null) {
-            gameObj.results = {...gameObj.results, ...game.final_score}
+            gameObj.results = { ...gameObj.results, ...game.final_score }
           }
 
           gameArr.push(gameObj)
@@ -361,7 +362,7 @@ export default {
       })
     },
     createSeasonDisplay (season) {
-      let nameSplit = season.level.split(' ')
+      const nameSplit = season.level.split(' ')
       let gender = ''
       if (nameSplit[1] === 'Boys') {
         gender = 'Boys'

@@ -378,9 +378,9 @@ export default {
   computed: {
     teams () {
       // let teams = [{id: '', team_name: 'All Teams'}, ...this.$store.state.teams]
-      let teams = [
-        {id: this.filterBy.game.home_team.id, team_name: this.filterBy.game.home_team.name},
-        {id: this.filterBy.game.away_team.id, team_name: this.filterBy.game.away_team.name}
+      const teams = [
+        { id: this.filterBy.game.home_team.id, team_name: this.filterBy.game.home_team.name },
+        { id: this.filterBy.game.away_team.id, team_name: this.filterBy.game.away_team.name }
       ]
       return teams
     },
@@ -390,10 +390,10 @@ export default {
       return levels
     },
     games () {
-      let gameFilter = [{game_id: '', home_team: {team_level: 'All Levels'}, teams: 'All Games'}]
+      const gameFilter = [{ game_id: '', home_team: { team_level: 'All Levels' }, teams: 'All Games' }]
 
       this.$store.state.fullSchedule.forEach(game => {
-        game['teams'] = game.home_team.name + ' vs. ' + game.away_team.name + ' - ' + game.home_team.team_level
+        game.teams = game.home_team.name + ' vs. ' + game.away_team.name + ' - ' + game.home_team.team_level
 
         // delete game.home_team
         // delete game.away_team
@@ -445,9 +445,10 @@ export default {
     }
   },
   created () {
-    if (this.$route.query.hasOwnProperty('game') && this.$route.query.hasOwnProperty('home_team')) {
+    if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') &&
+    Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
       this.initStats(this.$route.query.game, this.$route.query.home_team)
-    } else if (this.$route.query.hasOwnProperty('game')) {
+    } else if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game')) {
       this.initStats(this.$route.query.game.game_id)
     } else {
     }
@@ -458,8 +459,9 @@ export default {
     })
   },
   updated () {
-    let self = this
-    if (this.$route.query.hasOwnProperty('game') && this.$route.query.hasOwnProperty('home_team')) {
+    const self = this
+    if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') &&
+    Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
       const game = self.games.find(game => {
         return game.game_id === self.$route.query.game
       })
@@ -468,14 +470,14 @@ export default {
       }
 
       if (game && self.filterBy.level.season_id === '') {
-        let level = self.levels.find(level => { return level.level === game.home_team.team_level })
+        const level = self.levels.find(level => { return level.level === game.home_team.team_level })
         self.setLvl(level)
       }
     }
   },
   methods: {
     initSeasonStats () {
-      let data = {
+      const data = {
         season_id: this.filterBy.level.season_id
       }
       api.getSeasonStats(data).then(response => {
@@ -522,8 +524,8 @@ export default {
     setGame (game) {
       this.filterBy.game.game_id = game.game_id
       this.filterBy.game.teams = game.teams
-      this.filterBy.game.home_team = { 'id': game.home_team.id, 'name': game.home_team.name }
-      this.filterBy.game.away_team = { 'id': game.away_team.id, 'name': game.away_team.name }
+      this.filterBy.game.home_team = { id: game.home_team.id, name: game.home_team.name }
+      this.filterBy.game.away_team = { id: game.away_team.id, name: game.away_team.name }
       // this.showTeams = false
       // console.log(this.showTeams)
     },

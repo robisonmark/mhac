@@ -62,23 +62,23 @@ export const tablemix = {
   // },
   methods: {
     setFixedTableHead () {
-      let columnCount = 6
-      let tableWidth = document.getElementById('table-body').rows[0].clientWidth
+      const columnCount = 6
+      const tableWidth = document.getElementById('table-body').rows[0].clientWidth
 
       document.getElementById('table-head-fixed').style.width = tableWidth + 'px'
       document.getElementById('table-head-fixed').style.position = 'fixed'
 
       for (let i = 0; i <= columnCount; ++i) {
-        let columnWidth = document.getElementById('table-body').rows[0].cells[i].offsetWidth
+        const columnWidth = document.getElementById('table-body').rows[0].cells[i].offsetWidth
         document.getElementById('table-head-fixed').rows[0].cells[i].width = columnWidth + 'px'
       }
     },
     setScrollPos () {
-      let scrollPos = document.getElementById('table').getBoundingClientRect().left
+      const scrollPos = document.getElementById('table').getBoundingClientRect().left
       document.getElementById('table-head-fixed').style.left = scrollPos + 'px'
     },
     setTableTopPos () {
-      let tableYPos = document.getElementById('table').getBoundingClientRect().top
+      const tableYPos = document.getElementById('table').getBoundingClientRect().top
       document.getElementById('table-head-fixed').style.top = tableYPos + 'px'
       document.getElementById('table').style.marginTop = tableYPos + 'px'
     },

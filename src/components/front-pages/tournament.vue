@@ -705,7 +705,7 @@ export default {
   },
   computed: {
     levels () {
-      const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
+      const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
     },
     fourteenUBoys () {

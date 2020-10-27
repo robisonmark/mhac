@@ -110,9 +110,6 @@
 import { api } from '../../api/endpoints.js'
 import _ from 'lodash'
 
-// components
-import selectbox from '../selectbox'
-
 export default {
   name: 'home',
   data () {
@@ -121,9 +118,6 @@ export default {
       noStandings: Boolean,
       season: ''
     }
-  },
-  components: {
-    'selectbox': selectbox
   },
   computed: {
     seasons () {
@@ -170,12 +164,12 @@ export default {
       })
     },
     createName (season) {
-      let nameSplit = season.level.split(' ')
+      const nameSplit = season.level.split(' ')
       return nameSplit[1] + ' ' + nameSplit[0] + ' ' + season.sport
       // return season.season_name + ' ' + season.sport
     },
     createSeasonDisplay (season) {
-      let nameSplit = season.level.split(' ')
+      const nameSplit = season.level.split(' ')
       let gender = ''
       if (nameSplit[1] === 'Boys') {
         gender = 'Boys'

@@ -1,0 +1,63 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-mhacsports-dev-161314-authRole",
+      "UnauthRoleArn": "arn:aws:iam::698535776159:role/amplify-mhacsports-dev-161314-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::698535776159:role/amplify-mhacsports-dev-161314-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-mhacsports-dev-161314-deployment",
+      "UnauthRoleName": "amplify-mhacsports-dev-161314-unauthRole",
+      "StackName": "amplify-mhacsports-dev-161314",
+      "StackId": "arn:aws:cloudformation:us-east-2:698535776159:stack/amplify-mhacsports-dev-161314/958eb2e0-074f-11eb-b4a8-0a2e14d85af6",
+      "AmplifyAppId": "d3apb2hgl5mtps"
+    }
+  },
+  "auth": {
+    "userPoolGroups": {
+      "service": "Cognito-UserPool-Groups",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "auth",
+          "resourceName": "mhacsports",
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID",
+            "IdentityPoolId"
+          ]
+        }
+      ],
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-mhacsports-dev-161314-deployment/amplify-cfn-templates/auth/template.json",
+        "logicalId": "authuserPoolGroups"
+      },
+      "lastPushTimeStamp": "2020-10-05T21:49:25.218Z",
+      "output": {
+        "adminGroupRole": "arn:aws:iam::698535776159:role/us-east-2_CDJU8RER6-adminGroupRole"
+      },
+      "lastPushDirHash": "UUZrhg6qhcUEL1IP0uGBDlW5pFo="
+    },
+    "mhacsports": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-mhacsports-dev-161314-deployment/amplify-cfn-templates/auth/mhacsports-cloudformation-template.yml",
+        "logicalId": "authmhacsports"
+      },
+      "lastPushTimeStamp": "2020-10-05T21:49:25.218Z",
+      "output": {
+        "AppClientSecret": "72cv6eiekpe1kklnohfqfqpe24i5r77dbq6n3bk93rk1557ou11",
+        "UserPoolId": "us-east-2_CDJU8RER6",
+        "AppClientIDWeb": "2tdq65fqopnk0gnka4k8tq0buv",
+        "AppClientID": "7u8vtgha3k25kmo52fqbp6tqij",
+        "IdentityPoolId": "us-east-2:45d5f34a-f275-47c9-b5fe-8ad6e76fc743",
+        "IdentityPoolName": "mhacsports__dev",
+        "UserPoolName": "mhacsports_users"
+      },
+      "lastPushDirHash": "j9GkG0da8LvB0y7MKm+fMIBhEdI="
+    }
+  }
+}

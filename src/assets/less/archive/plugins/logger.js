@@ -3,27 +3,25 @@
 //
 
 functions.add('warn', function ({ value: message } = { value: '' }) {
-	let filename = this.currentFileInfo.filename
+  let filename = this.currentFileInfo.filename
 
-	if (filename)
-		filename = `[${filename}] `
+  if (filename) { filename = `[${filename}] ` }
 
-	message = `${filename}WARNING: ${message}`
+  message = `${filename}WARNING: ${message}`
 
 	less.logger.warn(message) // eslint-disable-line
 
-	return false
+  return false
 })
 
 functions.add('error', function ({ value: message } = { value: '' }) {
-	let filename = this.currentFileInfo.filename
+  let filename = this.currentFileInfo.filename
 
-	if (filename)
-		filename = `[${filename}] `
+  if (filename) { filename = `[${filename}] ` }
 
-	message = `${filename}ERROR: ${message}`
+  message = `${filename}ERROR: ${message}`
 
 	less.logger.error(message) // eslint-disable-line
 
-	throw new Error(message)
+  throw new Error(message)
 })

@@ -208,7 +208,7 @@ export default {
   },
   computed: {
     levels () {
-      const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
+      const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
     },
     fourteenUBoys () {
@@ -225,7 +225,6 @@ export default {
     }
   },
   watch: {
-
   },
   created () {
     this.initTourney()
@@ -244,12 +243,12 @@ export default {
     updateBracket (game) {
       // this.oldBracket = _.cloneDeep(this.games)
       if (game.matchup.scoreTeam1 !== '' && game.matchup.scoreTeam2 !== '') {
-        let winner = this.results(game.matchup)
-        let loser = game.matchup.team1 === winner ? game.matchup.team2 : game.matchup.team1
+        const winner = this.results(game.matchup)
+        const loser = game.matchup.team1 === winner ? game.matchup.team2 : game.matchup.team1
 
         let winnerStr = 'Winner Game'
         let loserStr = 'Loser Game'
-        let gameNumber = game.game
+        const gameNumber = game.game
 
         winnerStr = winnerStr.concat(' ', gameNumber)
         loserStr = loserStr.concat(' ', gameNumber)

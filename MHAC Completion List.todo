@@ -1,0 +1,32 @@
+MHAC Completetion List:
+    - set auth token
+        - rewrite state management
+        - unauthorized page
+    - check auth token to see if logged in when directing to pages @done
+        - give unauth message and cancel navigation
+    - public school pages @done
+    - mobile styles
+        - auth page(?)
+        - close menu on selection @done
+        - switch menu on clicks
+        - mobile compliance
+        - menu close on click
+        - stats
+            - sitcky first 3 columns, need js
+            - filters own row?
+        - 
+    - set cookies to remember selections
+    - export optimized for web images and run through tinypng @done
+    - google analytics
+    - tounament graphic @done
+    - prefooter for MHAC
+    - add header to tournament central @done
+    - remove gradient @done
+    - Add in disabled dropdowns on the schedule page
+    - footer with <robros/> logo @done
+    - look at all logos to pull optimized
+
+
+I don't like menu
+    - remove display none from top hat
+    - strip open and close styles

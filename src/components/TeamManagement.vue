@@ -39,7 +39,7 @@ export default {
     }
   },
   components: {
-    'selectbox': selectbox
+    selectbox: selectbox
   },
   computed: {
     cssVars () {
@@ -73,7 +73,7 @@ export default {
     selectedTeam: {
       get: function () {
         return this.$store.state.teams.find(team => {
-          let user = {
+          const user = {
             team_id: team.id,
             slug: team.slug
           }
@@ -82,7 +82,7 @@ export default {
         })
       },
       set: function (newValue) {
-        let user = {
+        const user = {
           team_id: newValue.id,
           slug: newValue.slug
         }
@@ -90,7 +90,7 @@ export default {
         this.$store.dispatch('setUser', user)
         const routeName = this.$route.name
 
-        this.$router.push({name: routeName, params: { slug: newValue.slug }})
+        this.$router.push({ name: routeName, params: { slug: newValue.slug } })
         this.getSeasonTeams(newValue.slug)
       }
     }
@@ -108,7 +108,7 @@ export default {
     // Credit to Jose Reyes @ https://codepen.io/jreyesgs/pens/
     /* Suma el porcentaje indicado a un color (RR, GG o BB) hexadecimal para aclararlo */
     addLight (color, amount) {
-      let cc = parseInt(color, 16) + amount
+      const cc = parseInt(color, 16) + amount
       let c = (cc > 255) ? 255 : (cc)
       c = (c.toString(16).length > 1) ? c.toString(16) : `0${c.toString(16)}`
       return c
@@ -124,7 +124,7 @@ export default {
 
     /* Resta el porcentaje indicado a un color (RR, GG o BB) hexadecimal para oscurecerlo */
     subtractLight (color, amount) {
-      let cc = parseInt(color, 16) - amount
+      const cc = parseInt(color, 16) - amount
       let c = (cc < 0) ? 0 : (cc)
       c = (c.toString(16).length > 1) ? c.toString(16) : `0${c.toString(16)}`
       return c

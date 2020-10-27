@@ -101,15 +101,15 @@ export default {
         }
       ],
       config: {
-        'page': 'schedule'
+        page: 'schedule'
       },
       newGame: {
-        'host': true,
-        'opponent': '',
-        'game_time': '',
-        'game_date': '',
-        'season': '',
-        'neutral_site': ''
+        host: true,
+        opponent: '',
+        game_time: '',
+        game_date: '',
+        season: '',
+        neutral_site: ''
       },
       schedule: []
     }
@@ -119,8 +119,8 @@ export default {
     tablemix
   ],
   components: {
-    'editTable': editTable,
-    'selectbox': selectbox
+    editTable: editTable,
+    selectbox: selectbox
   },
   computed: {
     seasons () {
@@ -155,14 +155,14 @@ export default {
   methods: {
     initSchedule (season, slug) {
       api.getSchedule(season, slug).then(response => {
-        let gameArr = []
+        const gameArr = []
         response.data.forEach(game => {
-          let gameObj = {
-            'host': '',
-            'opponent': '',
-            'game_time': game.game_time,
-            'game_date': game.game_date,
-            'season': season
+          const gameObj = {
+            host: '',
+            opponent: '',
+            game_time: game.game_time,
+            game_date: game.game_date,
+            season: season
           }
 
           if (game.home_team.slug === this.$store.state.user.slug) {
@@ -180,12 +180,12 @@ export default {
     },
     initNewGame () {
       this.newGame = {
-        'host': true,
-        'opponent': '',
-        'game_time': '',
-        'game_date': '',
-        'season': '',
-        'neutral_site': ''
+        host: true,
+        opponent: '',
+        game_time: '',
+        game_date: '',
+        season: '',
+        neutral_site: ''
         // 'uuid': string,
       }
     },
@@ -193,13 +193,13 @@ export default {
       this.newGame.host = !this.newGame.host
     },
     save () {
-      let gameJson = {
-        'home_team': '',
-        'away_team': '',
-        'time': this.newGame.game_time,
-        'date': this.newGame.game_date,
-        'season': this.newGame.season.id,
-        'neutral_site': ''
+      const gameJson = {
+        home_team: '',
+        away_team: '',
+        time: this.newGame.game_time,
+        date: this.newGame.game_date,
+        season: this.newGame.season.id,
+        neutral_site: ''
       }
       console.log(this.newGame.host === true)
       if (this.newGame.host === true) {

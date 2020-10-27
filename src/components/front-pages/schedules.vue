@@ -234,11 +234,11 @@ export default {
   mixins: [root],
   computed: {
     teams () {
-      const teams = [{slug: '', team_name: 'All Teams'}, ...this.$store.state.teams]
+      const teams = [{ slug: '', team_name: 'All Teams' }, ...this.$store.state.teams]
       return teams
     },
     levels () {
-      const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
+      const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
     }
   },
@@ -270,7 +270,7 @@ export default {
     },
     initSchedule (level, team) {
       api.getSchedule(level, team).then(response => {
-        let fixedData = []
+        const fixedData = []
         response.data.forEach(game => {
           if (game.game_time === '12:00 AM ') {
             game.game_time = 'TBD'

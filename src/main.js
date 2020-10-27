@@ -1,6 +1,4 @@
 /* eslint-disable no-undef */
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
 import { router } from './router'
@@ -15,6 +13,12 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import '@aws-amplify/ui-vue'
+import Amplify from 'aws-amplify'
+import awsconfig from './aws-exports'
+
+Amplify.configure(awsconfig)
+
 /* ********************************* *\
      Global Component Registration
 \* ********************************* */
@@ -24,9 +28,9 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
           Configuration
 \* ********************************* */
 function setLogoPosType (el) {
-  let footer = document.getElementById('publicMainFooter')
-  let footerOffset = footer.offsetTop
-  let footerPos = footer.getBoundingClientRect().y
+  const footer = document.getElementById('publicMainFooter')
+  const footerOffset = footer.offsetTop
+  const footerPos = footer.getBoundingClientRect().y
   if (el.offsetTop + el.getBoundingClientRect().height >= footerPos) {
     el.style.position = 'absolute'
   }
@@ -58,9 +62,8 @@ new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
-  template: '<App/>'
-})
+  render: (h) => h(App)
+}).$mount('#app')
 
 /* ********************************* *\
           Google Analytics
