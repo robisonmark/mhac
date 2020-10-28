@@ -46,7 +46,7 @@ export default {
       let teamMain = ''
       let teamSecond = ''
       this.$store.state.teams.forEach(team => {
-        if (team.id === this.$store.state.user.team_id) {
+        if (team.team_id === this.$store.state.user.team_id) {
           teamMain = '#' + team.main_color
           teamSecond = '#' + team.secondary_color
         }
@@ -72,9 +72,10 @@ export default {
     },
     selectedTeam: {
       get: function () {
+        // console.log('state teams', this.$store.state.teams)
         return this.$store.state.teams.find(team => {
           const user = {
-            team_id: team.id,
+            team_id: team.team_id,
             slug: team.slug
           }
           this.$store.dispatch('setUser', user)
