@@ -1,4 +1,5 @@
 import { store } from '@/store/index'
+import { faTheaterMasks } from '@fortawesome/free-solid-svg-icons'
 import { Auth } from 'aws-amplify'
 
 // Initial "state"
@@ -53,9 +54,8 @@ const actions = {
   },
 
   load (context, user) {
-    if (Object.prototype.hasOwnProperty.call(user.signInUserSession.accessToken.payload, 'cognito:groups')) {
-      context.commit('set_userGroups', user.signInUserSession.accessToken.payload['cognito:groups'], { root: true })
-    }
+    const groups = user.signInUserSession?.accessToken?.payload['cognito:groups']
+    context.commit('set_userGroups', groups, { root: true })
   }
 }
 

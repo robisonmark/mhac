@@ -107,6 +107,24 @@ const actions = {
     })
   },
 
+  async setTeam (context) {
+    await context.dispatch('setTeams')
+    const groups = store.getters.userGroups
+    const teams = store.getters.teams
+
+    if (groups) {
+      const userTeam = teams.filter(team => {
+        if (!groups.includes('Admin')) {
+          return team.slug === groups[0]
+        } else {
+          return team
+        }
+      })
+
+      context.commit('set_user', userTeam[0])
+    }
+  },
+
   async setLevels (context, payload) {
     await api.getLevels().then(response => {
       context.commit('set_levels', response.data)
@@ -139,7 +157,7 @@ const getters = {
     return state.user
   },
   team () {
-    return state.teams[0].slug
+    return state.user.slug
   },
   teams () {
     return state.teams
