@@ -6,52 +6,52 @@
       <div class="row">
         <div class="formGroup col-4">
           <label for="school">School/Location</label>
-          <input type="text" id="school" />
+          <input type="text" id="school" v-model="team.team_name" />
         </div>
         <div class="formGroup col-4">
           <label for="mascot">Name/Mascot</label>
-          <input type="text" id="mascot" />
+          <input type="text" id="mascot" v-model="team.team_mascot" />
         </div>
         <div class="formGroup col-4">
           <label for="website">Website</label>
-          <input type="url" id="website" />
+          <input type="url" id="website" v-model="team.website" />
         </div>
       </div>
 
-      <div class="row formBlock">
+      <!-- <div class="row formBlock">
         <div class="formGroup col-5">
           <label for="street_address">Street Address</label>
-          <input type="text" id="street_address" />
+          <input type="text" id="street_address" v-model="team.team_name"/>
         </div>
         <div class="formGroup col-5 offset-2">
           <label for="address_2">Address 2</label>
-          <input type="text" id="address_2" />
+          <input type="text" id="address_2" v-model="team.team_name"/>
         </div>
       </div>
 
       <div class="row">
         <div class="formGroup col-4">
           <label for="city">City</label>
-          <input type="text" id="city" />
+          <input type="text" id="city" v-model="team.team_name"/>
         </div>
         <div class="formGroup col-4">
           <label for="state">State</label>
-          <input type="text" id="state" />
+          <input type="text" id="state" v-model="team.team_name"/>
         </div>
         <div class="formGroup col-4">
           <label for="zip">Zip</label>
-          <input type="number" id="zip" />
+          <input type="number" id="zip" v-model="team.team_name"/>
         </div>
-      </div>
+      </div> -->
 
       <div class="row formBlock">
         <div class="formGroup col-4">
           <label for="primary_color">Primary Color</label>
-          <input type="text" id="primary_color" />
+          <input type="text" id="primary_color" v-model="team.main_color" />
         </div>
         <div class="formGroup col-4 offset-4">
           <label for="secondary_color">Secondary Color</label>
-          <input type="text" id="secondary_color" />
+          <input type="text" id="secondary_color" v-model="team.secondary_color"/>
         </div>
       </div>
 
@@ -71,11 +71,27 @@
 </template>
 
 <script>
+import { api } from '../../api/endpoints.js'
+import { mapState } from 'vuex'
+
 export default {
   name: 'profile',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      team: {
+        
+      }
+    }
+  },
+  created () {
+    this.getTeam()
+  },
+  methods: {
+    getTeam () {
+      api.getTeams(this.$store.state.user.slug).then( response => {
+        console.log(response.data)
+        this.team = response.data[0]
+      }) 
     }
   }
 }
@@ -100,5 +116,10 @@ h2:after {
 }
 form {
   margin-top: -40px;
+}
+.swatch {
+  font-size: 16px;
+  background-color:#B42625;
+  display: inline;
 }
 </style>
