@@ -107,20 +107,27 @@ const actions = {
     })
   },
 
-  async setTeam (context) {
+  async setTeam (context, payload) {
     await context.dispatch('setTeams')
     const groups = store.getters.userGroups
     const teams = store.getters.teams
 
-    if (groups) {
-      const userTeam = teams.filter(team => {
+    let userTeam = []
+
+    if (payload) {
+      userTeam = teams.filter(team => payload === team.slug)
+      console.log(userTeam)
+    } else if (groups) {
+      userTeam = teams.filter(team => {
         if (!groups.includes('Admin')) {
           return team.slug === groups[0]
         } else {
           return team
         }
       })
-
+      console.log(userTeam)
+    }
+    if (userTeam.length === 1) {
       context.commit('set_user', userTeam[0])
     }
   },

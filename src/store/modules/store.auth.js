@@ -1,5 +1,4 @@
 import { store } from '@/store/index'
-import { faTheaterMasks } from '@fortawesome/free-solid-svg-icons'
 import { Auth } from 'aws-amplify'
 
 // Initial "state"
