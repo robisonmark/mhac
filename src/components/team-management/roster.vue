@@ -2,15 +2,14 @@
   <div class="hello">
     <header class="contentPad">
       <h2>Current Roster</h2>
-      <selectbox id="levels" :options="teamAssocLvl" :trackby="'level_name'" placeholder="Select Level" v-model="rosterLvl"></selectbox>
 
       <div class="buttonCon">
-        <div class="switch" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
           <span class="focused">Edit</span>
         </div>
 
-        <div class="switch" v-if="edit" @click="updatePlayers()">
+        <div class="switch" v-if="edit" @click="save()">
           <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
           <span class="focused" v-if="!saving">Save</span>
           <span v-else>saving...</span>
@@ -23,32 +22,25 @@
         <template slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
             <td class="stat first">
-              <input type="number" min="0" v-model.number="player.player_number" @input="addToUpdateList(index)" />
-              <!-- <template v-else>{{player.player_stats['2PM']}}</template> -->
+              <input type="number" min="0" v-model.number="player.player_number" @input="addToUpdateList(1)" />
             </td>
             <td class="stat">
               <input type="text" v-model="player.first_name" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
             </td>
             <td class="stat">
               <input type="text" v-model="player.last_name" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
             </td>
             <td class="stat">
               <input type="text" v-model="player.position" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
             </td>
             <td class="stat">
-              <!-- <input type="number" v-model.number="player" /> -->
               <template>{{age()}}</template>
             </td>
             <td class="stat">
               <input type="date" v-model="player.birth_date" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
             </td>
             <td class="stat">
               <input type="text" v-model="player.height" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
             </td>
           </tr>
         </template>
@@ -76,7 +68,7 @@ export default {
           name: 'Number',
           icon: '',
           field_name: 'player_number',
-          type: 'text'
+          type: 'number'
         },
         {
           name: 'First Name',
@@ -112,7 +104,7 @@ export default {
           name: 'Birthdate',
           icon: '',
           field_name: 'birth_date',
-          type: 'text'
+          type: 'date'
         },
         {
           name: 'Height',
@@ -147,6 +139,17 @@ export default {
     selectbox: selectbox
   },
   watch: {
+    newPlayer: {
+      deep: true,
+      handler (newValue) {
+        let idx = this.updated.indexOf(newValue)
+        if (idx >= 0) {
+          this.updated[idx] = newValue
+        } else {
+          this.updated.push(newValue)
+        }
+      }
+    },
     user (newValue, oldValue) {
       this.initRoster()
     },
@@ -165,6 +168,9 @@ export default {
     // }
   },
   computed: {
+    seasons () {
+      return this.$store.state.seasons
+    },
     teamAssocLvl () {
       return this.$store.state.teamAssocLvl.season_team_ids
     },
@@ -178,6 +184,8 @@ export default {
     this.$root.$on('save', payload => {
       this.save()
     })
+
+    this.$root.$on('changeEdit', () => {this.edit = !this.edit})
   },
   methods: {
     initRoster () {
@@ -187,6 +195,7 @@ export default {
         // })
         this.roster = response.data
         this.fullRoster = _.cloneDeep(this.roster)
+        console.log(this.fullRoster)
       })
     },
     initLeveledRoster (lvlId) {
@@ -205,25 +214,29 @@ export default {
     },
     initNewPlayer () {
       this.newPlayer = {
-        number: '',
+        player_number: '',
         first_name: '',
         last_name: '',
-        id: '',
+        id: 'a86ed70e-c723-4684-92b6-f690c12c8a11',
         position: '',
-        age: '',
         birth_date: '',
         height: '',
-        team_id: ''
+        team_id: '',
+        person_type: 1
       }
+      return this.newPlayer
     },
     age () {
       return 'Fix'
     },
     addToUpdateList (id) {
+      console.log("addtolist")
       this.updated.push(id)
     },
     updatePlayers () {
+      console.log("updatePlayers")
       this.updated.forEach(index => {
+        console.log(index)
         const playerId = this.roster[index].id
         console.log(playerId)
         // api.updatePlayer(playerId, this.roster[index])
@@ -233,9 +246,10 @@ export default {
       })
     },
     save () {
-      // console.log(this.newPlayer)
+      console.log(this.newPlayer)
       this.newPlayer.team_id = this.$store.state.user.team_id
       const playerJson = this.newPlayer
+      // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
 
       api.addPlayer(playerJson)
         .then(response => {
@@ -247,8 +261,8 @@ export default {
 
       this.roster.push(this.newPlayer)
       this.initNewPlayer()
-      this.$root.$emit('saved')
-      this.$root.$off('save')
+      // this.$root.$emit('saved')
+      // this.$root.$off('save')
     }
   }
 }

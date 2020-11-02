@@ -46,7 +46,7 @@ export default {
       let teamMain = ''
       let teamSecond = ''
       this.$store.state.teams.filter(team => {
-        if (team.slug === this.$store.getters.team.slug) {
+        if (team.slug === this.$store.getters.team) {
           teamMain = '#' + team.main_color
           teamSecond = '#' + team.secondary_color
         }

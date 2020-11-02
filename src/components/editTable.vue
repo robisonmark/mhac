@@ -91,12 +91,21 @@ export default {
   mixins: [
     root
   ],
+  watch: {
+    edit: {
+      deep: true,
+      handler () {
+        this.addNew = this.edit
+      }
+    }
+  },
   components: {
     selectbox: selectbox
   },
   props: [
     'columns',
     'config',
+    'edit',
     'tabledata',
     'value'
   ],
@@ -247,6 +256,7 @@ export default {
     },
     addTo () {
       this.addNew = true
+      this.$root.$emit('changeEdit')
     },
     savedata () {
       this.$root.$emit('save')
