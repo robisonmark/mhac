@@ -1,6 +1,6 @@
 <template>
   <div class="flex-con">
-    <amplify-authenticator v-if="authState !== 'signedin'"></amplify-authenticator>
+    <amplify-authenticator v-if="authState !== 'signedin'" :styles="styles"></amplify-authenticator>
     <div v-if="authState === 'signedin' && user">
       <amplify-sign-out></amplify-sign-out>
       <div>Hello, {{user.username}}</div>
@@ -16,7 +16,10 @@ export default {
   data () {
     return {
       user: undefined,
-      authState: undefined
+      authState: undefined,
+      styles: {
+        border: '1px solid #121212;'
+      }
     }
   },
   watch: {
@@ -54,5 +57,13 @@ export default {
   height: calc(100vh - 7rem);
   align-items: center;
   justify-content: center;
+}
+amplify-authenticator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  --container-height: auto;
+  --border: 1px solid #121212;
 }
 </style>

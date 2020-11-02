@@ -67,6 +67,8 @@ export default {
 
     this.$store.dispatch('setTeams')
 
+    this.$store.dispatch('setTeam')
+
     this.$store.dispatch('setLevels')
 
     this.$store.dispatch('setFullSchedule')

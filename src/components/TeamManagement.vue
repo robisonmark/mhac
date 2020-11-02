@@ -45,8 +45,8 @@ export default {
     cssVars () {
       let teamMain = ''
       let teamSecond = ''
-      this.$store.state.teams.forEach(team => {
-        if (team.team_id === this.$store.state.user.team_id) {
+      this.$store.state.teams.filter(team => {
+        if (team.slug === this.$store.getters.team) {
           teamMain = '#' + team.main_color
           teamSecond = '#' + team.secondary_color
         }
@@ -68,19 +68,19 @@ export default {
       }
     },
     teams () {
-      return this.$store.state.teams
+      return this.$store.getters.teams
     },
     selectedTeam: {
       get: function () {
-        // console.log('state teams', this.$store.state.teams)
-        return this.$store.state.teams.find(team => {
-          const user = {
-            team_id: team.team_id,
-            slug: team.slug
-          }
-          this.$store.dispatch('setUser', user)
-          return team.slug === this.$route.params.slug
-        })
+        // return this.$store.state.teams.find(team => {
+        //   const user = {
+        //     team_id: team.id,
+        //     slug: team.slug
+        //   }
+        //   this.$store.dispatch('setUser', user)
+        //   return team.slug === this.$route.params.slug
+        // })
+        return this.$store.getters.team
       },
       set: function (newValue) {
         const user = {

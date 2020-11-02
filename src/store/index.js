@@ -35,7 +35,9 @@ const state = {
 const mutations = {
   // make.mutations(state)
   set_user (state, payload) {
-    state.user = payload
+    // console.log("payload",payload)
+    state.user.team_id = payload.team_id
+    state.user.slug = payload.slug
   },
   set_teamAssocLvl (state, payload) {
     state.teamAssocLvl = payload
@@ -44,8 +46,8 @@ const mutations = {
     state.userGroups = payload
   },
   set_userAttributes (state, payload) {
-    console.log(state)
-    console.log(payload)
+    console.log("userAttributes", state)
+    console.log("userAttributes", payload)
   },
   set_loaded (state, payload) {
     state.loaded = payload
@@ -57,14 +59,15 @@ const mutations = {
     state.seasons = payload
   },
   set_teams (state, payload) {
+    // console.log("set_teams", payload)
     state.teams = payload
   },
   set_levels (state, payload) {
     state.levels = payload
   },
   set_configOptions (state, payload) {
-    console.log(state)
-    console.log(payload)
+    console.log("configOptions", state)
+    console.log("configOptions", payload)
   },
   set_readWriteAccess (state, payload) {
     state.readWriteAccess = payload
@@ -107,6 +110,24 @@ const actions = {
     })
   },
 
+  async setTeam (context) {
+    await context.dispatch('setTeams')
+    const groups = store.getters.userGroups
+    const teams = store.getters.teams
+
+    if (groups) {
+      const userTeam = teams.filter(team => {
+        if (!groups.includes('Admin')) {
+          return team.slug === groups[0]
+        } else {
+          return team
+        }
+      })
+
+      context.commit('set_user', userTeam[0])
+    }
+  },
+
   async setLevels (context, payload) {
     await api.getLevels().then(response => {
       context.commit('set_levels', response.data)
@@ -135,13 +156,14 @@ const actions = {
 
 const getters = {
   // make.getters(state)
-  user (state) {
+  user () {
     return state.user
   },
   team () {
-    return state.teams[0].slug
+    // console.log("team", state.user)
+    return state.user.slug
   },
-  teams () {
+  teams (state) {
     return state.teams
   },
   levels () {
