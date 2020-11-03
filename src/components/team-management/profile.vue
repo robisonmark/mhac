@@ -89,7 +89,6 @@ export default {
   methods: {
     getTeam () {
       api.getTeams(this.$store.state.user.slug).then( response => {
-        console.log(response.data)
         this.team = response.data[0]
       }) 
     }
