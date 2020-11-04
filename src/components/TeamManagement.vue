@@ -70,15 +70,27 @@ export default {
     },
     selectedTeam: {
       get: function () {
-        return this.$store.getters.teams.find(team => {
-          // HOLD TO TEST FOR ADMIN
-          // const user = {
-          //   team_id: team.id,
-          //   slug: team.slug
-          // }
-          // this.$store.dispatch('setUser', user)
-          return team.slug === this.$route.params.slug
-        })
+        if (this.$store.getters.userGroups !== 'Admin') {
+          return this.$store.getters.teams.find(team => {
+            // HOLD TO TEST FOR ADMIN
+            // const user = {
+            //   team_id: team.id,
+            //   slug: team.slug
+            // }
+            // this.$store.dispatch('setUser', user)
+            return team.slug === this.$store.getters.userGroups[0]
+          })
+        } else {
+          return this.$store.getters.teams.find(team => {
+            // HOLD TO TEST FOR ADMIN
+            // const user = {
+            //   team_id: team.id,
+            //   slug: team.slug
+            // }
+            // this.$store.dispatch('setUser', user)
+            return team.slug === this.$route.params.slug
+          })
+        }
       },
       set: function (newValue) {
         console.log(newValue)
