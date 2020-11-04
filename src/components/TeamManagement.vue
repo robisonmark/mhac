@@ -97,9 +97,14 @@ export default {
     }
   },
   watch: {
-    selectedTeam (newValue, oldValue) {
-      this.teamLogo = '/static/color-team-logos/' + newValue.logo_color
-      this.greyLogo = '/static/washedout-team-logo/' + newValue.logo_grey
+    async selectedTeam (newValue, oldValue) {
+      let team = {}
+      await api.getTeams(newValue).then(response => {
+        team = response.data[0]
+      })
+      console.log('called2', team)
+      this.teamLogo = '/static/color-team-logos/' + team.logo_color
+      this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
     }
   },
   created () {
