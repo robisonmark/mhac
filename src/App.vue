@@ -48,7 +48,7 @@ export default {
       let teamMain = ''
       if (this.$route.meta.section === 'team') {
         this.$store.state.teams.forEach(team => {
-          if (team.id === this.$store.state.user.team_id) {
+          if (team.slug === this.$store.state.user.slug) {
             teamMain = '#' + team.main_color
           }
         })

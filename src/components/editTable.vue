@@ -24,6 +24,10 @@
                 <!-- {{data[columns[idx]['field_name']]}} -->
                 {{formatDates(data[columns[idx]['field_name']], false)}}
               </template>
+              <!--
+                Hold for now
+                <template v-else-if="columns[idx]['field_name'].includes('levels')">
+              </template> -->
               <template v-else-if="typeof(data[columns[idx]['field_name']]) === 'object'">
                 {{data[columns[idx]['field_name']]['name']}}
               </template>
@@ -54,6 +58,7 @@
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
 
+                <selectbox v-else-if="field.type === 'multiselect'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" v-model="value[field.field_name]"></selectbox>
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
                 <!-- <input type="text" v-model="value[key]" /> -->
                 <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
@@ -190,6 +195,8 @@ export default {
               return team
             }
           })
+        case 'levels':
+          return this.$store.getters.teamLevels
       }
     },
     trackBy (name) {

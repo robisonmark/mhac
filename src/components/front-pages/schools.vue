@@ -213,6 +213,8 @@ export default {
       deep: true,
       handler (newValue, oldValue) {
         if (this.selectedSection === 'Schedule') {
+          console.log(this.seasons)
+          console.log(newValue)
           const season = this.seasons.filter(season => { return season.level === newValue.level_name })
 
           this.initLeveledSchedule(season[0].season_id, this.$route.params.slug)
@@ -245,7 +247,7 @@ export default {
 
       await api.getTeams(slug)
         .then(response => {
-          this.program = response.data.team[0]
+          this.program = response.data[0]
           this.initRoster(this.program.id)
           this.getSeasonTeams(this.$route.params.slug)
         })
@@ -280,9 +282,10 @@ export default {
     getSeasonTeams (slug) {
       api.getSeasonTeams(slug)
         .then(response => {
-          this.teamAssocLvl = response.data.season_team_ids
+          console.log(response)
+          this.teamAssocLvl = response.data
 
-          this.filterBy.team = response.data.season_team_ids[0]
+          this.filterBy.team = response.data[0]
 
           // this.initLeveledSchedule(response.data.season_team_ids[0])
           // this.$store.dispatch('setTeamAssocLvl', response.data)

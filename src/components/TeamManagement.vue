@@ -45,14 +45,12 @@ export default {
     cssVars () {
       let teamMain = ''
       let teamSecond = ''
-      this.$store.state.teams.filter(team => {
-        if (team.slug === this.$store.getters.team) {
+      this.$store.getters.teams.filter(team => {
+        if (team.slug === this.$store.getters.user.slug) {
           teamMain = '#' + team.main_color
           teamSecond = '#' + team.secondary_color
         }
       })
-      // const darker = Color(teamMain).darken(0.5).hex()
-      // const lighter = Color(teamMain).lighten(0.5).hex()
       return {
         '--bg-color': teamMain,
         '--team-second': teamSecond,
@@ -72,17 +70,30 @@ export default {
     },
     selectedTeam: {
       get: function () {
-        // return this.$store.state.teams.find(team => {
-        //   const user = {
-        //     team_id: team.id,
-        //     slug: team.slug
-        //   }
-        //   this.$store.dispatch('setUser', user)
-        //   return team.slug === this.$route.params.slug
-        // })
-        return this.$store.getters.team
+        if (this.$store.getters.userGroups !== 'Admin') {
+          return this.$store.getters.teams.find(team => {
+            // HOLD TO TEST FOR ADMIN
+            // const user = {
+            //   team_id: team.id,
+            //   slug: team.slug
+            // }
+            // this.$store.dispatch('setUser', user)
+            return team.slug === this.$store.getters.userGroups[0]
+          })
+        } else {
+          return this.$store.getters.teams.find(team => {
+            // HOLD TO TEST FOR ADMIN
+            // const user = {
+            //   team_id: team.id,
+            //   slug: team.slug
+            // }
+            // this.$store.dispatch('setUser', user)
+            return team.slug === this.$route.params.slug
+          })
+        }
       },
       set: function (newValue) {
+        console.log(newValue)
         const user = {
           team_id: newValue.id,
           slug: newValue.slug
@@ -106,6 +117,10 @@ export default {
       this.teamLogo = '/static/color-team-logos/' + team.logo_color
       this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
     }
+  },
+  beforeCreate () {
+    const slug = this.$route.params.slug
+    this.$store.dispatch('setTeam', slug)
   },
   created () {
     this.getSeasonTeams(this.$route.params.slug)
