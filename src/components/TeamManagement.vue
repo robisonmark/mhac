@@ -109,8 +109,9 @@ export default {
   },
   watch: {
     async selectedTeam (newValue, oldValue) {
+      console.log(newValue)
       let team = {}
-      await api.getTeams(newValue).then(response => {
+      await api.getTeams(newValue.slug).then(response => {
         team = response.data[0]
       })
       console.log('called2', team)
