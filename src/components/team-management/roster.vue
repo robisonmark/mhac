@@ -57,7 +57,7 @@ import _ from 'lodash'
 
 // components
 import editTable from '@/components/editTable'
-import selectbox from '../selectbox'
+// import selectbox from '../selectbox'
 
 export default {
   name: 'roster',
@@ -113,10 +113,11 @@ export default {
           type: 'text'
         },
         {
-          name: 'Team',
+          name: 'Levels',
           icon: '',
-          field_name: 'team_id',
-          type: 'text'
+          field_name: 'levels',
+          type: 'multiselect',
+          track_by: 'name'
         }
       ],
       config: {
@@ -135,14 +136,14 @@ export default {
     }
   },
   components: {
-    editTable: editTable,
-    selectbox: selectbox
+    editTable: editTable
+    // selectbox: selectbox
   },
   watch: {
     newPlayer: {
       deep: true,
       handler (newValue) {
-        let idx = this.updated.indexOf(newValue)
+        const idx = this.updated.indexOf(newValue)
         if (idx >= 0) {
           this.updated[idx] = newValue
         } else {
@@ -185,7 +186,7 @@ export default {
       this.save()
     })
 
-    this.$root.$on('changeEdit', () => {this.edit = !this.edit})
+    this.$root.$on('changeEdit', () => { this.edit = !this.edit })
   },
   methods: {
     initRoster () {
@@ -230,11 +231,11 @@ export default {
       return 'Fix'
     },
     addToUpdateList (id) {
-      console.log("addtolist")
+      console.log('addtolist')
       this.updated.push(id)
     },
     updatePlayers () {
-      console.log("updatePlayers")
+      console.log('updatePlayers')
       this.updated.forEach(index => {
         console.log(index)
         const playerId = this.roster[index].id

@@ -228,7 +228,17 @@ router.beforeResolve(async (to, from, next) => {
     const validSession = await Promise.resolve(store.dispatch('valid'))
     if (to.meta.requiresAuth === true) {
       if (validSession === true) {
-        return next()
+        if (to.meta.section === 'team') {
+          if (store.getters.userGroups[0] === 'Admin') {
+            return next()
+          } else {
+            if (to.params.slug !== store.getters.userGroups[0]) {
+              return next({ name: 'teamDashboard', params: { slug: store.getters.userGroups[0] } })
+            } else {
+              return next()
+            }
+          }
+        }
       } else {
         if (to.meta.section === 'admin') {
           return next('/admin/login')

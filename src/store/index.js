@@ -35,7 +35,7 @@ const state = {
 const mutations = {
   // make.mutations(state)
   set_user (state, payload) {
-    // console.log("payload",payload)
+    // console.log('payload',payload)
     state.user.team_id = payload.team_id
     state.user.slug = payload.slug
   },
@@ -46,8 +46,8 @@ const mutations = {
     state.userGroups = payload
   },
   set_userAttributes (state, payload) {
-    console.log("userAttributes", state)
-    console.log("userAttributes", payload)
+    console.log('userAttributes', state)
+    console.log('userAttributes', payload)
   },
   set_loaded (state, payload) {
     state.loaded = payload
@@ -59,15 +59,15 @@ const mutations = {
     state.seasons = payload
   },
   set_teams (state, payload) {
-    // console.log("set_teams", payload)
+    // console.log('set_teams', payload)
     state.teams = payload
   },
   set_levels (state, payload) {
     state.levels = payload
   },
   set_configOptions (state, payload) {
-    console.log("configOptions", state)
-    console.log("configOptions", payload)
+    console.log('configOptions', state)
+    console.log('configOptions', payload)
   },
   set_readWriteAccess (state, payload) {
     state.readWriteAccess = payload
@@ -100,6 +100,7 @@ const actions = {
 
   async setSeasons (context, payload) {
     await api.getCurrentSeasons().then(response => {
+      console.log(response)
       context.commit('set_seasons', response.data)
     })
   },
@@ -128,7 +129,6 @@ const actions = {
           return team
         }
       })
-      console.log(userTeam)
     }
     if (userTeam.length === 1) {
       context.commit('set_user', userTeam[0])
@@ -156,7 +156,7 @@ const actions = {
 
   load (context) {
     // ---- These events are emitted once the listed module is loaded ----- //
-    // Loads the vuex "es" module (Elastic Search) [MUST BE AFTER AUTH]
+    // Loads the vuex 'es' module (Elastic Search) [MUST BE AFTER AUTH]
     // EventBus.$on('auth/loaded', () => context.dispatch('es/load'))
   }
 }
@@ -167,11 +167,14 @@ const getters = {
     return state.user
   },
   team () {
-    // console.log("team", state.user)
+    // console.log('team', state.user)
     return state.user.slug
   },
   teams (state) {
     return state.teams
+  },
+  teamLevels (state) {
+    return state.teamAssocLvl
   },
   levels () {
     return state.levels
