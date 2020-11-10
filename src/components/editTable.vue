@@ -4,7 +4,7 @@
       <slot name="thead">
         <tr>
           <template v-for="(column, key, index) in columns">
-            <th v-if="!column.field_name.includes('id')"  :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
+            <th v-if="!column.field_name.includes('id')" :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
           </template>
           <th></th>
         </tr>
@@ -23,9 +23,9 @@
                 <!-- {{data[columns[idx]['field_name']]}} -->
                 {{formatDates(data[columns[idx]['field_name']], false)}}
               </template>
-              <template v-else-if="typeof(data[columns[idx]['field_name']]) === 'object'">
+              <!-- <template v-else-if="typeof(data[columns[idx]['field_name']]) === 'object'">
                 {{data[columns[idx]['field_name']]['name']}}
-              </template>
+              </template> -->
               <template v-else>
                 {{data[columns[idx]['field_name']]}}
               </template>
@@ -53,7 +53,7 @@
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
 
-                <multiselect v-else-if="field.type === 'multiselect'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" :value="value[field.option_values]"></multiselect>
+                <multiselect v-else-if="field.type === 'multiselect'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" :value="value[field.option_values]"></multiselect>
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
                 <!-- <input type="text" v-model="value[key]" /> -->
                 <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
