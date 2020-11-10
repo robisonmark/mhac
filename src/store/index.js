@@ -29,7 +29,8 @@ const state = {
   levels: [],
   fullSchedule: [],
   configOptions: [],
-  readWriteAccess: String
+  readWriteAccess: String,
+  season_teams: []
 }
 
 const mutations = {
@@ -74,6 +75,9 @@ const mutations = {
   },
   set_fullSchedule (state, payload) {
     state.fullSchedule = payload
+  },
+  set_seasonTeams (state, payload) {
+    state.season_teams = payload
   }
 }
 
@@ -153,7 +157,11 @@ const actions = {
       context.commit('set_fullSchedule', fixedData)
     })
   },
-
+  async setSeasonTeams (context) {
+    await api.getSeasonTeams().then(response => {
+      context.commit('set_teams', response.data)
+    })
+  },
   load (context) {
     // ---- These events are emitted once the listed module is loaded ----- //
     // Loads the vuex 'es' module (Elastic Search) [MUST BE AFTER AUTH]
@@ -196,6 +204,9 @@ const getters = {
   },
   seasons (state) {
     return state.seasons
+  },
+  seasonTeams (state) {
+    return state.season_teams
   },
   configOptions (state) {
     return state.groups

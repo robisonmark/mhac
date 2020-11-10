@@ -93,7 +93,6 @@ export default {
         }
       },
       set: function (newValue) {
-        console.log(newValue)
         const user = {
           team_id: newValue.id,
           slug: newValue.slug
@@ -109,12 +108,10 @@ export default {
   },
   watch: {
     async selectedTeam (newValue, oldValue) {
-      console.log(newValue)
       let team = {}
       await api.getTeams(newValue.slug).then(response => {
         team = response.data[0]
       })
-      console.log('called2', team)
       this.teamLogo = '/static/color-team-logos/' + team.logo_color
       this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
     }

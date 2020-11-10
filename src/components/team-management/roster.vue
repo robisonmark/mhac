@@ -42,6 +42,9 @@
             <td class="stat">
               <input type="text" v-model="player.height" />
             </td>
+            <td class="stat">
+              <input type="text" v-model="player.season_team" />
+            </td>
           </tr>
         </template>
       </editTable>
@@ -117,7 +120,8 @@ export default {
           icon: '',
           field_name: 'levels',
           type: 'multiselect',
-          track_by: 'name'
+          track_by: 'level_name',
+          option_values: 'season_team'
         }
       ],
       config: {
@@ -190,13 +194,13 @@ export default {
   },
   methods: {
     initRoster () {
-      api.getPlayers(this.$store.state.user.team_id).then(response => {
+      api.getPlayers(this.$store.state.user.slug).then(response => {
         // response.data.forEach(player => {
         //   player.number = player.number
         // })
         this.roster = response.data
+        console.log(this.roster)
         this.fullRoster = _.cloneDeep(this.roster)
-        console.log(this.fullRoster)
       })
     },
     initLeveledRoster (lvlId) {
@@ -222,7 +226,8 @@ export default {
         position: '',
         birth_date: '',
         height: '',
-        team_id: '',
+        team: this.$store.state.user.team_id,
+        season_team: [],
         person_type: 1
       }
       return this.newPlayer

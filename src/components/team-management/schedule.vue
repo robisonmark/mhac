@@ -1,11 +1,11 @@
 <template>
   <div class="hello">
     <header class="contentPad">
-      <h2>2019 - 2020 Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
+      <h2>2020 - 2021 Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
     </header>
 
     <div class="contentPad">
-      <div class="" v-if="schedule.length === 0">Please Select a level to begin</div>
+      <div class="" v-if="!newGame.season.season_id">Please Select a level to begin</div>
       <editTable v-else :columns="columns" :config="config" :tabledata="schedule" v-model="newGame">
         <template slot="thead">
           <tr>
@@ -20,10 +20,10 @@
         <template slot="tbody">
           <tr v-for="(data, index) in schedule" :key="index">
             <td><span :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</span></td>
-            <td>{{data.opponent.name}}</td>
+            <td>{{data.opponent.team_name}}</td>
             <td>{{data.game_time}}</td>
             <td>{{data.game_date}}</td>
-            <td>{{data.schedule_id}}</td>
+            <td>{{data.opponent.level_name}}</td>
           </tr>
 
           <tr v-if="!addNew" @click="addTo">
@@ -31,7 +31,6 @@
               <template v-if="$route.name === 'roster'">Edit Roster</template>
               <template v-else>Add New Game to Schedule</template>
             </td>
-            <!-- <td></td> -->
           </tr>
 
           <template v-else>
@@ -40,7 +39,11 @@
               <td class="input-con"><selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent"></selectbox></td>
               <td class="input-con"><input type="time" v-model="newGame.game_time" /></td>
               <td class="input-con"><input type="date" v-model="newGame.game_date" /></td>
+              <td class="input-con"><input type="date" v-model="newGame.level" /></td>
               <td class="input-con"><span @click="save()" class="icons">SAVE</span></td>
+              <td class="input-con"><span @click="remove_game()" class="icons">Delete</span></td>
+              <td class="input-con"><span @click="edit()" class="icons">edit</span></td>
+              <!-- <td class="input-con"><span @click="save(addAnother=true)" class="icons">Save and add another</span></td> -->
             </tr>
           </template>
         </template>
@@ -157,9 +160,10 @@ export default {
       api.getSchedule(season, slug).then(response => {
         const gameArr = []
         response.data.forEach(game => {
+          console.log(game)
           const gameObj = {
-            host: '',
-            opponent: '',
+            host: game.home_team,
+            opponent: game.away_team,
             game_time: game.game_time,
             game_date: game.game_date,
             season: season
@@ -178,37 +182,47 @@ export default {
         this.schedule = gameArr
       })
     },
-    initNewGame () {
+    initNewGame (currSeason = '') {
+      this.season = currSeason
       this.newGame = {
         host: true,
         opponent: '',
         game_time: '',
         game_date: '',
-        season: '',
-        neutral_site: ''
+        season: this.season,
+        neutral_site: false
         // 'uuid': string,
       }
     },
     homeAwayDisplay (game) {
       this.newGame.host = !this.newGame.host
     },
-    save () {
+    async getSeasonTeamId (slug) {
+      let teamId = ''
+      await api.getSeasonTeams(slug, this.newGame.season.season_id)
+        .then(response => {
+          console.log(response.data)
+          teamId = response.data.team_id
+        })
+      return teamId
+    },
+    async save (addAnother = false) {
       const gameJson = {
         home_team: '',
         away_team: '',
         time: this.newGame.game_time,
         date: this.newGame.game_date,
-        season: this.newGame.season.id,
-        neutral_site: ''
+        season: this.newGame.season.season_id,
+        // TODO: Change to make this dynamic
+        neutral_site: false
       }
-      console.log(this.newGame.host === true)
+
       if (this.newGame.host === true) {
-        gameJson.away_team = this.newGame.opponent.id
-        gameJson.home_team = this.$store.state.user.team_id
+        gameJson.away_team = await this.getSeasonTeamId(this.newGame.opponent.slug)
+        gameJson.home_team = await this.getSeasonTeamId(this.$store.state.user.slug)
       } else {
-        console.log(this.newGame.opponent.id)
-        gameJson.away_team = this.$store.state.user.team_id
-        gameJson.home_team = this.newGame.opponent.id
+        gameJson.away_team = await this.getSeasonTeamId(this.$store.state.user.slug)
+        gameJson.home_team = await this.getSeasonTeamId(this.newGame.opponent.slug)
       }
 
       api.addGame(gameJson)
@@ -220,8 +234,18 @@ export default {
         })
 
       this.schedule.push(this.newGame)
-      this.initNewGame()
-      this.$root.$emit('saved')
+      console.log('save pressed')
+      this.initNewGame(this.newGame.season.season_id)
+      if (addAnother === false) {
+        this.initNewGame()
+        this.$root.$emit('saved')
+      }
+    },
+    remove_game () {
+      console.log('delete pressed')
+    },
+    edit () {
+      console.log('edit pressed')
     }
   }
 }

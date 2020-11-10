@@ -123,12 +123,13 @@ export class api {
     //     // console.log(user)
     //   })
     // }'
-
+    // console.log('GetGameResults',gameId, teamId)
     let addedParams = ''
     if (gameId !== undefined && teamId === undefined) {
       addedParams = '/' + gameId
     } else if (gameId !== undefined && teamId !== undefined) {
       addedParams = '/' + gameId + '/' + teamId
+      // console.log(addedParams)
     } else {
       addedParams = ''
     }
@@ -316,6 +317,7 @@ export class api {
     } else if (season !== undefined && team !== undefined) {
       addedParams = '/' + season + '/' + team
     } else {
+      //TODO: Remove this call
       addedParams = ''
     }
 
@@ -354,7 +356,7 @@ export class api {
      * @param {string} slug - Team Slug
      * @return - JSON Object of players by team
     ***/
-  static async getSeasonTeams (slug) {
+  static async getSeasonTeams (slug, seasonid=null) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -364,6 +366,9 @@ export class api {
     //     // console.log(user)
     //   })
     // }
+    if (seasonid !== null) {
+      slug = slug + '/' + seasonid
+    }
     return robros({
       url: '/getSeasonTeams/' + slug,
       method: 'GET'
