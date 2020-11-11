@@ -39,10 +39,10 @@
               <td class="input-con"><selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent"></selectbox></td>
               <td class="input-con"><input type="time" v-model="newGame.game_time" /></td>
               <td class="input-con"><input type="date" v-model="newGame.game_date" /></td>
-              <td class="input-con"><input type="date" v-model="newGame.level" /></td>
+              <!-- <td class="input-con"><input type="date" v-model="newGame.level" /></td> -->
               <td class="input-con"><span @click="save()" class="icons">SAVE</span></td>
-              <td class="input-con"><span @click="remove_game()" class="icons">Delete</span></td>
-              <td class="input-con"><span @click="edit()" class="icons">edit</span></td>
+              <!-- <td class="input-con"><span @click="remove_game()" class="icons">Delete</span></td>
+              <td class="input-con"><span @click="edit()" class="icons">edit</span></td> -->
               <!-- <td class="input-con"><span @click="save(addAnother=true)" class="icons">Save and add another</span></td> -->
             </tr>
           </template>
