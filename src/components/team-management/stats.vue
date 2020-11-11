@@ -44,7 +44,7 @@
               <td></td>
               <td>{{game.game_date}}</td>
               <td>{{game.opponent}}</td>
-              <td>{{game.home_team.name}}</td>
+              <td>{{game.home_team.team_name}}</td>
               <td>{{game.missing_stats}}</td>
               <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
             </tr>
@@ -55,41 +55,38 @@
       <div v-else-if="selectedGame && boxscore">
 
         <table class="scoreTable">
-          <thead>
+         <thead>
             <tr class="rowOne">
               <th colspan="2">Box Score</th>
               <th v-for="(quarter, key, index) in quarters" :key="index" class="text-center quarter">{{Object.keys(quarter)[0]}}</th>
-              <!-- <th class="text-center">2</th>
-              <th class="text-center">3</th>
-              <th class="text-center">4</th> -->
               <th class="finalScore text-center">Final</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
+            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.home_team.team_name).main_color}">
               <td class="teamLogo">
-                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).secondary_color}">
-                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.home_team.name).logo_color" />
+                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.home_team.team_name).secondary_color}">
+                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.home_team.team_name).logo_color" />
                 </div>
               </td>
-              <td :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
-                <div class="teamName">{{selectedGame.home_team.name}}</div>
-                <div class="mascot">{{programInfo(selectedGame.home_team.name).team_mascot}}</div>
+              <td :style="{'background-color': '#' + programInfo(selectedGame.home_team.team_name).main_color}">
+                <div class="teamName">{{selectedGame.home_team.team_name}}</div>
+                <div class="mascot">{{programInfo(selectedGame.home_team.team_name).team_mascot}}</div>
               </td>
               <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter">
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.homeTeam.quarters[key]" />
                 <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>
               <td class="finalScore text-center">{{gameScore.homeTeam.final}}</td>
             </tr>
-            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
+            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).main_color}">
               <td class="teamLogo">
-                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).secondary_color}">
-                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.away_team.name).logo_color" />
+                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).secondary_color}">
+                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.away_team.team_name).logo_color" />
                 </div>
               </td>
-              <td class="teamName" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
-                <div class="teamName">{{selectedGame.away_team.name}}</div>
-                <div class="mascot">{{programInfo(selectedGame.away_team.name).team_mascot}}</div>
+              <td class="teamName" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).main_color}">
+                <div class="teamName">{{selectedGame.away_team.team_name}}</div>
+                <div class="mascot">{{programInfo(selectedGame.away_team.team_name).team_mascot}}</div>
               </td>
               <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter">
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.awayTeam.quarters[key]" />
@@ -97,7 +94,7 @@
               <td class="finalScore text-center">{{gameScore.awayTeam.final}}</td>
             </tr>
           </tbody>
-        </table>
+        </table> 
         <div class="container">
           <div class="row justify-content-end">
             <div class="col">
@@ -497,10 +494,10 @@ export default {
       pastGames: [
       ],
       quarters: [
-        { 1: '' },
-        { 2: '' },
-        { 3: '' },
-        { 4: '' }
+        { 1: 0 },
+        { 2: 0 },
+        { 3: 0 },
+        { 4: 0 }
       ],
       roster: [
       ],
@@ -578,17 +575,16 @@ export default {
   methods: {
     initSchedule (level, team) {
       api.getSchedule(level, team).then(response => {
+        // console.log("initSchedule", response.data)
         const fixedData = []
         response.data.forEach(game => {
-          // if (game.game_time === '12:00 AM ') {
-          //   game.game_time = 'TBD'
-          // }
+          // console.log('game loop', game, game.home_team.slug, this.team)
           if (game.home_team.slug === this.team) {
-            game.opponent = game.away_team.name
-            game.rosterId = game.home_team.id
+            game.opponent = game.away_team.team_name
+            game.rosterId = game.home_team.team_id
           } else {
-            game.opponent = game.home_team.name
-            game.rosterId = game.away_team.id
+            game.opponent = game.home_team.team_name
+            game.rosterId = game.away_team.team_id
           }
           fixedData.push(game)
         })
@@ -646,10 +642,9 @@ export default {
       })
     },
     enterStats (game) {
+      // console.log("here", game, this.team)
       this.newGameStats.game_id = game.game_id
       this.initNewGameStats(game.rosterId)
-      // this.initRoster(game.rosterId)
-      // this.initRoster('d2da3cbd-dbdb-4b40-9002-aefc705d229f')
       this.selectedGame = game
 
       if (game.home_team.slug === this.team) {
@@ -677,9 +672,10 @@ export default {
     goToPlayerStats () {
       this.boxscore = false
     },
-    initNewGameStats (rosterId) {
-      api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
+    async initNewGameStats (rosterId) {
+      await api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
         this.newGameStats = response.data
+        console.log('newgamestats', this.newGameStats)
         if (this.newGameStats.final_scores.home_score !== null) {
           this.gameScore.homeTeam.final = this.newGameStats.final_scores.home_score
           this.gameScore.awayTeam.final = this.newGameStats.final_scores.away_score
