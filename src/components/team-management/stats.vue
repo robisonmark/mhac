@@ -1,3 +1,5 @@
+// TODO: Add a modal for uploading a csv with scores...
+
 <template>
   <div class="hello">
     <header class="contentPad">
@@ -9,7 +11,10 @@
           <div class="switch" @click="backToGameStats">
             <font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Back To Games
           </div>
-
+          <div class='switch'>
+            <font-awesome-icon :icon="['fas', 'file-import'] " class="icon"></font-awesome-icon>
+            <span class="focused">Import Scores</span>
+          </div>
           <div class="switch" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
             <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
             <span class="focused">Edit</span>
