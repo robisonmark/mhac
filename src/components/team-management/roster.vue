@@ -220,7 +220,7 @@ export default {
         player_number: '',
         first_name: '',
         last_name: '',
-        id: '',
+        id: null,
         position: '',
         birth_date: '',
         height: '',
