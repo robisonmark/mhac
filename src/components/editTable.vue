@@ -14,20 +14,13 @@
     <tbody id="table-body" name="tbody">
       <slot name="tbody">
         <tr v-for="(data, index) in tabledata" :key="index">
-          <!-- <td></td> -->
           <template v-for="(col, key, idx) in data">
             <td v-if="!key.includes('id')" :key="key + idx" :class="idx">
-              <!-- {{data[columns[idx]['field_name']]}}
-              {{columns[idx]['field_name'].includes('date')}} -->
-              <template v-if="columns[idx]['field_name'].includes('date')">
-                <!-- {{data[columns[idx]['field_name']]}} -->
-                {{formatDates(data[columns[idx]['field_name']], false)}}
+              <template v-if="key.includes('date')">
+                {{formatDates(data[key], false)}}
               </template>
-              <!-- <template v-else-if="typeof(data[columns[idx]['field_name']]) === 'object'">
-                {{data[columns[idx]['field_name']]['name']}}
-              </template> -->
               <template v-else>
-                {{data[columns[idx]['field_name']]}}
+                {{data[key]}}
               </template>
             </td>
           </template>
@@ -54,7 +47,9 @@
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
 
-                <multiselect v-else-if="field.type === 'multiselect'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" :value="value[field.model]"></multiselect>
+                <!-- <multiselect v-else-if="field.type === 'multiselect'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" :value="value[field.model]"></multiselect> -->
+                <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :optionHeight="10" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
+  
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
                 <!-- <input type="text" v-model="value[key]" /> -->
                 <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
@@ -74,7 +69,8 @@
 
 <script>
 // components
-import multiselect from './multiselect'
+// import multiselect from './multiselect'
+import Multiselect from 'vue-multiselect'
 import selectbox from './selectbox'
 
 // mixins
@@ -102,7 +98,8 @@ export default {
     }
   },
   components: {
-    multiselect: multiselect,
+    // multiselect: multiselect,
+    Multiselect,
     selectbox: selectbox
   },
   props: [
@@ -193,9 +190,17 @@ export default {
               return team
             }
           })
-        case 'levels':
+        case 'season_roster':
           return this.$store.getters.teamLevels
       }
+    },
+        addTag (newTag) {
+      const tag = {
+        name: newTag,
+        code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
+      }
+      this.options.push(tag)
+      this.value.push(tag)
     },
     trackBy (name) {
       switch (name) {

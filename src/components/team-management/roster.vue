@@ -21,6 +21,7 @@
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
         <template slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
+
             <td class="stat first">
               <input type="number" min="0" v-model.number="player.player_number" @input="addToUpdateList(1)" />
             </td>
@@ -43,7 +44,7 @@
               <input type="text" v-model="player.height" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.season_team" />
+              <input type="text" v-model="player.season_roster" />
             </td>
           </tr>
         </template>
@@ -118,10 +119,10 @@ export default {
         {
           name: 'Levels',
           icon: '',
-          field_name: 'levels',
+          field_name: 'season_roster',
           type: 'multiselect',
           track_by: 'level_name',
-          model: 'season_team'
+          model: 'season_roster'
         }
       ],
       config: {
@@ -195,9 +196,6 @@ export default {
   methods: {
     initRoster () {
       api.getPlayers(this.$store.state.user.slug).then(response => {
-        // response.data.forEach(player => {
-        //   player.number = player.number
-        // })
         this.roster = response.data
         console.log(this.roster)
         this.fullRoster = _.cloneDeep(this.roster)
@@ -222,12 +220,12 @@ export default {
         player_number: '',
         first_name: '',
         last_name: '',
-        id: 'a86ed70e-c723-4684-92b6-f690c12c8a11',
+        id: '',
         position: '',
         birth_date: '',
         height: '',
         team: this.$store.state.user.team_id,
-        season_team: [],
+        season_roster: [],
         person_type: 1
       }
       return this.newPlayer
@@ -252,9 +250,9 @@ export default {
       })
     },
     save () {
-      console.log(this.newPlayer)
       this.newPlayer.team_id = this.$store.state.user.team_id
       const playerJson = this.newPlayer
+      console.log(JSON.stringify(playerJson))
       // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
 
       api.addPlayer(playerJson)
