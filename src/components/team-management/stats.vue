@@ -40,6 +40,7 @@
               <th>Opponent</th>
               <th>Home Team</th>
               <th>Missing Stats</th>
+              <th>Level</th>
               <th></th>
             </tr>
           </thead>
@@ -51,6 +52,7 @@
               <td>{{game.opponent}}</td>
               <td>{{game.home_team.team_name}}</td>
               <td>{{game.missing_stats}}</td>
+              <td>{{game.level}} </td>
               <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
             </tr>
           </tbody>
@@ -575,10 +577,10 @@ export default {
     selectbox: selectbox
   },
   created () {
-    // this.initSchedule()
+    this.initSchedule(undefined, this.$route.params.slug)
   },
   methods: {
-    initSchedule (level, team) {
+    initSchedule (level=undefined, team) {
       api.getSchedule(level, team).then(response => {
         // console.log("initSchedule", response.data)
         const fixedData = []
@@ -587,12 +589,16 @@ export default {
           if (game.home_team.slug === this.team) {
             game.opponent = game.away_team.team_name
             game.rosterId = game.home_team.team_id
+            game.level = game.home_team.level_name
           } else {
             game.opponent = game.home_team.team_name
             game.rosterId = game.away_team.team_id
+            game.level = game.away_team.level_name
           }
+          
           fixedData.push(game)
         })
+        console.log("fixedData", fixedData)
         this.pastGames = fixedData
         // this.sortTable('game_date', false)
       })
@@ -680,7 +686,7 @@ export default {
     async initNewGameStats (rosterId) {
       await api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
         this.newGameStats = response.data
-        console.log('newgamestats', this.newGameStats)
+        // console.log('newgamestats', this.newGameStats)
         if (this.newGameStats.final_scores.home_score !== null) {
           this.gameScore.homeTeam.final = this.newGameStats.final_scores.home_score
           this.gameScore.awayTeam.final = this.newGameStats.final_scores.away_score

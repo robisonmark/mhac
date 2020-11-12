@@ -316,6 +316,8 @@ export class api {
       addedParams = '/' + season
     } else if (season !== undefined && team !== undefined) {
       addedParams = '/' + season + '/' + team
+    } else if (season === undefined && team  !== undefined) {
+      addedParams = '/' + team
     } else {
       //TODO: Remove this call
       addedParams = ''
