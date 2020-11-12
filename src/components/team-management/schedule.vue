@@ -13,7 +13,7 @@
             <th>Opponent</th>
             <th>Time</th>
             <th>Date</th>
-            <th>Level</th>
+            <th></th>
           </tr>
         </template>
 
@@ -23,7 +23,9 @@
             <td>{{data.opponent.team_name}}</td>
             <td>{{data.game_time}}</td>
             <td>{{data.game_date}}</td>
-            <td>{{data.opponent.level_name}}</td>
+            <!-- <td>{{data.opponent.level_name}}</td> -->
+            <td><font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon></td>
+            <td><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td>
           </tr>
 
           <tr v-if="!addNew" @click="addTo">
@@ -40,9 +42,7 @@
               <td class="input-con"><input type="time" v-model="newGame.game_time" /></td>
               <td class="input-con"><input type="date" v-model="newGame.game_date" /></td>
               <!-- <td class="input-con"><input type="date" v-model="newGame.level" /></td> -->
-              <td class="input-con"><span @click="save()" class="icons">SAVE</span></td>
-              <!-- <td class="input-con"><span @click="remove_game()" class="icons">Delete</span></td>
-              <td class="input-con"><span @click="edit()" class="icons">edit</span></td> -->
+              <td @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td>
               <!-- <td class="input-con"><span @click="save(addAnother=true)" class="icons">Save and add another</span></td> -->
             </tr>
           </template>
@@ -96,10 +96,10 @@ export default {
           type: 'date'
         },
         {
-          name: 'Level',
+          name: '',
           icon: '',
           field_name: 'season',
-          type: 'select',
+          type: '',
           track_by: 'name'
         }
       ],
@@ -114,6 +114,7 @@ export default {
         season: '',
         neutral_site: ''
       },
+      saved: false,
       schedule: []
     }
   },
@@ -141,16 +142,12 @@ export default {
     newGame: {
       deep: true,
       handler (newValue, oldValue) {
-        this.initSchedule(newValue.season.season_id, this.$route.params.slug)
+        // this.initSchedule(newValue.season.season_id, this.$route.params.slug)
       }
 
     }
   },
   created () {
-    // this.initSchedule()
-
-    // this.initNewGame()
-
     this.$root.$on('save', payload => {
       this.save()
     })
@@ -160,7 +157,7 @@ export default {
       api.getSchedule(season, slug).then(response => {
         const gameArr = []
         response.data.forEach(game => {
-          console.log(game)
+          // console.log(game)
           const gameObj = {
             host: game.home_team,
             opponent: game.away_team,
@@ -234,12 +231,10 @@ export default {
         })
 
       this.schedule.push(this.newGame)
-      console.log('save pressed')
+      // console.log('save pressed')
       this.initNewGame(this.newGame.season.season_id)
-      if (addAnother === false) {
-        this.initNewGame()
-        this.$root.$emit('saved')
-      }
+      // this.$root.$emit('saved')
+      
     },
     remove_game () {
       console.log('delete pressed')

@@ -49,11 +49,12 @@
             <!-- <td></td> -->
             <template v-for="(field, index) in columns">
               <td v-if="!field.field_name.includes('id')" :key="index" class="input-con">
+                <!-- {{value}} -->
                 <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" v-model="value[field.field_name]"></selectbox>
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
 
-                <multiselect v-else-if="field.type === 'multiselect'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" :value="value[field.option_values]"></multiselect>
+                <multiselect v-else-if="field.type === 'multiselect'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" :value="value[field.model]"></multiselect>
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
                 <!-- <input type="text" v-model="value[key]" /> -->
                 <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>

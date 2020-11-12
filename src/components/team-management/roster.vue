@@ -121,7 +121,7 @@ export default {
           field_name: 'levels',
           type: 'multiselect',
           track_by: 'level_name',
-          option_values: 'season_team'
+          model: 'season_team'
         }
       ],
       config: {

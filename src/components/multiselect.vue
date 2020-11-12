@@ -5,10 +5,13 @@
     </div>
     <div class="select--list" v-show="showOptions">
       <label v-for="(option, idx) in options" :key="idx">
-        <input type="checkbox" :v-model="value"/>
+        <input type="checkbox" :value="value"/>
         {{option[trackby]}}
       </label>
     </div>
+    <span>
+      {{value}}
+    </span>
     <!-- <select multiple>
       <option v-for="(option, idx) in options" :key="idx" :v-model="value">{{option[trackby]}}</option>
     </select> -->
