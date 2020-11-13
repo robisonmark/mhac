@@ -19,7 +19,7 @@
               <template v-if="column.field_name.includes('date')">
                 {{formatDates(data[column.field_name], false)}}
               </template>
-              <template v-if="column.field_name=== 'season_roster'">
+              <template v-else-if="column.field_name === 'season_roster'">
                 <template v-for="(c, k, i) in  data[column.field_name]">
                   {{c.level_name }}
                 </template>
