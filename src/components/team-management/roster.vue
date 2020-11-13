@@ -9,19 +9,18 @@
           <span class="focused">Edit</span>
         </div>
 
-        <div class="switch" v-if="edit" @click="save()">
+        <!-- <div class="switch" v-if="edit" @click="save()">
           <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
           <span class="focused" v-if="!saving">Save</span>
           <span v-else>saving...</span>
 
-        </div>
+        </div> -->
       </div>
     </header>
     <div class="contentPad">
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
         <template slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
-            <td>{{index }}</td>
             <td class="stat first">
               <input type="number" min="0" v-model="player.player_number" @input="addToUpdateList(index)" />
             </td>
@@ -44,10 +43,15 @@
               <input type="text" v-model="player.height" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.season_roster" />
+              <multiselect v-model="player.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true"></multiselect>
+
             </td>
           </tr>
         </template>
+
+        <!-- <template slot="tbody" v-else>
+          <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
+        </template> -->
       </editTable>
     </div>
   </div>
@@ -62,6 +66,9 @@ import _ from 'lodash'
 // components
 import editTable from '@/components/editTable'
 // import selectbox from '../selectbox'
+
+// third party
+import Multiselect from 'vue-multiselect'
 
 export default {
   name: 'roster',
@@ -141,8 +148,28 @@ export default {
     }
   },
   components: {
-    editTable: editTable
+    editTable: editTable,
+    Multiselect
     // selectbox: selectbox
+  },
+  computed: {
+    seasons () {
+      return this.$store.state.seasons
+    },
+    teamAssocLvl () {
+      return this.$store.state.teamAssocLvl.season_team_ids
+    },
+    user: {
+      get: function () {
+        return this.$store.getters.user
+      },
+
+      set: function (newValue) {
+        console.log(newValue)
+        this.initRoster()
+      }
+    },
+    ...mapState(['slug'])
   },
   watch: {
     newPlayer: {
@@ -156,15 +183,13 @@ export default {
         }
       }
     },
-    user (newValue, oldValue) {
-      this.initRoster()
-    },
     rosterLvl: {
       deep: true,
       handler (newValue, oldValue) {
         this.initLeveledRoster(newValue.season_team_id)
       }
-    }
+    },
+    slug: 'initRoster'
     // 'roster.height': {
     //   deep: true,
     //   handler (newValue, oldValue) {
@@ -173,17 +198,8 @@ export default {
     //   }
     // }
   },
-  computed: {
-    seasons () {
-      return this.$store.state.seasons
-    },
-    teamAssocLvl () {
-      return this.$store.state.teamAssocLvl.season_team_ids
-    },
-    ...mapState(['user'])
-  },
   created () {
-    this.initRoster()
+    // this.initRoster()
 
     this.initNewPlayer()
 
@@ -193,13 +209,15 @@ export default {
 
     this.$root.$on('changeEdit', () => { this.edit = !this.edit })
   },
+
   methods: {
     initRoster () {
-      api.getPlayers(this.$store.state.user.slug).then(response => {
-        this.roster = response.data
-        console.log(JSON.stringify(this.roster))
-        this.fullRoster = _.cloneDeep(this.roster)
-      })
+      if (this.slug) {
+        api.getPlayers(this.slug).then(response => {
+          this.roster = response.data
+          this.fullRoster = _.cloneDeep(this.roster)
+        })
+      }
     },
     initLeveledRoster (lvlId) {
       api.getRoster(lvlId).then(response => {
@@ -232,9 +250,11 @@ export default {
     },
     age (Birthday) {
       console.log(Birthday)
-      var ageDifMs = Date.now() - Birthday.getTime();
-      var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+      if (Birthday) {
+        var ageDifMs = Date.now() - Birthday.getTime()
+        var ageDate = new Date(ageDifMs) // miliseconds from epoch
+        return Math.abs(ageDate.getUTCFullYear() - 1970)
+      }
     },
     addToUpdateList (id) {
       console.log('addtolist')

@@ -15,8 +15,7 @@
       <slot name="tbody">
         <tr v-for="(data, index) in tabledata" :key="index">
           <template v-for="(column, key, idx) in columns">
-            
-            <td v-if="!column.field_name.includes('id')" :key="key + idx" :class="idx">
+            <td v-if="!column.field_name.includes('id')" :key="key" :class="idx">
               <template v-if="column.field_name.includes('date')">
                 {{formatDates(data[column.field_name], false)}}
               </template>
@@ -54,8 +53,8 @@
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
 
                 <!-- <multiselect v-else-if="field.type === 'multiselect'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" :value="value[field.model]"></multiselect> -->
-                <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :optionHeight="10" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
-  
+                <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
+
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
                 <!-- <input type="text" v-model="value[key]" /> -->
                 <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
@@ -200,7 +199,7 @@ export default {
           return this.$store.getters.teamLevels
       }
     },
-        addTag (newTag) {
+    addTag (newTag) {
       const tag = {
         name: newTag,
         code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))

@@ -14,9 +14,10 @@ const modules = { auth }
 const strict = false
 
 const state = {
+  slug: null,
   user: {
-    team_id: String,
-    slug: String
+    team_id: '',
+    slug: ''
   },
   userData: {},
   teamAssocLvl: {},
@@ -39,6 +40,9 @@ const mutations = {
     // console.log('payload',payload)
     state.user.team_id = payload.team_id
     state.user.slug = payload.slug
+  },
+  set_slug (state, payload) {
+    state.slug = payload
   },
   set_teamAssocLvl (state, payload) {
     state.teamAssocLvl = payload
@@ -124,7 +128,6 @@ const actions = {
 
     if (payload) {
       userTeam = teams.filter(team => payload === team.slug)
-      console.log(userTeam)
     } else if (groups) {
       userTeam = teams.filter(team => {
         if (!groups.includes('Admin')) {
@@ -135,7 +138,8 @@ const actions = {
       })
     }
     if (userTeam.length === 1) {
-      context.commit('set_user', userTeam[0])
+      await context.commit('set_user', userTeam[0])
+      await context.commit('set_slug', userTeam[0].slug)
     }
   },
 

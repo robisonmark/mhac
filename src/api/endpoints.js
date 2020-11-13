@@ -316,10 +316,12 @@ export class api {
       addedParams = '/' + season
     } else if (season !== undefined && team !== undefined) {
       addedParams = '/' + season + '/' + team
-    } else if (season === undefined && team  !== undefined) {
+    } else if (season === undefined && team !== undefined) {
       addedParams = '/' + team
     } else {
-      //TODO: Remove this call
+      /*
+       * @todo: Remove this call
+      **/
       addedParams = ''
     }
 
@@ -358,7 +360,7 @@ export class api {
      * @param {string} slug - Team Slug
      * @return - JSON Object of players by team
     ***/
-  static async getSeasonTeams (slug, seasonid=null) {
+  static async getSeasonTeams (slug, seasonid = null) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
