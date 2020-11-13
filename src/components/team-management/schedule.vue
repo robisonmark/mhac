@@ -61,6 +61,9 @@ import { api } from '../../api/endpoints.js'
 import editTable from '@/components/editTable'
 import selectbox from '../selectbox'
 
+// helpers
+import { mapState } from 'vuex'
+
 // mixins
 import { root } from '@/mixins/root'
 import { tablemix } from '@/mixins/table'
@@ -136,7 +139,8 @@ export default {
           return team
         }
       })
-    }
+    },
+    ...mapState(['slug'])
   },
   watch: {
     newGame: {
@@ -146,6 +150,7 @@ export default {
       }
 
     }
+    // slug: 'initSchedule'
   },
   created () {
     this.$root.$on('save', payload => {
@@ -234,7 +239,6 @@ export default {
       // console.log('save pressed')
       this.initNewGame(this.newGame.season.season_id)
       // this.$root.$emit('saved')
-      
     },
     remove_game () {
       console.log('delete pressed')

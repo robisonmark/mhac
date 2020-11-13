@@ -42,11 +42,14 @@ export default {
     selectbox: selectbox
   },
   computed: {
+    user () {
+      return this.$store.state.getters.user
+    },
     cssVars () {
       let teamMain = ''
       let teamSecond = ''
       this.$store.getters.teams.filter(team => {
-        if (team.slug === this.$store.getters.user.slug) {
+        if (team.slug === this.$store.getters.user?.slug) {
           teamMain = '#' + team.main_color
           teamSecond = '#' + team.secondary_color
         }
