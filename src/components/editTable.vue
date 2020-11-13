@@ -14,25 +14,21 @@
     <tbody id="table-body" name="tbody">
       <slot name="tbody">
         <tr v-for="(data, index) in tabledata" :key="index">
-          <template v-for="(column, key, idx) in columns">
-            
-            <td v-if="!column.field_name.includes('id')" :key="key + idx" :class="idx">
+          <template v-for="(column, idx) in columns">
+            <td v-if="!column.field_name.includes('id')" :key="column.field_name + idx" :class="idx">
               <template v-if="column.field_name.includes('date')">
                 {{formatDates(data[column.field_name], false)}}
               </template>
               <template v-else-if="column.field_name === 'season_roster'">
-                <template v-for="(c, k, i) in  data[column.field_name]">
+                <template v-for="(c) in  data[column.field_name]">
                   {{c.level_name }}
                 </template>
               </template>
               <template v-else>
-                {{data[column.field_name]}}
+                {{ data[column.field_name]}}
               </template>
             </td>
           </template>
-          <!-- <td></td> -->
-          <!-- <td @click.stop.prevent="savedata(data)"><i class="far fa-copy icon"></i></td>
-          <td @click.stop.prevent="deletedata(data)"><i class="far fa-trash-alt icon"></i></td> -->
         </tr>
 
         <tr v-if="!addNew" @click="addTo">
@@ -47,13 +43,12 @@
           <tr class="split-fields">
             <!-- <td></td> -->
             <template v-for="(field, index) in columns">
+
               <td v-if="!field.field_name.includes('id')" :key="index" class="input-con">
-                <!-- {{value}} -->
                 <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" v-model="value[field.field_name]"></selectbox>
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
-
-                <!-- <multiselect v-else-if="field.type === 'multiselect'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" :value="value[field.model]"></multiselect> -->
+                
                 <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :optionHeight="10" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
   
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
@@ -186,6 +181,13 @@ export default {
   //   scrollBody.removeEventListener('scroll', this.setScrollPos)
   // },
   methods: {
+    getNamesFromSeasonRoster(teamList) {
+      let listNames = []
+      for (i = 0; i < teamList.length; i++) {
+        this.listNames.push(teamList[i]);
+      }
+      return this.listNames
+    },
     selectOptions (name) {
       switch (name) {
         case 'division':
@@ -197,10 +199,11 @@ export default {
             }
           })
         case 'season_roster':
+          console.log("season_roster", this.$store.getters.teamLevels)
           return this.$store.getters.teamLevels
       }
     },
-        addTag (newTag) {
+    addTag (newTag) {
       const tag = {
         name: newTag,
         code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))

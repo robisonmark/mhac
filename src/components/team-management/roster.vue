@@ -21,7 +21,7 @@
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
         <template slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
-            <td>{{index }}</td>
+            
             <td class="stat first">
               <input type="number" min="0" v-model="player.player_number" @input="addToUpdateList(index)" />
             </td>
@@ -197,7 +197,7 @@ export default {
     initRoster () {
       api.getPlayers(this.$store.state.user.slug).then(response => {
         this.roster = response.data
-        console.log(JSON.stringify(this.roster))
+        // console.log(JSON.stringify(this.roster))
         this.fullRoster = _.cloneDeep(this.roster)
       })
     },
@@ -231,7 +231,7 @@ export default {
       return this.newPlayer
     },
     age (Birthday) {
-      console.log(Birthday)
+      Birthday = new Date(Birthday + 'T00:00:00')
       var ageDifMs = Date.now() - Birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch
     return Math.abs(ageDate.getUTCFullYear() - 1970);
