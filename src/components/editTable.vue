@@ -14,13 +14,19 @@
     <tbody id="table-body" name="tbody">
       <slot name="tbody">
         <tr v-for="(data, index) in tabledata" :key="index">
-          <template v-for="(col, key, idx) in data">
-            <td v-if="!key.includes('id')" :key="key + idx" :class="idx">
-              <template v-if="key.includes('date')">
-                {{formatDates(data[key], false)}}
+          <template v-for="(column, key, idx) in columns">
+            
+            <td v-if="!column.field_name.includes('id')" :key="key + idx" :class="idx">
+              <template v-if="column.field_name.includes('date')">
+                {{formatDates(data[column.field_name], false)}}
+              </template>
+              <template v-if="column.field_name=== 'season_roster'">
+                <template v-for="(c, k, i) in  data[column.field_name]">
+                  {{c.level_name }}
+                </template>
               </template>
               <template v-else>
-                {{data[key]}}
+                {{data[column.field_name]}}
               </template>
             </td>
           </template>
