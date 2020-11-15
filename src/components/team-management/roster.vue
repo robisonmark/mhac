@@ -9,12 +9,12 @@
           <span class="focused">Edit</span>
         </div>
 
-        <!-- <div class="switch" v-if="edit" @click="save()">
+        <div class="switch" v-if="edit" @click="save()">
           <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
           <span class="focused" v-if="!saving">Save</span>
           <span v-else>saving...</span>
 
-        </div> -->
+        </div>
       </div>
     </header>
     <div class="contentPad">
@@ -46,6 +46,32 @@
             <td class="stat">
               <multiselect v-model="player.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true"></multiselect>
 
+            </td>
+          </tr>
+          <tr>
+            <td class="stat first">
+              <input type="number" min="0" v-model="newPlayer.player_number" @input="addToUpdateList(index)" />
+            </td>
+            <td class="stat">
+              <input type="text" v-model="newPlayer.first_name" />
+            </td>
+            <td class="stat">
+              <input type="text" v-model="newPlayer.last_name" />
+            </td>
+            <td class="stat">
+              <input type="text" v-model="newPlayer.position" />
+            </td>
+            <td class="stat">
+              <template>{{age(newPlayer.birth_date)}}</template>
+            </td>
+            <td class="stat">
+              <input type="date" v-model="newPlayer.birth_date" />
+            </td>
+            <td class="stat">
+              <input type="text" v-model="newPlayer.height" />
+            </td>
+            <td class="stat">
+              <multiselect v-model="newPlayer.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true"></multiselect>
             </td>
           </tr>
         </template>
@@ -145,7 +171,8 @@ export default {
       rosterLvl: '',
       saved: false,
       saving: false,
-      updated: []
+      updated: [],
+      addNew: false
     }
   },
   components: {
@@ -200,7 +227,7 @@ export default {
     // }
   },
   created () {
-    // this.initRoster()
+    this.initRoster()
 
     this.initNewPlayer()
 
@@ -217,6 +244,7 @@ export default {
         api.getPlayers(this.slug).then(response => {
           this.roster = response.data
           this.fullRoster = _.cloneDeep(this.roster)
+          console.log(this.roster)
         })
       }
     },
@@ -250,6 +278,7 @@ export default {
       return this.newPlayer
     },
     age (Birthday) {
+      console.log("here")
       Birthday = new Date(Birthday + 'T00:00:00')
       var ageDifMs = Date.now() - Birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch

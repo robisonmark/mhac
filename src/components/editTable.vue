@@ -20,9 +20,12 @@
                 {{formatDates(data[column.field_name], false)}}
               </template>
               <template v-else-if="column.field_name === 'season_roster'">
-                <template v-for="(c) in  data[column.field_name]">
+                <template v-for="(c ) in  data[column.field_name]">
                   {{c.level_name }}
                 </template>
+              </template>
+              <template v-else-if="column.field_name === 'age'">
+                  {{ age(data['birth_date']) }}
               </template>
               <template v-else>
                 {{ data[column.field_name]}}
@@ -49,7 +52,7 @@
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
                 
-                <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :optionHeight="10" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
+                <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :multiple="true" :taggable="true" @tag="addTag"></multiselect>
   
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
                 <!-- <input type="text" v-model="value[key]" /> -->
@@ -199,7 +202,7 @@ export default {
             }
           })
         case 'season_roster':
-          console.log("season_roster", this.$store.getters.teamLevels)
+          // console.log("season_roster", this.$store.getters.teamLevels)
           return this.$store.getters.teamLevels
       }
     },
@@ -276,6 +279,12 @@ export default {
     addTo () {
       this.addNew = true
       this.$root.$emit('changeEdit')
+    },
+    age (Birthday) {
+      Birthday = new Date(Birthday + 'T00:00:00')
+      var ageDifMs = Date.now() - Birthday.getTime();
+      var ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
     },
     savedata () {
       this.$root.$emit('save')
@@ -401,5 +410,8 @@ select {
 .icons {
   position: absolute;
   right: -3rem;
+}
+.multiselect__input{
+  border: 0 !important;
 }
 </style>

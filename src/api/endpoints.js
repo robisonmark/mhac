@@ -310,14 +310,17 @@ export class api {
     //     // console.log(user)
     //   })
     // }
-
+    console.log('/getSchedule')
+    let urlString = '/getSchedule'
     let addedParams = ''
     if (season !== undefined && team === undefined) {
       addedParams = '/' + season
     } else if (season !== undefined && team !== undefined) {
       addedParams = '/' + season + '/' + team
+      console.log("getSchedule",addedParams)
     } else if (season === undefined && team !== undefined) {
       addedParams = '/' + team
+      urlString = '/getProgramSchedule'
     } else {
       /*
        * @todo: Remove this call
@@ -326,7 +329,7 @@ export class api {
     }
 
     return robros({
-      url: '/getSchedule' + addedParams,
+      url: urlString + addedParams,
       method: 'GET'
     })
   }

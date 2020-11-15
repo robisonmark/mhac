@@ -11,7 +11,7 @@
           <div class="switch" @click="backToGameStats">
             <font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Back To Games
           </div>
-          <div class='switch'>
+          <div class='switch' @click="toggleModal()">
             <font-awesome-icon :icon="['fas', 'file-import'] " class="icon"></font-awesome-icon>
             <span class="focused">Import Scores</span>
           </div>
@@ -341,6 +341,7 @@
           </tfoot>
 
         </editTable>
+      <modal :showModal="showModal" :modalTitle="modalTitle"> </modal>>
       </div>
     </div>
   </div>
@@ -355,6 +356,7 @@ import { mapState } from 'vuex'
 // components
 import editTable from '@/components/editTable'
 import selectbox from '../selectbox'
+import modal from '@/components/modal'
 
 // mixins
 // import { root } from '@/mixins/root'
@@ -512,7 +514,9 @@ export default {
       saving: false,
       selectedGame: false,
       stats: [
-      ]
+      ],
+      showModal: false,
+      modalTitle: "Import Stats"
     }
   },
   watch: {
@@ -574,10 +578,12 @@ export default {
   // ],
   components: {
     editTable: editTable,
-    selectbox: selectbox
+    selectbox: selectbox,
+    modal: modal
   },
   created () {
     this.initSchedule(undefined, this.$route.params.slug)
+    this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
     initSchedule (level=undefined, team) {
@@ -809,6 +815,10 @@ export default {
           return 0
         }
       })
+    },
+     toggleModal () {
+      console.log('edit pressed')
+      this.showModal = !this.showModal
     }
 
   }

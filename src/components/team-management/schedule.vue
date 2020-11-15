@@ -5,15 +5,14 @@
     </header>
 
     <div class="contentPad">
-      <div class="" v-if="!newGame.season.season_id">Please Select a level to begin</div>
-      <editTable v-else :columns="columns" :config="config" :tabledata="schedule" v-model="newGame">
+      <editTable  :columns="columns" :config="config" :tabledata="schedule" v-model="newGame">
         <template slot="thead">
           <tr>
             <th>Host</th>
             <th>Opponent</th>
             <th>Time</th>
             <th>Date</th>
-            <th></th>
+            <th>Level</th>
           </tr>
         </template>
 
@@ -23,17 +22,23 @@
             <td>{{data.opponent.team_name}}</td>
             <td>{{data.game_time}}</td>
             <td>{{data.game_date}}</td>
-            <!-- <td>{{data.opponent.level_name}}</td> -->
-            <td><font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon></td>
+            <td>{{data.opponent.level_name}}</td>
+            <td @click="toggleModal()"><font-awesome-icon  :icon="['far', 'edit']" class="icon" ></font-awesome-icon></td>
             <td><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td>
           </tr>
 
-          <tr v-if="!addNew" @click="addTo">
-            <td colspan="7" align="center" class="add-button">
-              <template v-if="$route.name === 'roster'">Edit Roster</template>
-              <template v-else>Add New Game to Schedule</template>
+          <tr v-if="!newGame.season.season_id">
+            <td colspan="7" align="center" class="add-button">Please Select a level to begin adding games
             </td>
           </tr>
+          
+            <tr v-else-if="!addNew" @click="addTo">
+              <td colspan="7" align="center" class="add-button">
+                <template v-if="$route.name === 'roster'">Edit Roster</template>
+                <template v-else>Add New Game to Schedule</template>
+              </td>
+            </tr>
+          
 
           <template v-else>
             <tr class="split-fields">
@@ -42,12 +47,15 @@
               <td class="input-con"><input type="time" v-model="newGame.game_time" /></td>
               <td class="input-con"><input type="date" v-model="newGame.game_date" /></td>
               <!-- <td class="input-con"><input type="date" v-model="newGame.level" /></td> -->
-              <td @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td>
+              
+              <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td>
               <!-- <td class="input-con"><span @click="save(addAnother=true)" class="icons">Save and add another</span></td> -->
             </tr>
           </template>
         </template>
       </editTable>
+
+      <modal :showModal="showModal" :modalTitle="modalTitle"> </modal>
     </div>
 
   </div>
@@ -59,6 +67,7 @@ import { api } from '../../api/endpoints.js'
 
 // components
 import editTable from '@/components/editTable'
+import modal from '@/components/modal'
 import selectbox from '../selectbox'
 
 // helpers
@@ -68,10 +77,14 @@ import { mapState } from 'vuex'
 import { root } from '@/mixins/root'
 import { tablemix } from '@/mixins/table'
 
+// third party
+// import Multiselect from 'vue-multiselect'
+
 export default {
   name: 'schedule',
   data () {
     return {
+      modalTitle: "Test",
       columns: [
         {
           name: 'Host',
@@ -118,7 +131,9 @@ export default {
         neutral_site: ''
       },
       saved: false,
-      schedule: []
+      schedule: [],
+      gameUpdateList: [],
+      showModal: false
     }
   },
   mixins: [
@@ -127,7 +142,8 @@ export default {
   ],
   components: {
     editTable: editTable,
-    selectbox: selectbox
+    selectbox: selectbox,
+    modal: modal
   },
   computed: {
     seasons () {
@@ -146,7 +162,7 @@ export default {
     newGame: {
       deep: true,
       handler (newValue, oldValue) {
-        // this.initSchedule(newValue.season.season_id, this.$route.params.slug)
+        this.initSchedule(newValue.season.season_id, this.$route.params.slug)
       }
 
     }
@@ -155,7 +171,9 @@ export default {
   created () {
     this.$root.$on('save', payload => {
       this.save()
-    })
+    }),
+    this.initSchedule(undefined, this.$route.params.slug)
+    this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
     initSchedule (season, slug) {
@@ -243,8 +261,9 @@ export default {
     remove_game () {
       console.log('delete pressed')
     },
-    edit () {
+    toggleModal () {
       console.log('edit pressed')
+      this.showModal = !this.showModal
     }
   }
 }
