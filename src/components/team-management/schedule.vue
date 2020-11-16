@@ -167,7 +167,7 @@ export default {
       saved: false,
       schedule: [],
       gameUpdateList: [],
-      edit: true
+      edit: false
     }
   },
   mixins: [
@@ -306,6 +306,30 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @teamColor: var(--bg-color);
+
+header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 1rem;
+  margin-bottom: .5rem;
+  position: sticky;
+    top: 0;
+    z-index: 2;
+    left: 0;
+    background: #CFCDCD;
+  h2 {
+    display: inline-block;
+  }
+  .buttonCon {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    // height: 3rem;
+  }
+}
+
 h2:after {
   content: '';
   display: block;
@@ -322,7 +346,24 @@ h2:after {
   margin-top: .6rem;
 }
 table {
-  margin-top: -40px;
+  margin-top: -40px; 
+  &:before {
+    content: '';
+    display: block;
+    height: 40px;
+    width: 100%;
+    width: calc(100% + 2.4rem);
+    border-top: 1.5px solid @teamColor;
+    border-right: 2px solid @teamColor;
+    border-left: 2px solid transparent;
+    position: absolute;
+    -webkit-transform: skewX(-45deg);
+    transform: skewX(-45deg);
+    /* left: -23px; */
+    /* margin-top: 0.6rem; */
+    top: 0;
+    right: -20px;
+  }
 }
 
 #levels {
@@ -330,4 +371,5 @@ table {
   vertical-align: middle;
   margin-left: 32px;
 }
+
 </style>
