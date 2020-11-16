@@ -27,6 +27,12 @@
               <template v-else-if="column.field_name === 'age'">
                   {{ age(data['birth_date']) }}
               </template>
+              <template v-else-if="column.field_name == 'opponent'">
+                {{ data[column.field_name].team_name }}
+              </template>
+              <template v-else-if="column.field_name == 'level_name'">
+                {{ data['opponent'].level_name }}
+              </template>
               <template v-else>
                 {{ data[column.field_name]}}
               </template>
