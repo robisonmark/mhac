@@ -343,7 +343,7 @@
         </editTable>
         <modal :showModal="showModal" :modalTitle="modalTitle"> 
            <template slot="modalBody">
-             <fileUpload :gmae_id ="newGameStats.game_id" :team_slug="game.rosterId" > </fileUpload>
+             <fileUpload :game_id="selectedGame.game_id" :team_id="selectedGame.rosterId"> </fileUpload>
             </template>  
         </modal>
       </div>
@@ -823,7 +823,7 @@ export default {
       })
     },
      toggleModal () {
-      console.log('edit pressed')
+      // console.log('edit pressed')
       this.showModal = !this.showModal
     }
 

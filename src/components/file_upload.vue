@@ -40,6 +40,10 @@ import { api } from '../api/endpoints.js'
         uploadFieldName: 'file'
       }
     },
+    props:[
+        'game_id',
+        'team_id'
+    ],
     computed: {
       isInitial() {
         return this.currentStatus === STATUS_INITIAL;
@@ -65,7 +69,7 @@ import { api } from '../api/endpoints.js'
         // upload data to the server
         this.currentStatus = STATUS_SAVING;
 
-        api.sendStats(formData)
+        api.sendStats(formData, this.game_id, this.team_id)
           .then(x => {
             this.uploadedFiles = [].concat(x);
             this.currentStatus = STATUS_SUCCESS;
