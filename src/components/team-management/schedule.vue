@@ -295,6 +295,7 @@ export default {
       api.addGame(gameJson)
         .then(response => {
           console.log(response)
+          this.initNewGame(this.newGame.season.season_id)
         })
         .catch(err => {
           console.log(err)
@@ -302,7 +303,7 @@ export default {
 
       this.schedule.push(this.newGame)
       // console.log('save pressed')
-      this.initNewGame(this.newGame.season.season_id)
+      // this.initNewGame(this.newGame.season.season_id)
       // this.$root.$emit('saved')
     },
     remove_game () {
