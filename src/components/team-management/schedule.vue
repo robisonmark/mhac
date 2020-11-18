@@ -67,6 +67,9 @@
               <td class="input-con">
                 <input type="date" v-model="data.game_date" />
               </td>
+              <td>
+                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+              </td>
               <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
             </tr>
 
@@ -84,6 +87,9 @@
                 </td>
               <td class="input-con">
                 <input type="date" v-model="newGame.game_date" />
+              </td>
+              <td>
+                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
               </td>
               <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
             </tr>
