@@ -205,10 +205,10 @@ export default {
     ...mapState(['slug'])
   },
   watch: {
-    newGame: {
+    'newGame.season': {
       deep: true,
       handler (newValue, oldValue) {
-        this.initSchedule(newValue.season.season_id, this.$route.params.slug)
+        this.initSchedule(newValue.season_id, this.$route.params.slug)
       }
 
     }
