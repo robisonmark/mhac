@@ -235,10 +235,11 @@ export default {
             season: season
           }
 
-          if (game.home_team.slug === this.$store.state.user.slug) {
+
+          if (game.home_team.slug === this.$store.getters.user.slug) {
             gameObj.host = true
             gameObj.opponent = game.away_team
-          } else if (game.away_team.slug === this.$store.state.user.slug) {
+          } else if (game.away_team.slug === this.$store.state.getters.slug) {
             gameObj.host = false
             gameObj.opponent = game.home_team
           }
