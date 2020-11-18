@@ -68,6 +68,9 @@
               <td class="input-con">
                 <input type="date" v-model="data.game_date" />
               </td>
+              <td>
+                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+              </td>
               <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
             </tr>
 
@@ -85,6 +88,9 @@
                 </td>
               <td class="input-con">
                 <input type="date" v-model="newGame.game_date" />
+              </td>
+              <td>
+                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
               </td>
               <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
             </tr>
@@ -132,7 +138,7 @@ export default {
           icon: '',
           field_name: 'opponent',
           type: 'select',
-          track_by: 'opponent.team_name'
+          track_by: 'team_name'
         },
         {
           name: 'Time',
@@ -147,12 +153,18 @@ export default {
           type: 'date'
         },
         {
-          name: 'Level',
+          name: '',
           icon: '',
-          field_name: 'level_name',
-          type: '',
-          track_by: 'level_name'
+          field_name: 'actions',
+          type: 'actions'
         }
+        // {
+        //   name: 'Level',
+        //   icon: '',
+        //   field_name: 'level_name',
+        //   type: '',
+        //   track_by: 'level_name'
+        // }
       ],
       config: {
         page: 'schedule'
@@ -194,14 +206,11 @@ export default {
     ...mapState(['slug'])
   },
   watch: {
-    newGame: {
+    'newGame.season': {
       deep: true,
       handler (newValue, oldValue) {
-        this.initSchedule(newValue.season.season_id, this.$route.params.slug)
-      },
-    schedule: {
-
-    }
+        this.initSchedule(newValue.season_id, this.$route.params.slug)
+      }
 
     }
 
@@ -228,10 +237,11 @@ export default {
             season: season
           }
 
-          if (game.home_team.slug === this.$store.state.user.slug) {
+
+          if (game.home_team.slug === this.$store.getters.user.slug) {
             gameObj.host = true
             gameObj.opponent = game.away_team
-          } else if (game.away_team.slug === this.$store.state.user.slug) {
+          } else if (game.away_team.slug === this.$store.state.getters.slug) {
             gameObj.host = false
             gameObj.opponent = game.home_team
           }
@@ -287,6 +297,7 @@ export default {
       api.addGame(gameJson)
         .then(response => {
           console.log(response)
+          this.initNewGame(this.newGame.season.season_id)
         })
         .catch(err => {
           console.log(err)
@@ -294,7 +305,7 @@ export default {
 
       this.schedule.push(this.newGame)
       // console.log('save pressed')
-      this.initNewGame(this.newGame.season.season_id)
+      // this.initNewGame(this.newGame.season.season_id)
       // this.$root.$emit('saved')
     },
     remove_game () {
@@ -338,23 +349,41 @@ header {
   }
 }
 
-h2:after {
-  content: '';
-  display: block;
-  height: 40px;
-  /* width: 100%; */
-  width: calc(100% + 2.4rem);
-  border-top: 1.5px solid @teamColor;
-  border-right: 2px solid @teamColor;
-  border-left: 2px solid transparent;
-  position: relative;
-  -webkit-transform: skewX(-45deg);
-  transform: skewX(-45deg);
-  left: -23px;
-  margin-top: .6rem;
-}
+// h2:after {
+//   content: '';
+//   display: block;
+//   height: 40px;
+//   /* width: 100%; */
+//   width: calc(100% + 2.4rem);
+//   border-top: 1.5px solid @teamColor;
+//   border-right: 2px solid @teamColor;
+//   border-left: 2px solid transparent;
+//   position: relative;
+//   -webkit-transform: skewX(-45deg);
+//   transform: skewX(-45deg);
+//   left: -23px;
+//   margin-top: .6rem;
+// }
 table {
-  margin-top: -40px;
+  // margin-top: -40px;
+  &:before {
+    content: '';
+    display: block;
+    height: 40px;
+    width: 100%;
+    width: calc(100% + 2.4rem);
+    border-top: 1.5px solid @teamColor;
+    border-right: 2px solid @teamColor;
+    border-left: 2px solid transparent;
+    position: absolute;
+    -webkit-transform: skewX(-45deg);
+    transform: skewX(-45deg);
+    /* left: -23px; */
+    /* margin-top: 0.6rem; */
+    top: 0;
+    right: -20px;
+    z-index: 5;
+  }
 }
 
 #levels {

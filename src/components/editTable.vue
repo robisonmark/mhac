@@ -6,7 +6,7 @@
           <template v-for="(column, key, index) in columns">
             <th v-if="!column.field_name.includes('id')" :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
           </template>
-          <th></th>
+          <!-- <th></th> -->
         </tr>
       </slot>
     </thead>
@@ -20,18 +20,21 @@
                 {{formatDates(data[column.field_name], false)}}
               </template>
               <template v-else-if="column.field_name === 'season_roster'">
-                <template v-for="(c ) in  data[column.field_name]">
+                <template v-for="(c) in  data[column.field_name]">
                   {{c.level_name }}
                 </template>
               </template>
               <template v-else-if="column.field_name === 'age'">
                   {{ age(data['birth_date']) }}
               </template>
-              <template v-else-if="column.field_name == 'opponent'">
+              <template v-else-if="column.field_name === 'opponent'">
                 {{ data[column.field_name].team_name }}
               </template>
-              <template v-else-if="column.field_name == 'level_name'">
+              <!-- <template v-else-if="column.field_name == 'level_name'">
                 {{ data['opponent'].level_name }}
+              </template> -->
+              <template v-else-if="column.field_name === 'host'">
+                <div tabindex="0" :class="{'vs': data[column.field_name]}" class="currentCustom">{{data[column.field_name] ? 'vs' : '@'}}</div>
               </template>
               <template v-else>
                 {{ data[column.field_name]}}
@@ -53,16 +56,20 @@
             <!-- <td></td> -->
             <template v-for="(field, index) in columns">
 
-              <td v-if="!field.field_name.includes('id')" :key="index" class="input-con">
+              <td v-if="!field.field_name.includes('id') && !field.field_name.includes('actions')" :key="index" class="input-con">
                 <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" v-model="value[field.field_name]"></selectbox>
 
-                <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay" @keyup.space="changeDisplay" :class="{'vs': !switchPosition}" class="currentCustom">{{switchDisplay}}</div>
-                
+                <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay(field.field_name)" @keyup.space="changeDisplay(field.field_name)" :class="{'vs': value[field.field_name]}" class="currentCustom">{{value[field.field_name] ? 'vs' : '@'}}</div>
+
                 <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :multiple="true" :taggable="true" @tag="addTag"></multiselect>
-  
+
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
                 <!-- <input type="text" v-model="value[key]" /> -->
-                <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
+
+                <!-- <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span> -->
+              </td>
+              <td v-else-if="field.field_name === 'actions'" align="right" width="1%">
+                <font-awesome-icon :icon="['fas', 'save']" class="icon" @click="savedata"></font-awesome-icon>
               </td>
               <!-- <td></td> -->
             </template>
@@ -149,53 +156,14 @@ export default {
     this.$root.$on('saved', payload => {
       this.addNew = false
     })
-
-    // await this.getPromosList('username', store.state.user.username)
-    // client.getAllVendors().then(response => {
-    //   this.vendorTypes = response
-    // })
-    // // await this.getAllPromos()
-    // EventBus.$emit('loading', false)
-    // this.$root.$on('submit', payload => {
-    //   this.submitFile()
-    // })
-
-    // this.$root.$on('menuState', payload => {
-    //   window.setTimeout(() => {
-    //     this.setScrollPos()
-    //   }, 5)
-    // })
   },
-  // mounted () {
-  //   this.$nextTick(function () {
-  //     this.setFixedTableHead()
-  //     window.addEventListener('resize', this.setFixedTableHead)
-  //   })
-  // },
-  // updated () {
-  //   this.$nextTick(function () {
-  //     this.setFixedTableHead()
-  //     this.setScrollPos()
-  //     this.setTableTopPos()
-  //     window.addEventListener('resize', this.setFixedTableHead)
-  //     // console.log(document)
-  //     let scrollBody = document.getElementById('scrollBody')
-  //     scrollBody.addEventListener('scroll', this.setScrollPos)
-  //   })
-  // },
-  // destroyed () {
-  //   window.removeEventListener('resize', this.setFixedTableHead)
-  //   // window.removeEventListener('scroll', this.setScrollPos)
-  //   let scrollBody = document.getElementById('scrollBody')
-  //   scrollBody.removeEventListener('scroll', this.setScrollPos)
-  // },
   methods: {
-    getNamesFromSeasonRoster(teamList) {
-      let listNames = []
-      for (i = 0; i < teamList.length; i++) {
-        this.listNames.push(teamList[i]);
+    getNamesFromSeasonRoster (teamList) {
+      const listNames = []
+      for (let i = 0; i < teamList.length; i++) {
+        listNames.push(teamList[i])
       }
-      return this.listNames
+      return listNames
     },
     selectOptions (name) {
       switch (name) {
@@ -203,12 +171,11 @@ export default {
           return this.$store.state.seasons
         case 'opponent':
           return this.$store.state.teams.filter(team => {
-            if (team.id !== this.$store.state.user.team_id) {
+            if (team.team_id !== this.$store.getters.user.team_id) {
               return team
             }
           })
         case 'season_roster':
-          // console.log("season_roster", this.$store.getters.teamLevels)
           return this.$store.getters.teamLevels
       }
     },
@@ -273,13 +240,11 @@ export default {
         }
       })
     },
-    changeDisplay () {
+    changeDisplay (field) {
       this.switchPosition = !this.switchPosition
 
-      if (this.switchPosition && this.config.page === 'schedule') {
-        this.switchDisplay = '@'
-      } else {
-        this.switchDisplay = 'vs'
+      if (this.config.page === 'schedule') {
+        this.value[field] = !this.value[field]
       }
     },
     addTo () {
@@ -288,9 +253,9 @@ export default {
     },
     age (Birthday) {
       Birthday = new Date(Birthday + 'T00:00:00')
-      var ageDifMs = Date.now() - Birthday.getTime();
-      var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+      var ageDifMs = Date.now() - Birthday.getTime()
+      var ageDate = new Date(ageDifMs) // miliseconds from epoch
+      return Math.abs(ageDate.getUTCFullYear() - 1970)
     },
     savedata () {
       this.$root.$emit('save')
@@ -322,22 +287,30 @@ table {
     tr {
       height: 40px;
     }
-    // &:before {
-    //   content: '';
-    //   display: block;
-    //   height: 40px;
-    //   width: calc(100% + 45px);
-    //   // width: calc(100% + 15px);
-    //   // border-top: 1px solid var(--bg-color);
-    //   // border-right: 1px solid var(--bg-color);
-    //   border-top: 1.5px solid #B42625;
-    //   border-right: 2px solid #B42625;
-    //   border-left: 2px solid transparent;
-    //   position: absolute;
-    //   -webkit-transform: skewX(-45deg);
-    //   transform: skewX(-45deg);
-    //   left: -23px;
-    // }
+    th {
+      // font-family: @lato;
+      font-weight: 200;
+      font-size: .8rem;
+      cursor: pointer;
+      .icon {
+        display: none;
+      }
+      &.sort {
+        font-weight: 600;
+        color: #021A2B;
+        .icon {
+          display: inline-block;
+        }
+        .asc {
+          transform: rotate(180deg);
+          transition: ease-in-out .3s all;
+        }
+        .dsc {
+          // transform: rotate(180deg);
+          transition: ease-in-out .3s all;
+        }
+      }
+    }
   }
 
   tbody {
