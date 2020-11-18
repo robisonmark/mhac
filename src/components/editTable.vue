@@ -6,7 +6,7 @@
           <template v-for="(column, key, index) in columns">
             <th v-if="!column.field_name.includes('id')" :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
           </template>
-          <th></th>
+          <!-- <th></th> -->
         </tr>
       </slot>
     </thead>
@@ -62,7 +62,11 @@
   
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
                 <!-- <input type="text" v-model="value[key]" /> -->
-                <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span>
+
+                <!-- <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span> -->
+              </td>
+              <td v-else-if="field.field_name === 'actions'" align="right" width="1%">
+                <font-awesome-icon :icon="['fas', 'save']" class="icon" @click="savedata"></font-awesome-icon>
               </td>
               <!-- <td></td> -->
             </template>
