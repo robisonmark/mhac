@@ -137,7 +137,7 @@ export default {
           icon: '',
           field_name: 'opponent',
           type: 'select',
-          track_by: 'opponent.team_name'
+          track_by: 'team_name'
         },
         {
           name: 'Time',
@@ -152,12 +152,18 @@ export default {
           type: 'date'
         },
         {
-          name: 'Level',
+          name: '',
           icon: '',
-          field_name: 'level_name',
-          type: '',
-          track_by: 'level_name'
+          field_name: 'actions',
+          type: 'actions'
         }
+        // {
+        //   name: 'Level',
+        //   icon: '',
+        //   field_name: 'level_name',
+        //   type: '',
+        //   track_by: 'level_name'
+        // }
       ],
       config: {
         page: 'schedule'
