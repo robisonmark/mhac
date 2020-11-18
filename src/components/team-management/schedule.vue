@@ -29,15 +29,16 @@
           </tr>
         </template> -->
 
-        <!-- <template slot="tbody" v-if="!edit">
+        <template slot="tbody" v-if="!edit">
           <tr v-for="(data, index) in schedule" :key="index">
             <td><span :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</span></td>
             <td>{{data.opponent.team_name}}</td>
             <td>{{data.game_time}}</td>
             <td>{{data.game_date}}</td>
             <td>{{data.opponent.level_name}}</td>
-            <td @click="toggleModal(data)"><font-awesome-icon  :icon="['far', 'edit']" class="icon" ></font-awesome-icon></td>
-            <td><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td>
+            <td></td>
+            <!-- <td @click="toggleModal(data)"><font-awesome-icon  :icon="['far', 'edit']" class="icon" ></font-awesome-icon></td> -->
+            <td @click="deleteGame(data, index)"><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td> 
           </tr>
 
           <tr v-if="!newGame.season.season_id">
@@ -51,7 +52,7 @@
                 <template v-else>Add New Game to Schedule</template>
               </td>
             </tr>
-          </template> -->
+          </template>
           <template slot="tbody" v-if="edit">
             <tr v-for="(data, index) in schedule" :key="index">
               <td class="input-con">
@@ -197,7 +198,10 @@ export default {
       deep: true,
       handler (newValue, oldValue) {
         this.initSchedule(newValue.season.season_id, this.$route.params.slug)
-      }
+      },
+    schedule: {
+
+    }
 
     }
 
@@ -216,6 +220,7 @@ export default {
         response.data.forEach(game => {
           // console.log(game)
           const gameObj = {
+            game_id: game.game_id,
             host: game.home_team,
             opponent: game.away_team,
             game_time: game.game_time,
@@ -298,6 +303,13 @@ export default {
     toggleModal (id) {
       console.log('toggleModal', id)
       this.showModal = !this.showModal
+    },
+    deleteGame(data, id){
+      // console.log(id, this.schedule[id])
+      api.removeGame({'game_id': this.schedule[id].game_id}).then(response => {
+      // api.removeGame(this.schedule[id].game_id).then(response => {
+        this.schedule.splice(id, 1)
+      })
     }
   }
 }
@@ -306,7 +318,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @teamColor: var(--bg-color);
-
 header {
   display: flex;
   flex-flow: row wrap;
@@ -319,9 +330,6 @@ header {
     z-index: 2;
     left: 0;
     background: #CFCDCD;
-  h2 {
-    display: inline-block;
-  }
   .buttonCon {
     flex-grow: 1;
     display: flex;
@@ -346,24 +354,7 @@ h2:after {
   margin-top: .6rem;
 }
 table {
-  margin-top: -40px; 
-  &:before {
-    content: '';
-    display: block;
-    height: 40px;
-    width: 100%;
-    width: calc(100% + 2.4rem);
-    border-top: 1.5px solid @teamColor;
-    border-right: 2px solid @teamColor;
-    border-left: 2px solid transparent;
-    position: absolute;
-    -webkit-transform: skewX(-45deg);
-    transform: skewX(-45deg);
-    /* left: -23px; */
-    /* margin-top: 0.6rem; */
-    top: 0;
-    right: -20px;
-  }
+  margin-top: -40px;
 }
 
 #levels {
@@ -371,5 +362,4 @@ table {
   vertical-align: middle;
   margin-left: 32px;
 }
-
 </style>

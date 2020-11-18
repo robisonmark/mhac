@@ -426,4 +426,22 @@ export class api {
       method: 'GET'
     })
   }
+
+  static async removeGame(body) {
+    return robros({
+      url: '/deleteGame',
+      method: 'POST',
+      data: body
+    })
+
+  }
+
+  static async sendStats(body) {
+    return robros({
+      url: '/addFileGameStats',
+      method: 'POST',
+      data: body
+    })
+  }
+  
 }

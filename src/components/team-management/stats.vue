@@ -341,7 +341,11 @@
           </tfoot>
 
         </editTable>
-      <modal :showModal="showModal" :modalTitle="modalTitle"> </modal>>
+        <modal :showModal="showModal" :modalTitle="modalTitle"> 
+           <template slot="modalBody">
+             <fileUpload :gmae_id ="newGameStats.game_id" :team_slug="game.rosterId" > </fileUpload>
+            </template>  
+        </modal>
       </div>
     </div>
   </div>
@@ -357,6 +361,7 @@ import { mapState } from 'vuex'
 import editTable from '@/components/editTable'
 import selectbox from '../selectbox'
 import modal from '@/components/modal'
+import fileUpload from '@/components/file_upload'
 
 // mixins
 // import { root } from '@/mixins/root'
@@ -579,7 +584,8 @@ export default {
   components: {
     editTable: editTable,
     selectbox: selectbox,
-    modal: modal
+    modal: modal,
+    fileUpload: fileUpload
   },
   created () {
     this.initSchedule(undefined, this.$route.params.slug)
