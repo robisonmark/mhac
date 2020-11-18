@@ -343,23 +343,23 @@ header {
   }
 }
 
-h2:after {
-  content: '';
-  display: block;
-  height: 40px;
-  /* width: 100%; */
-  width: calc(100% + 2.4rem);
-  border-top: 1.5px solid @teamColor;
-  border-right: 2px solid @teamColor;
-  border-left: 2px solid transparent;
-  position: relative;
-  -webkit-transform: skewX(-45deg);
-  transform: skewX(-45deg);
-  left: -23px;
-  margin-top: .6rem;
-}
+// h2:after {
+//   content: '';
+//   display: block;
+//   height: 40px;
+//   /* width: 100%; */
+//   width: calc(100% + 2.4rem);
+//   border-top: 1.5px solid @teamColor;
+//   border-right: 2px solid @teamColor;
+//   border-left: 2px solid transparent;
+//   position: relative;
+//   -webkit-transform: skewX(-45deg);
+//   transform: skewX(-45deg);
+//   left: -23px;
+//   margin-top: .6rem;
+// }
 table {
-  margin-top: -40px; 
+  // margin-top: -40px;
   &:before {
     content: '';
     display: block;
@@ -376,6 +376,7 @@ table {
     /* margin-top: 0.6rem; */
     top: 0;
     right: -20px;
+    z-index: 5;
   }
 }
 
