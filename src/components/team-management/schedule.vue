@@ -38,7 +38,7 @@
             <td>{{data.opponent.level_name}}</td>
             <td></td>
             <!-- <td @click="toggleModal(data)"><font-awesome-icon  :icon="['far', 'edit']" class="icon" ></font-awesome-icon></td> -->
-            <td @click="deleteGame(data, index)"><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td> 
+            <td @click="deleteGame(data, index)"><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td>
           </tr>
 
           <tr v-if="!newGame.season.season_id">
@@ -237,11 +237,10 @@ export default {
             season: season
           }
 
-
           if (game.home_team.slug === this.$store.getters.user.slug) {
             gameObj.host = true
             gameObj.opponent = game.away_team
-          } else if (game.away_team.slug === this.$store.state.getters.slug) {
+          } else if (game.away_team.slug === this.$store.getters.slug) {
             gameObj.host = false
             gameObj.opponent = game.home_team
           }
@@ -315,9 +314,9 @@ export default {
       console.log('toggleModal', id)
       this.showModal = !this.showModal
     },
-    deleteGame(data, id){
+    deleteGame (data, id) {
       // console.log(id, this.schedule[id])
-      api.removeGame({'game_id': this.schedule[id].game_id}).then(response => {
+      api.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
       // api.removeGame(this.schedule[id].game_id).then(response => {
         this.schedule.splice(id, 1)
       })
