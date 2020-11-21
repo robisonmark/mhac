@@ -14,9 +14,10 @@ const modules = { auth }
 const strict = false
 
 const state = {
+  slug: null,
   user: {
-    team_id: String,
-    slug: String
+    team_id: '',
+    slug: ''
   },
   userData: {},
   teamAssocLvl: {},
@@ -29,7 +30,8 @@ const state = {
   levels: [],
   fullSchedule: [],
   configOptions: [],
-  readWriteAccess: String
+  readWriteAccess: String,
+  season_teams: []
 }
 
 const mutations = {
@@ -38,6 +40,9 @@ const mutations = {
     // console.log('payload',payload)
     state.user.team_id = payload.team_id
     state.user.slug = payload.slug
+  },
+  set_slug (state, payload) {
+    state.slug = payload
   },
   set_teamAssocLvl (state, payload) {
     state.teamAssocLvl = payload
@@ -74,6 +79,9 @@ const mutations = {
   },
   set_fullSchedule (state, payload) {
     state.fullSchedule = payload
+  },
+  set_seasonTeams (state, payload) {
+    state.season_teams = payload
   }
 }
 
@@ -120,7 +128,6 @@ const actions = {
 
     if (payload) {
       userTeam = teams.filter(team => payload === team.slug)
-      console.log(userTeam)
     } else if (groups) {
       userTeam = teams.filter(team => {
         if (!groups.includes('Admin')) {
@@ -131,7 +138,8 @@ const actions = {
       })
     }
     if (userTeam.length === 1) {
-      context.commit('set_user', userTeam[0])
+      await context.commit('set_user', userTeam[0])
+      await context.commit('set_slug', userTeam[0].slug)
     }
   },
 
@@ -153,7 +161,11 @@ const actions = {
       context.commit('set_fullSchedule', fixedData)
     })
   },
-
+  async setSeasonTeams (context) {
+    await api.getSeasonTeams().then(response => {
+      context.commit('set_teams', response.data)
+    })
+  },
   load (context) {
     // ---- These events are emitted once the listed module is loaded ----- //
     // Loads the vuex 'es' module (Elastic Search) [MUST BE AFTER AUTH]
@@ -196,6 +208,9 @@ const getters = {
   },
   seasons (state) {
     return state.seasons
+  },
+  seasonTeams (state) {
+    return state.season_teams
   },
   configOptions (state) {
     return state.groups

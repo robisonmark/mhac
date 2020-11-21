@@ -42,11 +42,14 @@ export default {
     selectbox: selectbox
   },
   computed: {
+    user () {
+      return this.$store.state.getters.user
+    },
     cssVars () {
       let teamMain = ''
       let teamSecond = ''
       this.$store.getters.teams.filter(team => {
-        if (team.slug === this.$store.getters.user.slug) {
+        if (team.slug === this.$store.getters.user?.slug) {
           teamMain = '#' + team.main_color
           teamSecond = '#' + team.secondary_color
         }
@@ -93,7 +96,6 @@ export default {
         }
       },
       set: function (newValue) {
-        console.log(newValue)
         const user = {
           team_id: newValue.id,
           slug: newValue.slug
@@ -110,10 +112,9 @@ export default {
   watch: {
     async selectedTeam (newValue, oldValue) {
       let team = {}
-      await api.getTeams(newValue).then(response => {
+      await api.getTeams(newValue.slug).then(response => {
         team = response.data[0]
       })
-      console.log('called2', team)
       this.teamLogo = '/static/color-team-logos/' + team.logo_color
       this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
     }

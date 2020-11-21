@@ -1,3 +1,5 @@
+// TODO: Add a modal for uploading a csv with scores...
+
 <template>
   <div class="hello">
     <header class="contentPad">
@@ -9,7 +11,10 @@
           <div class="switch" @click="backToGameStats">
             <font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Back To Games
           </div>
-
+          <div class='switch' @click="toggleModal()">
+            <font-awesome-icon :icon="['fas', 'file-import'] " class="icon"></font-awesome-icon>
+            <span class="focused">Import Scores</span>
+          </div>
           <div class="switch" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
             <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
             <span class="focused">Edit</span>
@@ -35,6 +40,7 @@
               <th>Opponent</th>
               <th>Home Team</th>
               <th>Missing Stats</th>
+              <th>Level</th>
               <th></th>
             </tr>
           </thead>
@@ -44,8 +50,9 @@
               <td></td>
               <td>{{game.game_date}}</td>
               <td>{{game.opponent}}</td>
-              <td>{{game.home_team.name}}</td>
+              <td>{{game.home_team.team_name}}</td>
               <td>{{game.missing_stats}}</td>
+              <td>{{game.level}} </td>
               <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
             </tr>
           </tbody>
@@ -55,46 +62,52 @@
       <div v-else-if="selectedGame && boxscore">
 
         <table class="scoreTable">
-          <thead>
+         <thead>
             <tr class="rowOne">
               <th colspan="2">Box Score</th>
               <th v-for="(quarter, key, index) in quarters" :key="index" class="text-center quarter">{{Object.keys(quarter)[0]}}</th>
-              <!-- <th class="text-center">2</th>
-              <th class="text-center">3</th>
-              <th class="text-center">4</th> -->
               <th class="finalScore text-center">Final</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
+            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.home_team.team_name).main_color}">
               <td class="teamLogo">
-                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).secondary_color}">
-                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.home_team.name).logo_color" />
+                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.home_team.team_name).secondary_color}">
+                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.home_team.team_name).logo_color" />
                 </div>
               </td>
-              <td :style="{'background-color': '#' + programInfo(selectedGame.home_team.name).main_color}">
-                <div class="teamName">{{selectedGame.home_team.name}}</div>
-                <div class="mascot">{{programInfo(selectedGame.home_team.name).team_mascot}}</div>
+              <td :style="{'background-color': '#' + programInfo(selectedGame.home_team.team_name).main_color}">
+                <div class="teamName">{{selectedGame.home_team.team_name}}</div>
+                <div class="mascot">{{programInfo(selectedGame.home_team.team_name).team_mascot}}</div>
               </td>
-              <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter">
+              
+              <td v-for="(period,index ) in gameScore.period_scores" :key=index class="quarter">
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.period_scores[index].home_score " />
+                <template v-else>{{period.home_score}}</template>
+              </td>
+              <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter">
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.homeTeam.quarters[key]" />
-                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>
-              <td class="finalScore text-center">{{gameScore.homeTeam.final}}</td>
+                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  -->
+              <td class="finalScore text-center">{{gameScore.final_scores.home_final}}</td>
             </tr>
-            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
+            <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).main_color}">
               <td class="teamLogo">
-                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).secondary_color}">
-                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.away_team.name).logo_color" />
+                <div class="imgCon" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).secondary_color}">
+                  <img class="boxScoreImg" :src="'/static/color-team-logos/' + programInfo(selectedGame.away_team.team_name).logo_color" />
                 </div>
               </td>
-              <td class="teamName" :style="{'background-color': '#' + programInfo(selectedGame.away_team.name).main_color}">
-                <div class="teamName">{{selectedGame.away_team.name}}</div>
-                <div class="mascot">{{programInfo(selectedGame.away_team.name).team_mascot}}</div>
+              <td class="teamName" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).main_color}">
+                <div class="teamName">{{selectedGame.away_team.team_name}}</div>
+                <div class="mascot">{{programInfo(selectedGame.away_team.team_name).team_mascot}}</div>
               </td>
-              <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter">
+              <td v-for="(period,index) in gameScore.period_scores" :key=index >
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.period_scores[index].away_score" />
+                <template v-else>{{period.away_score}}</template>
+              </td>
+              <!-- <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter">
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.awayTeam.quarters[key]" />
-                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>
-              <td class="finalScore text-center">{{gameScore.awayTeam.final}}</td>
+                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template> -->
+              <td class="finalScore text-center">{{gameScore.final_scores.away_final}}</td>
             </tr>
           </tbody>
         </table>
@@ -106,7 +119,7 @@
               </div> -->
             </div>
             <div class="col text-right">
-              <div class="button" @click="addOvertime">
+              <div v-if="edit === true" class="button" @click="addOvertime">
                 <font-awesome-icon :icon="['fas', 'stopwatch']" class="icon"></font-awesome-icon> Add Overtime
               </div>
             </div>
@@ -116,21 +129,22 @@
 
       <div v-if="selectedGame" :id="[boxscore ? 'playerStats' : '']">
         <editTable :columns="columns" :config="config" :tabledata="stats" v-model="newGameStats">
+          
           <template slot="thead">
             <tr class="rowOne">
-              <th colspan="3"></th>
+              <th colspan="4"></th>
               <th colspan="3" class="light">2PT</th>
               <th colspan="3" class="dark">3PT</th>
               <th colspan="3" class="light">FT</th>
               <th colspan="3" class="dark">Rebounds</th>
-              <th colspan="4"></th>
+              <th colspan="3"></th>
             </tr>
             <tr class="rowTwo">
               <!-- <th class="text-center sticky" @click="sortTable('player_number')">#</th>
               <th class="pad-right sticky" @click="sortTable('first_name')">First Name</th>
               <th class="pad-right sticky" @click="sortTable('last_name')">Last Name</th> -->
               <!-- 2PT -->
-              <!-- <th class="stat" @click="sortTable('player_stats', '2PA')">M</th>
+              <!-- <th class="stat" @click="sortTable('player_stats', 'FGA')">M</th>
               <th class="stat" >A</th>
               <th class="stat">%</th> -->
               <!-- 3PT -->
@@ -161,12 +175,14 @@
               <th @click="sortTable('player_last_name')" class="nowrap" :class="[currentSort === 'player_last_name' ? 'sort' : '']">
                 Last Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-
+              <th class="nowrap">
+                  Game Played
+              </th>
               <!-- 2PT -->
-              <th class="stat" @click="sortTable('player_stats','2PM')" :class="[currentSort === 'player_stats' && currentNested === '2PM' ? 'sort' : '']">M
+              <th class="stat" @click="sortTable('player_stats','FGM')" :class="[currentSort === 'player_stats' && currentNested === 'FGM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', '2PA')" :class="[currentSort === 'player_stats' && currentNested === '2PA' ? 'sort' : '']">A
+              <th class="stat" @click="sortTable('player_stats', 'FGA')" :class="[currentSort === 'player_stats' && currentNested === 'FGA' ? 'sort' : '']">A
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <th class="stat" @click="sortTable('player_stats','2P%')" :class="[currentSort === 'player_stats' && currentNested === '2P%' ? 'sort' : '']">%
@@ -174,10 +190,10 @@
               </th>
 
               <!-- 3PT -->
-              <th class="stat" @click="sortTable('player_stats', '3PM')" :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
+              <th class="stat" @click="sortTable('player_stats', 'ThreeP')" :class="[currentSort === 'player_stats' && currentNested === 'ThreePM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', '3PA')" :class="[currentSort === 'player_stats' && currentNested === '3PA' ? 'sort' : '']">A
+              <th class="stat" @click="sortTable('player_stats', 'ThreePA')" :class="[currentSort === 'player_stats' && currentNested === 'ThreePA' ? 'sort' : '']">A
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <th class="stat" @click="sortTable('player_stats', '3P%')" :class="[currentSort === 'player_stats' && currentNested === '3P%' ? 'sort' : '']">%
@@ -236,28 +252,34 @@
               <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
                 {{stat}}
               </td> -->
-
+             
               <!-- 2PT -->
               <td class="stat light first">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['2PM']" />
-                <template v-else>{{player.player_stats['2PM']}}</template>
+                <input v-if="edit === true" type="checkbox" v-model="player.player_stats.game_played" />
+                <template v-else> 
+                  <font-awesome-icon v-if= "player.player_stats['game_played']" :icon=" ['fas', 'check']  " class="icon"></font-awesome-icon>
+                </template>
+              </td>
+              <td class="stat light first">
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['FGM']" />
+                <template v-else>{{player.player_stats['FGM']}}</template>
               </td>
               <td class="stat light">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['2PA']" />
-                <template v-else>{{player.player_stats['2PA']}}</template>
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['FGA']" />
+                <template v-else>{{player.player_stats['FGA']}}</template>
               </td>
-              <td class="stat light">{{percentage(player.player_stats['2PA'], player.player_stats['2PM'])}}</td>
+              <td class="stat light">{{percentage(player.player_stats['FGA'], player.player_stats['FGM'])}}</td>
 
               <!-- 3PT -->
               <td class="stat dark">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['3PM']" />
-                <template v-else>{{player.player_stats['3PM']}}</template>
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['ThreePM']" />
+                <template v-else>{{player.player_stats['ThreePM']}}</template>
               </td>
               <td class="stat dark">
-                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['3PA']" />
-                <template v-else>{{player.player_stats['3PA']}}</template>
+                <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['ThreePA']" />
+                <template v-else>{{player.player_stats['ThreePA']}}</template>
               </td>
-              <td class="stat dark">{{percentage(player.player_stats['3PA'], player.player_stats['3PM'])}}</td>
+              <td class="stat dark">{{percentage(player.player_stats['ThreePA'], player.player_stats['ThreePM'])}}</td>
 
               <!-- FT -->
               <td class="stat light">
@@ -302,7 +324,7 @@
                 <template v-else>{{player.player_stats.STEAL}}</template>
               </td>
               <td class="stat">
-                <template v-if="edit === true">{{totalPoints(player.player_stats['2PM'], player.player_stats['3PM'], player.player_stats.FTM)}}</template>
+                <template v-if="edit === true">{{totalPoints(player.player_stats['FGM'], player.player_stats['ThreePM'], player.player_stats.FTM)}} </template>
                 <template v-else>{{player.player_stats.total_points}}</template>
               </td>
 
@@ -311,13 +333,13 @@
 
           <tfoot slot="tfoot">
             <tr>
-              <td colspan="3"></td>
-              <td>{{teamTotal('2PM')}}</td>
-              <td>{{teamTotal('2PA')}}</td>
+              <td colspan="4"></td>
+              <td>{{teamTotal('FGM')}}</td>
+              <td>{{teamTotal('FGA')}}</td>
               <td>%</td>
 
-              <td>{{teamTotal('3PM')}}</td>
-              <td>{{teamTotal('3PA')}}</td>
+              <td>{{teamTotal('ThreePM')}}</td>
+              <td>{{teamTotal('ThreePA')}}</td>
               <td>%</td>
 
               <td>{{teamTotal('FTM')}}</td>
@@ -328,7 +350,7 @@
               <td>{{teamTotal('DREB')}}</td>
               <td>{{teamTotal('total_rebounds')}}</td>
 
-              <td>{{teamTotal('to')}}</td>
+              <td>{{teamTotal('TO')}}</td>
               <td>{{teamTotal('AST')}}</td>
               <td>{{teamTotal('BLK')}}</td>
               <td>{{teamTotal('STEAL')}}</td>
@@ -337,6 +359,11 @@
           </tfoot>
 
         </editTable>
+        <modal :showModal="showModal" :modalTitle="modalTitle">
+           <template slot="modalBody">
+             <fileUpload :game_id="selectedGame.game_id" :team_id="selectedGame.rosterId"> </fileUpload>
+            </template>
+        </modal>
       </div>
     </div>
   </div>
@@ -351,6 +378,8 @@ import { mapState } from 'vuex'
 // components
 import editTable from '@/components/editTable'
 import selectbox from '../selectbox'
+import modal from '@/components/modal'
+import fileUpload from '@/components/file_upload'
 
 // mixins
 // import { root } from '@/mixins/root'
@@ -466,25 +495,38 @@ export default {
       currentSort: '',
       currentSortDir: 'asc',
       edit: false,
+      // gameScore: {
+      //   homeTeam: {
+      //     quarters: [
+      //       '',
+      //       '',
+      //       '',
+      //       ''
+      //     ],
+      //     final: 0
+      //   },
+      //   awayTeam: {
+      //     quarters: [
+      //       '',
+      //       '',
+      //       '',
+      //       ''
+      //     ],
+      //     final: 0
+      //   }
+      // },
       gameScore: {
-        homeTeam: {
-          quarters: [
-            '',
-            '',
-            '',
-            ''
-          ],
-          final: 0
+        final_scores: {
+            home_final: 0,
+            away_final: 0   
         },
-        awayTeam: {
-          quarters: [
-            '',
-            '',
-            '',
-            ''
-          ],
-          final: 0
-        }
+        period_scores :   [
+          {
+            period: '',
+            homeScore: '',
+            awayScore: ''
+          }
+        ]
       },
       newStats: {
         season: ''
@@ -497,10 +539,10 @@ export default {
       pastGames: [
       ],
       quarters: [
-        { 1: '' },
-        { 2: '' },
-        { 3: '' },
-        { 4: '' }
+        { 1: 0 },
+        { 2: 0 },
+        { 3: 0 },
+        { 4: 0 }
       ],
       roster: [
       ],
@@ -508,14 +550,15 @@ export default {
       saving: false,
       selectedGame: false,
       stats: [
-      ]
+      ],
+      showModal: false,
+      modalTitle: 'Import Stats'
     }
   },
   watch: {
     '$store.state.teamAssocLvl': {
       handler (newValue) {
         this.resetStats()
-        // this.newStats.season = ''
         this.initSchedule(this.newStats.season.season_id, this.team)
       },
       deep: true
@@ -527,21 +570,34 @@ export default {
       },
       deep: true
     },
-    'gameScore.homeTeam.quarters': {
+    'gameScore.period_scores': {
       handler (newValue) {
-        this.gameScore.homeTeam.final = 0
-        this.gameScore.homeTeam.quarters.forEach(quarter => {
-          this.gameScore.homeTeam.final += isNaN(parseInt(quarter)) ? parseInt(0) : parseInt(quarter)
+        console.log("here")
+        this.gameScore.final_scores.home_final = 0
+        this.gameScore.period_scores.forEach(quarter => {
+          this.gameScore.final_scores.home_final += isNaN(parseInt(quarter.home_score)) ? parseInt(0) : parseInt(quarter.home_score)
+        })
+
+        this.gameScore.final_scores.away_final = 0
+        this.gameScore.period_scores.forEach(quarter => {
+          this.gameScore.final_scores.away_final += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
+        })
+
+      },
+      deep: true
+    },
+    'gameScore.period_scores.away_score': {
+      handler (newValue) {
+        this.gameScore.final_scores.away_final = 0
+        this.gameScore.period_scores.forEach(quarter => {
+          this.gameScore.final_scores.away_final += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
         })
       },
       deep: true
     },
-    'gameScore.awayTeam.quarters': {
+    'newGameStats': {
       handler (newValue) {
-        this.gameScore.awayTeam.final = 0
-        this.gameScore.awayTeam.quarters.forEach(quarter => {
-          this.gameScore.awayTeam.final += isNaN(parseInt(quarter)) ? parseInt(0) : parseInt(quarter)
-        })
+        console.log(newValue.player_stats)
       },
       deep: true
     },
@@ -551,7 +607,8 @@ export default {
       } else {
         this.selectedGame = false
       }
-    }
+    },
+
   },
   computed: {
     seasons () {
@@ -563,35 +620,44 @@ export default {
     teamAssocLvl () {
       return this.$store.state.teamAssocLvl.season_team_ids
     },
-    ...mapState(['user'])
+    ...mapState(['user']),
+    sumPoints() {
+      console.log("test location")
+    }
   },
   // mixins: [
   //   root
   // ],
   components: {
     editTable: editTable,
-    selectbox: selectbox
+    selectbox: selectbox,
+    modal: modal,
+    fileUpload: fileUpload
   },
   created () {
-    // this.initSchedule()
+    this.initSchedule(undefined, this.$route.params.slug)
+    this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
-    initSchedule (level, team) {
+    initSchedule (level = undefined, team) {
       api.getSchedule(level, team).then(response => {
+        // console.log("initSchedule", response.data)
         const fixedData = []
         response.data.forEach(game => {
-          // if (game.game_time === '12:00 AM ') {
-          //   game.game_time = 'TBD'
-          // }
+          // console.log('game loop', game, game.home_team.slug, this.team)
           if (game.home_team.slug === this.team) {
-            game.opponent = game.away_team.name
-            game.rosterId = game.home_team.id
+            game.opponent = game.away_team.team_name
+            game.rosterId = game.home_team.team_id
+            game.level = game.home_team.level_name
           } else {
-            game.opponent = game.home_team.name
-            game.rosterId = game.away_team.id
+            game.opponent = game.home_team.team_name
+            game.rosterId = game.away_team.team_id
+            game.level = game.away_team.level_name
           }
+          
           fixedData.push(game)
         })
+        console.log("fixedData", fixedData)
         this.pastGames = fixedData
         // this.sortTable('game_date', false)
       })
@@ -618,10 +684,10 @@ export default {
             player_first_name: player.first_name,
             player_stats: {
               // 'gs': false,
-              '2PM': '',
-              '2PA': '',
-              '3PM': '',
-              '3PA': '',
+              'FGM': '',
+              'FGA': '',
+              'ThreePM': '',
+              'ThreePA': '',
               FTM: '',
               FTA: '',
               OREB: '',
@@ -646,21 +712,23 @@ export default {
       })
     },
     enterStats (game) {
+      // console.log("here", game, this.team)
       this.newGameStats.game_id = game.game_id
       this.initNewGameStats(game.rosterId)
-      // this.initRoster(game.rosterId)
-      // this.initRoster('d2da3cbd-dbdb-4b40-9002-aefc705d229f')
       this.selectedGame = game
 
       if (game.home_team.slug === this.team) {
         this.boxscore = true
       }
     },
-    addOvertime () {
+    addOvertime (home_score, away_score) {
       this.quarters.push({ ['OT' + this.overtimeCount]: '' })
-      this.gameScore.homeTeam.quarters.push({ ['OT' + this.overtimeCount]: '' })
-      this.gameScore.awayTeam.quarters.push({ ['OT' + this.overtimeCount]: '' })
-
+      console.log(this.quarters, "quarters")
+      this.gameScore.period_scores.push({ period: 'OT' + this.overtimeCount,       
+            homeScore: this.home_score != undefined ? this.home_score : '',
+            awayScore: this.away_score != undefined ? this.away_score : '',
+            game_order: this.overtimeCount + 4
+          } )
       this.overtimeCount++
     },
     backToGameStats () {
@@ -677,14 +745,60 @@ export default {
     goToPlayerStats () {
       this.boxscore = false
     },
-    initNewGameStats (rosterId) {
-      api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
+    async initNewGameStats (rosterId) {
+      await api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
         this.newGameStats = response.data
         if (this.newGameStats.final_scores.home_score !== null) {
-          this.gameScore.homeTeam.final = this.newGameStats.final_scores.home_score
-          this.gameScore.awayTeam.final = this.newGameStats.final_scores.away_score
+          this.gameScore.final_scores.home_final = this.newGameStats.final_scores.home_score
+          this.gameScore.final_scores.away_final = this.newGameStats.final_scores.away_score
         }
-      })
+        if (this.newGameStats.game_scores !== null) {
+          this.gameScore.period_scores = this.newGameStats.game_scores
+          // console.log("newGameStatsInit", this.gameScore.period_scores, this.gameScore.period_scores.length )
+          if (this.gameScore.period_scores.length > 4) {
+            let quarterAdd = this.gameScore.period_scores.length - 4
+
+            for (var i = 1; i <= quarterAdd; i++) {
+              this.addOvertime()
+            }
+          // } else if (this.gameScore.length < 4 && this.gameScore.length > 0) {
+          //   this.gameScore.forEach(period => {
+              
+          //   })
+          } else if (this.gameScore.period_scores.length === 0) {
+            this.gameScore.period_scores = [
+              {
+              'game_id': '',
+              'period': 1,
+              'home_score': 0,
+              'away_score': 0,
+              'game_order': 0,
+              },
+              {
+              'game_id': '',
+              'period': 2,
+              'home_score': 0,
+              'away_score': 0,
+              'game_order': 0,
+              },
+              {
+              'game_id': '',
+              'period': 3,
+              'home_score': 0,
+              'away_score': 0,
+              'game_order': 0,
+              },
+              {
+              'game_id': '',
+              'period': 4,
+              'home_score': 0,
+              'away_score': 0,
+              'game_order': 0,
+              },
+            ]
+          }  
+        }  
+      })  
     },
     resetStats () {
       this.currentNested = ''
@@ -697,18 +811,20 @@ export default {
     saveStats () {
       this.saving = true
       const finalScores = { final_scores: {} }
-      let stats = {}
+
       if (this.boxscore === true) {
-        finalScores.final_scores = {
-          home_score: this.gameScore.homeTeam.final,
-          away_score: this.gameScore.awayTeam.final
-        }
-        stats = { ...finalScores }
+        
+        // finalScores.final_scores = {
+        //   home_score: this.gameScore.final_scores.final,
+        //   away_score: this.gameScore.awayTeam.final
+        // }
+        finalScores.final_scores =  { ...this.gameScore.final_scores }
       }
-      // this.newGameStats['scores'] = {
-      //   'home_score': this.gameScore.homeTeam.final,
-      //   'away_score': this.gameScore.awayTeam.final
-      // }
+      // const quarterScores = { game_scores: [] }
+
+      let quarter_scores = []
+      this.gameScore.homeTeam
+
       const playerStats = _.cloneDeep(this.newGameStats)
 
       const flattenedStats = []
@@ -721,12 +837,15 @@ export default {
       })
 
       playerStats.player_stats = flattenedStats
+      
+      // console.log({...finalScores}, finalScores)
+      let stats = {}
+      stats = { ...playerStats, ...finalScores }
 
-      stats = { ...stats, ...playerStats }
-      // console.log(stats)
+      console.log("sent stats", JSON.stringify(stats))
+
       api.addGameResults(this.newGameStats.game_id, stats)
         .then(response => {
-          console.log(response)
           this.saving = false
 
           this.saved = true
@@ -747,8 +866,8 @@ export default {
       let total = 0
       this.newGameStats.player_stats.forEach(player => {
         // console.log(player)
-        // console.log(_.get(player, stat))
-        total += parseInt(_.get(player.player_stats, stat))
+        // console.log(_.get(player.player_stats, stat))
+        total += (parseInt(_.get(player.player_stats, stat)) || 0)
       })
 
       return total
@@ -802,6 +921,10 @@ export default {
           return 0
         }
       })
+    },
+     toggleModal () {
+      // console.log('edit pressed')
+      this.showModal = !this.showModal
     }
 
   }

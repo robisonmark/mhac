@@ -123,12 +123,13 @@ export class api {
     //     // console.log(user)
     //   })
     // }'
-
+    // console.log('GetGameResults',gameId, teamId)
     let addedParams = ''
     if (gameId !== undefined && teamId === undefined) {
       addedParams = '/' + gameId
     } else if (gameId !== undefined && teamId !== undefined) {
       addedParams = '/' + gameId + '/' + teamId
+      // console.log(addedParams)
     } else {
       addedParams = ''
     }
@@ -310,17 +311,25 @@ export class api {
     //   })
     // }
 
+    let urlString = '/getSchedule'
     let addedParams = ''
+
     if (season !== undefined && team === undefined) {
       addedParams = '/' + season
     } else if (season !== undefined && team !== undefined) {
       addedParams = '/' + season + '/' + team
+    } else if (season === undefined && team !== undefined) {
+      addedParams = '/' + team
+      urlString = '/getProgramSchedule'
     } else {
+      /*
+       * @todo: Remove this call
+      **/
       addedParams = ''
     }
 
     return robros({
-      url: '/getSchedule' + addedParams,
+      url: urlString + addedParams,
       method: 'GET'
     })
   }
@@ -354,7 +363,7 @@ export class api {
      * @param {string} slug - Team Slug
      * @return - JSON Object of players by team
     ***/
-  static async getSeasonTeams (slug) {
+  static async getSeasonTeams (slug, seasonid = null) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -364,6 +373,9 @@ export class api {
     //     // console.log(user)
     //   })
     // }
+    if (seasonid !== null) {
+      slug = slug + '/' + seasonid
+    }
     return robros({
       url: '/getSeasonTeams/' + slug,
       method: 'GET'
@@ -414,4 +426,22 @@ export class api {
       method: 'GET'
     })
   }
+
+  static async removeGame(body) {
+    return robros({
+      url: '/deleteGame',
+      method: 'POST',
+      data: body
+    })
+
+  }
+
+  static async sendStats(body, game_id, team_id) {
+    return robros({
+      url: '/addFileGameStats/' + game_id + '/' + team_id,
+      method: 'POST',
+      data: body
+    })
+  }
+  
 }
