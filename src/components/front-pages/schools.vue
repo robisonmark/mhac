@@ -57,10 +57,10 @@
                   <td>
                     <div class="game--date">{{game.game_date}}  / <span class="font-weight-light">{{game.game_time}}</span></div>
                     <div class="game--opponent">
-                      <span v-if="game.host">vs</span>
-                      <span v-else>@</span>
+                      <span v-if="game.host">vs </span>
+                      <span v-else>@ </span>
 
-                      <b v-html="game.opponent.name"></b>
+                      <b v-html="game.opponent.team_name"></b>
                     </div>
                   </td>
                   <td class="game--location">
@@ -213,8 +213,6 @@ export default {
       deep: true,
       handler (newValue, oldValue) {
         if (this.selectedSection === 'Schedule') {
-          console.log(this.seasons)
-          console.log(newValue)
           const season = this.seasons.filter(season => { return season.level === newValue.level_name })
 
           this.initLeveledSchedule(season[0].season_id, this.$route.params.slug)
@@ -282,7 +280,6 @@ export default {
     getSeasonTeams (slug) {
       api.getSeasonTeams(slug)
         .then(response => {
-          console.log(response)
           this.teamAssocLvl = response.data
 
           this.filterBy.team = response.data[0]
@@ -312,8 +309,8 @@ export default {
           const gameObj = {
             host: '',
             opponent: '',
-            game_time: game.game_time,
-            game_date: game.game_date,
+            game_time: this.$config.formatTime(game.game_time),
+            game_date: this.$config.formatDate(game.game_date),
             location: {},
             results: {},
             id: game.game_id
@@ -322,12 +319,12 @@ export default {
           if (game.home_team.slug === this.$route.params.slug) {
             gameObj.host = true
             gameObj.opponent = game.away_team
-            if (game.final_score.home !== null) {
-              if (game.final_score.home > game.final_score.away) {
+            if (game.final_scores.home_score !== null) {
+              if (game.final_scores.home_score > game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'W'
                 }
-              } else if (game.final_score.home < game.final_score.away) {
+              } else if (game.final_scores.home_score < game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'L'
                 }
@@ -336,12 +333,12 @@ export default {
           } else if (game.away_team.slug === this.$route.params.slug) {
             gameObj.host = false
             gameObj.opponent = game.home_team
-            if (game.final_score.home !== null) {
-              if (game.final_score.home < game.final_score.away) {
+            if (game.final_scores.home_score !== null) {
+              if (game.final_scores.home_score < game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'W'
                 }
-              } else if (game.final_score.home > game.final_score.away) {
+              } else if (game.final_scores.home_score > game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'L'
                 }
@@ -355,8 +352,8 @@ export default {
             name: game.home_team.address_name
           }
 
-          if (game.final_score.home !== null) {
-            gameObj.results = { ...gameObj.results, ...game.final_score }
+          if (game.final_scores.home_score !== null) {
+            gameObj.results = { ...gameObj.results, ...game.final_scores }
           }
 
           gameArr.push(gameObj)
