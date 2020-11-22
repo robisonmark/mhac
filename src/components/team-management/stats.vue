@@ -608,6 +608,11 @@ export default {
         this.selectedGame = false
       }
     },
+    '$route.params.slug': {
+      handler(newValue){
+        this.initSchedule(undefined, newValue)
+      }
+    },
 
   },
   computed: {
@@ -639,12 +644,10 @@ export default {
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
-    initSchedule (level = undefined, team) {
+    initSchedule (level, team) {
       api.getSchedule(level, team).then(response => {
-        // console.log("initSchedule", response.data)
         const fixedData = []
         response.data.forEach(game => {
-          // console.log('game loop', game, game.home_team.slug, this.team)
           if (game.home_team.slug === this.team) {
             game.opponent = game.away_team.team_name
             game.rosterId = game.home_team.team_id

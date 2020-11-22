@@ -211,8 +211,12 @@ export default {
       handler (newValue, oldValue) {
         this.initSchedule(newValue.season_id, this.$route.params.slug)
       }
-
-    }
+    },
+    '$route.params.slug': {
+      handler(newValue){
+        this.initSchedule(undefined, newValue)
+      }
+    },
 
   },
   created () {
@@ -230,8 +234,8 @@ export default {
           // console.log(game)
           const gameObj = {
             game_id: game.game_id,
-            host: game.home_team,
-            opponent: game.away_team,
+            host: true,
+            opponent: {},
             game_time: game.game_time,
             game_date: game.game_date,
             season: season
@@ -240,7 +244,8 @@ export default {
           if (game.home_team.slug === this.$store.getters.user.slug) {
             gameObj.host = true
             gameObj.opponent = game.away_team
-          } else if (game.away_team.slug === this.$store.getters.slug) {
+          // } else if (game.away_team.slug === this.$store.getters.user.slug) {
+          } else {
             gameObj.host = false
             gameObj.opponent = game.home_team
           }
