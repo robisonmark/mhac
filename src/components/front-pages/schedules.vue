@@ -13,7 +13,7 @@
       <div class="col-12">
         <div class="row filter-bar">
           <div class="col-md-4">
-            <h2>2019 - 2020 Schedule</h2>
+            <h2>2020 - 2021 Schedule</h2>
           </div>
           <div class="col-md-6">
             <div class="filters">
@@ -71,42 +71,44 @@
           </tbody>
           <tbody>
             <template v-if="games.length >= 1">
-              <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.id }}" tag="tr" class="game" v-for="game in games" :key="game.game_id">
+              <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in games" :key="game.game_id">
                 <td class="date">
                   {{game.game_date}}
                   <div class="time">{{game.game_time}}</div>
                 </td>
 
                 <!-- AWAY TEAM -->
-                <td class="score" :class="checkResult(game.final_score.away, game.final_score.home)">
-                  {{game.final_score.away}}
+                <td class="score" :class="checkResult(game.final_scores.away, game.final_scores.home)">
+                  {{game.final_scores.away}}
                 </td>
                 <td class="team_info">
-                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.name).logo_color" />
-                  <div class="team_name" :class="checkResult(game.final_score.away, game.final_score.home)">{{game.away_team.name}}</div>
-                  <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
+                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.team_name).logo_color" />
+                  <div class="team_name" :class="checkResult(game.final_scores.away_score, game.final_scores.home_score)">{{game.away_team.team_name}}</div>
+                  <span class="level" v-if="game.away_team.level_name" v-html="game.away_team.level_name"></span>
                 </td>
-
+                  <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
+                  {{game.final_scores.away_score}}
+                </td>
                 <td><span class="at">@</span></td>
 
                 <!-- HOME TEAM -->
                 <td class="team_info">
-                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.name).logo_color" />
-                  <div class="team_name" :class="checkResult(game.final_score.home, game.final_score.away)">{{game.home_team.name}}</div>
-                  <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
+                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.team_name).logo_color" />
+                  <div class="team_name" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">{{game.home_team.name}}</div>
+                  <span class="level" v-if="game.home_team.level_name" v-html="game.home_team.level_name"></span>
                 </td>
-                <td class="score" :class="checkResult(game.final_score.home, game.final_score.away)">
-                  {{game.final_score.home}}
+                <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
+                  {{game.final_scores.home_score}}
                 </td>
 
-                <td class="location text-right">
+                <!-- <td class="location text-right">
                   <div>{{game.home_team.address_name}}</div>
                   <br/>
                   <span class="address" :href="'https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip" @click.stop="goToMap('https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip)">
                     <div>{{game.home_team.address_lines}}</div>
                     <div>{{game.home_team.city_state_zip}}</div>
                   </span>
-                </td>
+                </td> -->
               </router-link>
             </template>
             <template v-else>
