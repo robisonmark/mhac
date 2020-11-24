@@ -217,7 +217,7 @@ export default {
 
           this.initLeveledSchedule(season[0].season_id, this.$route.params.slug)
         } else if (this.selectedSection === 'Roster') {
-          this.initLeveledRoster(newValue.season_team_id)
+          this.initLeveledRoster(newValue.season_id)
         }
       }
     },
@@ -227,7 +227,7 @@ export default {
         if (newValue === 'Schedule') {
           this.initLeveledSchedule(this.filterBy.team.season_team_id, this.$route.params.slug)
         } else if (newValue === 'Roster') {
-          this.initLeveledRoster(this.filterBy.team.season_team_id)
+          this.initLeveledRoster(this.filterBy.team.season_id)
         }
       }
     }
