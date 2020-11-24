@@ -384,6 +384,8 @@ import fileUpload from '@/components/file_upload'
 // mixins
 // import { root } from '@/mixins/root'
 
+import { CONSTANTS } from '@/config/helpers'
+
 export default {
   name: 'stats',
   data () {

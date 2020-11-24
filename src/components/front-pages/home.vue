@@ -20,7 +20,7 @@
           </div>
 
           <table>
-            <thead>
+            <thead> 
               <tr>
                 <th class="padding"></th>
                 <th class="mw-150px">School</th>

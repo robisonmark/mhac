@@ -133,7 +133,7 @@ export class api {
     } else {
       addedParams = ''
     }
-
+    console.log('/getGameResults' + addedParams)
     return robros({
       url: '/getGameResults' + addedParams,
       method: 'GET'

@@ -73,7 +73,7 @@
             <template v-if="games.length >= 1">
               <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in games" :key="game.game_id">
                 <td class="date">
-                  {{game.game_date}}
+                  {{ game.game_date }}
                   <div class="time">{{game.game_time}}</div>
                 </td>
 
@@ -207,6 +207,10 @@ import { api } from '../../api/endpoints.js'
 // mixins
 import { root } from '../../mixins/root'
 
+// helpers
+// import {formatDate} from '@/config/helpers'
+
+
 export default {
   name: 'schedules',
   data () {
@@ -267,10 +271,12 @@ export default {
     })
   },
   methods: {
+    // formatDate: this.$formatDate,
     goToMap (url) {
       window.location.replace(url)
     },
     initSchedule (level, team) {
+      console.log("this.initSchedule", level, team)
       api.getSchedule(level, team).then(response => {
         const fixedData = []
         response.data.forEach(game => {
