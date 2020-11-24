@@ -18,6 +18,9 @@ import Amplify from 'aws-amplify'
 import awsconfig from './aws-exports'
 import awsCookieStorage from '@/config/aws-cookieStorage'
 
+// local config
+import config from './config/helpers'
+
 Amplify.configure({ ...awsconfig, ...awsCookieStorage })
 
 /* ********************************* *\
@@ -57,6 +60,8 @@ library.add(fas, far)
 dom.watch()
 
 Vue.config.productionTip = false
+
+Vue.prototype.$config = config.CONSTANTS
 
 /* eslint-disable no-new */
 new Vue({

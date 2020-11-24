@@ -108,7 +108,6 @@ const actions = {
 
   async setSeasons (context, payload) {
     await api.getCurrentSeasons().then(response => {
-      console.log(response)
       context.commit('set_seasons', response.data)
     })
   },
