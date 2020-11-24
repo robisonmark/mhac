@@ -86,9 +86,16 @@ export default {
   created () {
     this.getTeam()
   },
+  watch: {
+    '$route.params.slug': {
+      handler(newValue){
+        this.getTeam()
+      }
+    }
+  },
   methods: {
     getTeam () {
-      api.getTeams(this.$store.state.user.slug).then( response => {
+      api.getTeams(this.$route.params.slug).then( response => {
         this.team = response.data[0]
       }) 
     }

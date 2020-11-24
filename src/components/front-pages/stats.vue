@@ -3,7 +3,7 @@
     <div class="page-styles">
       <div class="row print-only align-items-start justify-content-between">
         <div class="col-4">
-          <h2>2019 - 2020 Stats</h2>
+          <h2>2020 - 2021 Stats</h2>
         </div>
         <div class="col right">
           <div>{{filterBy.game.teams}}</div>
@@ -13,7 +13,7 @@
       <div class="col-12">
         <div class="row filter-bar">
           <div class="col-md-4">
-            <h2>2019 - 2020 Stats</h2>
+            <h2>2020 - 2021 Stats</h2>
           </div>
           <div class="col-md-6">
             <div class="filters">
@@ -390,10 +390,11 @@ export default {
       return levels
     },
     games () {
-      const gameFilter = [{ game_id: '', home_team: { team_level: 'All Levels' }, teams: 'All Games' }]
-
+      const gameFilter = [{ game_id: '', home_team: { level_name: 'All Levels' }, away_team: {}, teams: 'All Games' }]
+      console.log(" Full Schedule", this.$store.state.fullSchedule)
       this.$store.state.fullSchedule.forEach(game => {
-        game.teams = game.home_team.name + ' vs. ' + game.away_team.name + ' - ' + game.home_team.team_level
+        console.log("game", game)
+        game.teams = game.home_team.team_name + ' vs. ' + game.away_team.team_name + ' - ' + game.home_team.level_name
 
         // delete game.home_team
         // delete game.away_team
@@ -403,9 +404,11 @@ export default {
 
         gameFilter.push(game)
       })
-      return gameFilter.filter((game) => {
-        if (game.home_team.team_level.toLowerCase().match(this.filterBy.level.level.toLowerCase())) {
-          return game.home_team.team_level.toLowerCase().match(this.filterBy.level.level.toLowerCase())
+      console.log(gameFilter)
+      return gameFilter.filter((game) => { 
+        console.log("Game filter", game.home_team) // , this.filterBy.level.level)
+        if (game.home_team.level_name.toLowerCase().match(this.filterBy.level.level.toLowerCase())) {
+          return game.home_team.level_name.toLowerCase().match(this.filterBy.level.level.toLowerCase())
         } else if (this.filterBy.level.level === 'All Levels') {
           return game
         }
@@ -445,11 +448,12 @@ export default {
     }
   },
   created () {
+    // console.log("created", this.$route.query.game, this.$route.query.home_team )
     if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') &&
-    Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
+        Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
       this.initStats(this.$route.query.game, this.$route.query.home_team)
     } else if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game')) {
-      this.initStats(this.$route.query.game.game_id)
+      this.initStats(this.$route.query.game)
     } else {
     }
 
@@ -463,14 +467,16 @@ export default {
     if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') &&
     Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
       const game = self.games.find(game => {
-        return game.game_id === self.$route.query.game
+        console.log("udpated call", game)
+        // return game.game_id === self.$route.query.game
+        return game
       })
       if (game && self.filterBy.game.game_id === '') {
         self.setGame(game)
       }
 
       if (game && self.filterBy.level.season_id === '') {
-        const level = self.levels.find(level => { return level.level === game.home_team.team_level })
+        const level = self.levels.find(level => { return level.level === game.home_team.level_name })
         self.setLvl(level)
       }
     }
@@ -490,16 +496,15 @@ export default {
         this.stats = response.data
       })
     },
-    initStats (gameId, teamId) {
+    async initStats (gameId, teamId) {
       if (gameId !== undefined && teamId === undefined) {
         teamId = this.games.find(game => { return game.game_id === gameId })
-        teamId = teamId.home_team.id
+        teamId = teamId.home_team.team_id
         this.filterBy.team = _.cloneDeep(this.filterBy.game.home_team)
-      } else if (gameId !== undefined && teamId !== undefined) {
-        // gameId = gameId
-        // teamId = teamId
       }
-      api.getGameResults(gameId, teamId).then(response => {
+
+      await api.getGameResults(gameId, teamId).then(response => {
+        console.log("api response", response.data)
         if (response.data.player_stats.length >= 1) {
           this.message = false
         } else {
@@ -507,6 +512,7 @@ export default {
         }
         this.compositStats = false
         this.stats = response.data.player_stats
+        console.log(this.stats)
       })
     },
     setLvl (lvl) {
@@ -524,8 +530,8 @@ export default {
     setGame (game) {
       this.filterBy.game.game_id = game.game_id
       this.filterBy.game.teams = game.teams
-      this.filterBy.game.home_team = { id: game.home_team.id, name: game.home_team.name }
-      this.filterBy.game.away_team = { id: game.away_team.id, name: game.away_team.name }
+      this.filterBy.game.home_team = { id: game.home_team.team_id, name: game.home_team.team_name }
+      this.filterBy.game.away_team = { id: game.away_team.team_id, name: game.away_team.team_name }
       // this.showTeams = false
       // console.log(this.showTeams)
     },
