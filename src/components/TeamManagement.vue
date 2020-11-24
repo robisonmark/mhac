@@ -73,7 +73,7 @@ export default {
     },
     selectedTeam: {
       get: function () {
-        if (this.$store.getters.userGroups !== 'Admin') {
+        if (this.$store.getters.userGroups[0] !== 'Admin') {
           return this.$store.getters.teams.find(team => {
             // HOLD TO TEST FOR ADMIN
             // const user = {
@@ -81,9 +81,11 @@ export default {
             //   slug: team.slug
             // }
             // this.$store.dispatch('setUser', user)
+            
             return team.slug === this.$store.getters.userGroups[0]
           })
         } else {
+          console.log("here admin", this.$store.getters.teams)
           return this.$store.getters.teams.find(team => {
             // HOLD TO TEST FOR ADMIN
             // const user = {
