@@ -193,7 +193,6 @@ export default {
       },
 
       set: function (newValue) {
-        console.log(newValue)
         this.initRoster()
       }
     },
@@ -217,6 +216,11 @@ export default {
         this.initLeveledRoster(newValue.season_team_id)
       }
     },
+    '$route.params.slug': {
+      handler(id){
+        this.initRoster()
+      }
+    },
     slug: 'initRoster'
     // 'roster.height': {
     //   deep: true,
@@ -237,11 +241,10 @@ export default {
 
     this.$root.$on('changeEdit', () => { this.edit = !this.edit })
   },
-
   methods: {
     initRoster () {
-      if (this.slug) {
-        api.getPlayers(this.slug).then(response => {
+      if (this.$route.params.slug) {
+        api.getPlayers(this.$route.params.slug).then(response => {
           this.roster = response.data
           this.fullRoster = _.cloneDeep(this.roster)
           console.log(this.roster)
@@ -291,9 +294,9 @@ export default {
     updatePlayers () {
       console.log('updatePlayers')
       this.updated.forEach(index => {
-        console.log(index)
+        // console.log(index)
         const playerId = this.roster[index].id
-        console.log(playerId)
+        // console.log(playerId)
         // api.updatePlayer(playerId, this.roster[index])
         //   .then(response => {
         //     console.log(response)
@@ -303,7 +306,7 @@ export default {
     save () {
       this.newPlayer.team_id = this.$store.state.user.team_id
       const playerJson = this.newPlayer
-      console.log(JSON.stringify(playerJson))
+      // console.log(JSON.stringify(playerJson))
       // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
 
       api.addPlayer(playerJson)

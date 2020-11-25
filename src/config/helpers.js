@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 
 function formatDate (date) {
+  console.log("formatDate", date)
   return format(new Date(date), CONSTANTS.date_format)
 }
 
