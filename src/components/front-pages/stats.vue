@@ -391,9 +391,9 @@ export default {
       return teams
     },
     levels () {
-      // const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
+      const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
       // console.log("levels", this.$store.state.seasons)
-      const levels = [...this.$store.state.seasons]
+      // const levels = [...this.$store.state.seasons]
       return levels
     },
     games () {
@@ -482,8 +482,10 @@ export default {
       if (game && self.filterBy.level.season_id === '') {
         // console.log("Updated", level.level === game.home_team.team_level )
         let level = self.levels.find(level => { return level.level === game.home_team.team_level })
-
-        self.setLvl(level)
+        if (level != undefined) {
+          self.setLvl(level)
+        }
+        
       }
     }
   },
@@ -492,15 +494,16 @@ export default {
       let data = {
         season_id: this.filterBy.level.season_id
       }
- 
-      api.getSeasonStats(data).then(response => {
-        if (response.data.length >= 1) {
-          this.message = false
-        } else {
-          this.message = 'Stats have not been provided for this team and this game.'
-        }
-        this.stats = response.data
-      })
+      if (this.filterBy.level.season_id) {
+        api.getSeasonStats(data).then(response => {
+          if (response.data.length >= 1) {
+            this.message = false
+          } else {
+            this.message = 'Stats have not been provided for this team and this game.'
+          }
+          this.stats = response.data
+        })
+      }
     },
     initStats (gameId, teamId) {
       if (gameId !== undefined && teamId === undefined) {
@@ -523,7 +526,7 @@ export default {
       })
     },
     setLvl (lvl) {
-      
+      console.log('setLevel', lvl)
       this.filterBy.level.season_id = lvl.season_id
       this.filterBy.level.level = lvl.level
       // this.showTeams = false
