@@ -363,7 +363,7 @@ export class api {
      * @param {string} slug - Team Slug
      * @return - JSON Object of players by team
     ***/
-  static async getSeasonTeams (slug, seasonid = null) {
+  static async getSeasonTeams (slug = null, seasonid = null) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -373,6 +373,10 @@ export class api {
     //     // console.log(user)
     //   })
     // }
+    slug = ''
+    if (slug !== null) {
+      slug = slug
+    }
     if (seasonid !== null) {
       slug = slug + '/' + seasonid
     }

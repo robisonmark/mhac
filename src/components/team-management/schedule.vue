@@ -68,7 +68,7 @@
               <td class="input-con">
                 <input type="date" v-model="data.game_date" />
               </td>
-              <td>
+              <td @click="save()">
                  <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
               </td>
               <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
@@ -89,7 +89,7 @@
               <td class="input-con">
                 <input type="date" v-model="newGame.game_date" />
               </td>
-              <td>
+              <td @click="save()">
                  <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
               </td>
               <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
@@ -196,9 +196,23 @@ export default {
     seasons () {
       return this.$store.state.seasons
     },
+    // selectOptions () {
+    //   return getSeasonTeams(this.newGame.season.season_id).filter(team => {
+    //     if (team.id !== this.$store.state.user.team_id) {
+    //       return team
+    //     }
+    //   })
+    // },
+    // getSeasonTeams (season_id) {
+    //   api.getSeasonTeams(season_id=season_id)
+    //     .then(response => {
+    //       return response.data
+    //     })
+    // },
+
     selectOptions () {
-      return this.$store.state.teams.filter(team => {
-        if (team.id !== this.$store.state.user.team_id) {
+      return this.$store.state.teamAssocLvl.filter(team => {
+        if (team.id !== this.$store.state.user.team_id && this.newGame.season.season_id === this.$store.state.teamAssocLvl.season_id) {
           return team
         }
       })
@@ -274,7 +288,7 @@ export default {
       let teamId = ''
       await api.getSeasonTeams(slug, this.newGame.season.season_id)
         .then(response => {
-          console.log(response.data)
+          // console.log(response.data)
           teamId = response.data.team_id
         })
       return teamId
