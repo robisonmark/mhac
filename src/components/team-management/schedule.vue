@@ -212,9 +212,15 @@ export default {
 
     selectOptions () {
       return this.$store.state.teamAssocLvl.filter(team => {
-        if (team.id !== this.$store.state.user.team_id && this.newGame.season.season_id === this.$store.state.teamAssocLvl.season_id) {
-          return team
+        console.log(team.team_id !== this.$store.state.user.team_id, team, this.$store.state.user.team_id)
+        // console.log(this.newGame.season.season_id, team.season_id)
+        
+          if ( this.newGame.season.season_id === team.season_id){
+              if (team.team_id !== this.$store.state.user.team_id) {
+            return team
+          }
         }
+      
       })
     },
     ...mapState(['slug'])

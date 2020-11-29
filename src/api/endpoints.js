@@ -373,15 +373,18 @@ export class api {
     //     // console.log(user)
     //   })
     // }
-    slug = ''
+    let team_slug = ''
     if (slug !== null) {
-      slug = slug
-    }
-    if (seasonid !== null) {
-      slug = slug + '/' + seasonid
+      if (seasonid !== null) {
+        team_slug = slug + '/' + seasonid
+      }
+    } else {
+      if (seasonid !== null) {
+        team_slug = seasonid
+      }
     }
     return robros({
-      url: '/getSeasonTeams/' + slug,
+      url: '/getSeasonTeams/' + team_slug,
       method: 'GET'
     })
   }
