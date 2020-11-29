@@ -50,7 +50,7 @@
           </tr>
           <tr>
             <td class="stat first">
-              <input type="number" min="0" v-model="newPlayer.player_number" @input="addToUpdateList(index)" />
+              <input type="number" min="0" v-model="newPlayer.player_number"  />
             </td>
             <td class="stat">
               <input type="text" v-model="newPlayer.first_name" />
@@ -203,6 +203,7 @@ export default {
       deep: true,
       handler (newValue) {
         const idx = this.added.indexOf(newValue)
+        // console.log("WatchNewPlayer", idx, newValue)
         if (idx >= 0) {
           this.added[idx] = newValue
         } else {
@@ -281,7 +282,7 @@ export default {
       return this.newPlayer
     },
     age (Birthday) {
-      console.log("here")
+
       Birthday = new Date(Birthday + 'T00:00:00')
       var ageDifMs = Date.now() - Birthday.getTime();
       var ageDate = new Date(ageDifMs); // miliseconds from epoch
@@ -313,6 +314,7 @@ export default {
       })
     },
     save () {
+      console.log(this.updated)
       if (this.updated.length > 0 ){
         this.updated.forEach(player => {
           // console.log("UpdatePlayer", player)
@@ -327,12 +329,14 @@ export default {
           })
         })
       }
-    
-      if (this.newPlayer != this.initNewPlayer()) {
-        console.log("save", this.newPlayer !== this.initNewPlayer(), this.newPlayer, this.initNewPlayer())
-        this.newPlayer.team_id = this.$store.state.user.team_id
-        const playerJson = this.newPlayer
-        // console.log(JSON.stringify(playerJson))
+      
+      console.log("added", this.added)
+      if (this.added.length > 1 || this.added[0].player_number !== "" ) {
+        this.added.forEach( player => {
+        // console.log("save", this.newPlayer !== this.initNewPlayer(), this.newPlayer, this.initNewPlayer())
+        player.team_id = this.$store.state.user.team_id
+        const playerJson = player
+        console.log(JSON.stringify(playerJson))
         // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
 
         api.addPlayer(playerJson)
@@ -343,10 +347,12 @@ export default {
             console.log(err)
           })
 
-        this.roster.push(this.newPlayer)
-        this.initNewPlayer()
+        
         // this.$root.$emit('saved')
         // this.$root.$off('save')
+        })
+      this.roster.push(this.newPlayer)
+      this.initNewPlayer()
       }
     }
   }
