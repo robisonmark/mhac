@@ -244,6 +244,7 @@ export default {
       return teams
     },
     levels () {
+      console.log("levels", this.$store.state.seasons)
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
     }
@@ -307,6 +308,7 @@ export default {
       // console.log(this.showTeams)
     },
     setLvl (lvl) {
+      console.log(lvl)
       this.filterBy.level.season_id = lvl.season_id
       this.filterBy.level.level = lvl.level
       // this.showTeams = false
