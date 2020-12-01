@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <header class="contentPad">
-      <h2>2020 - 2021 Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
+      <h2>{{this.$config.seasonYear}} Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
       <div class="buttonCon">
         <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
@@ -36,7 +36,7 @@
             <td>{{data.game_time}}</td>
             <td>{{data.game_date}}</td>
             <td>{{data.opponent.level_name}}</td>
-            <td></td>
+            <!-- <td></td> -->
             <!-- <td @click="toggleModal(data)"><font-awesome-icon  :icon="['far', 'edit']" class="icon" ></font-awesome-icon></td> -->
             <td @click="deleteGame(data, index)"><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td>
           </tr>
@@ -52,7 +52,30 @@
               <template v-else>Add New Game to Schedule</template>
             </td>
           </tr>
+
+          <tr v-else-if="addNew">
+            <td class="input-con">
+              <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
+            </td>
+            <td class="input-con">
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
+              </selectbox>
+            </td>
+            <td class="input-con">
+                <input type="time" v-model="newGame.game_time" />
+              </td>
+            <td class="input-con">
+              <input type="date" v-model="newGame.game_date" />
+            </td>
+            <td class="input-con">
+              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox>
+            </td>
+            <td @click="save()">
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td>
+          </tr>
         </template>
+
         <template slot="tbody" v-if="edit">
           <tr v-for="(data, index) in schedule" :key="index">
             <td class="input-con">
@@ -68,14 +91,20 @@
             <td class="input-con">
               <input type="date" v-model="data.game_date" />
             </td>
-            <td>
+            <td @click="save()">
                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
             </td>
+            <!-- <td class="input-con">
+              <input type="date" v-model="data.game_date" />
+            </td>
+            <td>
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td> -->
             <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
           </tr>
 
-            <tr >
-          <!-- <tr > -->
+          <tr >
+            <!-- <tr > -->
             <td class="input-con">
               <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
             </td>
@@ -89,9 +118,15 @@
             <td class="input-con">
               <input type="date" v-model="newGame.game_date" />
             </td>
-            <td>
+            <td @click="save()">
                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
             </td>
+            <!-- <td class="input-con">
+              <input type="date" v-model="newGame.game_date" />
+            </td>
+            <td>
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td> -->
             <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
           </tr>
         </template>
@@ -196,9 +231,25 @@ export default {
     seasons () {
       return this.$store.state.seasons
     },
+    // selectOptions () {
+    //   return getSeasonTeams(this.newGame.season.season_id).filter(team => {
+    //     if (team.id !== this.$store.state.user.team_id) {
+    //       return team
+    //     }
+    //   })
+    // },
+    // getSeasonTeams (season_id) {
+    //   api.getSeasonTeams(season_id=season_id)
+    //     .then(response => {
+    //       return response.data
+    //     })
+    // },
+
     selectOptions () {
+      // update to getter and setter
       return this.$store.getters.seasonTeams.filter(team => {
         if (team.id !== this.$store.state.user.team_id) {
+          team.team_name = team.team_name + ' ' + team.level_name
           return team
         }
       })
@@ -229,6 +280,10 @@ export default {
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
+    addNewGame () {
+      this.schedule.push(this.newGame)
+    },
+
     deleteGame (data, id) {
       // console.log(id, this.schedule[id])
       api.removeGame({ game_id: this.schedule[id].game_id }).then(response => {

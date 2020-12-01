@@ -612,7 +612,6 @@ export default {
         this.initSchedule(undefined, newValue)
       }
     }
-
   },
   computed: {
     seasons () {

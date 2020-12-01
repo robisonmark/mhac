@@ -438,9 +438,9 @@ export class api {
     })
   }
 
-  static async sendStats (body, game_id, team_id) {
+  static async sendStats (body, gameId, teamId) {
     return robros({
-      url: '/addFileGameStats/' + game_id + '/' + team_id,
+      url: '/addFileGameStats/' + gameId + '/' + teamId,
       method: 'POST',
       data: body
     })

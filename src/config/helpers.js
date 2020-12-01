@@ -22,7 +22,8 @@ const CONSTANTS = {
   timestamp: 'M/d/yyyy - h:mm:ss a',
   date_format: 'MM/dd/yyyy',
   formatDate: formatDate,
-  formatTime: formatTime
+  formatTime: formatTime,
+  seasonYear: '2020 - 2021'
 }
 
 export default { CONSTANTS }

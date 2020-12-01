@@ -13,7 +13,7 @@
       <div class="col-12">
         <div class="row filter-bar">
           <div class="col-md-4">
-            <h2>2020 - 2021 Stats</h2>
+            <h2>2019 - 2020 Stats</h2>
           </div>
           <div class="col-md-6">
             <div class="filters">
@@ -72,16 +72,16 @@
       <div class="col content" align="center" v-else>
         <table class="public-stats-table">
           <thead>
-            <tr class="rowOne">
+            <tr>
               <th colspan="4" v-if="compositStats"></th>
               <th colspan="3" v-else></th>
               <th colspan="3" class="light">2PT</th>
               <th colspan="3" class="dark">3PT</th>
               <th colspan="3" class="light">FT</th>
               <th colspan="3" class="dark">Rebounds</th>
-              <th colspan="6"></th>
+              <th colspan="4"></th>
             </tr>
-            <tr class="rowTwo">
+            <tr>
               <th @click="sortTable('player_number')" class="nowrap" :class="[currentSort === 'player_number' ? 'sort' : '']">
                 # <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
@@ -95,21 +95,25 @@
                 Team <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
 
+              <!-- <th class="stat" @click="sortTable('player_stats', 'game_played')" :class="[currentSort === 'player_stats' && currentNested === 'game_played' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              </th> -->
+
               <!-- 2PT -->
-              <th class="stat" @click="sortTable('player_stats', '2PA')" :class="[currentSort === 'player_stats' && currentNested === '2PA' ? 'sort' : '']">A
+              <th class="stat" @click="sortTable('player_stats', 'FGA')" :class="[currentSort === 'player_stats' && currentNested === 'FGA' ? 'sort' : '']">A
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats','2PM')" :class="[currentSort === 'player_stats' && currentNested === '2PM' ? 'sort' : '']">M
+              <th class="stat" @click="sortTable('player_stats','FGM')" :class="[currentSort === 'player_stats' && currentNested === 'FGM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <th class="stat" @click="sortTable('player_stats','2P%')" :class="[currentSort === 'player_stats' && currentNested === '2P%' ? 'sort' : '']">%
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <!-- 3PT -->
-              <th class="stat" @click="sortTable('player_stats', '3PA')" :class="[currentSort === 'player_stats' && currentNested === '3PA' ? 'sort' : '']">A
+              <th class="stat" @click="sortTable('player_stats', 'ThreePA')" :class="[currentSort === 'player_stats' && currentNested === '3PA' ? 'sort' : '']">A
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', '3PM')" :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
+              <th class="stat" @click="sortTable('player_stats', 'ThreePM')" :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <th class="stat" @click="sortTable('player_stats', '3P%')" :class="[currentSort === 'player_stats' && currentNested === '3P%' ? 'sort' : '']">%
@@ -163,6 +167,7 @@
           </thead>
           <tbody>
             <tr v-for="(player, index) in stats" :key="index">
+
               <td v-html="player.player_number" class="nowrap"></td>
               <td v-html="player.player_first_name" class="nowrap"></td>
               <td v-html="player.player_last_name" class="nowrap"></td>
@@ -170,16 +175,16 @@
               <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
                 {{stat}}
               </td> -->
-
+             <!-- <td class="stat light" v-html="player.player_stats['game_played']"></td> -->
               <!-- 2PT -->
-              <td class="stat light" v-html="player.player_stats['2PA']"></td>
-              <td class="stat light" v-html="player.player_stats['2PM']"></td>
-              <td class="stat light">{{percentage(player.player_stats['2PA'], player.player_stats['2PM'])}}</td>
+              <td class="stat light" v-html="player.player_stats['FGA']"></td>
+              <td class="stat light" v-html="player.player_stats['FGM']"></td>
+              <td class="stat light">{{percentage(player.player_stats['FGA'], player.player_stats['FGM'])}}</td>
 
               <!-- 3PT -->
-              <td class="stat dark" v-html="player.player_stats['3PA']"></td>
-              <td class="stat dark" v-html="player.player_stats['3PM']"></td>
-              <td class="stat dark">{{percentage(player.player_stats['3PA'], player.player_stats['3PM'])}}</td>
+              <td class="stat dark" v-html="player.player_stats['ThreePA']"></td>
+              <td class="stat dark" v-html="player.player_stats['ThreePM']"></td>
+              <td class="stat dark">{{percentage(player.player_stats['ThreePA'], player.player_stats['ThreePM'])}}</td>
 
               <!-- FT -->
               <td class="stat light" v-html="player.player_stats.FTA"></td>
@@ -211,7 +216,6 @@
 // api
 import { api } from '../../api/endpoints.js'
 import _ from 'lodash'
-
 // mixins
 import { root } from '../../mixins/root'
 
@@ -377,38 +381,38 @@ export default {
   mixins: [root],
   computed: {
     teams () {
-      const teams = [{ team_id: '', team_name: 'All Teams' }, ...this.$store.state.teams]
-      // const teams = [
-      //   { id: this.filterBy.game.home_team.id, team_name: this.filterBy.game.home_team.name },
-      //   { id: this.filterBy.game.away_team.id, team_name: this.filterBy.game.away_team.name }
-      // ]
+      // let teams = [{id: '', team_name: 'All Teams'}, ...this.$store.state.teams]
+      const teams = [
+        { id: this.filterBy.game.home_team.id, team_name: this.filterBy.game.home_team.name },
+        { id: this.filterBy.game.away_team.id, team_name: this.filterBy.game.away_team.name }
+      ]
+
       return teams
     },
     levels () {
-      // const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
-      const levels = [...this.$store.state.seasons]
+      const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
+      // console.log("levels", this.$store.state.seasons)
+      // const levels = [...this.$store.state.seasons]
       return levels
     },
     games () {
-      const gameFilter = [{ game_id: '', home_team: { level_name: 'All Levels' }, away_team: {}, teams: 'All Games' }]
-      console.log(' Full Schedule', this.$store.state.fullSchedule)
-      this.$store.state.fullSchedule.forEach(game => {
-        console.log('game', game)
-        game.teams = game.home_team.team_name + ' vs. ' + game.away_team.team_name + ' - ' + game.home_team.level_name
+      const gameFilter = [{ game_id: '', home_team: { team_name: '', level_name: 'All Levels' }, teams: 'All Games' }]
 
+      this.$store.state.fullSchedule.forEach(game => {
+        game.teams = game.home_team.team_name + ' vs. ' + game.away_team.team_name + ' - ' + game.home_team.level_name
         // delete game.home_team
         // delete game.away_team
         delete game.game_time
         delete game.schedule_id
         delete game.final_score
-
+        // console.log("game func", game)
         gameFilter.push(game)
       })
-      console.log(gameFilter)
       return gameFilter.filter((game) => {
-        console.log('Game filter', game.home_team) // , this.filterBy.level.level)
         if (game.home_team.level_name.toLowerCase().match(this.filterBy.level.level.toLowerCase())) {
           return game.home_team.level_name.toLowerCase().match(this.filterBy.level.level.toLowerCase())
+        //   return game.home_team.team_level.toLowerCase().match(this.filterBy.level.level.toLowerCase())
+        // game
         } else if (this.filterBy.level.level === 'All Levels') {
           return game
         }
@@ -448,15 +452,12 @@ export default {
     }
   },
   created () {
-    // console.log("created", this.$route.query.game, this.$route.query.home_team )
-    if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') &&
-        Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
+    if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') && Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
       this.initStats(this.$route.query.game, this.$route.query.home_team)
     } else if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game')) {
-      this.initStats(this.$route.query.game)
+      this.initStats(this.$route.query.game.game_id)
     } else {
     }
-
     this.$root.$on('close', payload => {
       // this.showDatePicker = false
       // this.showTeams = false
@@ -464,20 +465,19 @@ export default {
   },
   updated () {
     const self = this
-    if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') &&
-    Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
+    if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') && Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
       const game = self.games.find(game => {
-        console.log('udpated call', game)
-        // return game.game_id === self.$route.query.game
-        return game
+        return game.game_id === self.$route.query.game
       })
       if (game && self.filterBy.game.game_id === '') {
         self.setGame(game)
       }
-
       if (game && self.filterBy.level.season_id === '') {
-        const level = self.levels.find(level => { return level.level === game.home_team.level_name })
-        self.setLvl(level)
+        const level = self.levels.find(level => { return level.level === game.home_team.team_level })
+        // eslint-disable-next-line eqeqeq
+        if (level != undefined) {
+          self.setLvl(level)
+        }
       }
     }
   },
@@ -486,46 +486,46 @@ export default {
       const data = {
         season_id: this.filterBy.level.season_id
       }
-      api.getSeasonStats(data).then(response => {
-        if (response.data.length >= 1) {
-          this.message = false
-        } else {
-          this.message = 'Stats have not been provided for this team and this game.'
-        }
-
-        this.stats = response.data
-      })
+      if (this.filterBy.level.season_id) {
+        api.getSeasonStats(data).then(response => {
+          if (response.data.length >= 1) {
+            this.message = false
+          } else {
+            this.message = 'Stats have not been provided for this team and this game.'
+          }
+          this.stats = response.data
+        })
+      }
     },
     async initStats (gameId, teamId) {
+      // TODO: Merge Conflict may have broken this. look into this call
       if (gameId !== undefined && teamId === undefined) {
         teamId = this.games.find(game => { return game.game_id === gameId })
-        teamId = teamId.home_team.team_id
+        teamId = teamId.home_team.id
         this.filterBy.team = _.cloneDeep(this.filterBy.game.home_team)
-      }
 
-      await api.getGameResults(gameId, teamId).then(response => {
-        console.log('api response', response.data)
-        if (response.data.player_stats.length >= 1) {
-          this.message = false
-        } else {
-          this.message = 'Stats have not been provided for this team and this game.'
-        }
-        this.compositStats = false
-        this.stats = response.data.player_stats
-        console.log(this.stats)
-      })
+        await api.getGameResults(gameId, teamId).then(response => {
+          console.log('api response', response.data)
+          if (response.data.player_stats.length >= 1) {
+            this.message = false
+          } else {
+            this.message = 'Stats have not been provided for this team and this game.'
+          }
+          this.compositStats = false
+          this.stats = response.data.player_stats
+        })
+      }
     },
     setLvl (lvl) {
+      console.log('setLevel', lvl)
       this.filterBy.level.season_id = lvl.season_id
       this.filterBy.level.level = lvl.level
       // this.showTeams = false
-      // console.log(this.showTeams)
     },
     setTeam (team) {
       this.filterBy.team.id = team.id
       this.filterBy.team.name = team.team_name
       // this.showTeams = false
-      // console.log(this.showTeams)
     },
     setGame (game) {
       this.filterBy.game.game_id = game.game_id
@@ -533,7 +533,6 @@ export default {
       this.filterBy.game.home_team = { id: game.home_team.team_id, name: game.home_team.team_name }
       this.filterBy.game.away_team = { id: game.away_team.team_id, name: game.away_team.team_name }
       // this.showTeams = false
-      // console.log(this.showTeams)
     },
     percentage (attempted, made) {
       if (attempted >= 1) {
@@ -563,7 +562,6 @@ export default {
         }
         this.currentSort = s
       }
-
       this.stats.sort((a, b) => {
         let modifier = 1
         if (nested) {
@@ -592,7 +590,7 @@ export default {
 <style scoped lang="less">
 @import '../../assets/less/utils/variables.less';
 .page-styles{
-  // min-height: 100vh;
+  min-height: 100vh;
   background-color: #fff;
   // margin-right: 1rem;
   // margin-left: 1rem;
@@ -611,16 +609,13 @@ export default {
 .content {
   padding: 2rem 1rem;
   overflow: auto;
-  height: calc(100vh - 13.5rem);
 }
-
 h2 {
   font-family: @open-sans;
   font-size: 1.1rem;
   font-weight: 600;
   font-style: italic;
 }
-
 .custom-select {
   display: inline-block;
   position: relative;
@@ -630,14 +625,12 @@ h2 {
   padding-right: 25px;
   white-space: nowrap;
   margin: 0 1rem;
-
   &[disabled='disabled'] {
     color: #bbb;
      &:before {
        border-color: #bbb transparent transparent transparent
      }
   }
-
   &:before {
     content: '';
     display: block;
@@ -651,7 +644,6 @@ h2 {
     right: 0;
     top: 8px;
   }
-
   &:after {
     content: '';
     display: block;
@@ -678,7 +670,6 @@ h2 {
   box-shadow: 1px 2px 4px #0C4B75;
   max-height: 45vh;
   overflow-y: auto;
-
   .option {
     padding: .2rem .5rem;
     width: 100%;
@@ -706,7 +697,6 @@ h2 {
   // overflow-x: auto;
   width: 100%;
 }
-
 tbody {
   tr {
     border-bottom: 1px solid #707070;
@@ -735,7 +725,6 @@ tbody {
     }
   }
 }
-
 .stat {
   text-align: center;
 }
@@ -743,17 +732,6 @@ th {
   font-family: @lato;
   font-weight: 200;
   font-size: .8rem;
-  position: sticky;
-  z-index: 2;
-  background-color: #fff;
-
-  .rowOne & {
-    top: -2rem;
-    height: 1rem;
-  }
-  .rowTwo & {
-    top: -.8rem;
-  }
   cursor: pointer;
   .icon {
     display: none;
