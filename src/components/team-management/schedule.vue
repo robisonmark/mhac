@@ -42,59 +42,59 @@
           </tr>
 
           <tr v-if="!newGame.season.season_id">
-            <td colspan="7" align="center" class="add-button">Please Select a level to begin adding games
+            <td colspan="7" align="center" class="add-button">Please select a level to begin adding games
             </td>
           </tr>
 
-            <tr v-else-if="!addNew" @click="addTo">
-              <td colspan="7" align="center" class="add-button">
-                <template v-if="$route.name === 'roster'">Edit Roster</template>
-                <template v-else>Add New Game to Schedule</template>
+          <tr v-else-if="!addNew" @click="addTo">
+            <td colspan="7" align="center" class="add-button">
+              <template v-if="$route.name === 'roster'">Edit Roster</template>
+              <template v-else>Add New Game to Schedule</template>
+            </td>
+          </tr>
+        </template>
+        <template slot="tbody" v-if="edit">
+          <tr v-for="(data, index) in schedule" :key="index">
+            <td class="input-con">
+              <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</div>
+            </td>
+            <td class="input-con">
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="data.opponent">
+              </selectbox>
+            </td>
+            <td class="input-con">
+                <input type="time" v-model="data.game_time" />
               </td>
-            </tr>
-          </template>
-          <template slot="tbody" v-if="edit">
-            <tr v-for="(data, index) in schedule" :key="index">
-              <td class="input-con">
-                <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</div>
-              </td>
-              <td class="input-con">
-                <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="data.opponent">
-                </selectbox>
-              </td>
-              <td class="input-con">
-                  <input type="time" v-model="data.game_time" />
-                </td>
-              <td class="input-con">
-                <input type="date" v-model="data.game_date" />
-              </td>
-              <td>
-                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
-              </td>
-              <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
-            </tr>
+            <td class="input-con">
+              <input type="date" v-model="data.game_date" />
+            </td>
+            <td>
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td>
+            <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
+          </tr>
 
-             <tr >
-            <!-- <tr > -->
-              <td class="input-con">
-                <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
+            <tr >
+          <!-- <tr > -->
+            <td class="input-con">
+              <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
+            </td>
+            <td class="input-con">
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
+              </selectbox>
+            </td>
+            <td class="input-con">
+                <input type="time" v-model="newGame.game_time" />
               </td>
-              <td class="input-con">
-                <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
-                </selectbox>
-              </td>
-              <td class="input-con">
-                  <input type="time" v-model="newGame.game_time" />
-                </td>
-              <td class="input-con">
-                <input type="date" v-model="newGame.game_date" />
-              </td>
-              <td>
-                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
-              </td>
-              <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
-            </tr>
-          </template>
+            <td class="input-con">
+              <input type="date" v-model="newGame.game_date" />
+            </td>
+            <td>
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td>
+            <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
+          </tr>
+        </template>
         <!-- </template> -->
       </editTable>
     </div>
@@ -197,7 +197,7 @@ export default {
       return this.$store.state.seasons
     },
     selectOptions () {
-      return this.$store.state.teams.filter(team => {
+      return this.$store.getters.seasonTeams.filter(team => {
         if (team.id !== this.$store.state.user.team_id) {
           return team
         }
@@ -213,20 +213,58 @@ export default {
       }
     },
     '$route.params.slug': {
-      handler(newValue){
+      handler (newValue) {
         this.initSchedule(undefined, newValue)
       }
-    },
+    }
 
   },
   created () {
     this.$root.$on('save', payload => {
       this.save()
     })
+
     this.initSchedule(undefined, this.$route.params.slug)
+
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
+    deleteGame (data, id) {
+      // console.log(id, this.schedule[id])
+      api.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
+      // api.removeGame(this.schedule[id].game_id).then(response => {
+        this.schedule.splice(id, 1)
+      })
+    },
+
+    async getSeasonTeamId (slug) {
+      // move this to vuex ?
+      let teamId = ''
+      await api.getSeasonTeams(slug, this.newGame.season.season_id)
+        .then(response => {
+          console.log(response.data)
+          teamId = response.data.team_id
+        })
+      return teamId
+    },
+
+    homeAwayDisplay (game) {
+      this.newGame.host = !this.newGame.host
+    },
+
+    initNewGame (currSeason = '') {
+      this.season = currSeason
+      this.newGame = {
+        host: true,
+        opponent: '',
+        game_time: '',
+        game_date: '',
+        season: this.season,
+        neutral_site: false
+        // 'uuid': string,
+      }
+    },
+
     initSchedule (season, slug) {
       api.getSchedule(season, slug).then(response => {
         const gameArr = []
@@ -255,30 +293,11 @@ export default {
         this.schedule = gameArr
       })
     },
-    initNewGame (currSeason = '') {
-      this.season = currSeason
-      this.newGame = {
-        host: true,
-        opponent: '',
-        game_time: '',
-        game_date: '',
-        season: this.season,
-        neutral_site: false
-        // 'uuid': string,
-      }
+
+    remove_game () {
+      console.log('delete pressed')
     },
-    homeAwayDisplay (game) {
-      this.newGame.host = !this.newGame.host
-    },
-    async getSeasonTeamId (slug) {
-      let teamId = ''
-      await api.getSeasonTeams(slug, this.newGame.season.season_id)
-        .then(response => {
-          console.log(response.data)
-          teamId = response.data.team_id
-        })
-      return teamId
-    },
+
     async save (addAnother = false) {
       const gameJson = {
         home_team: '',
@@ -312,19 +331,10 @@ export default {
       // this.initNewGame(this.newGame.season.season_id)
       // this.$root.$emit('saved')
     },
-    remove_game () {
-      console.log('delete pressed')
-    },
+
     toggleModal (id) {
       console.log('toggleModal', id)
       this.showModal = !this.showModal
-    },
-    deleteGame (data, id) {
-      // console.log(id, this.schedule[id])
-      api.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
-      // api.removeGame(this.schedule[id].game_id).then(response => {
-        this.schedule.splice(id, 1)
-      })
     }
   }
 }

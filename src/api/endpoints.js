@@ -1,5 +1,8 @@
 /***
  * This creates the api class that is called to create out http requests
+ * TODO: Update Pattern Used to be Class Based By Category
+ * TODO: Create a function for chaining params
+ * TODO: Better Parameter Chaining
 ***/
 // import axios from 'axios'
 import { robros } from './base'
@@ -363,7 +366,7 @@ export class api {
      * @param {string} slug - Team Slug
      * @return - JSON Object of players by team
     ***/
-  static async getSeasonTeams (slug, seasonid = null) {
+  static async getSeasonTeams (slug = '', seasonid = null) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -427,21 +430,19 @@ export class api {
     })
   }
 
-  static async removeGame(body) {
+  static async removeGame (body) {
     return robros({
       url: '/deleteGame',
       method: 'POST',
       data: body
     })
-
   }
 
-  static async sendStats(body, game_id, team_id) {
+  static async sendStats (body, game_id, team_id) {
     return robros({
       url: '/addFileGameStats/' + game_id + '/' + team_id,
       method: 'POST',
       data: body
     })
   }
-  
 }
