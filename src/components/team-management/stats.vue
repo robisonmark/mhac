@@ -85,10 +85,10 @@
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.period_scores[index].home_score " />
                 <template v-else>{{period.home_score}}</template>
               </td>
-              <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter">
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.homeTeam.quarters[key]" />
-                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  -->
-              <td class="finalScore text-center">{{gameScore.final_scores.home_final}}</td>
+              <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter"> -->
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.home_final" />
+                <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  --> 
+              <td v-else class="finalScore text-center">{{gameScore.final_scores.home_final}}</td>
             </tr>
             <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).main_color}">
               <td class="teamLogo">
@@ -104,10 +104,10 @@
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.period_scores[index].away_score" />
                 <template v-else>{{period.away_score}}</template>
               </td>
-              <!-- <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter">
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.awayTeam.quarters[key]" />
-                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template> -->
-              <td class="finalScore text-center">{{gameScore.final_scores.away_final}}</td>
+              <!-- <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter"> -->
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.away_final" />
+                <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template> -->
+              <td v-else class="finalScore text-center">{{gameScore.final_scores.away_final}}</td>
             </tr>
           </tbody>
         </table>
