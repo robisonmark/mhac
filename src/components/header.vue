@@ -7,6 +7,7 @@
           <img class="logo" src="/static/color-team-logos/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
         </router-link>
       </div>
+      <div class="flex-spacer"></div>
       <div class="right">
         <div class="top-hat">
           <nav class="schoolNav">
@@ -15,6 +16,7 @@
             </div>
             <div class="schoolMenuCon" :class="[collapse === true ? 'collapse' : 'open']">
               <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
+                <li><div class="flex-spacer"></div></li>
                 <li>
                   <a href="http://www.wkytrailblazers.com/">
                     <img src="/static/color-team-logos/blazers.png" alt="Link to Team Site" />
@@ -222,6 +224,14 @@ export default {
 <style scoped lang="less">
   @import '../assets/less/utils/variables.less';
   @import '../assets/less/utils/breakpoints.less';
+  .team .con-logo {
+    left: 1rem;
+  }
+
+  .flex-spacer {
+    flex-grow: 1;
+  }
+
   header {
     position: sticky;
     top: 0;
@@ -244,6 +254,10 @@ export default {
       justify-content: center;
       align-items: center;
       padding: 0 6rem 0 0rem;
+      position: absolute;
+      height: 7rem;
+      z-index: 2;
+
       &:before {
         content: '';
         display: block;
