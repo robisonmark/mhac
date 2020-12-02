@@ -25,7 +25,12 @@ import admin from '@/components/admin'
 // import login from '@/components/admin/login'
 import adminTournament from '@/components/admin/tournament'
 
+// Config Helpers
+import config from '@/config/helpers'
+
 import { store } from '../store/index'
+
+const $config = config.CONSTANTS
 
 Vue.use(Router)
 
@@ -89,7 +94,7 @@ export const router = new Router({
       meta: {
         requiresAuth: false,
         section: 'public',
-        title: '2019-2020 Schedule | Midsouth Homeschool Athletics'
+        title: `${$config.seasonYear} Schedule | Midsouth Homeschool Athletics`
       }
     },
     {
@@ -99,7 +104,7 @@ export const router = new Router({
       meta: {
         requiresAuth: false,
         section: 'public',
-        title: '2019-2020 Stats | Midsouth Homeschool Athletics'
+        title: `${$config.seasonYear} Stats | Midsouth Homeschool Athletics`
       }
     },
     {
@@ -139,7 +144,8 @@ export const router = new Router({
       component: TeamManagement,
       meta: {
         requiresAuth: true,
-        section: 'team'
+        section: 'team',
+        title: 'Team Management | Midsouth Homeschool Athletics'
       },
       children: [
         {
@@ -148,7 +154,8 @@ export const router = new Router({
           component: teamhome,
           meta: {
             requiresAuth: true,
-            section: 'team'
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         },
         {
@@ -157,7 +164,8 @@ export const router = new Router({
           component: roster,
           meta: {
             requiresAuth: true,
-            section: 'team'
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         },
         {
@@ -166,7 +174,8 @@ export const router = new Router({
           component: schedule,
           meta: {
             requiresAuth: true,
-            section: 'team'
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         },
         {
@@ -175,7 +184,8 @@ export const router = new Router({
           component: profile,
           meta: {
             requiresAuth: true,
-            section: 'team'
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         },
         {
@@ -184,7 +194,8 @@ export const router = new Router({
           component: gamestats,
           meta: {
             requiresAuth: true,
-            section: 'team'
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         }
       ]

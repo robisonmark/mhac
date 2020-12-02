@@ -22,19 +22,17 @@
             </div>
           </template>
         </div>
-        <div class="col-3">
-          <nav class="table-of-contents jump-links" v-stickBottom>
-            <ul>
-              <li>Eligibility
-                <ul>
-                  <li>Definition</li>
-                  <li>Basic Rules</li>
-                </ul>
-              </li>
-              <li>Registration</li>
-            </ul>
-          </nav>
-        </div>
+        <nav class="col-3 table-of-contents jump-links">
+          <ul>
+            <li>Eligibility
+              <ul>
+                <li>Definition</li>
+                <li>Basic Rules</li>
+              </ul>
+            </li>
+            <li>Registration</li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
@@ -160,13 +158,17 @@ h3{
 }
 
 .table-of-contents {
-  position: fixed;
+  position: sticky;
+  top: 9rem;
+  height: 100%;
+  display: flex;
   &:before {
       content: '';
-      position: absolute;
+      // position: absolute;
       width: 1px;
       height: 51vh;
-      display: inline-block;
+      display: flex;
+      align-items: flex-start;
       background: #2784C3;
   }
   ul {
