@@ -376,9 +376,12 @@ export class api {
     //     // console.log(user)
     //   })
     // }
-    if (seasonid !== null) {
+    if (slug !== '' && seasonid !== null) {
       slug = slug + '/' + seasonid
+    } else if (slug === '' && seasonid !== null) {
+      slug = seasonid
     }
+    
     return robros({
       url: '/getSeasonTeams/' + slug,
       method: 'GET'
