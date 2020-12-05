@@ -86,9 +86,9 @@
                 <template v-else>{{period.home_score}}</template>
               </td>
               <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter"> -->
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.home_final" />
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.home_score" />
                 <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  --> 
-              <td v-else class="finalScore text-center">{{gameScore.final_scores.home_final}}</td>
+              <td v-else class="finalScore text-center">{{gameScore.final_scores.home_score}}</td>
             </tr>
             <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).main_color}">
               <td class="teamLogo">
@@ -105,9 +105,9 @@
                 <template v-else>{{period.away_score}}</template>
               </td>
               <!-- <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter"> -->
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.away_final" />
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.away_score" />
                 <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template> -->
-              <td v-else class="finalScore text-center">{{gameScore.final_scores.away_final}}</td>
+              <td v-else class="finalScore text-center">{{gameScore.final_scores.away_score}}</td>
             </tr>
           </tbody>
         </table>
@@ -517,8 +517,8 @@ export default {
       // },
       gameScore: {
         final_scores: {
-          home_final: 0,
-          away_final: 0
+          home_score: 0,
+          away_score: 0
         },
         period_scores: [
           {
@@ -573,23 +573,23 @@ export default {
     'gameScore.period_scores': {
       handler (newValue) {
         console.log('here')
-        this.gameScore.final_scores.home_final = 0
+        this.gameScore.final_scores.home_score = 0
         this.gameScore.period_scores.forEach(quarter => {
-          this.gameScore.final_scores.home_final += isNaN(parseInt(quarter.home_score)) ? parseInt(0) : parseInt(quarter.home_score)
+          this.gameScore.final_scores.home_score += isNaN(parseInt(quarter.home_score)) ? parseInt(0) : parseInt(quarter.home_score)
         })
 
-        this.gameScore.final_scores.away_final = 0
+        this.gameScore.final_scores.away_score = 0
         this.gameScore.period_scores.forEach(quarter => {
-          this.gameScore.final_scores.away_final += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
+          this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
         })
       },
       deep: true
     },
     'gameScore.period_scores.away_score': {
       handler (newValue) {
-        this.gameScore.final_scores.away_final = 0
+        this.gameScore.final_scores.away_score = 0
         this.gameScore.period_scores.forEach(quarter => {
-          this.gameScore.final_scores.away_final += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
+          this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
         })
       },
       deep: true
@@ -752,8 +752,8 @@ export default {
       await api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
         this.newGameStats = response.data
         if (this.newGameStats.final_scores.home_score !== null) {
-          this.gameScore.final_scores.home_final = this.newGameStats.final_scores.home_score
-          this.gameScore.final_scores.away_final = this.newGameStats.final_scores.away_score
+          this.gameScore.final_scores.home_score = this.newGameStats.final_scores.home_score
+          this.gameScore.final_scores.away_score = this.newGameStats.final_scores.away_score
         }
         if (this.newGameStats.game_scores !== null) {
           this.gameScore.period_scores = this.newGameStats.game_scores
