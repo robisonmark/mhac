@@ -448,4 +448,22 @@ export class api {
       data: body
     })
   }
+
+  static async getActiveYear () {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    
+    return robros({
+      url: '/getActiveYear',
+      method: 'GET'
+    })
+  }
+
 }
