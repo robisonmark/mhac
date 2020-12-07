@@ -495,26 +495,6 @@ export default {
       currentSort: '',
       currentSortDir: 'asc',
       edit: false,
-      // gameScore: {
-      //   homeTeam: {
-      //     quarters: [
-      //       '',
-      //       '',
-      //       '',
-      //       ''
-      //     ],
-      //     final: 0
-      //   },
-      //   awayTeam: {
-      //     quarters: [
-      //       '',
-      //       '',
-      //       '',
-      //       ''
-      //     ],
-      //     final: 0
-      //   }
-      // },
       gameScore: {
         final_scores: {
           home_score: 0,
@@ -572,25 +552,30 @@ export default {
     },
     'gameScore.period_scores': {
       handler (newValue) {
-        console.log('here')
-        this.gameScore.final_scores.home_score = 0
-        this.gameScore.period_scores.forEach(quarter => {
-          this.gameScore.final_scores.home_score += isNaN(parseInt(quarter.home_score)) ? parseInt(0) : parseInt(quarter.home_score)
-        })
+        if (this.gameScore.final_scores.home_score === 0) {
+          this.gameScore.final_scores.home_score = 0
+          this.gameScore.period_scores.forEach(quarter => {
+            this.gameScore.final_scores.home_score += isNaN(parseInt(quarter.home_score)) ? parseInt(0) : parseInt(quarter.home_score)
+          })
+        }
 
-        this.gameScore.final_scores.away_score = 0
-        this.gameScore.period_scores.forEach(quarter => {
-          this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
-        })
+        if ( this.gameScore.final_scores.away_score === 0 ){
+          this.gameScore.final_scores.away_score = 0
+          this.gameScore.period_scores.forEach(quarter => {
+            this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
+          })
+        }
       },
       deep: true
     },
     'gameScore.period_scores.away_score': {
       handler (newValue) {
-        this.gameScore.final_scores.away_score = 0
-        this.gameScore.period_scores.forEach(quarter => {
-          this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
-        })
+        if (this.gameScore.final_scores.away_score === 0 ) {
+          this.gameScore.final_scores.away_score = 0
+          this.gameScore.period_scores.forEach(quarter => {
+            this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
+          })
+        } 
       },
       deep: true
     },
@@ -641,6 +626,7 @@ export default {
   created () {
     this.initSchedule(undefined, this.$route.params.slug)
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
+    this.$root.$on('initNewGameStats', (team_id) => { this.initNewGameStats(team_id) })
   },
   methods: {
     initSchedule (level, team) {
@@ -749,6 +735,7 @@ export default {
       this.boxscore = false
     },
     async initNewGameStats (rosterId) {
+      console.log("Here")
       await api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
         this.newGameStats = response.data
         if (this.newGameStats.final_scores.home_score !== null) {
