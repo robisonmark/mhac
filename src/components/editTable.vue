@@ -68,7 +68,7 @@
 
                 <!-- <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span> -->
               </td>
-              <td v-else-if="field.field_name === 'actions'" align="right" width="1%">
+              <td v-else-if="field.field_name === 'actions'" align="right" width="1%" :key="index">
                 <font-awesome-icon :icon="['fas', 'save']" class="icon" @click="savedata"></font-awesome-icon>
               </td>
               <!-- <td></td> -->

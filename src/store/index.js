@@ -108,7 +108,6 @@ const actions = {
 
   async setSeasons (context, payload) {
     await api.getCurrentSeasons().then(response => {
-      console.log(response)
       context.commit('set_seasons', response.data)
     })
   },
@@ -161,9 +160,10 @@ const actions = {
       context.commit('set_fullSchedule', fixedData)
     })
   },
+
   async setSeasonTeams (context) {
     await api.getSeasonTeams().then(response => {
-      context.commit('set_teams', response.data)
+      context.commit('set_seasonTeams', response.data)
     })
   },
   load (context) {

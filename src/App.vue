@@ -109,7 +109,9 @@ export default {
   }
  .team {
     background-color: #CFCDCD;
-    overflow: auto;
+    overflow: hidden;
+    margin: 0;
+    background-attachment: fixed;
   }
   .public {
     min-height: 100vh;

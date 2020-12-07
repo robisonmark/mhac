@@ -21,36 +21,36 @@
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
         <template slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
-            
+
             <td class="stat first">
-              <input type="number" min="0" v-model="player.player_number" @input="addToUpdateList(index)" />
+              <input type="number" min="0" v-model="player.player_number" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.first_name" />
+              <input type="text" v-model="player.first_name" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.last_name" />
+              <input type="text" v-model="player.last_name" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.position" />
+              <input type="text" v-model="player.position" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
               <template>{{age(player.birth_date)}}</template>
             </td>
             <td class="stat">
-              <input type="date" v-model="player.birth_date" />
+              <input type="date" v-model="player.birth_date"  @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.height" />
+              <input type="text" v-model="player.height" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <multiselect v-model="player.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true"></multiselect>
+              <multiselect v-model="player.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true" @input="addToUpdateList(player)"></multiselect>
 
             </td>
           </tr>
           <tr>
             <td class="stat first">
-              <input type="number" min="0" v-model="newPlayer.player_number" @input="addToUpdateList(index)" />
+              <input type="number" min="0" v-model="newPlayer.player_number"  />
             </td>
             <td class="stat">
               <input type="text" v-model="newPlayer.first_name" />
@@ -172,7 +172,7 @@ export default {
       saved: false,
       saving: false,
       updated: [],
-      addNew: false
+      added: []
     }
   },
   components: {
@@ -202,11 +202,12 @@ export default {
     newPlayer: {
       deep: true,
       handler (newValue) {
-        const idx = this.updated.indexOf(newValue)
+        const idx = this.added.indexOf(newValue)
+        // console.log("WatchNewPlayer", idx, newValue)
         if (idx >= 0) {
-          this.updated[idx] = newValue
+          this.added[idx] = newValue
         } else {
-          this.updated.push(newValue)
+          this.added.push(newValue)
         }
       }
     },
@@ -217,7 +218,7 @@ export default {
       }
     },
     '$route.params.slug': {
-      handler(id){
+      handler (id) {
         this.initRoster()
       }
     },
@@ -247,7 +248,7 @@ export default {
         api.getPlayers(this.$route.params.slug).then(response => {
           this.roster = response.data
           this.fullRoster = _.cloneDeep(this.roster)
-          console.log(this.roster)
+          // console.log(this.roster)
         })
       }
     },
@@ -281,21 +282,29 @@ export default {
       return this.newPlayer
     },
     age (Birthday) {
-      console.log("here")
       Birthday = new Date(Birthday + 'T00:00:00')
-      var ageDifMs = Date.now() - Birthday.getTime();
-      var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+      var ageDifMs = Date.now() - Birthday.getTime()
+      var ageDate = new Date(ageDifMs) // miliseconds from epoch
+      return Math.abs(ageDate.getUTCFullYear() - 1970)
     },
     addToUpdateList (id) {
       console.log('addtolist')
-      this.updated.push(id)
+      let add = true
+      let i = 0
+      for (i = 0; i < this.updated.length; i++) {
+        if (this.updated[i] === id) {
+          add = false
+        }
+      }
+      if (add) {
+        this.updated.push(id)
+      }
     },
     updatePlayers () {
       console.log('updatePlayers')
       this.updated.forEach(index => {
-        // console.log(index)
-        const playerId = this.roster[index].id
+        console.log(index)
+        // const playerId = this.roster[index].id
         // console.log(playerId)
         // api.updatePlayer(playerId, this.roster[index])
         //   .then(response => {
@@ -304,23 +313,45 @@ export default {
       })
     },
     save () {
-      this.newPlayer.team_id = this.$store.state.user.team_id
-      const playerJson = this.newPlayer
-      // console.log(JSON.stringify(playerJson))
-      // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
-
-      api.addPlayer(playerJson)
-        .then(response => {
-          console.log(response)
+      console.log(this.updated)
+      if (this.updated.length > 0) {
+        this.updated.forEach(player => {
+          // console.log("UpdatePlayer", player)
+          player.team_id = this.$store.state.user.team_id
+          const playerJson = player
+          api.updatePlayer(player.id, playerJson)
+            .then(response => {
+              console.log(response)
+            })
+            .catch(err => {
+              console.log(err)
+            })
         })
-        .catch(err => {
-          console.log(err)
-        })
+      }
 
-      this.roster.push(this.newPlayer)
-      this.initNewPlayer()
-      // this.$root.$emit('saved')
-      // this.$root.$off('save')
+      console.log('added', this.added)
+      if (this.added.length > 1 || this.added[0].player_number !== '') {
+        this.added.forEach(player => {
+        // console.log("save", this.newPlayer !== this.initNewPlayer(), this.newPlayer, this.initNewPlayer())
+          player.team_id = this.$store.state.user.team_id
+          const playerJson = player
+          console.log(JSON.stringify(playerJson))
+          // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
+
+          api.addPlayer(playerJson)
+            .then(response => {
+              console.log(response)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+
+        // this.$root.$emit('saved')
+        // this.$root.$off('save')
+        })
+        this.roster.push(this.newPlayer)
+        this.initNewPlayer()
+      }
     }
   }
 }

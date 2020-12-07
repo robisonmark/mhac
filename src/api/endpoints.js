@@ -1,5 +1,8 @@
 /***
  * This creates the api class that is called to create out http requests
+ * TODO: Update Pattern Used to be Class Based By Category
+ * TODO: Create a function for chaining params
+ * TODO: Better Parameter Chaining
 ***/
 // import axios from 'axios'
 import { robros } from './base'
@@ -363,7 +366,7 @@ export class api {
      * @param {string} slug - Team Slug
      * @return - JSON Object of players by team
     ***/
-  static async getSeasonTeams (slug, seasonid = null) {
+  static async getSeasonTeams (slug = '', seasonid = null) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -373,9 +376,12 @@ export class api {
     //     // console.log(user)
     //   })
     // }
-    if (seasonid !== null) {
+    if (slug !== '' && seasonid !== null) {
       slug = slug + '/' + seasonid
+    } else if (slug === '' && seasonid !== null) {
+      slug = seasonid
     }
+    
     return robros({
       url: '/getSeasonTeams/' + slug,
       method: 'GET'
@@ -427,21 +433,37 @@ export class api {
     })
   }
 
-  static async removeGame(body) {
+  static async removeGame (body) {
     return robros({
       url: '/deleteGame',
       method: 'POST',
       data: body
     })
-
   }
 
-  static async sendStats(body, game_id, team_id) {
+  static async sendStats (body, gameId, teamId) {
     return robros({
-      url: '/addFileGameStats/' + game_id + '/' + team_id,
+      url: '/addFileGameStats/' + gameId + '/' + teamId,
       method: 'POST',
       data: body
     })
   }
-  
+
+  static async getActiveYear () {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    
+    return robros({
+      url: '/getActiveYear',
+      method: 'GET'
+    })
+  }
+
 }

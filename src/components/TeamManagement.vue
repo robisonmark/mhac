@@ -74,27 +74,9 @@ export default {
     selectedTeam: {
       get: function () {
         if (this.$store.getters.userGroups[0] !== 'Admin') {
-          return this.$store.getters.teams.find(team => {
-            // HOLD TO TEST FOR ADMIN
-            // const user = {
-            //   team_id: team.id,
-            //   slug: team.slug
-            // }
-            // this.$store.dispatch('setUser', user)
-            
-            return team.slug === this.$store.getters.userGroups[0]
-          })
+          return this.$store.getters.teams.find(team => team.slug === this.$store.getters.userGroups[0])
         } else {
-          console.log("here admin", this.$store.getters.teams)
-          return this.$store.getters.teams.find(team => {
-            // HOLD TO TEST FOR ADMIN
-            // const user = {
-            //   team_id: team.id,
-            //   slug: team.slug
-            // }
-            // this.$store.dispatch('setUser', user)
-            return team.slug === this.$route.params.slug
-          })
+          return this.$store.getters.teams.find(team => team.slug === this.$route.params.slug)
         }
       },
       set: function (newValue) {
@@ -108,15 +90,19 @@ export default {
 
         this.$router.push({ name: routeName, params: { slug: newValue.slug } })
         this.getSeasonTeams(newValue.slug)
+
+        console.log('here')
+        const team = this.getNewTeam(newValue.slug)
+
+        this.teamLogo = '/static/color-team-logos/' + team.logo_color
+        this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
       }
     }
   },
   watch: {
     async selectedTeam (newValue, oldValue) {
-      let team = {}
-      await api.getTeams(newValue.slug).then(response => {
-        team = response.data[0]
-      })
+      const team = await this.getNewTeam(newValue.slug)
+
       this.teamLogo = '/static/color-team-logos/' + team.logo_color
       this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
     }
@@ -124,6 +110,8 @@ export default {
   beforeCreate () {
     const slug = this.$route.params.slug
     this.$store.dispatch('setTeam', slug)
+
+    this.$store.dispatch('setSeasonTeams')
   },
   created () {
     this.getSeasonTeams(this.$route.params.slug)
@@ -167,6 +155,12 @@ export default {
         .then(response => {
           this.$store.dispatch('setTeamAssocLvl', response.data)
         })
+    },
+
+    async getNewTeam (slug) {
+      return await api.getTeams(slug).then(response => {
+        return response.data[0]
+      })
     }
   }
 }

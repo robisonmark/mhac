@@ -80,15 +80,15 @@
                 <div class="teamName">{{selectedGame.home_team.team_name}}</div>
                 <div class="mascot">{{programInfo(selectedGame.home_team.team_name).team_mascot}}</div>
               </td>
-              
+
               <td v-for="(period,index ) in gameScore.period_scores" :key=index class="quarter">
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.period_scores[index].home_score " />
                 <template v-else>{{period.home_score}}</template>
               </td>
-              <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter">
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.homeTeam.quarters[key]" />
-                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  -->
-              <td class="finalScore text-center">{{gameScore.final_scores.home_final}}</td>
+              <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter"> -->
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.home_score" />
+                <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  --> 
+              <td v-else class="finalScore text-center">{{gameScore.final_scores.home_score}}</td>
             </tr>
             <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).main_color}">
               <td class="teamLogo">
@@ -104,10 +104,10 @@
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.period_scores[index].away_score" />
                 <template v-else>{{period.away_score}}</template>
               </td>
-              <!-- <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter">
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.awayTeam.quarters[key]" />
-                <template v-else>{{gameScore.awayTeam.quarters[key]}}</template> -->
-              <td class="finalScore text-center">{{gameScore.final_scores.away_final}}</td>
+              <!-- <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter"> -->
+                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.away_score" />
+                <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template> -->
+              <td v-else class="finalScore text-center">{{gameScore.final_scores.away_score}}</td>
             </tr>
           </tbody>
         </table>
@@ -129,7 +129,7 @@
 
       <div v-if="selectedGame" :id="[boxscore ? 'playerStats' : '']">
         <editTable :columns="columns" :config="config" :tabledata="stats" v-model="newGameStats">
-          
+
           <template slot="thead">
             <tr class="rowOne">
               <th colspan="4"></th>
@@ -252,11 +252,11 @@
               <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
                 {{stat}}
               </td> -->
-             
+
               <!-- 2PT -->
               <td class="stat light first">
                 <input v-if="edit === true" type="checkbox" v-model="player.player_stats.game_played" />
-                <template v-else> 
+                <template v-else>
                   <font-awesome-icon v-if= "player.player_stats['game_played']" :icon=" ['fas', 'check']  " class="icon"></font-awesome-icon>
                 </template>
               </td>
@@ -495,32 +495,12 @@ export default {
       currentSort: '',
       currentSortDir: 'asc',
       edit: false,
-      // gameScore: {
-      //   homeTeam: {
-      //     quarters: [
-      //       '',
-      //       '',
-      //       '',
-      //       ''
-      //     ],
-      //     final: 0
-      //   },
-      //   awayTeam: {
-      //     quarters: [
-      //       '',
-      //       '',
-      //       '',
-      //       ''
-      //     ],
-      //     final: 0
-      //   }
-      // },
       gameScore: {
         final_scores: {
-            home_final: 0,
-            away_final: 0   
+          home_score: 0,
+          away_score: 0
         },
-        period_scores :   [
+        period_scores: [
           {
             period: '',
             homeScore: '',
@@ -572,30 +552,34 @@ export default {
     },
     'gameScore.period_scores': {
       handler (newValue) {
-        console.log("here")
-        this.gameScore.final_scores.home_final = 0
-        this.gameScore.period_scores.forEach(quarter => {
-          this.gameScore.final_scores.home_final += isNaN(parseInt(quarter.home_score)) ? parseInt(0) : parseInt(quarter.home_score)
-        })
+        if (this.gameScore.final_scores.home_score === 0) {
+          this.gameScore.final_scores.home_score = 0
+          this.gameScore.period_scores.forEach(quarter => {
+            this.gameScore.final_scores.home_score += isNaN(parseInt(quarter.home_score)) ? parseInt(0) : parseInt(quarter.home_score)
+          })
+        }
 
-        this.gameScore.final_scores.away_final = 0
-        this.gameScore.period_scores.forEach(quarter => {
-          this.gameScore.final_scores.away_final += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
-        })
-
+        if ( this.gameScore.final_scores.away_score === 0 ){
+          this.gameScore.final_scores.away_score = 0
+          this.gameScore.period_scores.forEach(quarter => {
+            this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
+          })
+        }
       },
       deep: true
     },
     'gameScore.period_scores.away_score': {
       handler (newValue) {
-        this.gameScore.final_scores.away_final = 0
-        this.gameScore.period_scores.forEach(quarter => {
-          this.gameScore.final_scores.away_final += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
-        })
+        if (this.gameScore.final_scores.away_score === 0 ) {
+          this.gameScore.final_scores.away_score = 0
+          this.gameScore.period_scores.forEach(quarter => {
+            this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
+          })
+        } 
       },
       deep: true
     },
-    'newGameStats': {
+    newGameStats: {
       handler (newValue) {
         console.log(newValue.player_stats)
       },
@@ -609,11 +593,10 @@ export default {
       }
     },
     '$route.params.slug': {
-      handler(newValue){
+      handler (newValue) {
         this.initSchedule(undefined, newValue)
       }
-    },
-
+    }
   },
   computed: {
     seasons () {
@@ -625,10 +608,11 @@ export default {
     teamAssocLvl () {
       return this.$store.state.teamAssocLvl.season_team_ids
     },
-    ...mapState(['user']),
-    sumPoints() {
-      console.log("test location")
-    }
+    sumPoints () {
+      console.log('test location')
+      return ''
+    },
+    ...mapState(['user'])
   },
   // mixins: [
   //   root
@@ -642,6 +626,7 @@ export default {
   created () {
     this.initSchedule(undefined, this.$route.params.slug)
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
+    this.$root.$on('initNewGameStats', (team_id) => { this.initNewGameStats(team_id) })
   },
   methods: {
     initSchedule (level, team) {
@@ -657,10 +642,10 @@ export default {
             game.rosterId = game.away_team.team_id
             game.level = game.away_team.level_name
           }
-          
+
           fixedData.push(game)
         })
-        console.log("fixedData", fixedData)
+        console.log('fixedData', fixedData)
         this.pastGames = fixedData
         // this.sortTable('game_date', false)
       })
@@ -687,10 +672,10 @@ export default {
             player_first_name: player.first_name,
             player_stats: {
               // 'gs': false,
-              'FGM': '',
-              'FGA': '',
-              'ThreePM': '',
-              'ThreePA': '',
+              FGM: '',
+              FGA: '',
+              ThreePM: '',
+              ThreePA: '',
               FTM: '',
               FTA: '',
               OREB: '',
@@ -724,14 +709,15 @@ export default {
         this.boxscore = true
       }
     },
-    addOvertime (home_score, away_score) {
+    addOvertime (homeScore, awayScore) {
       this.quarters.push({ ['OT' + this.overtimeCount]: '' })
-      console.log(this.quarters, "quarters")
-      this.gameScore.period_scores.push({ period: 'OT' + this.overtimeCount,       
-            homeScore: this.home_score != undefined ? this.home_score : '',
-            awayScore: this.away_score != undefined ? this.away_score : '',
-            game_order: this.overtimeCount + 4
-          } )
+      console.log(this.quarters, 'quarters')
+      this.gameScore.period_scores.push({
+        period: 'OT' + this.overtimeCount,
+        homeScore: this.homeScore !== undefined ? this.homeScore : '',
+        awayScore: this.awayScore !== undefined ? this.awayScore : '',
+        game_order: this.overtimeCount + 4
+      })
       this.overtimeCount++
     },
     backToGameStats () {
@@ -749,59 +735,60 @@ export default {
       this.boxscore = false
     },
     async initNewGameStats (rosterId) {
+      console.log("Here")
       await api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
         this.newGameStats = response.data
         if (this.newGameStats.final_scores.home_score !== null) {
-          this.gameScore.final_scores.home_final = this.newGameStats.final_scores.home_score
-          this.gameScore.final_scores.away_final = this.newGameStats.final_scores.away_score
+          this.gameScore.final_scores.home_score = this.newGameStats.final_scores.home_score
+          this.gameScore.final_scores.away_score = this.newGameStats.final_scores.away_score
         }
         if (this.newGameStats.game_scores !== null) {
           this.gameScore.period_scores = this.newGameStats.game_scores
           // console.log("newGameStatsInit", this.gameScore.period_scores, this.gameScore.period_scores.length )
           if (this.gameScore.period_scores.length > 4) {
-            let quarterAdd = this.gameScore.period_scores.length - 4
+            const quarterAdd = this.gameScore.period_scores.length - 4
 
             for (var i = 1; i <= quarterAdd; i++) {
               this.addOvertime()
             }
-          // } else if (this.gameScore.length < 4 && this.gameScore.length > 0) {
-          //   this.gameScore.forEach(period => {
-              
+            // } else if (this.gameScore.length < 4 && this.gameScore.length > 0) {
+            //   this.gameScore.forEach(period => {
+
           //   })
           } else if (this.gameScore.period_scores.length === 0) {
             this.gameScore.period_scores = [
               {
-              'game_id': '',
-              'period': 1,
-              'home_score': 0,
-              'away_score': 0,
-              'game_order': 0,
+                game_id: '',
+                period: 1,
+                home_score: 0,
+                away_score: 0,
+                game_order: 0
               },
               {
-              'game_id': '',
-              'period': 2,
-              'home_score': 0,
-              'away_score': 0,
-              'game_order': 0,
+                game_id: '',
+                period: 2,
+                home_score: 0,
+                away_score: 0,
+                game_order: 0
               },
               {
-              'game_id': '',
-              'period': 3,
-              'home_score': 0,
-              'away_score': 0,
-              'game_order': 0,
+                game_id: '',
+                period: 3,
+                home_score: 0,
+                away_score: 0,
+                game_order: 0
               },
               {
-              'game_id': '',
-              'period': 4,
-              'home_score': 0,
-              'away_score': 0,
-              'game_order': 0,
-              },
+                game_id: '',
+                period: 4,
+                home_score: 0,
+                away_score: 0,
+                game_order: 0
+              }
             ]
-          }  
-        }  
-      })  
+          }
+        }
+      })
     },
     resetStats () {
       this.currentNested = ''
@@ -816,17 +803,16 @@ export default {
       const finalScores = { final_scores: {} }
 
       if (this.boxscore === true) {
-        
         // finalScores.final_scores = {
         //   home_score: this.gameScore.final_scores.final,
         //   away_score: this.gameScore.awayTeam.final
         // }
-        finalScores.final_scores =  { ...this.gameScore.final_scores }
+        finalScores.final_scores = { ...this.gameScore.final_scores }
       }
       // const quarterScores = { game_scores: [] }
 
-      let quarter_scores = []
-      this.gameScore.homeTeam
+      // const quarter_scores = []
+      // this.gameScore.homeTeam
 
       const playerStats = _.cloneDeep(this.newGameStats)
 
@@ -840,12 +826,12 @@ export default {
       })
 
       playerStats.player_stats = flattenedStats
-      
+
       // console.log({...finalScores}, finalScores)
       let stats = {}
       stats = { ...playerStats, ...finalScores }
 
-      console.log("sent stats", JSON.stringify(stats))
+      console.log('sent stats', JSON.stringify(stats))
 
       api.addGameResults(this.newGameStats.game_id, stats)
         .then(response => {
@@ -925,7 +911,7 @@ export default {
         }
       })
     },
-     toggleModal () {
+    toggleModal () {
       // console.log('edit pressed')
       this.showModal = !this.showModal
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <header class="contentPad">
-      <h2>2020 - 2021 Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
+      <h2>{{this.$config.seasonYear}} Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
       <div class="buttonCon">
         <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
@@ -36,65 +36,100 @@
             <td>{{data.game_time}}</td>
             <td>{{data.game_date}}</td>
             <td>{{data.opponent.level_name}}</td>
-            <td></td>
+            <!-- <td></td> -->
             <!-- <td @click="toggleModal(data)"><font-awesome-icon  :icon="['far', 'edit']" class="icon" ></font-awesome-icon></td> -->
             <td @click="deleteGame(data, index)"><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td>
           </tr>
 
           <tr v-if="!newGame.season.season_id">
-            <td colspan="7" align="center" class="add-button">Please Select a level to begin adding games
+            <td colspan="7" align="center" class="add-button">Please select a level to begin adding games
             </td>
           </tr>
 
-            <tr v-else-if="!addNew" @click="addTo">
-              <td colspan="7" align="center" class="add-button">
-                <template v-if="$route.name === 'roster'">Edit Roster</template>
-                <template v-else>Add New Game to Schedule</template>
-              </td>
-            </tr>
-          </template>
-          <template slot="tbody" v-if="edit">
-            <tr v-for="(data, index) in schedule" :key="index">
-              <td class="input-con">
-                <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</div>
-              </td>
-              <td class="input-con">
-                <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="data.opponent">
-                </selectbox>
-              </td>
-              <td class="input-con">
-                  <input type="time" v-model="data.game_time" />
-                </td>
-              <td class="input-con">
-                <input type="date" v-model="data.game_date" />
-              </td>
-              <td>
-                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
-              </td>
-              <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
-            </tr>
+          <tr v-else-if="!addNew" @click="addTo">
+            <td colspan="7" align="center" class="add-button">
+              <template v-if="$route.name === 'roster'">Edit Roster</template>
+              <template v-else>Add New Game to Schedule</template>
+            </td>
+          </tr>
 
-             <tr >
+          <tr v-else-if="addNew">
+            <td class="input-con">
+              <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
+            </td>
+            <td class="input-con">
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
+              </selectbox>
+            </td>
+            <td class="input-con">
+                <input type="time" v-model="newGame.game_time" />
+              </td>
+            <td class="input-con">
+              <input type="date" v-model="newGame.game_date" />
+            </td>
+            <td class="input-con">
+              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox>
+            </td>
+            <td @click="save()">
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td>
+          </tr>
+        </template>
+
+        <template slot="tbody" v-if="edit">
+          <tr v-for="(data, index) in schedule" :key="index">
+            <td class="input-con">
+              <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</div>
+            </td>
+            <td class="input-con">
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="data.opponent">
+              </selectbox>
+            </td>
+            <td class="input-con">
+                <input type="time" v-model="data.game_time" />
+              </td>
+            <td class="input-con">
+              <input type="date" v-model="data.game_date" />
+            </td>
+            <td @click="save()">
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td>
+            <!-- <td class="input-con">
+              <input type="date" v-model="data.game_date" />
+            </td>
+            <td>
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td> -->
+            <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
+          </tr>
+
+          <tr >
             <!-- <tr > -->
-              <td class="input-con">
-                <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
+            <td class="input-con">
+              <div tabindex="0" @click="homeAwayDisplay()" @keyup.space="homeAwayDisplay()" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
+            </td>
+            <td class="input-con">
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
+              </selectbox>
+            </td>
+            <td class="input-con">
+                <input type="time" v-model="newGame.game_time" />
               </td>
-              <td class="input-con">
-                <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
-                </selectbox>
-              </td>
-              <td class="input-con">
-                  <input type="time" v-model="newGame.game_time" />
-                </td>
-              <td class="input-con">
-                <input type="date" v-model="newGame.game_date" />
-              </td>
-              <td>
-                 <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
-              </td>
-              <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
-            </tr>
-          </template>
+            <td class="input-con">
+              <input type="date" v-model="newGame.game_date" />
+            </td>
+            <td @click="save()">
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td>
+            <!-- <td class="input-con">
+              <input type="date" v-model="newGame.game_date" />
+            </td>
+            <td>
+                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td> -->
+            <!-- <td colspan=3 @click="save()"><font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon></td> -->
+          </tr>
+        </template>
         <!-- </template> -->
       </editTable>
     </div>
@@ -196,9 +231,25 @@ export default {
     seasons () {
       return this.$store.state.seasons
     },
+    // selectOptions () {
+    //   return getSeasonTeams(this.newGame.season.season_id).filter(team => {
+    //     if (team.id !== this.$store.state.user.team_id) {
+    //       return team
+    //     }
+    //   })
+    // },
+    // getSeasonTeams (season_id) {
+    //   api.getSeasonTeams(season_id=season_id)
+    //     .then(response => {
+    //       return response.data
+    //     })
+    // },
+
     selectOptions () {
-      return this.$store.state.teams.filter(team => {
+      // update to getter and setter
+      return this.$store.getters.seasonTeams.filter(team => {
         if (team.id !== this.$store.state.user.team_id) {
+          team.team_name = team.team_name + ' ' + team.level_name
           return team
         }
       })
@@ -213,20 +264,62 @@ export default {
       }
     },
     '$route.params.slug': {
-      handler(newValue){
+      handler (newValue) {
         this.initSchedule(undefined, newValue)
       }
-    },
+    }
 
   },
   created () {
     this.$root.$on('save', payload => {
       this.save()
     })
+
     this.initSchedule(undefined, this.$route.params.slug)
+
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
+    addNewGame () {
+      this.schedule.push(this.newGame)
+    },
+
+    deleteGame (data, id) {
+      // console.log(id, this.schedule[id])
+      api.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
+      // api.removeGame(this.schedule[id].game_id).then(response => {
+        this.schedule.splice(id, 1)
+      })
+    },
+
+    async getSeasonTeamId (slug) {
+      // move this to vuex ?
+      let teamId = ''
+      await api.getSeasonTeams(slug, this.newGame.season.season_id)
+        .then(response => {
+          console.log(response.data)
+          teamId = response.data.team_id
+        })
+      return teamId
+    },
+
+    homeAwayDisplay (game) {
+      this.newGame.host = !this.newGame.host
+    },
+
+    initNewGame (currSeason = '') {
+      this.season = currSeason
+      this.newGame = {
+        host: true,
+        opponent: '',
+        game_time: '',
+        game_date: '',
+        season: this.season,
+        neutral_site: false
+        // 'uuid': string,
+      }
+    },
+
     initSchedule (season, slug) {
       api.getSchedule(season, slug).then(response => {
         const gameArr = []
@@ -255,30 +348,11 @@ export default {
         this.schedule = gameArr
       })
     },
-    initNewGame (currSeason = '') {
-      this.season = currSeason
-      this.newGame = {
-        host: true,
-        opponent: '',
-        game_time: '',
-        game_date: '',
-        season: this.season,
-        neutral_site: false
-        // 'uuid': string,
-      }
+
+    remove_game () {
+      console.log('delete pressed')
     },
-    homeAwayDisplay (game) {
-      this.newGame.host = !this.newGame.host
-    },
-    async getSeasonTeamId (slug) {
-      let teamId = ''
-      await api.getSeasonTeams(slug, this.newGame.season.season_id)
-        .then(response => {
-          console.log(response.data)
-          teamId = response.data.team_id
-        })
-      return teamId
-    },
+
     async save (addAnother = false) {
       const gameJson = {
         home_team: '',
@@ -312,19 +386,10 @@ export default {
       // this.initNewGame(this.newGame.season.season_id)
       // this.$root.$emit('saved')
     },
-    remove_game () {
-      console.log('delete pressed')
-    },
+
     toggleModal (id) {
       console.log('toggleModal', id)
       this.showModal = !this.showModal
-    },
-    deleteGame (data, id) {
-      // console.log(id, this.schedule[id])
-      api.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
-      // api.removeGame(this.schedule[id].game_id).then(response => {
-        this.schedule.splice(id, 1)
-      })
     }
   }
 }

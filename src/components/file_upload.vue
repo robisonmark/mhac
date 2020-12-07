@@ -16,8 +16,18 @@
                     <p v-if="isSaving">
                     Uploading {{ fileCount }} files...
                     </p>
+                    
                 </div>
-            </form>
+            </form> 
+            <div v-if="isFailed">
+              <p>
+              The following players were in the game, but don't exist in the roster:
+            </p>
+              <ul>
+                <li v-for="number in uploadError.data.detail" :key="number">{{ number }} </li>
+              </ul>
+            <p> Please update your roster, or game file. </p>
+            </div>
     </div>
 </template>
 
@@ -35,7 +45,7 @@ import { api } from '../api/endpoints.js'
     data() {
       return {
         uploadedFiles: [],
-        uploadError: null,
+        uploadError: '',
         currentStatus: null,
         uploadFieldName: 'file'
       }
@@ -59,11 +69,14 @@ import { api } from '../api/endpoints.js'
       }
     },
     methods: {
+      refresh_data() {
+        this.$root.$emit('initNewGameStats', this.team_id)
+      },
       reset() {
         // reset form to initial state
         this.currentStatus = STATUS_INITIAL;
         this.uploadedFiles = [];
-        this.uploadError = null;
+        this.uploadError = '';
       },
       save(formData) {
         // upload data to the server
@@ -78,11 +91,12 @@ import { api } from '../api/endpoints.js'
             this.uploadError = err.response;
             this.currentStatus = STATUS_FAILED;
           });
+        this.refresh_data()
       },
       filesChange(fieldName, fileList) {
         // handle file changes
         const formData = new FormData();
-        console.log(fieldName, fileList)
+        // console.log(fieldName, fileList)
 
         if (!fileList.length) return;
 
