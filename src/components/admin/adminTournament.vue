@@ -1,5 +1,6 @@
 <template>
   <div class="">
+    
     <!-- <div class="bracket fourteenU">
       <ul v-for="(game, index) in fourteenUBoys" :key="index">
         <td>{{game.game}}</td>
@@ -200,7 +201,7 @@ import _ from 'lodash'
 export default {
   data () {
     return {
-      game: [],
+      games: [],
       oldBracket: []
     }
   },

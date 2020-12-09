@@ -12,6 +12,7 @@
         <router-link :to="{ path: '/manage/' + team + '/stats'}" tag="li">Stats</router-link>
         <router-link :to="{ path: '/manage/' + team + '/schedule'}" tag="li">Schedule</router-link>
         <router-link :to="{ path: '/manage/' + team + '/profile'}" tag="li">Team Profile</router-link>
+        <router-link :to="{ path: '/admin'}" tag="li" v-if="admin">Admin</router-link>
       </ul>
     </nav>
     <router-view class="team-management" :style="cssVars" />

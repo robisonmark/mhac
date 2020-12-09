@@ -1,8 +1,16 @@
 <template>
   <div class="con-admin">
-    <nav class="sidebar" v-if="login">
+    <nav class="sidebar" >
+      <ul :style="cssVars">
+        <router-link :to="{ path: '/admin/edit_frontpage'}" tag="li">Edit Front Page</router-link>
+        <router-link :to="{ path: '/admin/tournament'}" tag="li">Manage Tournament</router-link>
+        
+      </ul>
     </nav>
     <router-view class="admin" />
+    <img class="bottom-logo" :src="greyLogo" />
+    <p>test</p>
+
   </div>
 </template>
 
@@ -11,10 +19,10 @@
 import { api } from '../api/endpoints.js'
 
 export default {
-  name: 'TeamManagement',
+  name: 'admin',
   data () {
     return {
-      login: false,
+      login: true,
       greyLogo: '',
       team: this.$route.params.slug,
       // teamColor: '#B42625',
@@ -132,79 +140,58 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-@teamColor: var(--bg-color);
-@hoverColor: var(--hover-color);
-@activeColor: var(--active-color);
-.admin {
-  display: block;
-  padding: 1rem;
-}
-h2 {
-  font-size: 1.5rem !important;
-}
-.con-management {
-  // min-height: calc(100vh - 7rem);
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 21% auto;
-  // grid-auto-rows: minmax(35px, auto);
-  .sidebar {
-    background-color: #fff;
-    .team-logo {
-      width: 100%;
-      min-height: 10rem;
-      display: flex;
-      img {
-        width: 75%;
-        display: block;
-        margin: auto;
-      }
-    }
-    // Override Chrome Browser Defaults
-    ul {
-      margin-block-start: 0px;
-      margin-block-end: 0px;
-      margin-inline-start: 0px;
-      margin-inline-end: 0px;
-      padding-inline-start: 0px;
-    }
-    li {
-      text-decoration: none;
-      list-style: none;
-      text-align: left;
-      padding-left: 2rem;
-      height: 3rem;
-      display: flex;
-      align-items: center;
 
-      &:nth-child(even) {
-        background-color: @teamColor;
-        color: #fff;
-      }
-      &:hover {
-        background-color: @hoverColor;
-        // filter: brightness(90%);
-        color: #fff;
-      }
-    }
-    .router-link-active {
-      // background-color: @activeColor;
-    }
+@import '../assets/less/utils/variables.less';
+main{
+  display:flex;
+  flex-direction:row;
+}
+.round{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  width:200px;
+  list-style:none;
+  padding:0;
+}
+  .round .spacer{ flex-grow:1; }
+  .round .spacer:first-child,
+  .round .spacer:last-child{ flex-grow:.5; }
+
+  .round .game-spacer{
+    flex-grow:1;
   }
-  .bottom-logo {
-    // position: absolute;
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    max-height: 15rem;
-    z-index: 0;
-  }
-  .team-management {
-    overflow: auto;
-    z-index: 1;
-    height: calc(100vh - 7rem);
-    padding-bottom: 5rem;
-  }
+
+/*
+ *  General Styles
+*/
+body{
+  font-family:sans-serif;
+  font-size:small;
+  padding:10px;
+  line-height:1.4em;
 }
 
+li.game{
+  padding-left:20px;
+}
+
+  li.game.winner{
+    font-weight:bold;
+  }
+  li.game span{
+    float:right;
+    margin-right:5px;
+  }
+
+  li.game-top{ border-bottom:1px solid #aaa; }
+
+  li.game-spacer{
+    border-right:1px solid #aaa;
+    min-height:40px;
+  }
+
+  li.game-bottom{
+    border-top:1px solid #aaa;
+  }
 </style>
