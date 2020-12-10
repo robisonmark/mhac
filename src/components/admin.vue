@@ -9,7 +9,7 @@
     </nav>
     <router-view class="admin" />
     <img class="bottom-logo" :src="greyLogo" />
-    <p>test</p>
+    
 
   </div>
 </template>
@@ -194,4 +194,71 @@ li.game{
   li.game-bottom{
     border-top:1px solid #aaa;
   }
+
+
+.con-admin {
+  // min-height: calc(100vh - 7rem);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 15rem auto;
+  // grid-auto-rows: minmax(35px, auto);
+  .sidebar {
+    background-color: #fff;
+    .team-logo {
+      width: 100%;
+      min-height: 10rem;
+      display: flex;
+      img {
+        width: 75%;
+        display: block;
+        margin: auto;
+      }
+    }
+    // Override Chrome Browser Defaults
+    ul {
+      margin-block-start: 0px;
+      margin-block-end: 0px;
+      margin-inline-start: 0px;
+      margin-inline-end: 0px;
+      padding-inline-start: 0px;
+    }
+    li {
+      text-decoration: none;
+      list-style: none;
+      text-align: left;
+      padding-left: 2rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+
+      &:nth-child(even) {
+        background-color: grey;
+        color: #fff;
+      }
+      &:hover {
+        background-color: black;
+        // filter: brightness(90%);
+        color: #fff;
+      }
+    }
+    .router-link-active {
+      // background-color: @activeColor;
+    }
+  }
+  .bottom-logo {
+    // position: absolute;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    max-height: 15rem;
+    z-index: 0;
+  }
+  .team-management {
+    overflow: auto;
+    z-index: 1;
+    height: calc(100vh - 7rem);
+    padding-bottom: 5rem;
+  }
+}
+
 </style>
