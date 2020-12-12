@@ -87,7 +87,7 @@
               </td>
               <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter"> -->
                 <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.home_score" />
-                <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  --> 
+                <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  -->
               <td v-else class="finalScore text-center">{{gameScore.final_scores.home_score}}</td>
             </tr>
             <tr class="teamRow" :style="{'background-color': '#' + programInfo(selectedGame.away_team.team_name).main_color}">
@@ -559,7 +559,7 @@ export default {
           })
         }
 
-        if ( this.gameScore.final_scores.away_score === 0 ){
+        if (this.gameScore.final_scores.away_score === 0) {
           this.gameScore.final_scores.away_score = 0
           this.gameScore.period_scores.forEach(quarter => {
             this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
@@ -570,12 +570,12 @@ export default {
     },
     'gameScore.period_scores.away_score': {
       handler (newValue) {
-        if (this.gameScore.final_scores.away_score === 0 ) {
+        if (this.gameScore.final_scores.away_score === 0) {
           this.gameScore.final_scores.away_score = 0
           this.gameScore.period_scores.forEach(quarter => {
             this.gameScore.final_scores.away_score += isNaN(parseInt(quarter.away_score)) ? parseInt(0) : parseInt(quarter.away_score)
           })
-        } 
+        }
       },
       deep: true
     },
@@ -626,7 +626,7 @@ export default {
   created () {
     this.initSchedule(undefined, this.$route.params.slug)
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
-    this.$root.$on('initNewGameStats', (team_id) => { this.initNewGameStats(team_id) })
+    this.$root.$on('initNewGameStats', (teamId) => { this.initNewGameStats(teamId) })
   },
   methods: {
     initSchedule (level, team) {
@@ -735,7 +735,6 @@ export default {
       this.boxscore = false
     },
     async initNewGameStats (rosterId) {
-      console.log("Here")
       await api.getGameResults(this.newGameStats.game_id, rosterId).then(response => {
         this.newGameStats = response.data
         if (this.newGameStats.final_scores.home_score !== null) {
