@@ -18,16 +18,6 @@
 
     <div class="contentPad">
       <editTable  :columns="columns" :config="config" :tabledata="schedule" v-model="newGame" :edit="edit">
-        <!-- <template slot="thead">
-          <tr>
-            <th>Host</th>
-            <th>Opponent</th>
-            <th>Time</th>
-            <th>Date</th>
-            <th>Level</th>
-          </tr>
-        </template> -->
-
         <template slot="tbody" v-if="!edit">
           <tr v-for="(data, index) in schedule" :key="index">
             <td><span :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</span></td>
@@ -253,7 +243,12 @@ export default {
     selectOptions () {
       // update to getter and setter
       return this.$store.getters.seasonTeams.filter(team => {
-        if (team.id !== this.$store.state.user.team_id) {
+        console.log(this.newGame.season, team.level_name)
+        if (team.id !== this.$store.state.user.team_id && team.level_name === this.newGame.season.level) {
+          return team
+        }
+        else if (team.id !== this.$store.state.user.team_id) {
+          
           return team
         }
       })

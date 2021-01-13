@@ -1,6 +1,29 @@
 <template>
   <div class="">
-    
+    <header class="contentPad">
+      
+      CREATE A Tournament
+
+      
+      <br/>
+  
+      <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
+        <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
+      </ul>
+
+      <div class="buttonCon">
+        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+          <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
+          <span class="focused">Edit</span>
+        </div>
+
+        <div class="switch" v-if="edit" @click="edit = !edit">
+          <font-awesome-icon :icon="['fas', 'check']" class="icon"></font-awesome-icon>
+          <span class="focused">Done Editing</span>
+
+        </div>
+      </div>
+    </header>
     <!-- <div class="bracket fourteenU">
       <ul v-for="(game, index) in fourteenUBoys" :key="index">
         <td>{{game.game}}</td>
@@ -23,11 +46,17 @@
         <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
       </ul>
     </div> -->
+
+    <div class="tournamentSchedule">
+      <editTable :columns="columns" :config="config" :tabledata="tournament" v-model="newGame" :edit="edit" />
+    </div>
+
+
     <div class="tournamentSchedule">
       <button @click="save()">
         Save
       </button>
-        <table>
+        <!-- <table>
           <thead>
             <tr class="levelHead">
               <td colspan="6">14U Boys</td>
@@ -37,9 +66,7 @@
               <th>Date</th>
               <th>Time</th>
               <th>Matchup</th>
-              <!-- <th></th> -->
-              <!-- <th class="final">Final Score</th> -->
-              <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
+              <th>Level</th>
             </tr>
           </thead>
           <tbody>
@@ -54,16 +81,6 @@
                 <span v-html="game.matchup.team2"></span>
                 <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
               </td>
-              <!-- <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template> -->
-              <!-- </td> -->
-              <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
             </tr>
           </tbody>
         </table>
@@ -77,10 +94,10 @@
               <th>Game #</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Matchup</th>
+              <th>Matchup</th> -->
               <!-- <th class="final">Final Score</th> -->
               <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
-            </tr>
+            <!-- </tr>
           </thead>
           <tbody>
             <tr v-for="(game, index) in sixteenUBoys" :key="index">
@@ -93,7 +110,7 @@
                 vs.
                 <span v-html="game.matchup.team2"></span>
                 <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td>
+              </td> -->
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -104,10 +121,10 @@
                 </template> -->
               <!-- </td> -->
               <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
-            </tr>
+            <!-- </tr>
           </tbody>
-        </table>
-
+        </table> -->
+<!-- 
         <table>
           <thead>
             <tr class="levelHead">
@@ -117,10 +134,10 @@
               <th>Game #</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Matchup</th>
+              <th>Matchup</th> -->
               <!-- <th class="final">Final Score</th> -->
               <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
-            </tr>
+            <!-- </tr>
           </thead>
           <tbody>
             <tr v-for="(game, index) in eighteenUBoys" :key="index">
@@ -133,7 +150,7 @@
                 vs.
                 <span v-html="game.matchup.team2"></span>
                 <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td>
+              </td> -->
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -144,11 +161,11 @@
                 </template> -->
               <!-- </td> -->
               <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
-            </tr>
+            <!-- </tr>
           </tbody>
-        </table>
+        </table> -->
 
-        <table>
+        <!-- <table>
           <thead>
             <tr class="levelHead">
               <td colspan="6">18U Girls</td>
@@ -157,16 +174,16 @@
               <th>Game #</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Matchup</th>
+              <th>Matchup</th> -->
               <!-- <th class="final">Final Score</th> -->
               <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
-            </tr>
+            <!-- </tr>
           </thead>
-          <tbody>
+          <tbody> -->
             <!-- <template>
               <tableRow v-model="game"></tableRow>
             </template> -->
-            <tr v-for="(game, index) in eighteenUGirls" :key="index">
+            <!-- <tr v-for="(game, index) in eighteenUGirls" :key="index">
               <td>{{game.game}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
@@ -176,7 +193,7 @@
                 vs.
                 <span v-html="game.matchup.team2"></span>
                 <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td>
+              </td> -->
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -187,27 +204,79 @@
                 </template> -->
               <!-- </td> -->
               <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
-            </tr>
+            <!-- </tr>
           </tbody>
-        </table>
+        </table> -->
       </div>
   </div>
 </template>
 
 <script>
 import { api } from '@/api/endpoints'
+
+import editTable from '@/components/editTable'
+
 import _ from 'lodash'
+
+// mixins
+import { root } from '@/mixins/root'
 
 export default {
   data () {
     return {
       games: [],
-      oldBracket: []
+      oldBracket: [],
+      columns: [
+        {
+          name: 'Game',
+          field_name: 'game',
+          type: 'text'
+        },
+        {
+          name: 'Date',
+          field_name: 'date',
+          type: 'text'
+        },
+        {
+          name: 'Time',
+          field_name: 'time',
+          type: 'text'
+        },
+        {
+          name: 'Matchup',
+          field_name: 'matchup',
+          type: 'text'
+        },
+        {
+          name: 'Level',
+          field_name: 'level',
+          type: 'text'
+        }
+      ],
+      config: {
+        page: 'tournament'
+      },
+      tournament:[],
+      newGame: {},
+      edit: false,
+      activeTournaments: []
     }
   },
   components: {
+    editTable: editTable
   },
   computed: {
+    seasons () {
+      return this.$store.state.seasons
+    },
+    // tournaments () {
+    //   let t = []
+    //   api.getActiveTournaments().then(response => {
+    //     // this.activeTournaments = response.data
+    //     t = response.data
+    //   })
+    //   return t
+    // },
     levels () {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
@@ -228,9 +297,15 @@ export default {
   watch: {
   },
   created () {
+    this.getActiveTournaments()
     this.initTourney()
   },
   methods: {
+    getActiveTournaments() {
+      api.getActiveTournaments().then(response => {
+        this.activeTournaments = response.data
+      })
+    },
     initTourney () {
       this.thinking = true
       // this.$router.push('/manage/chattanooga_patriots')
