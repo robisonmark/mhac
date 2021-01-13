@@ -23,7 +23,8 @@ import profile from '@/components/team-management/profile'
 // Admin Components
 import admin from '@/components/admin'
 // import login from '@/components/admin/login'
-import adminTournament from '@/components/admin/tournament'
+import adminTournament from '@/components/admin/adminTournament'
+import editHomepage from '@/components/admin/editHomepage'
 
 // Config Helpers
 import config from '@/config/helpers'
@@ -218,6 +219,25 @@ export const router = new Router({
         //     section: 'admin'
         //   }
         // },
+        {
+          path: 'edit',
+          name: 'Edit',
+          component: editHomepage,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          },
+          children: [
+            {
+              path: 'homepage',
+              name: 'editHomepage',
+              meta: {
+                requiresAuth: true,
+                section: 'admin'
+              }
+            }
+          ]
+        },
         {
           path: 'tournament',
           name: 'adminTournament',
