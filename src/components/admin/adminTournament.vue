@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="contentPad">
     
     <!-- <div class="bracket fourteenU">
       <ul v-for="(game, index) in fourteenUBoys" :key="index">

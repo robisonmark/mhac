@@ -1,6 +1,6 @@
 <template>
   <div class="con-admin">
-    <nav class="sidebar" >
+    <nav class="sidebar">
       <ul :style="cssVars">
         <router-link :to="{ path: '/admin/edit_frontpage'}" tag="li">Edit Front Page</router-link>
         <router-link :to="{ path: '/admin/tournament'}" tag="li">Manage Tournament</router-link>
@@ -203,7 +203,8 @@ li.game{
   grid-template-columns: 15rem auto;
   // grid-auto-rows: minmax(35px, auto);
   .sidebar {
-    background-color: #fff;
+    background-color: #0C4B75;
+    color: #fff;
     .team-logo {
       width: 100%;
       min-height: 10rem;
