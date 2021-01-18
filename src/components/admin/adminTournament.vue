@@ -2,14 +2,14 @@
   <div class="">
     <header class="contentPad">
       
-      CREATE A Tournament
+      <!-- CREATE A Tournament
 
       
       <br/>
   
       <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
         <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
-      </ul>
+      </ul> -->
 
       <div class="buttonCon">
         <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
@@ -24,31 +24,76 @@
         </div>
       </div>
     </header>
-    <!-- <div class="bracket fourteenU">
-      <ul v-for="(game, index) in fourteenUBoys" :key="index">
-        <td>{{game.game}}</td>
-        <td>{{game.date}}</td>
-        <td>{{game.time}}</td>
-        <td>
-          <span v-html="game.matchup.team1"></span>
-          vs.
-          <span v-html="game.matchup.team2"></span>
-        </td>
-        <td class="final">
-          <template v-if="game.matchup.scoreTeam1">
-            {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-            <div>{{results(game.matchup)}}</div>
-          </template>
-          <template v-else>
-            --
-          </template>
-        </td>
-        <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-      </ul>
-    </div> -->
 
-    <div class="tournamentSchedule">
-      <editTable :columns="columns" :config="config" :tabledata="tournament" v-model="newGame" :edit="edit" />
+
+    <div class="contentPad">
+      <!-- <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
+        <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
+      </ul> -->
+      <editTable :columns="columns" :config="config" :tabledata="sixteenUBoys" v-model="tournamentGame" :edit="edit" >
+        
+        <template slot="tbody" v-if="!edit">
+          <table>
+            <thead>
+              <tr class="levelHead">
+                <td colspan="6">16U Boys</td>
+              <tr>
+              <tr>
+                <th>Game #</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Matchup</th> 
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(game, index) in sixteenUBoys" :key="index">
+                <td>{{game.game}}</td>
+                <td>{{game.date}}</td>
+                <td>{{game.time}}</td>
+                <td>
+                  <span v-html="game.matchup.team1"></span>
+                  <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
+                  vs.
+                  <span v-html="game.matchup.team2"></span>
+                  <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </template>
+        
+        <template slot="tbody" v-if="edit">
+          <tr v-for="(data,index) in sixteenUBoys" :key="index">
+            <td class="input-con">
+              {{data}}
+            </td>
+            <td class="input-con">
+              <input type="date" v-model="data.game_date" />
+            </td>
+            <td class="input-con">
+              <input type="time" v-model="data.game_time" />
+            </td>
+            <td class="input-con">
+              SELECT HIGH SEEDED SCHOOL
+            </td>
+            <td class="input-con">
+              <!-- <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox> -->
+              <input type='text' v-model="data.team1Seed" />
+            </td>         
+            <td class="input-con">
+              SELECT LOWER SEEDED SCHOOL
+            </td>
+            <td class="input-con">
+              <!-- <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox> -->
+              <input type='text' v-model="data.team2Seed" />
+            </td>   
+            <td class="input-con">
+              <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox>
+            </td>
+          </tr>
+        </template>
+      </editTable>
     </div>
 
 
@@ -83,34 +128,13 @@
               </td>
             </tr>
           </tbody>
-        </table>
+        </table>-->
 
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">16U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th> -->
+
               <!-- <th class="final">Final Score</th> -->
               <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
             <!-- </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in sixteenUBoys" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
-                vs.
-                <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td> -->
+          </thead> -->
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -215,6 +239,7 @@
 import { api } from '@/api/endpoints'
 
 import editTable from '@/components/editTable'
+import selectbox from '../selectbox'
 
 import _ from 'lodash'
 
@@ -235,35 +260,54 @@ export default {
         {
           name: 'Date',
           field_name: 'date',
-          type: 'text'
+          type: 'date'
         },
         {
           name: 'Time',
           field_name: 'time',
-          type: 'text'
+          type: 'time'
         },
         {
-          name: 'Matchup',
+          name: 'Home Team',
           field_name: 'matchup',
           type: 'text'
         },
         {
-          name: 'Level',
-          field_name: 'level',
+          name: 'Higher Seed',
+          field_name: 'matchup',
           type: 'text'
+        },
+        {
+          name: 'Away Seed',
+          field_name: 'matchup',
+          type: 'text'
+        },
+        {
+          name: 'Lower Seed',
+          field_name: 'matchup.team2',
+          type: 'text'
+        },
+        {
+          name: 'Tournament',
+          field_name: 'activeTournaments',
+          type: 'select',
+          track_by: 'season'
         }
       ],
       config: {
         page: 'tournament'
       },
       tournament:[],
-      newGame: {},
+      tournamentGame: {
+        
+      },
       edit: false,
       activeTournaments: []
     }
   },
   components: {
-    editTable: editTable
+    editTable: editTable,
+    selectbox: selectbox
   },
   computed: {
     seasons () {
@@ -303,7 +347,9 @@ export default {
   methods: {
     getActiveTournaments() {
       api.getActiveTournaments().then(response => {
-        this.activeTournaments = response.data
+        response.data.forEach(season => {
+          this.activeTournaments.push(season)
+        })
       })
     },
     initTourney () {
@@ -427,4 +473,55 @@ li.game{
   li.game-bottom{
     border-top:1px solid #aaa;
   }
+
+
+// header {
+//   display: flex;
+//   flex-flow: row wrap;
+//   justify-content: space-between;
+//   width: 100%;
+//   padding-top: 1rem;
+//   margin-bottom: .5rem;
+//   position: sticky;
+//     top: 0;
+//     z-index: 2;
+//     left: 0;
+//     background: #CFCDCD;
+//   .buttonCon {
+//     flex-grow: 1;
+//     display: flex;
+//     justify-content: flex-end;
+//     // height: 3rem;
+//   }
+// }
+
+table {
+  // margin-top: -40px;
+  &:before {
+    content: '';
+    display: block;
+    height: 40px;
+    width: 100%;
+    width: calc(100% + 2.4rem);
+    // border-top: 1.5px solid @teamColor;
+    // border-right: 2px solid @teamColor;
+    border-left: 2px solid transparent;
+    position: absolute;
+    -webkit-transform: skewX(-45deg);
+    transform: skewX(-45deg);
+    /* left: -23px; */
+    /* margin-top: 0.6rem; */
+    top: 0;
+    right: -20px;
+    z-index: 5;
+  }
+}
+
+#levels {
+  width: 200px;
+  vertical-align: middle;
+  margin-left: 32px;
+}
+
+
 </style>
