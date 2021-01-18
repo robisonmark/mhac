@@ -1,33 +1,107 @@
 <template>
-  <div class="contentPad">
-    
-    <!-- <div class="bracket fourteenU">
-      <ul v-for="(game, index) in fourteenUBoys" :key="index">
-        <td>{{game.game}}</td>
-        <td>{{game.date}}</td>
-        <td>{{game.time}}</td>
-        <td>
-          <span v-html="game.matchup.team1"></span>
-          vs.
-          <span v-html="game.matchup.team2"></span>
-        </td>
-        <td class="final">
-          <template v-if="game.matchup.scoreTeam1">
-            {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-            <div>{{results(game.matchup)}}</div>
-          </template>
-          <template v-else>
-            --
-          </template>
-        </td>
-        <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-      </ul>
-    </div> -->
+  <div class="">
+    <header class="contentPad">
+      
+      <!-- CREATE A Tournament
+
+      
+      <br/>
+  
+      <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
+        <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
+      </ul> -->
+
+      <div class="buttonCon">
+        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+          <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
+          <span class="focused">Edit</span>
+        </div>
+
+        <div class="switch" v-if="edit" @click="edit = !edit">
+          <font-awesome-icon :icon="['fas', 'check']" class="icon"></font-awesome-icon>
+          <span class="focused">Done Editing</span>
+
+        </div>
+      </div>
+    </header>
+
+
+    <div class="contentPad">
+      <!-- <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
+        <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
+      </ul> -->
+      <editTable :columns="columns" :config="config" :tabledata="sixteenUBoys" v-model="tournamentGame" :edit="edit" >
+        
+        <template slot="tbody" v-if="!edit">
+          <table>
+            <thead>
+              <tr class="levelHead">
+                <td colspan="6">16U Boys</td>
+              <tr>
+              <tr>
+                <th>Game #</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Matchup</th> 
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(game, index) in sixteenUBoys" :key="index">
+                <td>{{game.game}}</td>
+                <td>{{game.date}}</td>
+                <td>{{game.time}}</td>
+                <td>
+                  <span v-html="game.matchup.team1"></span>
+                  <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
+                  vs.
+                  <span v-html="game.matchup.team2"></span>
+                  <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </template>
+        
+        <template slot="tbody" v-if="edit">
+          <tr v-for="(data,index) in sixteenUBoys" :key="index">
+            <td class="input-con">
+              {{data}}
+            </td>
+            <td class="input-con">
+              <input type="date" v-model="data.game_date" />
+            </td>
+            <td class="input-con">
+              <input type="time" v-model="data.game_time" />
+            </td>
+            <td class="input-con">
+              SELECT HIGH SEEDED SCHOOL
+            </td>
+            <td class="input-con">
+              <!-- <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox> -->
+              <input type='text' v-model="data.team1Seed" />
+            </td>         
+            <td class="input-con">
+              SELECT LOWER SEEDED SCHOOL
+            </td>
+            <td class="input-con">
+              <!-- <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox> -->
+              <input type='text' v-model="data.team2Seed" />
+            </td>   
+            <td class="input-con">
+              <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox>
+            </td>
+          </tr>
+        </template>
+      </editTable>
+    </div>
+
+
     <div class="tournamentSchedule">
       <button @click="save()">
         Save
       </button>
-        <table>
+        <!-- <table>
           <thead>
             <tr class="levelHead">
               <td colspan="6">14U Boys</td>
@@ -37,9 +111,7 @@
               <th>Date</th>
               <th>Time</th>
               <th>Matchup</th>
-              <!-- <th></th> -->
-              <!-- <th class="final">Final Score</th> -->
-              <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
+              <th>Level</th>
             </tr>
           </thead>
           <tbody>
@@ -54,46 +126,15 @@
                 <span v-html="game.matchup.team2"></span>
                 <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
               </td>
-              <!-- <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template> -->
-              <!-- </td> -->
-              <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
             </tr>
           </tbody>
-        </table>
+        </table>-->
 
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">16U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
+
               <!-- <th class="final">Final Score</th> -->
               <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in sixteenUBoys" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
-                vs.
-                <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td>
+            <!-- </tr>
+          </thead> -->
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -104,10 +145,10 @@
                 </template> -->
               <!-- </td> -->
               <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
-            </tr>
+            <!-- </tr>
           </tbody>
-        </table>
-
+        </table> -->
+<!-- 
         <table>
           <thead>
             <tr class="levelHead">
@@ -117,10 +158,10 @@
               <th>Game #</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Matchup</th>
+              <th>Matchup</th> -->
               <!-- <th class="final">Final Score</th> -->
               <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
-            </tr>
+            <!-- </tr>
           </thead>
           <tbody>
             <tr v-for="(game, index) in eighteenUBoys" :key="index">
@@ -133,7 +174,7 @@
                 vs.
                 <span v-html="game.matchup.team2"></span>
                 <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td>
+              </td> -->
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -144,11 +185,11 @@
                 </template> -->
               <!-- </td> -->
               <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
-            </tr>
+            <!-- </tr>
           </tbody>
-        </table>
+        </table> -->
 
-        <table>
+        <!-- <table>
           <thead>
             <tr class="levelHead">
               <td colspan="6">18U Girls</td>
@@ -157,16 +198,16 @@
               <th>Game #</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Matchup</th>
+              <th>Matchup</th> -->
               <!-- <th class="final">Final Score</th> -->
               <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
-            </tr>
+            <!-- </tr>
           </thead>
-          <tbody>
+          <tbody> -->
             <!-- <template>
               <tableRow v-model="game"></tableRow>
             </template> -->
-            <tr v-for="(game, index) in eighteenUGirls" :key="index">
+            <!-- <tr v-for="(game, index) in eighteenUGirls" :key="index">
               <td>{{game.game}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
@@ -176,7 +217,7 @@
                 vs.
                 <span v-html="game.matchup.team2"></span>
                 <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td>
+              </td> -->
               <!-- <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -187,27 +228,99 @@
                 </template> -->
               <!-- </td> -->
               <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
-            </tr>
+            <!-- </tr>
           </tbody>
-        </table>
+        </table> -->
       </div>
   </div>
 </template>
 
 <script>
 import { api } from '@/api/endpoints'
+
+import editTable from '@/components/editTable'
+import selectbox from '../selectbox'
+
 import _ from 'lodash'
+
+// mixins
+import { root } from '@/mixins/root'
 
 export default {
   data () {
     return {
       games: [],
-      oldBracket: []
+      oldBracket: [],
+      columns: [
+        {
+          name: 'Game',
+          field_name: 'game',
+          type: 'text'
+        },
+        {
+          name: 'Date',
+          field_name: 'date',
+          type: 'date'
+        },
+        {
+          name: 'Time',
+          field_name: 'time',
+          type: 'time'
+        },
+        {
+          name: 'Home Team',
+          field_name: 'matchup',
+          type: 'text'
+        },
+        {
+          name: 'Higher Seed',
+          field_name: 'matchup',
+          type: 'text'
+        },
+        {
+          name: 'Away Seed',
+          field_name: 'matchup',
+          type: 'text'
+        },
+        {
+          name: 'Lower Seed',
+          field_name: 'matchup.team2',
+          type: 'text'
+        },
+        {
+          name: 'Tournament',
+          field_name: 'activeTournaments',
+          type: 'select',
+          track_by: 'season'
+        }
+      ],
+      config: {
+        page: 'tournament'
+      },
+      tournament:[],
+      tournamentGame: {
+        
+      },
+      edit: false,
+      activeTournaments: []
     }
   },
   components: {
+    editTable: editTable,
+    selectbox: selectbox
   },
   computed: {
+    seasons () {
+      return this.$store.state.seasons
+    },
+    // tournaments () {
+    //   let t = []
+    //   api.getActiveTournaments().then(response => {
+    //     // this.activeTournaments = response.data
+    //     t = response.data
+    //   })
+    //   return t
+    // },
     levels () {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
@@ -228,9 +341,17 @@ export default {
   watch: {
   },
   created () {
+    this.getActiveTournaments()
     this.initTourney()
   },
   methods: {
+    getActiveTournaments() {
+      api.getActiveTournaments().then(response => {
+        response.data.forEach(season => {
+          this.activeTournaments.push(season)
+        })
+      })
+    },
     initTourney () {
       this.thinking = true
       // this.$router.push('/manage/chattanooga_patriots')
@@ -352,4 +473,55 @@ li.game{
   li.game-bottom{
     border-top:1px solid #aaa;
   }
+
+
+// header {
+//   display: flex;
+//   flex-flow: row wrap;
+//   justify-content: space-between;
+//   width: 100%;
+//   padding-top: 1rem;
+//   margin-bottom: .5rem;
+//   position: sticky;
+//     top: 0;
+//     z-index: 2;
+//     left: 0;
+//     background: #CFCDCD;
+//   .buttonCon {
+//     flex-grow: 1;
+//     display: flex;
+//     justify-content: flex-end;
+//     // height: 3rem;
+//   }
+// }
+
+table {
+  // margin-top: -40px;
+  &:before {
+    content: '';
+    display: block;
+    height: 40px;
+    width: 100%;
+    width: calc(100% + 2.4rem);
+    // border-top: 1.5px solid @teamColor;
+    // border-right: 2px solid @teamColor;
+    border-left: 2px solid transparent;
+    position: absolute;
+    -webkit-transform: skewX(-45deg);
+    transform: skewX(-45deg);
+    /* left: -23px; */
+    /* margin-top: 0.6rem; */
+    top: 0;
+    right: -20px;
+    z-index: 5;
+  }
+}
+
+#levels {
+  width: 200px;
+  vertical-align: middle;
+  margin-left: 32px;
+}
+
+
 </style>

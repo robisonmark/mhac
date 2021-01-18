@@ -457,6 +457,22 @@ export class api {
     })
   }
 
+  static async getActiveTournaments (body) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    return robros({
+      url: '/getActiveTournaments',
+      method: 'GET'
+    })
+  }
+
   static async removeGame (body) {
     return robros({
       url: '/deleteGame',
@@ -489,5 +505,7 @@ export class api {
       method: 'GET'
     })
   }
+
+  // static async getTournamentInformation
 
 }

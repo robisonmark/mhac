@@ -4,7 +4,7 @@
       <ul :style="cssVars">
         <router-link :to="{ path: '/admin/edit_frontpage'}" tag="li">Edit Front Page</router-link>
         <router-link :to="{ path: '/admin/tournament'}" tag="li">Manage Tournament</router-link>
-        
+        <router-link :to="{ path: '/manage/'}" tag="li">Manage Teams</router-link>
       </ul>
     </nav>
     <router-view class="admin" />
