@@ -2,7 +2,7 @@
    <div class="container">
      <div class="page-styles">
       <h2>MHAC Conference Tournament Information - 2021</h2>
-      <h5><a href="/static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download>Download Tournament Packet</a></h5>
+      <h5><a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">Download Tournament Packet</a></h5>
       <p>There will be four tournaments. The semi-final and championship games will be played at Madison Church of Christ, 106 Gallatin Pike N, Madison, TN 37115. The first round games of the tournament will be played at the higher seeds home gym once seeding has been determined.  We will be charging a gate fee to help offset the cost of the tournament.  Madison CoC will be hosting a concession stand there for those wanting a meal, snack or drink.
       </p>
 
@@ -22,7 +22,7 @@
           <li>6 years old and under will get in free</li>
         </ul>
 
-        There will be a total of 16 games in the tournament, Friday Feb 12 & 13th.
+        There will be a total of 16 games in the tournament, Friday Feb 12 & Saturday 13th.
       </p>
       <p>
         <b>Payment Methods</b>
@@ -32,8 +32,8 @@
          </ul>
 
       </p>
-
-        Please <a href="/static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download>download the tournament packet</a> for more information.</p>
+        Please <a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">download the tournament packet</a> for more information.
+      </p>
       
       <br />
 
@@ -60,11 +60,17 @@
               <td>{{game.game}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
-              <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+              <td >
+                <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                  vs.
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                </template>
+                <template v-else>
+                  <span > {{game.game_description}} </span>
+                </template>
               </td>
+              
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -99,9 +105,14 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                     <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                  vs.
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                </template>
+                <template v-else>
+                  <span > {{game.game_description}} </span>
+                </template>
               </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
@@ -137,9 +148,14 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+       <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                  vs.
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                </template>
+                <template v-else>
+                  <span > {{game.game_description}} </span>
+                </template>
               </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
@@ -175,9 +191,14 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                  vs.
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                </template>
+                <template v-else>
+                  <span > {{game.game_description}} </span>
+                </template>
               </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
