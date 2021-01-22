@@ -15,14 +15,17 @@
         <ul>
           <li>Daily Adult - $10</li>
           <li>Daily Student - $7</li>
-          <li>Families with 5 or more - $34</li>
-          <li>Tournament Adult(2 days) - $17</li>
-          <li>Tournament Student(2 days) - $11</li>
-          <li>Tournament Family with 5 or more - $60 </li>
+          <li>Families with 4 or more - $34</li>
+          <li>2 Day Tournament Adult(2 days) - $17</li>
+          <li>2 Day Tournament Student(2 days) - $11</li>
+          <li>2 Day Tournament Family with 4 or more - $50 </li>
+          <li>3 Day Tournament Adult - $24 </li>
+          <li>3 Day Tournament Student - $15 </li>
+          <li>3 Day Tournament Family 4 or more - $70 </li>
           <li>6 years old and under will get in free</li>
         </ul>
-
-        There will be a total of 16 games in the tournament, Friday Feb 12 & Saturday 13th.
+        
+        There will be a total of 25 games in the tournament, Feb 11th, 12th & 13th.
       </p>
       <p>
         <b>Payment Methods</b>
