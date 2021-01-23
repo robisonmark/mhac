@@ -30,8 +30,8 @@
       <!-- <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
         <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
       </ul> -->
-      <editTable :columns="columns" :config="config" :tabledata="sixteenUBoys" v-model="tournamentGame" :edit="edit" >
-        
+      <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" >
+<!--         
         <template slot="tbody" v-if="!edit">
           <table>
             <thead>
@@ -62,9 +62,81 @@
           </table>
 
         </template>
-        
+         -->
         <template slot="tbody" v-if="edit">
-          <tr v-for="(data,index) in sixteenUBoys" :key="index">
+          <tr v-for="(data, index) in games" :key="index">
+            <!-- <td>
+              {{data}}
+            </td> -->
+            <td class="input-con">
+              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="data.seasons"></selectbox>
+            </td>
+            <td class="input-con">
+              <input type="date" v-model="data.date" />
+            </td>
+            <td class="input-con">
+              <input type="time" v-model="data.time" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="data.matchup.team1Seed" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="data.matchup.team2Seed" />
+            </td>
+            <td>
+              {{data.matchup.team1}}
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="data.matchup.team1Score" />
+            </td>
+            <td>
+              {{data.matchup.team2}}
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="data.matchup.team2Score" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="data.matchup.winner_to" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="data.matchup.loser_to" />
+            </td>
+          </tr>
+          
+          <!-- <tr>
+
+            <td class="input-con">
+              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newTournamentGame.seasons"></selectbox>
+            </td>
+            <td class="input-con">
+              <input type="date" v-model="newTournamentGame.date" />
+            </td>
+            <td class="input-con">
+              <input type="time" v-model="newTournamentGame.time" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="newTournamentGame.matchup.team1Seed" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="newTournamentGame.matchup.team2Seed" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="newTournamentGame.matchup.team1Score" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="newTournamentGame.matchup.team2Score" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="newTournamentGame.matchup.winner_to" />
+            </td>
+            <td class="input-con">
+              <input type="int" v-model="newTournamentGame.matchup.loser_to" />
+            </td>
+          </tr> -->
+
+
+
+          <!-- <tr v-for="(data,index) in sixteenUBoys" :key="index">
             <td class="input-con">
               {{data}}
             </td>
@@ -79,19 +151,19 @@
             </td>
             <td class="input-con">
               <!-- <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox> -->
-              <input type='text' v-model="data.team1Seed" />
+              <!-- <input type='text' v-model="data.team1Seed" />
             </td>         
             <td class="input-con">
               SELECT LOWER SEEDED SCHOOL
             </td>
             <td class="input-con">
               <!-- <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox> -->
-              <input type='text' v-model="data.team2Seed" />
+              <!-- <input type='text' v-model="data.team2Seed" />
             </td>   
             <td class="input-con">
               <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox>
             </td>
-          </tr>
+          </tr> -->
         </template>
       </editTable>
     </div>
@@ -252,6 +324,11 @@ export default {
       games: [],
       oldBracket: [],
       columns: [
+        // {
+        //   name: 'Data',
+        //   field_name: 'Data',
+        //   type: 'text'
+        // },
         {
           name: 'Game',
           field_name: 'game',
@@ -268,39 +345,72 @@ export default {
           type: 'time'
         },
         {
-          name: 'Home Team',
-          field_name: 'matchup',
-          type: 'text'
-        },
-        {
-          name: 'Higher Seed',
-          field_name: 'matchup',
+          name: 'Home Seed',
+          field_name: 'matchup.team1Seed',
           type: 'text'
         },
         {
           name: 'Away Seed',
-          field_name: 'matchup',
+          field_name: 'matchup.team2Seed',
           type: 'text'
         },
         {
-          name: 'Lower Seed',
+          name: 'Home Team',
+          field_name: 'matchup.team1',
+          type: 'text'
+        },
+        {
+          name: 'Home Score',
+          field_name: 'matchup.team1Score',
+          type: 'text'
+        },
+        {
+          name: 'Away team',
           field_name: 'matchup.team2',
           type: 'text'
         },
         {
-          name: 'Tournament',
-          field_name: 'activeTournaments',
-          type: 'select',
-          track_by: 'season'
-        }
+          name: 'Away Score',
+          field_name: 'matchup.team2Score',
+          type: 'text'
+        },
+        {
+          name: 'Winner From Game',
+          field_name: 'matchup.winners_from',
+          type: 'text'
+        },
+        {
+          name: 'Loser From Game',
+          field_name: 'matchup.losers_from',
+          type: 'text'
+        },
       ],
       config: {
         page: 'tournament'
       },
       tournament:[],
-      tournamentGame: {
-        
+      newTournamentGame: {
+          game: 1, 
+          date: '', 
+          time: '', 
+          game_description: '', 
+          matchup: { 
+            team1: '', 
+            scoreTeam1: '', 
+            team1Seed: '', 
+            team2: '', 
+            scoreTeam2: '', 
+            team2Seed: '', 
+            winner_to: '', 
+            loser_to: '' 
+          }, 
+          location: { 
+            address: '', 
+            name: ''
+          }, 
+          seasons: {}
       },
+      tournamentGame: {},
       edit: false,
       activeTournaments: []
     }
