@@ -267,16 +267,16 @@ export default {
       return levels
     },
     fourteenUBoys () {
-      return this.games.filter(game => { return game.level === '14U Boys' })
+      return this.games.filter(game => { return game.seasons.level === '14U Boys' })
     },
     sixteenUBoys () {
-      return this.games.filter(game => { return game.level === '16U Boys' })
+      return this.games.filter(game => { return game.seasons.level === '16U Boys' })
     },
     eighteenUBoys () {
-      return this.games.filter(game => { return game.level === '18U Boys' })
+      return this.games.filter(game => { return game.seasons.level === '18U Boys' })
     },
     eighteenUGirls () {
-      return this.games.filter(game => { return game.level === '18U Girls' })
+      return this.games.filter(game => { return game.seasons.level === '18U Girls' })
     }
   },
   created () {
