@@ -97,7 +97,7 @@
               </thead>
               <tbody>
                 <tr v-for="player in roster" :key="player.id">
-                  <td v-html="player.number"></td>
+                  <td v-html="player.player_number"></td>
                   <td>{{player.first_name}} {{player.last_name}}</td>
                   <td v-html="player.position"></td>
                   <td v-html="player.age"></td>
@@ -217,7 +217,7 @@ export default {
 
           this.initLeveledSchedule(season[0].season_id, this.$route.params.slug)
         } else if (this.selectedSection === 'Roster') {
-          this.initLeveledRoster(newValue.season_id)
+          this.initLeveledRoster(newValue.team_id)
         }
       }
     },
@@ -227,7 +227,7 @@ export default {
         if (newValue === 'Schedule') {
           this.initLeveledSchedule(this.filterBy.team.season_team_id, this.$route.params.slug)
         } else if (newValue === 'Roster') {
-          this.initLeveledRoster(this.filterBy.team.season_id)
+          this.initLeveledRoster(this.filterBy.team.team_id)
         }
       }
     }
@@ -246,8 +246,9 @@ export default {
       await api.getTeams(slug)
         .then(response => {
           this.program = response.data[0]
-          this.initRoster(this.program.id)
           this.getSeasonTeams(this.$route.params.slug)
+          console.log(this.teamAssocLvl)
+          this.initRoster(this.teamAssocLvl.team_id)
         })
 
       // window.addEventListener('scroll', this.watchLogoPos)
@@ -270,6 +271,7 @@ export default {
     },
     initRoster (id) {
       api.getPlayers(id).then(response => {
+        console.log(id, response)
         // response.data.forEach(player => {
         //   player.number = player.number
         // })
@@ -277,8 +279,8 @@ export default {
         this.fullRoster = _.cloneDeep(this.roster)
       })
     },
-    getSeasonTeams (slug) {
-      api.getSeasonTeams(slug)
+    async getSeasonTeams (slug) {
+      await api.getSeasonTeams(slug)
         .then(response => {
           this.teamAssocLvl = response.data
 
@@ -291,13 +293,14 @@ export default {
     initLeveledRoster (lvlId) {
       api.getRoster(lvlId).then(response => {
         const rosterArr = []
-        this.fullRoster.forEach(player => {
+        console.log(response)
+        // this.fullRoster.forEach(player => {
           response.data.forEach(lvlPlayer => {
-            if (player.id === lvlPlayer.player_id) {
-              rosterArr.push(player)
-            }
+            // if (player.id === lvlPlayer.player_id) {
+              rosterArr.push(lvlPlayer)
+            // }
           })
-        })
+        // })
 
         this.roster = rosterArr
       })

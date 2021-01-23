@@ -3,25 +3,26 @@
      <div class="page-styles">
       <h2>MHAC Conference Tournament Information - 2021</h2>
       <h5><a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">Download Tournament Packet</a></h5>
-      <p>There will be four tournaments. The semi-final and championship games will be played at Madison Church of Christ, 106 Gallatin Pike N, Madison, TN 37115. The first round games of the tournament will be played at the higher seeds home gym once seeding has been determined.  We will be charging a gate fee to help offset the cost of the tournament.  Madison CoC will be hosting a concession stand there for those wanting a meal, snack or drink.
+      <p>There will be four tournaments. All games will be played at <a href='https://www.google.com/maps/place/106+Gallatin+Pike+N,+Madison,+TN+37115/@36.264061,-86.7130334,17z/data=!3m1!4b1!4m5!3m4!1s0x88644302d8537e4d:0x747b45d0cbfa0f87!8m2!3d36.264061!4d-86.7108447'> Madison Church of Christ, 106 Gallatin Pike N, Madison, TN 37115</a>. The first round games of the tournament will be played on Thursday.  The semi-finals on Friday, and tiger consolation and championship games on Saturday.  Madison CoC will be hosting a concession stand there for those wanting a meal, snack or drink.
       </p>
 
       <p> 
         The tournament schedule is based on 8 teams for 18U(HSV) boys, 6 teams for 16u(HSJV) boys, 7 teams for 14U(MSV) boys and 4 teams for 18U(HSV) girls.
       </p>
-
       <p>
-        <b>Gate fees:</b>
+        <b>Gate and Concession money</b>
+        <br />The MHAC Conference is covering all costs for the tournament(refs and gym floor).  Because of this we will be collecting the gate money and money from attendees.  We really need to make sure and support the tournament to help cover all the costs. 
+
+      </p>
+      <p>
+        <b>Gate fees</b>
         <ul>
           <li>Daily Adult - $10</li>
           <li>Daily Student - $7</li>
           <li>Families with 4 or more - $34</li>
-          <li>2 Day Tournament Adult(2 days) - $17</li>
-          <li>2 Day Tournament Student(2 days) - $11</li>
-          <li>2 Day Tournament Family with 4 or more - $50 </li>
-          <li>3 Day Tournament Adult - $24 </li>
-          <li>3 Day Tournament Student - $15 </li>
-          <li>3 Day Tournament Family 4 or more - $70 </li>
+          <li>Tournament Adult - $24 (On Friday the price drops to $17)</li>
+          <li>Tournament Student - $15 (On Friday the price drops to $11)</li>
+          <li>Tournament Family 4 or more - $70 (On Friday the price drops to $50) </li>
           <li>6 years old and under will get in free</li>
         </ul>
         
