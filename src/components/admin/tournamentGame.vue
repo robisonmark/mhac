@@ -133,7 +133,13 @@ export default {
 
     },
     lookupTeam (val) {
-      console.log(val)
+      if (val !== null) {
+        console.log(val)
+        api.getTeamByStandings(this.game.seasons.season_id, val).then(response => {
+          console.log(response.data.team_name)
+          this.game.matchup.team1 = response.data.team_name
+        })
+      }
     }
   },
   watch: {

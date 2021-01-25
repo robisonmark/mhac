@@ -27,61 +27,15 @@
         <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
       </ul> -->
       <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" >
-       <template slot="tbody" v-if="!edit">
-          <table>
- 
-          </table>
-
-        </template>
         
-        <template slot="tbody" v-if="edit">
+        <template slot="tbody">
           <!-- <tr v-for="(data, index) in games" :key="index"> -->
             <tournamentGame v-for="(data, index) in games" :game="data" :key="index" />
-            <!-- <td class="input-con">
-              <input type="int" v-model="data.game" />
-            </td>
-            <td class="input-con">
-              <input type="date" v-model="data.date" />
-            </td>
-            <td class="input-con">
-              <input type="time" v-model="data.time" />
-            </td>
-            <td class="input-con">
-              <input type="int" v-model="data.matchup.team1Seed" />
-            </td>
-
-            <td class="input-con">
-              {{data.matchup.team1}}
-            </td>
-            <td class="input-con">
-              <input type="int" v-model="data.matchup.team2Seed" />
-            </td> -->
-            <!-- <td class="input-con">
-              <input type="int" v-model="data.matchup.team1Score" />
-            </td> -->
-            <!-- <td class="input-con">
-              {{data.matchup.team2}}
-            </td> -->
-            <!-- <td class="input-con">
-              <input type="int" v-model="data.matchup.team2Score" />
-            </td> -->
-            <!-- <td class="input-con">
-              <input type='text' v-model="data.game_description"/>
-            </td>
-            <td class="input-con">
-              <input type="int" v-model="data.matchup.winner_to" />
-            </td>
-            <td class="input-con">
-              <input type="int" v-model="data.matchup.loser_to" />
-            </td>
-            <td class="input-con">
-              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="data.seasons"></selectbox>
-            </td> -->
-          <!-- </tr> -->
-
-          
-          <tournamentGame :game=newTournamentGame />
-          
+      
+            <!-- <template v-if="edit">
+              <tournamentGame :game=newTournamentGame />
+            </template>
+             -->
 
           <!-- <tr v-for="(data,index) in sixteenUBoys" :key="index">
             <td class="input-con">
@@ -269,6 +223,9 @@ export default {
     this.initTourney()
   },
   methods: {
+    toggleEdit () {
+      this.edit = !this.edit
+    },
     getActiveTournaments () {
       api.getActiveTournaments().then(response => {
         response.data.forEach(season => {
