@@ -1,44 +1,99 @@
 <template>
   <tr>
-    <td class="input-con">
-      <input type="int" v-model="game.game" />
-    </td>
-    <td class="input-con">
-      <input type="date" v-model="game.date" />
-    </td>
-    <td class="input-con">
-      <input type="time" v-model="game.time" />
-    </td>
-    <td class="input-con">
-      <input type="int" v-model="game.matchup.team1Seed" />
-    </td>
-    <td class="input-con">
-      <input type="int" v-model="game.matchup.team2Seed" />
-    </td>
-    <td class="input-con">
-      <input type="int" v-model="game.matchup.team1Score" />
-    </td>
-    <td class="input-con">
-      <input type="int" v-model="game.matchup.team2Score" />
-    </td>
-    <td class="input-con">
-      <input type="int" v-model="game.matchup.winner_to" />
-    </td>
-    <td class="input-con">
-      <input type="int" v-model="game.matchup.loser_to" />
-    </td>
-    <td class="input-con">
-      <selectbox
-        id="levels"
-        :options="seasons"
-        :trackby="'level'"
-        placeholder="Select Level"
-        v-model="game.seasons"
-      ></selectbox>
-    </td>
-    <td @click="save(newGame)">
-      <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
-    </td>
+    <template v-if="edit">
+      <td class="input-con">
+        <input type="int" v-model="game.game" />
+      </td>
+      <td class="input-con">
+        <input type="date" v-model="game.date" />
+      </td>
+      <td class="input-con">
+        <input type="time" v-model="game.time" />
+      </td>
+      <td class="input-con">
+        <input type='text' v-model="game.game_description"/>
+      </td>
+      <td class="input-con">
+        <input type="int" v-model="game.matchup.team1Seed" />
+      </td>
+      <td class="input-con">
+        {{game.matchup.team1}}
+      </td> 
+      <td class="input-con">
+        <input type="int" v-model="game.matchup.team2Seed" />
+      </td>
+      <td class="input-con">
+        {{game.matchup.team2}}
+      </td> 
+      <td class="input-con">
+        <input type="int" v-model="game.matchup.team1Score" />
+      </td>
+      <td class="input-con">
+        <input type="int" v-model="game.matchup.team2Score" />
+      </td>
+      <td class="input-con">
+        <input type="int" v-model="game.matchup.winner_to" />
+      </td>
+      <td class="input-con">
+        <input type="int" v-model="game.matchup.loser_to" />
+      </td>
+      <td class="input-con">
+        <selectbox
+          id="levels"
+          :options="seasons"
+          :trackby="'level'"
+          placeholder="Select Level"
+          v-model="game.seasons"
+        ></selectbox>
+      </td>
+      <td @click="save(game)">
+        <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+      </td>
+    </template>
+    <template v-if="!edit">
+      <td class="input-con">
+        {{game.game}}
+      </td>
+      <td class="input-con">
+        {{game.date}}
+      </td>
+      <td class="input-con">
+        {{game.time}}
+      </td>
+      <td class="input-con">
+        {{game.game_description}}
+      </td>
+      <td class="input-con">
+        {{game.matchup.team1Seed}}
+      </td>
+      <td class="input-con">
+        {{game.matchup.team1}}
+      </td> 
+      <td class="input-con">
+        {{game.matchup.team2Seed}}
+      </td>
+      <td class="input-con">
+        {{game.matchup.team2}}
+      </td> 
+      <td class="input-con">
+        {{game.matchup.team1Score}}
+      </td>
+      <td class="input-con">
+        {{game.matchup.team2Score}}
+      </td>
+      <td class="input-con">
+        {{game.matchup.winner_to}}
+      </td>
+      <td class="input-con">
+        {{game.matchup.loser_to}}
+      </td>
+      <td class="input-con">
+        {{game.seasons.level}}
+      </td>
+      <td @click="toggleEdit">
+        <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+      </td>
+    </template>
   </tr>
 </template>
 
@@ -54,6 +109,7 @@ export default {
   name: "tournamentGame",
   data() {
     return {
+      edit: false
     };
   },
   props: ["game"],
@@ -66,7 +122,14 @@ export default {
     }
   },
   methods: {
-    save () {
+    toggleEdit () {
+      console.log("Edit")
+      // this.$root.$emit('toggleEdit')
+      this.edit = !this.edit
+    },
+    save (game) {
+      console.log(game)
+      this.toggleEdit()
 
     },
     lookupTeam (val) {
