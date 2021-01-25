@@ -245,7 +245,7 @@ export default {
   methods: {
     initRoster () {
       if (this.$route.params.slug) {
-        api.getPlayers(this.$route.params.slug).then(response => {
+        api.getAdminPlayers(this.$route.params.slug).then(response => {
           this.roster = response.data
           this.fullRoster = _.cloneDeep(this.roster)
           // console.log(this.roster)
