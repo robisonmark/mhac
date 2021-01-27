@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <template v-if="edit">
+    <template v-if="edit === true || new_game === true">
       <td class="input-con">
         <input type="int" v-model="game.game" />
       </td>
@@ -46,11 +46,12 @@
           v-model="game.seasons"
         ></selectbox>
       </td>
-      <td @click="save(game)">
-        <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+      <td>
+        <font-awesome-icon :icon="['fas', 'save']" class="icon" @click="edit ? save(game): addGame(game)"></font-awesome-icon>
+        <!-- <font-awesome-icon :icon="['fas', 'redo']" class="icon" @click="undo(game)"></font-awesome-icon> -->
       </td>
     </template>
-    <template v-if="!edit">
+    <template v-if="!edit && !new_game">
       <td class="input-con">
         {{game.game}}
       </td>
@@ -90,9 +91,10 @@
       <td class="input-con">
         {{game.seasons.level}}
       </td>
-      <td @click="toggleEdit">
-        <font-awesome-icon :icon="['far', 'edit']" class="icon"></font-awesome-icon>
+      <td>
+        <font-awesome-icon :icon="['far', 'edit']" class="icon" @click="toggleEdit"></font-awesome-icon>
       </td>
+
     </template>
   </tr>
 </template>
@@ -112,7 +114,7 @@ export default {
       edit: false
     };
   },
-  props: ["game"],
+  props: ["game", "new_game"],
   components: {
     selectbox: selectbox,
   },
@@ -124,8 +126,13 @@ export default {
   methods: {
     toggleEdit () {
       console.log("Edit")
-      // this.$root.$emit('toggleEdit')
+      this.$root.$emit('toggleEdit')
       this.edit = !this.edit
+    },
+    addGame (game){
+      console.log("AddGame")
+      this.$emit('add-game', game)
+      this.$root.$emit('newGame')
     },
     save (game) {
       console.log(game)
