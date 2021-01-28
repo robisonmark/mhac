@@ -9,7 +9,6 @@
     </nav>
     <router-view class="admin" />
     <img class="bottom-logo" :src="greyLogo" />
-    
 
   </div>
 </template>
@@ -22,6 +21,7 @@ export default {
   name: 'admin',
   data () {
     return {
+      collapse: true,
       login: true,
       greyLogo: '',
       team: this.$route.params.slug,
@@ -195,7 +195,6 @@ li.game{
     border-top:1px solid #aaa;
   }
 
-
 .con-admin {
   // min-height: calc(100vh - 7rem);
   min-height: 100vh;
@@ -232,20 +231,20 @@ li.game{
       display: flex;
       align-items: center;
 
-      &:nth-child(even) {
-        background-color: grey;
-        color: #fff;
-      }
-      &:hover {
-        background-color: black;
-        // filter: brightness(90%);
-        color: #fff;
-      }
-    }
-    .router-link-active {
-      // background-color: @activeColor;
-    }
-  }
+  //     &:nth-child(even) {
+  //       background-color: grey;
+  //       color: #fff;
+  //     }
+  //     &:hover {
+  //       background-color: black;
+  //       // filter: brightness(90%);
+  //       color: #fff;
+  //     }
+  //   }
+  //   .router-link-active {
+  //     // background-color: @activeColor;
+  //   }
+  // }
   .bottom-logo {
     // position: absolute;
     position: fixed;

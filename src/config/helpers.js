@@ -1,5 +1,9 @@
 import { format } from 'date-fns'
 
+function generateBracket (count) {
+  console.log('implement this')
+}
+
 function formatDate (date) {
   return format(new Date(date), CONSTANTS.date_format)
 }

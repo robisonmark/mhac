@@ -9,14 +9,7 @@
       </ul> -->
 
       <div class="buttonCon">
-        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
-          <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
-          <span class="focused">Edit</span>
-        </div>
-
-        <div class="switch" v-if="edit" @click="edit = !edit">
-          <font-awesome-icon :icon="['fas', 'check']" class="icon"></font-awesome-icon>
-          <span class="focused">Done Editing</span>
+        <div class = "switch">
 
         </div>
       </div>
@@ -29,42 +22,21 @@
       <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" >
         
         <template slot="tbody">
-          <!-- <tr v-for="(data, index) in games" :key="index"> -->
+          
             <tournamentGame v-for="(data, index) in games" :game="data" :key="index" />
-      
-            <!-- <template v-if="edit">
-              <tournamentGame :game=newTournamentGame />
-            </template>
-             -->
+            <!-- <tournamentGame v-for="(data, index) in sixteenUBoys" :game="data" :key="index" />
+            <tournamentGame v-for="(data, index) in eighteenUBoys" :game="data" :key="index" />
+            <tournamentGame v-for="(data, index) in eighteenUGirls" :game="data" :key="index" /> -->
 
-          <!-- <tr v-for="(data,index) in sixteenUBoys" :key="index">
-            <td class="input-con">
-              {{data}}
-            </td>
-            <td class="input-con">
-              <input type="date" v-model="data.game_date" />
-            </td>
-            <td class="input-con">
-              <input type="time" v-model="data.game_time" />
-            </td>
-            <td class="input-con">
-              SELECT HIGH SEEDED SCHOOL
-            </td>
-            <td class="input-con"> -->
-              <!-- <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox> -->
-              <!-- <input type='text' v-model="data.team1Seed" />
-            </td>
-            <td class="input-con">
-              SELECT LOWER SEEDED SCHOOL
-            </td>
-            <td class="input-con"> -->
-              <!-- <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox> -->
-              <!-- <input type='text' v-model="data.team2Seed" />
-            </td>
-            <td class="input-con">
-              <selectbox id="tournaments" :options="levels" :trackby="'level'" placeholder="Select Level" v-model="data.season"></selectbox>
-            </td>
-          </tr> -->
+
+            <template v-if="newGame">
+              <tournamentGame :game=newTournamentGame :new_game=true @add-game="addGame" />
+            </template>
+            <div>
+              <font-awesome-icon :icon="['fas', 'plus']" class="icon" @click="newGame = !newGame"></font-awesome-icon>
+              Add Tournament Game
+            </div>
+          
         </template>
       </editTable>
     </div>
@@ -95,6 +67,7 @@ export default {
     return {
       games: [],
       oldBracket: [],
+      newGame: false,
       columns: [
         {
           name: 'Game',
@@ -112,13 +85,13 @@ export default {
           type: 'time'
         },
         {
-          name: 'Home Seed',
-          field_name: 'matchup.team1Seed',
+          name: 'Description',
+          field_name: 'Game Description',
           type: 'text'
         },
         {
-          name: 'Away Seed',
-          field_name: 'matchup.team2Seed',
+          name: 'Home Seed',
+          field_name: 'matchup.team1Seed',
           type: 'text'
         },
         {
@@ -127,13 +100,18 @@ export default {
           type: 'text'
         },
         {
-          name: 'Home Score',
-          field_name: 'matchup.team1Score',
+          name: 'Away Seed',
+          field_name: 'matchup.team2Seed',
           type: 'text'
         },
         {
           name: 'Away team',
           field_name: 'matchup.team2',
+          type: 'text'
+        },
+        {
+          name: 'Home Score',
+          field_name: 'matchup.team1Score',
           type: 'text'
         },
         {
@@ -149,6 +127,11 @@ export default {
         {
           name: 'Loser From Game',
           field_name: 'matchup.losers_from',
+          type: 'text'
+        },
+        {
+          name: 'Tournament Level',
+          field_name: 'tournament',
           type: 'text'
         }
       ],
@@ -219,20 +202,22 @@ export default {
   watch: {
   },
   created () {
-    this.getActiveTournaments()
+    // this.getActiveTournaments()
     this.initTourney()
+    this.$root.$on('toggleEdit', () => { this.edit = !this.edit })
+    this.$root.$on('newGame', () => { this.newGame = !this.newGame })
   },
   methods: {
     toggleEdit () {
       this.edit = !this.edit
     },
-    getActiveTournaments () {
-      api.getActiveTournaments().then(response => {
-        response.data.forEach(season => {
-          this.activeTournaments.push(season)
-        })
-      })
-    },
+    // getActiveTournaments () {
+    //   api.getActiveTournaments().then(response => {
+    //     response.data.forEach(season => {
+    //       this.activeTournaments.push(season)
+    //     })
+    //   })
+    // },
     initTourney () {
       this.thinking = true
       // this.$router.push('/manage/chattanooga_patriots')
@@ -295,6 +280,10 @@ export default {
       } else {
         return matchup.team2
       }
+    },
+    addGame(game){
+      console.log(game)
+      this.games.push(game)
     }
   }
 }

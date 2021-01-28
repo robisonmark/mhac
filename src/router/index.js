@@ -12,6 +12,8 @@ import stats from '@/components/front-pages/stats'
 import schools from '@/components/front-pages/schools'
 import contact from '@/components/front-pages/contact'
 
+import bracket from '@/components/bracket'
+
 // Team Management Components
 import TeamManagement from '@/components/TeamManagement'
 import teamhome from '@/components/team-management/teamhome'
@@ -42,6 +44,16 @@ export const router = new Router({
       path: '/',
       name: 'home',
       component: home,
+      meta: {
+        requiresAuth: false,
+        section: 'public',
+        title: 'MHAC | Midsouth Homeschool Athletics'
+      }
+    },
+    {
+      path: '/test',
+      name: 'test tourny',
+      component: bracket,
       meta: {
         requiresAuth: false,
         section: 'public',
