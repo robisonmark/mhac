@@ -24,6 +24,10 @@
         <template slot="tbody">
           
             <tournamentGame v-for="(data, index) in games" :game="data" :key="index" />
+            <!-- <tournamentGame v-for="(data, index) in sixteenUBoys" :game="data" :key="index" />
+            <tournamentGame v-for="(data, index) in eighteenUBoys" :game="data" :key="index" />
+            <tournamentGame v-for="(data, index) in eighteenUGirls" :game="data" :key="index" /> -->
+
 
             <template v-if="newGame">
               <tournamentGame :game=newTournamentGame :new_game=true @add-game="addGame" />
@@ -198,7 +202,7 @@ export default {
   watch: {
   },
   created () {
-    this.getActiveTournaments()
+    // this.getActiveTournaments()
     this.initTourney()
     this.$root.$on('toggleEdit', () => { this.edit = !this.edit })
     this.$root.$on('newGame', () => { this.newGame = !this.newGame })
@@ -207,13 +211,13 @@ export default {
     toggleEdit () {
       this.edit = !this.edit
     },
-    getActiveTournaments () {
-      api.getActiveTournaments().then(response => {
-        response.data.forEach(season => {
-          this.activeTournaments.push(season)
-        })
-      })
-    },
+    // getActiveTournaments () {
+    //   api.getActiveTournaments().then(response => {
+    //     response.data.forEach(season => {
+    //       this.activeTournaments.push(season)
+    //     })
+    //   })
+    // },
     initTourney () {
       this.thinking = true
       // this.$router.push('/manage/chattanooga_patriots')

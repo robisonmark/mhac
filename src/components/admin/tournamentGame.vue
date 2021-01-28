@@ -26,10 +26,10 @@
         {{game.matchup.team2}}
       </td> 
       <td class="input-con">
-        <input type="int" v-model="game.matchup.team1Score" />
+        <input type="int" v-model="game.matchup.scoreTeam1" />
       </td>
       <td class="input-con">
-        <input type="int" v-model="game.matchup.team2Score" />
+        <input type="int" v-model="game.matchup.scoreTeam2" />
       </td>
       <td class="input-con">
         <input type="int" v-model="game.matchup.winner_to" />
@@ -77,10 +77,10 @@
         {{game.matchup.team2}}
       </td> 
       <td class="input-con">
-        {{game.matchup.team1Score}}
+        {{game.matchup.scoreTeam1}}
       </td>
       <td class="input-con">
-        {{game.matchup.team2Score}}
+        {{game.matchup.scoreTeam2}}
       </td>
       <td class="input-con">
         {{game.matchup.winner_to}}
@@ -135,16 +135,26 @@ export default {
       this.$root.$emit('newGame')
     },
     save (game) {
+      if (game.matchup.scoreTeam1 && game.matchup.scoreTeam2) {
+        api.updateTournamentGame(game).the(response =>{
+          
+        })
+      }
       console.log(game)
       this.toggleEdit()
 
     },
-    lookupTeam (val) {
-      if (val !== null) {
-        console.log(val)
-        api.getTeamByStandings(this.game.seasons.season_id, val).then(response => {
-          console.log(response.data.team_name)
-          this.game.matchup.team1 = response.data.team_name
+    lookupTeam (teamSeed, season_id, team) {
+      // console.log("LookupTeam:", teamSeed, this.game.seasons.season_id)
+      if (teamSeed !== null && this.game.seasons.season_id !== undefined) {
+        api.getTeamByStandings(this.game.seasons.season_id, teamSeed).then(response => {
+          // console.log("Lookup team", team, response.data.team_name)
+          if (team === 1) {
+            this.game.matchup.team1 = response.data.team_name
+            }
+          if (team === 2) {
+            this.game.matchup.team2 = response.data.team_name
+            }
         })
       }
     }
@@ -152,17 +162,26 @@ export default {
   watch: {
     'game.matchup.team1Seed': {
       handler (newValue) {
-        this.lookupTeam(newValue)
+        if (this.game.seasons.season_id !== undefined){
+          this.lookupTeam(newValue, this.game.seasons.season_id, 1)
+        }
       }
     },
     'game.matchup.team2Seed': {
       handler (newValue) {
-        this.lookupTeam(newValue)
+        if (this.game.seasons.season_id !== undefined){
+          this.lookupTeam(newValue, this.game.seasons.season_id, 2)
+        }
       }
     },
     'game.seasons': {
       handler (newValue) {
-        this.lookupTeam(newValue)
+        if ( this.game.matchup.team1Seed !== undefined ) {
+          this.lookupTeam(this.game.matchup.team1Seed, newValue.season_id, 1)
+        }
+        if ( this.game.matchup.team2Seed !== undefined ) {
+          this.lookupTeam(this.game.matchup.team2Seed, newValue.season_id, 2)
+        }
       }
     },
   }
