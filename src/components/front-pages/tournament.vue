@@ -65,7 +65,7 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td >
-                <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
                   vs.
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
@@ -109,7 +109,7 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                     <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                     <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
                   vs.
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
@@ -152,7 +152,7 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-       <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
                   vs.
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
@@ -195,7 +195,7 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
                   vs.
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
@@ -349,4 +349,8 @@ table {
   background-color: rgba(39,132,195,1);
   color: #fff;
 }
+
+// @media @phone {
+
+// }
 </style>
