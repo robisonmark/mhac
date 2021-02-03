@@ -36,6 +36,16 @@
          </ul>
 
       </p>
+      <p>
+        <b>We need your help!</b>
+        <br />
+          As the tournament approaches we are making plans to provide the best experience for your students. We have volunteer positions available for running the camera or operating the gate. Below you will find a link to the signup page where you can select to fill a time slot.   
+        <br />
+        Click the link to sign-up below.
+        <br />
+        <a href="https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021" target="_blank"><img src="https://www.signupgenius.com/images/sign-up-now1.gif" width="150" height="90" border="0" alt="Sign Up!"></a>
+      </p>
+      <p>
         Please <a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">download the tournament packet</a> for more information.
       </p>
       
@@ -65,7 +75,7 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td >
-                <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
                   vs.
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
@@ -109,7 +119,7 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                     <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                     <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
                   vs.
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
@@ -152,7 +162,7 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-       <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
                   vs.
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
@@ -195,7 +205,7 @@
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                <template v-if="game.matchup.team1 !== null || game.matchup.team2 !== null">
+                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
                   vs.
                   <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
@@ -349,4 +359,8 @@ table {
   background-color: rgba(39,132,195,1);
   color: #fff;
 }
+
+// @media @phone {
+
+// }
 </style>
