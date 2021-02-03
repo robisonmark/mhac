@@ -230,6 +230,8 @@ li.game{
       height: 3rem;
       display: flex;
       align-items: center;
+    }
+  }
 
   //     &:nth-child(even) {
   //       background-color: grey;
