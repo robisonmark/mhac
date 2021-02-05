@@ -1,26 +1,21 @@
 <template>
   <div class="brackets">
-    <div class="level dropdown">
-      <select v-model="level">
-        <option :value="level" v-for="level in levels" :key="level.season_id">{{level.level}}</option>
-      </select>
-    </div>
-    <!-- <template v-if="Object.keys(bracketByRound).length >= 1"> -->
+    <template v-if="bracketByRound">
       <div class="container" v-for="(lvlRound, idx) in bracketByRound" :key="idx">
         <!-- add class split-one for left side bracket -->
         <!-- add class split-two for right side of bracket -->
+        {{bracketByRound}}
         <div class="split split-one">
-          <div v-for="(round, index) in lvlRound" :key="index" class="round current" :class='`round-${index}`'>
+          <!-- <div v-for="(round, index) in Object.keys(lvlRound)" :key="index" class="round current" :class='`round-${index}`'>
             {{round}}
             <div class="round-container">
               <div class="round-details">
                 Round {{index}}
                 <br>
-                <!-- <span class="date">Feburary 18</span> -->
               </div>
               <div class="round-matches">
-                <div v-for="game in round" :key="game.matchupKey" class="matchup">
-
+                <div v-for="game in lvlRound[round]" :key="game.matchupKey" class="matchup">
+                  <div v-html="game"></div>
                   <template v-if="game.seeds.includes('Bye')">
                     <div></div>
                     <div></div>
@@ -28,12 +23,12 @@
                   </template>
                   <template v-else>
                     <div class="team team-top">
-                      <span class="team-seed">{{game.gameInfo.matchup.team1Seed}}</span>
-                      {{game.gameInfo.matchup.team1}}
+                      <span class="team-seed">{{(game.gameInfo.matchup.team1Seed) ? game.gameInfo.matchup.team1Seed : '' }}</span>
+                      {{(game.gameInfo.matchup.team1) ? game.gameInfo.matchup.team1 : ''}}
                     </div>
                     <div class="team team-bottom">
-                      <span class="team-seed">{{game.gameInfo.matchup.team2Seed}}</span>
-                      {{game.gameInfo.matchup.team2}}
+                      <span class="team-seed">{{(game.gameInfo.matchup.team2Seed) ? game.gameInfo.matchup.team2Seed : '' }}</span>
+                      {{(game.gameInfo.matchup.team2) ? game.gameInfo.matchup.team2 : ''}}
                     </div>
                     <div class="game">
                       <div class="game-number">Game {{game.gameInfo.game}}</div>
@@ -43,10 +38,10 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
-    <!-- </template> -->
+    </template>
   </div>
 </template>
 
@@ -78,26 +73,8 @@ export default {
     }
   },
 
-  watch: {
-    level: {
-      deep: true,
-      handler (newValue) {
-        if (newValue.season_id) {
-          this.getTeamCount(newValue.season_id)
-            .then(() => {
-              this.round = 1
-              this.seeds = [1, 2]
-              this.bracketByRound = {}
-              this.bracketMatchups = []
-              this.getBracket(this.teamCount)
-            })
-        }
-      }
-    }
-  },
-
-  created () {
-    this.initTourney()
+  async created () {
+    await this.initTourney()
     // this.getBracket(this.teamCount)
   },
 
@@ -105,42 +82,38 @@ export default {
     async getTeamCount (seasonId) {
       return await api.getTeamCount(seasonId).then(response => {
         this.teamCount = response.data
-        if (this.level.level === '14U Boys') {
-          this.teamCount -= 1
-        }
+        // if (this.level.level === '14U Boys') {
+        //   this.teamCount -= 1
+        // }
         return this.teamCount
       })
     },
 
     async initTourney () {
       const brackets = {}
-      await api.getTournamentInformation().then(response => {
-        this.games = groupBy(response.data.games, 'seasons.level')
+      await api.getTournamentInformation()
+        .then(async (response) => {
+          this.games = await groupBy(response.data.games, 'seasons.level')
 
-        this.bracketByRound = {}
-        this.$store.state.seasons.forEach(level => {
-          this.getTeamCount(level.season_id).then(async (teamCount) => {
-            this.round = 1
-            this.seeds = [1, 2]
-            this.bracketMatchups = []
+          this.bracketByRound = {}
+          this.$store.state.seasons.forEach(level => {
+            this.getTeamCount(level.season_id).then(async (teamCount) => {
+              console.log(teamCount)
+              this.round = 1
+              this.seeds = [1, 2]
+              this.bracketMatchups = []
 
-            brackets[level.level] = await this.getBracket(teamCount)
-            // write get bracket to return what I need? Make it a second function to save some sprall with better naming
-            // brackets[level.level] = { ...brackets[level.level], ...this.games[level.level] }
-            for (var i = 0; brackets[level.level].length > i; i++) {
-              brackets[level.level][i].gameInfo = this.games[level.level].filter(game => game.matchup.team1Seed == brackets[level.level][i].seeds[0] || brackets[level.level][i].seeds[1])[0]
-            }
-            this.bracketByRound[level.level] = groupBy(brackets[level.level], 'roundNo')
+              brackets[level.level] = await this.getBracket(teamCount)
+              for (var i = 0; brackets[level.level].length > i; i++) {
+                brackets[level.level][i].gameInfo = this.games[level.level].filter(game => brackets[level.level][i].gameNo === game.logical_game_number)[0]
+              }
+              this.bracketByRound[level.level] = groupBy(brackets[level.level], 'roundNo')
+            })
           })
         })
-      })
         .catch(err => {
           console.log(err)
         })
-
-      console.log(brackets)
-      // this.bracketsByRound = brackets
-      // this.bracketsByRound = groupBy(brackets, 'roundNo')
     },
 
     getPerfectBracketDimensions (x) {
