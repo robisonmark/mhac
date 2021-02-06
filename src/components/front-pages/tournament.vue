@@ -26,7 +26,7 @@
           <li>6 years old and under will get in free</li>
         </ul>
         
-        There will be a total of 25 games in the tournament, Feb 11th, 12th & 13th.
+        There will be a total of 22 games in the tournament, Feb 11th, 12th & 13th.
       </p>
       <p>
         <b>Payment Methods</b>
@@ -71,7 +71,7 @@
           </thead>
           <tbody>
             <tr v-for="(game, index) in fourteenUBoys" :key="index">
-              <td>{{game.game}}</td>
+              <td>{{game.logical_game_number}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td >
@@ -115,7 +115,7 @@
           </thead>
           <tbody>
             <tr v-for="(game, index) in sixteenUBoys" :key="index">
-              <td>{{game.game}}</td>
+              <td>{{game.logical_game_number}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
@@ -158,7 +158,7 @@
           </thead>
           <tbody>
             <tr v-for="(game, index) in eighteenUBoys" :key="index">
-              <td>{{game.game}}</td>
+              <td>{{game.logical_game_number}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
@@ -201,7 +201,7 @@
           </thead>
           <tbody>
             <tr v-for="(game, index) in eighteenUGirls" :key="index">
-              <td>{{game.game}}</td>
+              <td>{{game.logical_game_number}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
