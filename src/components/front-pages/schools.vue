@@ -4,6 +4,7 @@
       <div class="logo-color col">
         <!-- <div class="image-con"> -->
           <img v-if="program.logo_color" :src="'/static/color-team-logos/' + program.logo_color" :alt="program.team_name + ' ' + program.team_mascot"/>
+          
         <!-- </div> -->
       </div>
       <div class="col-8 top-layer">
@@ -295,11 +296,9 @@ export default {
         const rosterArr = []
         console.log(response)
         // this.fullRoster.forEach(player => {
-          response.data.forEach(lvlPlayer => {
-            // if (player.id === lvlPlayer.player_id) {
-              rosterArr.push(lvlPlayer)
-            // }
-          })
+        response.data.forEach(lvlPlayer => {
+          rosterArr.push(lvlPlayer)
+        })
         // })
 
         this.roster = rosterArr
