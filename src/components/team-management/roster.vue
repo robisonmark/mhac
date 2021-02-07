@@ -21,7 +21,6 @@
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
         <template slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
-
             <td class="stat first">
               <input type="number" min="0" v-model="player.player_number" @input="addToUpdateList(player)" />
             </td>
@@ -41,7 +40,10 @@
               <input type="date" v-model="player.birth_date"  @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.height" @input="addToUpdateList(player)" />
+              <input type="text" v-model="player.height.feet" @input="addToUpdateList(player)" />
+            </td>
+            <td class="stat">
+              <input type="text" v-model="player.height.inches" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
               <multiselect v-model="player.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true" @input="addToUpdateList(player)"></multiselect>
@@ -68,7 +70,10 @@
               <input type="date" v-model="newPlayer.birth_date" />
             </td>
             <td class="stat">
-              <input type="text" v-model="newPlayer.height" />
+              <input type="text" v-model="newPlayer.height.feet" />
+            </td>
+            <td class="stat">
+              <input type="text" v-model="newPlayer.height.inches" />
             </td>
             <td class="stat">
               <multiselect v-model="newPlayer.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true"></multiselect>
@@ -145,10 +150,16 @@ export default {
           type: 'date'
         },
         {
-          name: 'Height',
+          name: 'Feet',
           icon: '',
-          field_name: 'height',
-          type: 'text'
+          field_name: 'feet',
+          type: 'int'
+        },
+        {
+          name: 'Inches',
+          icon: '',
+          field_name: 'inches',
+          type: 'int'
         },
         {
           name: 'Levels',
@@ -274,7 +285,10 @@ export default {
         id: null,
         position: '',
         birth_date: '',
-        height: '',
+        height: {
+          feet: '',
+          inches: ''
+        },
         team: this.$store.state.user.team_id,
         season_roster: [],
         person_type: 1
