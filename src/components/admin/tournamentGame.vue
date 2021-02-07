@@ -135,15 +135,19 @@ export default {
       this.$root.$emit('newGame')
     },
     save (game) {
-      if (game.matchup.scoreTeam1 && game.matchup.scoreTeam2) {
-        api.updateTournamentGame(game).the(response =>{
+        api.updateTournamentGame(game).then(response => {
+          if (response.status === 200) {
+            console.log(response)
+            if (game.matchup.scoreTeam1 > game.matchup.scoreTeam2) {
+              this.$emit('lookup', game )
+            }
+          }
           
         })
-      }
-      console.log(game)
+        console.log(game)
       this.toggleEdit()
 
-    },
+      },
     lookupTeam (teamSeed, season_id, team) {
       // console.log("LookupTeam:", teamSeed, this.game.seasons.season_id)
       if (teamSeed !== null && this.game.seasons.season_id !== undefined) {
