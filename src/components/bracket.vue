@@ -1,21 +1,18 @@
 <template>
   <div class="brackets">
-    <template v-if="bracketByRound">
       <div class="container" v-for="(lvlRound, idx) in bracketByRound" :key="idx">
+        <div v-html="idx"></div>
         <!-- add class split-one for left side bracket -->
         <!-- add class split-two for right side of bracket -->
-        {{bracketByRound}}
         <div class="split split-one">
-          <!-- <div v-for="(round, index) in Object.keys(lvlRound)" :key="index" class="round current" :class='`round-${index}`'>
-            {{round}}
+          <div v-for="(round, index) in lvlRound" :key="index" class="round current" :class='`round-${index}`'>
             <div class="round-container">
               <div class="round-details">
                 Round {{index}}
                 <br>
               </div>
               <div class="round-matches">
-                <div v-for="game in lvlRound[round]" :key="game.matchupKey" class="matchup">
-                  <div v-html="game"></div>
+                <div v-for="game in round" :key="game.matchupKey" class="matchup">
                   <template v-if="game.seeds.includes('Bye')">
                     <div></div>
                     <div></div>
@@ -23,25 +20,24 @@
                   </template>
                   <template v-else>
                     <div class="team team-top">
-                      <span class="team-seed">{{(game.gameInfo.matchup.team1Seed) ? game.gameInfo.matchup.team1Seed : '' }}</span>
-                      {{(game.gameInfo.matchup.team1) ? game.gameInfo.matchup.team1 : ''}}
+                      <span class="team-seed">{{(game.gameInfo) ? game.gameInfo.matchup.team1Seed : '' }}</span>
+                      {{(game.gameInfo) ? game.gameInfo.matchup.team1 : ''}}
                     </div>
                     <div class="team team-bottom">
-                      <span class="team-seed">{{(game.gameInfo.matchup.team2Seed) ? game.gameInfo.matchup.team2Seed : '' }}</span>
-                      {{(game.gameInfo.matchup.team2) ? game.gameInfo.matchup.team2 : ''}}
+                      <span class="team-seed">{{(game.gameInfo) ? game.gameInfo.matchup.team2Seed : '' }}</span>
+                      {{(game.gameInfo) ? game.gameInfo.matchup.team2 : ''}}
                     </div>
                     <div class="game">
-                      <div class="game-number">Game {{game.gameInfo.game}}</div>
-                      <div class="game-time">{{game.gameInfo.time}}</div>
+                      <!-- <div class="game-number">Game {{game.gameInfo.game}}</div> -->
+                      <!-- <div class="game-time">{{game.gameInfo.time}}</div> -->
                     </div>
                   </template>
                 </div>
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
       </div>
-    </template>
   </div>
 </template>
 
@@ -59,9 +55,9 @@ export default {
       byesRemaining: 0,
       games: [],
       level: '',
+      loaded: false,
       round: 1,
       seeds: [1, 2],
-      teamCount: 7,
       totalGamesRoundOne: 0
     }
   },
@@ -75,17 +71,14 @@ export default {
 
   async created () {
     await this.initTourney()
-    // this.getBracket(this.teamCount)
   },
 
   methods: {
     async getTeamCount (seasonId) {
       return await api.getTeamCount(seasonId).then(response => {
-        this.teamCount = response.data
-        // if (this.level.level === '14U Boys') {
-        //   this.teamCount -= 1
-        // }
-        return this.teamCount
+        const count = response.data - 1
+        console.log(count)
+        return count
       })
     },
 
@@ -95,19 +88,19 @@ export default {
         .then(async (response) => {
           this.games = await groupBy(response.data.games, 'seasons.level')
 
-          this.bracketByRound = {}
           this.$store.state.seasons.forEach(level => {
             this.getTeamCount(level.season_id).then(async (teamCount) => {
-              console.log(teamCount)
+              // console.log(teamCount)
               this.round = 1
               this.seeds = [1, 2]
               this.bracketMatchups = []
 
               brackets[level.level] = await this.getBracket(teamCount)
               for (var i = 0; brackets[level.level].length > i; i++) {
-                brackets[level.level][i].gameInfo = this.games[level.level].filter(game => brackets[level.level][i].gameNo === game.logical_game_number)[0]
+                brackets[level.level][i].gameInfo = this.games[level.level].filter(game => brackets[level.level][i].seeds.includes(parseInt(game.matchup.team1Seed)))[0]
               }
-              this.bracketByRound[level.level] = groupBy(brackets[level.level], 'roundNo')
+              brackets[level.level] = groupBy(brackets[level.level], 'roundNo')
+              this.$set(this.bracketByRound, level.level, brackets[level.level])
             })
           })
         })
@@ -117,7 +110,6 @@ export default {
     },
 
     getPerfectBracketDimensions (x) {
-      // Currently Only Used Internally to this method
       function getBaseLog (x, y) {
         return Math.log(y) / Math.log(x)
       }
@@ -185,7 +177,7 @@ export default {
         }, [])
 
         const nextGame = nextInc + i > base - 1 ? null : nextInc + i
-        const teams = this.getSeedForGame(isBye, i)
+        const teams = this.getSeedForGame(isBye, i, base)
 
         if (!isBye) gameNo++
 
@@ -208,15 +200,13 @@ export default {
         }
       }
 
-      // this.bracketByRound = groupBy(this.bracketMatchups, 'roundNo')
-
       return this.bracketMatchups
     },
 
-    getSeedForGame (isBye, currentGame) {
+    getSeedForGame (isBye, currentGame, teamCount) {
       const self = this
       function stringSeed () {
-        if (self.seeds[0] > self.teamCount) {
+        if (self.seeds[0] > teamCount) {
           self.seeds.shift()
           return 'Bye'
         } else {
