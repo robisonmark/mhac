@@ -2,20 +2,20 @@
   <div class="container">
     <div class="page-styles">
       <div class="row print-only align-items-start justify-content-between">
-          <div class="col">
-            <h2>2019 - 2020 Schedule</h2>
-          </div>
-          <div class="col right">
-            <div>{{filterBy.team.name}}</div>
-            <div>{{filterBy.level.level}}</div>
-          </div>
+        <div class="col">
+          <h2>2020 - 2021 Schedule</h2>
         </div>
+        <div class="col right">
+          <div>{{filterBy.team.name}}</div>
+          <div>{{filterBy.level.level}}</div>
+        </div>
+      </div>
       <div class="col-12">
         <div class="row filter-bar">
-          <div class="col-4">
-            <h2>2019 - 2020 Schedule</h2>
+          <div class="col-md-4">
+            <h2>2020 - 2021 Schedule</h2>
           </div>
-          <div class="col-6">
+          <div class="col-md-6">
             <div class="filters">
               <!-- <div class="custom-select" @click="showDatePicker = !showDatePicker, showTeams = false, showLevels = false">
                 <div disabled>All Dates</div>
@@ -35,7 +35,7 @@
                 </div>
               </div>
 
-              <div class="custom-select" @click="showTeams = !showTeams, showDatePicker = false, showLevels = false" v-show="filterBy.level.season_id !== ''">
+              <div class="custom-select" :disabled="filterBy.level.season_id === ''" @click="showTeams = !showTeams, showDatePicker = false, showLevels = false">
                 <div disabled>{{filterBy.team.name}}</div>
                 <div class="options-menu">
                   <template>
@@ -45,16 +45,83 @@
                   </template>
                 </div>
               </div>
+
+              <div class="holder"></div>
             </div>
           </div>
-          <div class="col-2 text-right">
+          <div class="col-md-2 text-right">
             <div class="button ghost print" @click="print()">
               <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
             </div>
           </div>
         </div>
       </div>
-      <div class="col content">
+      <div class="content">
+        <table>
+          <tbody>
+            <tr class="sticky">
+              <td class="firstPadding">Date/Time</td>
+              <td></td>
+              <td class="text-center">Away</td>
+              <td></td>
+              <td class="text-center">Home</td>
+              <td></td>
+              <td class="location text-right lastPadding"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <template v-if="games.length >= 1">
+              <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in games" :key="game.game_id">
+                <td class="date">
+                  {{ game.game_date }}
+                  <div class="time">{{game.game_time}}</div>
+                </td>
+
+                <!-- AWAY TEAM -->
+                <td class="score" :class="checkResult(game.final_scores.away, game.final_scores.home)">
+                  {{game.final_scores.away}}
+                </td>
+                <td class="team_info">
+                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.team_name).logo_color" />
+                  <div class="team_name" :class="checkResult(game.final_scores.away_score, game.final_scores.home_score)">{{game.away_team.team_name}}</div>
+                  <span class="level" v-if="game.away_team.level_name" v-html="game.away_team.level_name"></span>
+                </td>
+                  <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
+                  {{game.final_scores.away_score}}
+                </td>
+                <td><span class="at">@</span></td>
+
+                <!-- HOME TEAM -->
+                <td class="team_info">
+                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.team_name).logo_color" />
+                  <div class="team_name" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">{{game.home_team.name}}</div>
+                  <span class="level" v-if="game.home_team.level_name" v-html="game.home_team.level_name"></span>
+                </td>
+                <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
+                  {{game.final_scores.home_score}}
+                </td>
+
+                <!-- <td class="location text-right">
+                  <div>{{game.home_team.address_name}}</div>
+                  <br/>
+                  <span class="address" :href="'https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip" @click.stop="goToMap('https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip)">
+                    <div>{{game.home_team.address_lines}}</div>
+                    <div>{{game.home_team.city_state_zip}}</div>
+                  </span>
+                </td> -->
+              </router-link>
+            </template>
+            <template v-else>
+              <tr>
+                <td colspan="7" align="center">
+                  There are currently no games on the schedule <em v-if="filterBy.team.slug !== '' || filterBy.level.id !== ''">that match your criteria</em>, please keep checking back.
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      <!-- </div> -->
+      <!-- <div class="col content">
         <div class="row">
           <div class="col-2">
             Date/Time
@@ -74,23 +141,23 @@
           <div class="col-3 text-right">
             <font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location
           </div>
-        </div>
+        </div> -->
 
-        <template v-if="games.length >= 1">
+        <!-- <template v-if="games.length >= 1">
           <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.id }}" tag="div" class="row game" v-for="game in games" :key="game.game_id">
             <div class="col-2 date">
               {{game.game_date}}
-              <div class="time">{{game.game_time}}</div>
+              <div class="time">{{game.game_time}}</div> -->
 
               <!-- {{game.game_date}} {{game.game_time}} -->
-            </div>
+            <!-- </div> -->
 
             <!-- AWAY TEAM -->
-            <div class="col-1 score" :class="checkResult(game.final_score.away, game.final_score.home)">
-              {{game.final_score.away}}
-            </div>
+            <!-- <div class="col-1 score" :class="checkResult(game.final_score.away, game.final_score.home)"> -->
+              <!-- {{game.final_score.away}} -->
+            <!-- </div> -->
 
-            <div class="col-2 team_info" :class="checkResult(game.final_score.home, game.final_score.away)">
+            <!-- <div class="col-2 team_info" :class="checkResult(game.final_score.home, game.final_score.away)">
               <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.name).logo_color" />
               <div class="team_name">{{game.away_team.name}}</div>
               <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
@@ -98,10 +165,10 @@
 
             <div class="col-1">
               <span class="at">@</span>
-            </div>
+            </div> -->
 
             <!-- HOME TEAM -->
-            <div class="col-2 team_info">
+            <!-- <div class="col-2 team_info">
               <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.name).logo_color" />
               <div class="team_name" :class="checkResult(game.final_score.home, game.final_score.away)">{{game.home_team.name}}</div>
               <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
@@ -120,14 +187,14 @@
               </span>
             </div>
 
-          </router-link>
-        </template>
+          </router-link> -->
+        <!-- </template> -->
 
-        <template v-else>
+        <!-- <template v-else>
           <div class="col" align="center">
             There are currently no games on the schedule <em v-if="filterBy.team.slug !== '' || filterBy.level.id !== ''">that match your criteria</em>, please keep checking back.
           </div>
-        </template>
+        </template> -->
       </div>
     </div>
   </div>
@@ -139,6 +206,9 @@ import { api } from '../../api/endpoints.js'
 
 // mixins
 import { root } from '../../mixins/root'
+
+// helpers
+// import {formatDate} from '@/config/helpers'
 
 export default {
   name: 'schedules',
@@ -169,11 +239,11 @@ export default {
   mixins: [root],
   computed: {
     teams () {
-      const teams = [{slug: '', team_name: 'All Teams'}, ...this.$store.state.teams]
+      const teams = [{ slug: '', team_name: 'All Teams' }, ...this.$store.state.teams]
       return teams
     },
     levels () {
-      const levels = [{season_id: '', level: 'All Levels'}, ...this.$store.state.seasons]
+      const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
     }
   },
@@ -200,12 +270,13 @@ export default {
     })
   },
   methods: {
+    // formatDate: this.$formatDate,
     goToMap (url) {
       window.location.replace(url)
     },
     initSchedule (level, team) {
       api.getSchedule(level, team).then(response => {
-        let fixedData = []
+        const fixedData = []
         response.data.forEach(game => {
           if (game.game_time === '12:00 AM ') {
             game.game_time = 'TBD'
@@ -234,6 +305,7 @@ export default {
       // console.log(this.showTeams)
     },
     setLvl (lvl) {
+      console.log(lvl)
       this.filterBy.level.season_id = lvl.season_id
       this.filterBy.level.level = lvl.level
       // this.showTeams = false
@@ -297,13 +369,14 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @import '../../assets/less/utils/variables.less';
+@import '../../assets/less/utils/breakpoints.less';
 .team_img {
   height: 2.5rem;
   // width: 6rem;
   margin-bottom: .5rem;
 }
 .page-styles{
-  min-height: 100vh;
+  // min-height: 100vh;
   background-color: #fff;
   // margin-right: 1rem;
   // margin-left: 1rem;
@@ -318,9 +391,24 @@ export default {
     flex-flow: row;
     justify-content: space-evenly;
   }
+  @media @phone {
+    height: auto;
+    padding: 1rem 0;
+    .filters {
+      min-height: 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
 }
 .content {
-  padding: 2rem 1rem;
+  // padding: 2rem 1rem;
+  height: calc(100vh - 13.5rem);
+  overflow: auto;
+  table {
+    width: 100%;
+  }
 }
 
 h2 {
@@ -359,6 +447,14 @@ h2 {
     top: 0;
     left: .5rem;
   }
+
+  &[disabled='disabled'] {
+    color: #bbb;
+     &:before {
+       border-color: #bbb transparent transparent transparent
+     }
+  }
+
 }
 .options-menu {
   position: absolute;
@@ -391,23 +487,57 @@ h2 {
   }
 }
 .game {
-  padding-top: 1rem;
-  cursor: pointer;
-  &:after {
-    content: '';
-    border-bottom: 1px solid #707070;
-    width: calc(100% - 2rem);
-    margin: auto;
+  td {
+    padding-top: 1rem;
     padding-bottom: 1rem;
+    // &:after {
+      content: '';
+      cursor: pointer;
+      // position: absolute;
+      // bottom: -1px;
+      border-bottom: 1px solid #707070;
+      // width: calc(100% - 2rem);
+      // margin: auto;
+      // padding-bottom: 1rem;
+    // }
+
+    &.date {
+      padding-left: 1rem;
+    }
+    &.location {
+      padding-right: 1rem;
+    }
   }
+
   &:hover {
     background: #eee;
   }
 }
+
+.firstPadding {
+  padding-left: 1rem;
+}
+
+.lastPadding {
+  padding-right: 1rem;
+}
+
+.sticky {
+
+  td {
+    position: sticky;
+    top: 0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: #fff;
+  }
+}
+
 .date {
   font-family: @lato;
   font-size: 1.2rem;
   line-height: 1;
+  white-space: nowrap;
   .time {
     padding-top: .8rem;
     font-weight: 200;
@@ -441,6 +571,8 @@ h2 {
 }
 .score {
   font-size: 3rem;
+  min-width: 75px;
+  text-align: center;
   &.winner {
     font-weight: 900;
     color: #2784C3;
@@ -454,6 +586,7 @@ h2 {
   font-family: @lato;
   font-weight: 200;
   line-height: 1.1;
+  white-space: nowrap;
   .address{
     color: #2784C3;
     &:hover {

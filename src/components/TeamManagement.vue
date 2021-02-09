@@ -39,20 +39,21 @@ export default {
     }
   },
   components: {
-    'selectbox': selectbox
+    selectbox: selectbox
   },
   computed: {
+    user () {
+      return this.$store.state.getters.user
+    },
     cssVars () {
       let teamMain = ''
       let teamSecond = ''
-      this.$store.state.teams.forEach(team => {
-        if (team.id === this.$store.state.user.team_id) {
+      this.$store.getters.teams.filter(team => {
+        if (team.slug === this.$store.getters.user?.slug) {
           teamMain = '#' + team.main_color
           teamSecond = '#' + team.secondary_color
         }
       })
-      // const darker = Color(teamMain).darken(0.5).hex()
-      // const lighter = Color(teamMain).lighten(0.5).hex()
       return {
         '--bg-color': teamMain,
         '--team-second': teamSecond,
@@ -68,21 +69,18 @@ export default {
       }
     },
     teams () {
-      return this.$store.state.teams
+      return this.$store.getters.teams
     },
     selectedTeam: {
       get: function () {
-        return this.$store.state.teams.find(team => {
-          let user = {
-            team_id: team.id,
-            slug: team.slug
-          }
-          this.$store.dispatch('setUser', user)
-          return team.slug === this.$route.params.slug
-        })
+        if (this.$store.getters.userGroups[0] !== 'Admin') {
+          return this.$store.getters.teams.find(team => team.slug === this.$store.getters.userGroups[0])
+        } else {
+          return this.$store.getters.teams.find(team => team.slug === this.$route.params.slug)
+        }
       },
       set: function (newValue) {
-        let user = {
+        const user = {
           team_id: newValue.id,
           slug: newValue.slug
         }
@@ -90,16 +88,30 @@ export default {
         this.$store.dispatch('setUser', user)
         const routeName = this.$route.name
 
-        this.$router.push({name: routeName, params: { slug: newValue.slug }})
+        this.$router.push({ name: routeName, params: { slug: newValue.slug } })
         this.getSeasonTeams(newValue.slug)
+
+        console.log('here')
+        const team = this.getNewTeam(newValue.slug)
+
+        this.teamLogo = '/static/color-team-logos/' + team.logo_color
+        this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
       }
     }
   },
   watch: {
-    selectedTeam (newValue, oldValue) {
-      this.teamLogo = '/static/color-team-logos/' + newValue.logo_color
-      this.greyLogo = '/static/washedout-team-logo/' + newValue.logo_grey
+    async selectedTeam (newValue, oldValue) {
+      const team = await this.getNewTeam(newValue.slug)
+
+      this.teamLogo = '/static/color-team-logos/' + team.logo_color
+      this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
     }
+  },
+  beforeCreate () {
+    const slug = this.$route.params.slug
+    this.$store.dispatch('setTeam', slug)
+
+    this.$store.dispatch('setSeasonTeams')
   },
   created () {
     this.getSeasonTeams(this.$route.params.slug)
@@ -108,7 +120,7 @@ export default {
     // Credit to Jose Reyes @ https://codepen.io/jreyesgs/pens/
     /* Suma el porcentaje indicado a un color (RR, GG o BB) hexadecimal para aclararlo */
     addLight (color, amount) {
-      let cc = parseInt(color, 16) + amount
+      const cc = parseInt(color, 16) + amount
       let c = (cc > 255) ? 255 : (cc)
       c = (c.toString(16).length > 1) ? c.toString(16) : `0${c.toString(16)}`
       return c
@@ -124,7 +136,7 @@ export default {
 
     /* Resta el porcentaje indicado a un color (RR, GG o BB) hexadecimal para oscurecerlo */
     subtractLight (color, amount) {
-      let cc = parseInt(color, 16) - amount
+      const cc = parseInt(color, 16) - amount
       let c = (cc < 0) ? 0 : (cc)
       c = (c.toString(16).length > 1) ? c.toString(16) : `0${c.toString(16)}`
       return c
@@ -143,6 +155,12 @@ export default {
         .then(response => {
           this.$store.dispatch('setTeamAssocLvl', response.data)
         })
+    },
+
+    async getNewTeam (slug) {
+      return await api.getTeams(slug).then(response => {
+        return response.data[0]
+      })
     }
   }
 }
@@ -164,7 +182,7 @@ h2 {
   // min-height: calc(100vh - 7rem);
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 21% auto;
+  grid-template-columns: 15rem auto;
   // grid-auto-rows: minmax(35px, auto);
   .sidebar {
     background-color: #fff;

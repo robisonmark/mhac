@@ -12,6 +12,8 @@ import stats from '@/components/front-pages/stats'
 import schools from '@/components/front-pages/schools'
 import contact from '@/components/front-pages/contact'
 
+import bracket from '@/components/tournament/bracket'
+
 // Team Management Components
 import TeamManagement from '@/components/TeamManagement'
 import teamhome from '@/components/team-management/teamhome'
@@ -20,7 +22,18 @@ import schedule from '@/components/team-management/schedule'
 import gamestats from '@/components/team-management/stats'
 import profile from '@/components/team-management/profile'
 
+// Admin Components
+import admin from '@/components/admin'
+// import login from '@/components/admin/login'
+import adminTournament from '@/components/admin/adminTournament'
+import editHomepage from '@/components/admin/editHomepage'
+
+// Config Helpers
+import config from '@/config/helpers'
+
 import { store } from '../store/index'
+
+const $config = config.CONSTANTS
 
 Vue.use(Router)
 
@@ -32,17 +45,49 @@ export const router = new Router({
       name: 'home',
       component: home,
       meta: {
-        'requiresAuth': false,
-        'section': 'public'
+        requiresAuth: false,
+        section: 'public',
+        title: 'MHAC | Midsouth Homeschool Athletics'
       }
     },
     {
-      path: '/tournament2020',
+      path: '/test',
+      name: 'test tourny',
+      component: bracket,
+      meta: {
+        requiresAuth: false,
+        section: 'public',
+        title: 'MHAC | Midsouth Homeschool Athletics'
+      }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import(/* webpackChunkName: "login" */ '../components/login.vue'),
+      meta: {
+        requiresAuth: false,
+        section: 'public',
+        title: 'MHAC | Midsouth Homeschool Athletics'
+      }
+    },
+    {
+      path: '/signout',
+      name: 'signout',
+      component: () => import(/* webpackChunkName: "login" */ '../components/login.vue'),
+      meta: {
+        requiresAuth: false,
+        section: 'public',
+        title: 'MHAC | Midsouth Homeschool Athletics'
+      }
+    },
+    {
+      path: '/tournament',
       name: 'tournament',
       component: tournament,
       meta: {
-        'requiresAuth': false,
-        'section': 'public'
+        requiresAuth: false,
+        section: 'public',
+        title: '2020 Season Tournament | Midsouth Homeschool Athletics'
       }
     },
     {
@@ -50,8 +95,9 @@ export const router = new Router({
       name: 'compliance',
       component: compliance,
       meta: {
-        'requiresAuth': false,
-        'section': 'public'
+        requiresAuth: false,
+        section: 'public',
+        title: 'Compliance | Midsouth Homeschool Athletics'
       }
     },
     {
@@ -59,8 +105,9 @@ export const router = new Router({
       name: 'schedules',
       component: schedules,
       meta: {
-        'requiresAuth': false,
-        'section': 'public'
+        requiresAuth: false,
+        section: 'public',
+        title: `${$config.seasonYear} Schedule | Midsouth Homeschool Athletics`
       }
     },
     {
@@ -68,8 +115,9 @@ export const router = new Router({
       name: 'stats',
       component: stats,
       meta: {
-        'requiresAuth': false,
-        'section': 'public'
+        requiresAuth: false,
+        section: 'public',
+        title: `${$config.seasonYear} Stats | Midsouth Homeschool Athletics`
       }
     },
     {
@@ -77,8 +125,9 @@ export const router = new Router({
       name: 'contact',
       component: contact,
       meta: {
-        'requiresAuth': false,
-        'section': 'public'
+        requiresAuth: false,
+        section: 'public',
+        title: 'Contact Us | Midsouth Homeschool Athletics'
       }
     },
     {
@@ -87,8 +136,9 @@ export const router = new Router({
       component: schools,
       props: true,
       meta: {
-        'requiresAuth': false,
-        'section': 'public'
+        requiresAuth: false,
+        section: 'public',
+        title: 'Schools | Midsouth Homeschool Athletics'
       }
       // children: [
       //   {
@@ -106,7 +156,9 @@ export const router = new Router({
       path: '/manage/:slug',
       component: TeamManagement,
       meta: {
-        'requiresAuth': true
+        requiresAuth: true,
+        section: 'team',
+        title: 'Team Management | Midsouth Homeschool Athletics'
       },
       children: [
         {
@@ -114,8 +166,9 @@ export const router = new Router({
           name: 'teamDashboard',
           component: teamhome,
           meta: {
-            'requiresAuth': true,
-            'section': 'team'
+            requiresAuth: true,
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         },
         {
@@ -123,8 +176,9 @@ export const router = new Router({
           name: 'roster',
           component: roster,
           meta: {
-            'requiresAuth': true,
-            'section': 'team'
+            requiresAuth: true,
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         },
         {
@@ -132,8 +186,9 @@ export const router = new Router({
           name: 'schedule',
           component: schedule,
           meta: {
-            'requiresAuth': true,
-            'section': 'team'
+            requiresAuth: true,
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         },
         {
@@ -141,8 +196,9 @@ export const router = new Router({
           name: 'profile',
           component: profile,
           meta: {
-            'requiresAuth': true,
-            'section': 'team'
+            requiresAuth: true,
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         },
         {
@@ -150,8 +206,9 @@ export const router = new Router({
           name: 'gamestats',
           component: gamestats,
           meta: {
-            'requiresAuth': true,
-            'section': 'team'
+            requiresAuth: true,
+            section: 'team',
+            title: 'Team Management | Midsouth Homeschool Athletics'
           }
         }
       ]
@@ -159,12 +216,49 @@ export const router = new Router({
     {
       path: '/admin',
       name: 'admin',
-      component: TeamManagement,
+      component: admin,
       meta: {
-        'requiresAuth': true,
-        'section': 'admin'
+        requiresAuth: true,
+        section: 'admin'
       },
       children: [
+        // {
+        //   path: 'login',
+        //   name: 'login',
+        //   component: login,
+        //   meta: {
+        //     requiresAuth: false,
+        //     section: 'admin'
+        //   }
+        // },
+        {
+          path: 'edit',
+          name: 'Edit',
+          component: editHomepage,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          },
+          children: [
+            {
+              path: 'homepage',
+              name: 'editHomepage',
+              meta: {
+                requiresAuth: true,
+                section: 'admin'
+              }
+            }
+          ]
+        },
+        {
+          path: 'tournament',
+          name: 'adminTournament',
+          component: adminTournament,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          }
+        }
       ]
     }
     // NEED ERROR ROUTES and THINK THROUGH NON INDEXING PAGES
@@ -172,18 +266,28 @@ export const router = new Router({
 })
 
 router.beforeResolve(async (to, from, next) => {
-  if (to.hasOwnProperty('meta')) {
-    // Use the route's "meta.title" value to assign the page's title
-    if (to.meta.hasOwnProperty('title') && to.meta.title) document.title = to.meta.title
-    // For routes requiring authentication ( has "meta.requiresAuth" property )
+  if (Object.prototype.hasOwnProperty.call(to, 'meta')) {
+    if (Object.prototype.hasOwnProperty.call(to.meta, 'title') && to.meta.title) document.title = to.meta.title
+    const validSession = await Promise.resolve(store.dispatch('valid'))
     if (to.meta.requiresAuth === true) {
-      let validSession = await Promise.resolve(store.dispatch('valid'))
-      console.log(validSession)
       if (validSession === true) {
-        return next()
+        if (to.meta.section === 'team') {
+          if (store.getters.userGroups[0] === 'Admin') {
+            return next()
+          } else {
+            if (to.params.slug !== store.getters.userGroups[0]) {
+              return next({ name: 'teamDashboard', params: { slug: store.getters.userGroups[0] } })
+            } else {
+              return next()
+            }
+          }
+        }
       } else {
-        return next('/')
-        // window.location.replace(process.env.ACCOUNT_LOC)
+        if (to.meta.section === 'admin') {
+          return next('/admin/login')
+        } else {
+          return next('/')
+        }
       }
     }
     return next()

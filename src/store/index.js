@@ -1,30 +1,27 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import EventBus from '../eventbus'
-// import { make, call } from 'vuex-pathify'
-// import { make } from 'vuex-pathify'
-// import pathify from '../config/store.pathify'
+
+// api
+import { api } from '@/api/endpoints.js'
 
 // Modules
-// import es from './modules/store.es'
 import auth from './modules/store.auth'
-// import form from './modules/store.form'
 
 Vue.use(Vuex)
 
 const namespaced = true
 const modules = { auth }
-// const plugins = [ pathify.plugin ]
-// const strict = process.env.NODE_ENV !== 'production'
 const strict = false
 
 const state = {
+  slug: null,
   user: {
-    team_id: String,
-    slug: String
+    team_id: '',
+    slug: ''
   },
+  userData: {},
   teamAssocLvl: {},
-  userGroups: ['Admin'],
+  userGroups: [],
   userAttributes: Object,
   loaded: false,
   authenticated: '',
@@ -33,13 +30,19 @@ const state = {
   levels: [],
   fullSchedule: [],
   configOptions: [],
-  readWriteAccess: String
+  readWriteAccess: String,
+  season_teams: []
 }
 
 const mutations = {
   // make.mutations(state)
   set_user (state, payload) {
-    state.user = payload
+    // console.log('payload',payload)
+    state.user.team_id = payload.team_id
+    state.user.slug = payload.slug
+  },
+  set_slug (state, payload) {
+    state.slug = payload
   },
   set_teamAssocLvl (state, payload) {
     state.teamAssocLvl = payload
@@ -48,8 +51,8 @@ const mutations = {
     state.userGroups = payload
   },
   set_userAttributes (state, payload) {
-    console.log(state)
-    console.log(payload)
+    console.log('userAttributes', state)
+    console.log('userAttributes', payload)
   },
   set_loaded (state, payload) {
     state.loaded = payload
@@ -61,20 +64,24 @@ const mutations = {
     state.seasons = payload
   },
   set_teams (state, payload) {
+    // console.log('set_teams', payload)
     state.teams = payload
   },
   set_levels (state, payload) {
     state.levels = payload
   },
   set_configOptions (state, payload) {
-    console.log(state)
-    console.log(payload)
+    console.log('configOptions', state)
+    console.log('configOptions', payload)
   },
   set_readWriteAccess (state, payload) {
     state.readWriteAccess = payload
   },
   set_fullSchedule (state, payload) {
     state.fullSchedule = payload
+  },
+  set_seasonTeams (state, payload) {
+    state.season_teams = payload
   }
 }
 
@@ -99,33 +106,93 @@ const actions = {
     context.commit('set_readWriteAccess', payload)
   },
 
-  setSeasons (context, payload) {
-    context.commit('set_seasons', payload)
+  async setSeasons (context, payload) {
+    await api.getCurrentSeasons().then(response => {
+      context.commit('set_seasons', response.data)
+    })
   },
 
-  setTeams (context, payload) {
-    context.commit('set_teams', payload)
+  async setTeams (context) {
+    await api.getTeams().then(response => {
+      context.commit('set_teams', response.data)
+    })
   },
 
-  setLevels (context, payload) {
-    context.commit('set_levels', payload)
+  async setTeam (context, payload) {
+    await context.dispatch('setTeams')
+    const groups = store.getters.userGroups
+    const teams = store.getters.teams
+
+    let userTeam = []
+
+    if (payload) {
+      userTeam = teams.filter(team => payload === team.slug)
+    } else if (groups) {
+      userTeam = teams.filter(team => {
+        if (!groups.includes('Admin')) {
+          return team.slug === groups[0]
+        } else {
+          return team
+        }
+      })
+    }
+    if (userTeam.length === 1) {
+      await context.commit('set_user', userTeam[0])
+      await context.commit('set_slug', userTeam[0].slug)
+    }
   },
 
-  setFullSchedule (context, payload) {
-    context.commit('set_fullSchedule', payload)
+  async setLevels (context, payload) {
+    await api.getLevels().then(response => {
+      context.commit('set_levels', response.data)
+    })
   },
 
+  async setFullSchedule (context, payload) {
+    await api.getSchedule().then(response => {
+      const fixedData = []
+      response.data.forEach(game => {
+        if (game.game_time === '12:00 AM ') {
+          game.game_time = 'TBD'
+        }
+        fixedData.push(game)
+      })
+      context.commit('set_fullSchedule', fixedData)
+    })
+  },
+
+  async setSeasonTeams (context) {
+    await api.getSeasonTeams().then(response => {
+      context.commit('set_seasonTeams', response.data)
+    })
+  },
   load (context) {
     // ---- These events are emitted once the listed module is loaded ----- //
-    // Loads the vuex "es" module (Elastic Search) [MUST BE AFTER AUTH]
+    // Loads the vuex 'es' module (Elastic Search) [MUST BE AFTER AUTH]
     // EventBus.$on('auth/loaded', () => context.dispatch('es/load'))
   }
 }
 
 const getters = {
   // make.getters(state)
-  user (state) {
+  user () {
     return state.user
+  },
+  team () {
+    // console.log('team', state.user)
+    return state.user.slug
+  },
+  teams (state) {
+    return state.teams
+  },
+  teamLevels (state) {
+    return state.teamAssocLvl
+  },
+  levels () {
+    return state.levels
+  },
+  schedule () {
+    return state.fullSchedule
   },
   userGroups (state) {
     return state.userGroups
@@ -141,6 +208,9 @@ const getters = {
   },
   seasons (state) {
     return state.seasons
+  },
+  seasonTeams (state) {
+    return state.season_teams
   },
   configOptions (state) {
     return state.groups

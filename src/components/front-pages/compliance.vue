@@ -1,28 +1,28 @@
 <template>
   <div class="container">
-    <div class="row page-styles">
-      <div class="col-9 compliance-content">
-        <template v-for="content in compliance">
-          <div :key="content.key" :class="{'intro': content.section === 'Intro'}">
-            <h2 v-if="content.displayHeader">{{content.section}}</h2>
-            <template v-if="content.content">
-              <p v-for="(paragraph, index) in content.content" :key="index">{{paragraph}}</p>
-            </template>
-
-            <template v-if="content.subsections">
-              <template v-for="section in content.subsections">
-                <div class="subsection" :key="section.key">
-                  <h3 v-if="section.displayHeader">{{section.section}}</h3>
-                   <p v-for="(paragraph, index) in section.content" :key="index">{{paragraph}}</p>
-                </div>
+    <div class="page-styles">
+      <div class="row">
+        <div class="col-9 compliance-content">
+          <template v-for="content in compliance">
+            <div :key="content.key" :class="{'intro': content.section === 'Intro'}">
+              <h2 v-if="content.displayHeader">{{content.section}}</h2>
+              <template v-if="content.content">
+                <p v-for="(paragraph, index) in content.content" :key="index">{{paragraph}}</p>
               </template>
-            </template>
 
-          </div>
-        </template>
-      </div>
-      <div class="col-3">
-        <nav class="table-of-contents jump-links">
+              <template v-if="content.subsections">
+                <template v-for="section in content.subsections">
+                  <div class="subsection" :key="section.key">
+                    <h3 v-if="section.displayHeader">{{section.section}}</h3>
+                    <p v-for="(paragraph, index) in section.content" :key="index">{{paragraph}}</p>
+                  </div>
+                </template>
+              </template>
+
+            </div>
+          </template>
+        </div>
+        <nav class="col-3 table-of-contents jump-links">
           <ul>
             <li>Eligibility
               <ul>
@@ -87,7 +87,8 @@ export default {
         }
       ]
     }
-  }
+  },
+  methods: {}
 }
 // https://www.nchclive.com/guidelines/
 </script>
@@ -157,13 +158,17 @@ h3{
 }
 
 .table-of-contents {
-  position: fixed;
+  position: sticky;
+  top: 9rem;
+  height: 100%;
+  display: flex;
   &:before {
       content: '';
-      position: absolute;
+      // position: absolute;
       width: 1px;
       height: 51vh;
-      display: inline-block;
+      display: flex;
+      align-items: flex-start;
       background: #2784C3;
   }
   ul {

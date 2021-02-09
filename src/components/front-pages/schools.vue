@@ -4,6 +4,7 @@
       <div class="logo-color col">
         <!-- <div class="image-con"> -->
           <img v-if="program.logo_color" :src="'/static/color-team-logos/' + program.logo_color" :alt="program.team_name + ' ' + program.team_mascot"/>
+          
         <!-- </div> -->
       </div>
       <div class="col-8 top-layer">
@@ -57,10 +58,10 @@
                   <td>
                     <div class="game--date">{{game.game_date}}  / <span class="font-weight-light">{{game.game_time}}</span></div>
                     <div class="game--opponent">
-                      <span v-if="game.host">vs</span>
-                      <span v-else>@</span>
+                      <span v-if="game.host">vs </span>
+                      <span v-else>@ </span>
 
-                      <b v-html="game.opponent.name"></b>
+                      <b v-html="game.opponent.team_name"></b>
                     </div>
                   </td>
                   <td class="game--location">
@@ -97,7 +98,7 @@
               </thead>
               <tbody>
                 <tr v-for="player in roster" :key="player.id">
-                  <td v-html="player.number"></td>
+                  <td v-html="player.player_number"></td>
                   <td>{{player.first_name}} {{player.last_name}}</td>
                   <td v-html="player.position"></td>
                   <td v-html="player.age"></td>
@@ -122,7 +123,7 @@
         </div>
       </div> -->
     </div>
-    <div class="bottom-logo" ref="bottomLogo" v-stickBottom>
+    <div class="bottom-logo" ref="bottomLogo">
       <img v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey" :alt="program.team_name + ' ' + program.team_mascot"/>
     </div>
   </div>
@@ -183,7 +184,7 @@ export default {
     selectedTeam: {
       get: function () {
         return this.$store.state.teams.find(team => {
-          let user = {
+          const user = {
             team_id: team.id,
             slug: team.slug
           }
@@ -192,7 +193,7 @@ export default {
         })
       },
       set: function (newValue) {
-        let user = {
+        const user = {
           team_id: newValue.id,
           slug: newValue.slug
         }
@@ -200,7 +201,7 @@ export default {
         this.$store.dispatch('setUser', user)
         const routeName = this.$route.name
 
-        this.$router.push({name: routeName, params: { slug: newValue.slug }})
+        this.$router.push({ name: routeName, params: { slug: newValue.slug } })
         this.getSeasonTeams(newValue.slug)
       }
     }
@@ -213,11 +214,11 @@ export default {
       deep: true,
       handler (newValue, oldValue) {
         if (this.selectedSection === 'Schedule') {
-          let season = this.seasons.filter(season => { return season.level === newValue.level_name })
+          const season = this.seasons.filter(season => { return season.level === newValue.level_name })
 
           this.initLeveledSchedule(season[0].season_id, this.$route.params.slug)
         } else if (this.selectedSection === 'Roster') {
-          this.initLeveledRoster(newValue.season_team_id)
+          this.initLeveledRoster(newValue.team_id)
         }
       }
     },
@@ -227,7 +228,7 @@ export default {
         if (newValue === 'Schedule') {
           this.initLeveledSchedule(this.filterBy.team.season_team_id, this.$route.params.slug)
         } else if (newValue === 'Roster') {
-          this.initLeveledRoster(this.filterBy.team.season_team_id)
+          this.initLeveledRoster(this.filterBy.team.team_id)
         }
       }
     }
@@ -245,16 +246,17 @@ export default {
 
       await api.getTeams(slug)
         .then(response => {
-          this.program = response.data.team[0]
-          this.initRoster(this.program.id)
+          this.program = response.data[0]
           this.getSeasonTeams(this.$route.params.slug)
+          console.log(this.teamAssocLvl)
+          this.initRoster(this.teamAssocLvl.team_id)
         })
 
       // window.addEventListener('scroll', this.watchLogoPos)
     },
     watchLogoPos () {
-      let footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
-      let bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
+      const footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
+      const bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
 
       console.log('top: ', document.getElementById('publicMainFooter').scrollTop)
       console.log('y: ', footerTop.y)
@@ -270,6 +272,7 @@ export default {
     },
     initRoster (id) {
       api.getPlayers(id).then(response => {
+        console.log(id, response)
         // response.data.forEach(player => {
         //   player.number = player.number
         // })
@@ -277,12 +280,12 @@ export default {
         this.fullRoster = _.cloneDeep(this.roster)
       })
     },
-    getSeasonTeams (slug) {
-      api.getSeasonTeams(slug)
+    async getSeasonTeams (slug) {
+      await api.getSeasonTeams(slug)
         .then(response => {
-          this.teamAssocLvl = response.data.season_team_ids
+          this.teamAssocLvl = response.data
 
-          this.filterBy.team = response.data.season_team_ids[0]
+          this.filterBy.team = response.data[0]
 
           // this.initLeveledSchedule(response.data.season_team_ids[0])
           // this.$store.dispatch('setTeamAssocLvl', response.data)
@@ -290,69 +293,69 @@ export default {
     },
     initLeveledRoster (lvlId) {
       api.getRoster(lvlId).then(response => {
-        let rosterArr = []
-        this.fullRoster.forEach(player => {
-          response.data.forEach(lvlPlayer => {
-            if (player.id === lvlPlayer.player_id) {
-              rosterArr.push(player)
-            }
-          })
+        const rosterArr = []
+        console.log(response)
+        // this.fullRoster.forEach(player => {
+        response.data.forEach(lvlPlayer => {
+          rosterArr.push(lvlPlayer)
         })
+        // })
 
         this.roster = rosterArr
       })
     },
     initLeveledSchedule (season, slug) {
       api.getSchedule(season, slug).then(response => {
-        let gameArr = []
+        const gameArr = []
         response.data.forEach(game => {
-          let gameObj = {
-            'host': '',
-            'opponent': '',
-            'game_time': game.game_time,
-            'game_date': game.game_date,
-            'location': {},
-            'results': {},
-            'id': game.game_id
+          const gameObj = {
+            host: '',
+            opponent: '',
+            game_time: this.$config.formatTime(game.game_time),
+            game_date: this.$config.formatDate(game.game_date),
+            location: {},
+            results: {},
+            id: game.game_id
           }
 
           if (game.home_team.slug === this.$route.params.slug) {
             gameObj.host = true
             gameObj.opponent = game.away_team
-            if (game.final_score.home !== null) {
-              if (game.final_score.home > game.final_score.away) {
+            if (game.final_scores.home_score !== null) {
+              if (game.final_scores.home_score > game.final_scores.away_score) {
                 gameObj.results = {
-                  'win_loss': 'W'
+                  win_loss: 'W'
                 }
-              } else if (game.final_score.home < game.final_score.away) {
+              } else if (game.final_scores.home_score < game.final_scores.away_score) {
                 gameObj.results = {
-                  'win_loss': 'L'
+                  win_loss: 'L'
                 }
               }
             }
           } else if (game.away_team.slug === this.$route.params.slug) {
             gameObj.host = false
             gameObj.opponent = game.home_team
-            if (game.final_score.home !== null) {
-              if (game.final_score.home < game.final_score.away) {
+            if (game.final_scores.home_score !== null) {
+              if (game.final_scores.home_score < game.final_scores.away_score) {
                 gameObj.results = {
-                  'win_loss': 'W'
+                  win_loss: 'W'
                 }
-              } else if (game.final_score.home > game.final_score.away) {
+              } else if (game.final_scores.home_score > game.final_scores.away_score) {
                 gameObj.results = {
-                  'win_loss': 'L'
+                  win_loss: 'L'
                 }
               }
             }
           }
 
           gameObj.location = {
-            'street': game.home_team.address_lines,
-            'city_state_zip': game.home_team.city_state_zip,
-            'name': game.home_team.address_name}
+            street: game.home_team.address_lines,
+            city_state_zip: game.home_team.city_state_zip,
+            name: game.home_team.address_name
+          }
 
-          if (game.final_score.home !== null) {
-            gameObj.results = {...gameObj.results, ...game.final_score}
+          if (game.final_scores.home_score !== null) {
+            gameObj.results = { ...gameObj.results, ...game.final_scores }
           }
 
           gameArr.push(gameObj)
@@ -361,7 +364,7 @@ export default {
       })
     },
     createSeasonDisplay (season) {
-      let nameSplit = season.level.split(' ')
+      const nameSplit = season.level.split(' ')
       let gender = ''
       if (nameSplit[1] === 'Boys') {
         gender = 'Boys'
@@ -461,8 +464,10 @@ export default {
   z-index: 1;
 }
 .bottom-logo {
-  position: fixed;
+  // position: fixed;
+  position: sticky;
   right: 0;
+  left: 100%;
   bottom: 0;
   max-height: 30rem;
   max-width: 24rem;

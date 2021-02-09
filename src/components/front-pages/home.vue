@@ -4,15 +4,15 @@
       <div class="col-md-8 col-lg-9">
         <div class="hero">
           <div class="tagline">
-            <h2>And so it begins...</h2>
-            <h2>2019-20 is offically under way!</h2>
+            <h2>The {{ activeYear.name}} is coming to an end...</h2>
+            <h2>Make plans to attend MHAC tournament!</h2>
           </div>
         </div>
       </div>
       <div class="col-md-4 col-lg-3">
         <div class="standings">
           <div class="addPadding">
-            <h3>2019-20 Standings</h3>
+            <h3>{{ activeYear.name }} Standings</h3>
             <select v-model="season">
               <option v-for="sport in seasons" :key="sport.season_id" :value="sport">{{createName(sport)}}</option>
             </select>
@@ -78,10 +78,24 @@
       <div class="col-md-9 conference-blurb-content">
         <h1>Midsouth Homeschool Athletic Conference</h1>
         <p>The MidSouth Homeschool Athletic Conference (MHAC) was formed in 2018, and is part of the Southeast Region for the National Christian HomeSchool Championships.  The MHAC has 8 member teams located in Tennesee, Southern Kentucky, and Northern Alabama. These teams currently compete in Boys and Girls 18U Basketball, and Boys 16U and 14U Basketball.</p>
-        <p>Each year the MHAC holds tournaments in each 18U, 16U and 14U age brackets.</p>
+        <p>Each year the MHAC holds tournaments in the 18U, 16U and 14U age brackets.</p>
         <!-- <p>To inquire about joining the conference please email: email@personinconference.org</p> -->
+        <!-- <h3>NCHBC Southeast Regional Tournament </h3>
+        <P>Congratulations to WKy Trailblazer's 14U Boys and NCC Warriors 16U Girls on winning the Southeast Region Championships!</p>
 
-        <h3>For Information on the 2020 Tournament please go to <router-link :to="{ 'path': '/tournament2020' }">Tournament Central</router-link></h3>
+        <p>LCA Lions 18U boys and NCC Warriors 18U Girls both ended the tournaments with 2nd place finishes!</p>
+
+        <p>A big shout out to the other teams competing in this weekend's tournament. </p>
+        <br />
+        <p>NCC Warriors 18U Boys<br />
+        Hendersonville Royals 14U Boys<br />
+        Hendersonville Royals 18U Boys<br />
+        Daniel 1 Academy 18U Boys<br />
+        Daniel 1 Academy 14U Boys<br />
+        Chattanooga Patriots 18U Girls</p>
+        <br />
+        <b>Way to represent the MHAC!</b> -->
+        <h3>For Information on the 2021 Tournament please go to <router-link :to="{ 'path': '/tournament' }">Tournament Central</router-link></h3>
       </div>
 
       <!-- <footer class="col-12 text-right">
@@ -96,20 +110,15 @@
 import { api } from '../../api/endpoints.js'
 import _ from 'lodash'
 
-// components
-import selectbox from '../selectbox'
-
 export default {
   name: 'home',
   data () {
     return {
       currentStandings: {},
       noStandings: Boolean,
-      season: ''
+      season: '',
+      activeYear: {}
     }
-  },
-  components: {
-    'selectbox': selectbox
   },
   computed: {
     seasons () {
@@ -127,8 +136,15 @@ export default {
   created () {
     // console.log(this.$store.state.seasons)
     this.initStandings('')
+    this.initYear()
   },
   methods: {
+    initYear(){
+      api.getActiveYear().then(response => {
+        console.log(response)
+        this.activeYear = response.data
+      })
+    },
     initStandings (id) {
       id = id.length > 1 ? id : ''
       api.getStandings(id).then(response => {
@@ -156,12 +172,12 @@ export default {
       })
     },
     createName (season) {
-      let nameSplit = season.level.split(' ')
+      const nameSplit = season.level.split(' ')
       return nameSplit[1] + ' ' + nameSplit[0] + ' ' + season.sport
       // return season.season_name + ' ' + season.sport
     },
     createSeasonDisplay (season) {
-      let nameSplit = season.level.split(' ')
+      const nameSplit = season.level.split(' ')
       let gender = ''
       if (nameSplit[1] === 'Boys') {
         gender = 'Boys'
@@ -193,7 +209,7 @@ export default {
 }
 .hero {
   background-color: #021A2B;
-  background: url('../../assets/img/MHAC_2.png');
+  background: url('../../assets/img/MHAC_2-optimized.png');
   background-size: cover;
   background-position: center;
   width: 100%;
