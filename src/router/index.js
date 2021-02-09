@@ -69,7 +69,7 @@ export const router = new Router({
       }
     },
     {
-      path: '/tournament2020',
+      path: '/tournament',
       name: 'tournament',
       component: tournament,
       meta: {

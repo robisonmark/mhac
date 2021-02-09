@@ -506,6 +506,65 @@ export class api {
     })
   }
 
-  // static async getTournamentInformation
+  static async getTeamByStandings (season_id, rank) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    
+    return robros({
+      url: '/lookupTeamByStandings/' + season_id + '/' + rank,
+      method: 'GET'
+    })
+  }
+
+    /***
+     * Get a List of Players
+     * @param {object} team - Team UUID
+     * @return - JSON Object of players by team
+    ***/
+   static async getAdminPlayers (team) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    return robros({
+      url: '/getAdminPlayers/' + team,
+      method: 'GET'
+    })
+  }
+    /***
+     * Get a List of Players
+     * @param {string} method - Put or Post. Method sent to the api
+     * @param {object} body - Player JSON Body
+     * @return - JSON Object of players by team
+    ***/
+   static async updateTournamentGame (body) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+
+    return robros({
+      url: '/updateTournamentGame/',
+      method: 'POST',
+      data: body
+    })
+  }
 
 }

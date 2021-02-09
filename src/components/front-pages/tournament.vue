@@ -2,27 +2,31 @@
    <div class="container">
      <div class="page-styles">
       <h2>MHAC Conference Tournament Information - 2021</h2>
-      <h5><a href="/static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download>Download Tournament Packet</a></h5>
-      <p>There will be four tournaments. The semi-final and championship games will be played at Madison Church of Christ, 106 Gallatin Pike N, Madison, TN 37115. The first round games of the tournament will be played at the higher seeds home gym once seeding has been determined.  We will be charging a gate fee to help offset the cost of the tournament.  Madison CoC will be hosting a concession stand there for those wanting a meal, snack or drink.
+      <h5><a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">Download Tournament Packet</a></h5>
+      <p>There will be four tournaments. All games will be played at <a href='https://www.google.com/maps/place/106+Gallatin+Pike+N,+Madison,+TN+37115/@36.264061,-86.7130334,17z/data=!3m1!4b1!4m5!3m4!1s0x88644302d8537e4d:0x747b45d0cbfa0f87!8m2!3d36.264061!4d-86.7108447'> Madison Church of Christ, 106 Gallatin Pike N, Madison, TN 37115</a>. The first round games of the tournament will be played on Thursday.  The semi-finals on Friday, and tiger consolation and championship games on Saturday.  Madison CoC will be hosting a concession stand there for those wanting a meal, snack or drink.
       </p>
 
       <p> 
         The tournament schedule is based on 8 teams for 18U(HSV) boys, 6 teams for 16u(HSJV) boys, 7 teams for 14U(MSV) boys and 4 teams for 18U(HSV) girls.
       </p>
-
       <p>
-        <b>Gate fees:</b>
+        <b>Gate and Concession money</b>
+        <br />The MHAC Conference is covering all costs for the tournament(refs and gym floor).  Because of this we will be collecting the gate money and money from attendees.  We really need to make sure and support the tournament to help cover all the costs. 
+
+      </p>
+      <p>
+        <b>Gate fees</b>
         <ul>
           <li>Daily Adult - $10</li>
           <li>Daily Student - $7</li>
-          <li>Families with 5 or more - $34</li>
-          <li>Tournament Adult(2 days) - $17</li>
-          <li>Tournament Student(2 days) - $11</li>
-          <li>Tournament Family with 5 or more - $60 </li>
+          <li>Families with 4 or more - $34</li>
+          <li>Tournament Adult - $24 (On Friday the price drops to $17)</li>
+          <li>Tournament Student - $15 (On Friday the price drops to $11)</li>
+          <li>Tournament Family 4 or more - $70 (On Friday the price drops to $50) </li>
           <li>6 years old and under will get in free</li>
         </ul>
-
-        There will be a total of 16 games in the tournament, Friday Feb 12 & 13th.
+        
+        There will be a total of 22 games in the tournament, Feb 11th, 12th & 13th.
       </p>
       <p>
         <b>Payment Methods</b>
@@ -32,8 +36,18 @@
          </ul>
 
       </p>
-
-        Please <a href="/static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download>download the tournament packet</a> for more information.</p>
+      <p>
+        <b>We need your help!</b>
+        <br />
+          As the tournament approaches we are making plans to provide the best experience for your students. We have volunteer positions available for running the camera or operating the gate. Below you will find a link to the signup page where you can select to fill a time slot.   
+        <br />
+        Click the link to sign-up below.
+        <br />
+        <a href="https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021" target="_blank"><img src="https://www.signupgenius.com/images/sign-up-now1.gif" width="150" height="90" border="0" alt="Sign Up!"></a>
+      </p>
+      <p>
+        Please <a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">download the tournament packet</a> for more information.
+      </p>
       
       <br />
 
@@ -57,14 +71,20 @@
           </thead>
           <tbody>
             <tr v-for="(game, index) in fourteenUBoys" :key="index">
-              <td>{{game.game}}</td>
+              <td>{{game.logical_game_number}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
-              <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+              <td >
+                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                  vs.
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                </template>
+                <template v-else>
+                  <span > {{game.game_description}} </span>
+                </template>
               </td>
+              
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
                   {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
@@ -95,13 +115,18 @@
           </thead>
           <tbody>
             <tr v-for="(game, index) in sixteenUBoys" :key="index">
-              <td>{{game.game}}</td>
+              <td>{{game.logical_game_number}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                     <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                  vs.
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                </template>
+                <template v-else>
+                  <span > {{game.game_description}} </span>
+                </template>
               </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
@@ -133,13 +158,18 @@
           </thead>
           <tbody>
             <tr v-for="(game, index) in eighteenUBoys" :key="index">
-              <td>{{game.game}}</td>
+              <td>{{game.logical_game_number}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                  vs.
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                </template>
+                <template v-else>
+                  <span > {{game.game_description}} </span>
+                </template>
               </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
@@ -171,13 +201,18 @@
           </thead>
           <tbody>
             <tr v-for="(game, index) in eighteenUGirls" :key="index">
-              <td>{{game.game}}</td>
+              <td>{{game.logical_game_number}}</td>
               <td>{{game.date}}</td>
               <td>{{game.time}}</td>
               <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+                  vs.
+                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+                </template>
+                <template v-else>
+                  <span > {{game.game_description}} </span>
+                </template>
               </td>
               <td class="final">
                 <template v-if="game.matchup.scoreTeam1">
@@ -242,16 +277,16 @@ export default {
       return levels
     },
     fourteenUBoys () {
-      return this.games.filter(game => { return game.level === '14U Boys' })
+      return this.games.filter(game => { return game.seasons.level === '14U Boys' })
     },
     sixteenUBoys () {
-      return this.games.filter(game => { return game.level === '16U Boys' })
+      return this.games.filter(game => { return game.seasons.level === '16U Boys' })
     },
     eighteenUBoys () {
-      return this.games.filter(game => { return game.level === '18U Boys' })
+      return this.games.filter(game => { return game.seasons.level === '18U Boys' })
     },
     eighteenUGirls () {
-      return this.games.filter(game => { return game.level === '18U Girls' })
+      return this.games.filter(game => { return game.seasons.level === '18U Girls' })
     }
   },
   created () {
@@ -324,4 +359,8 @@ table {
   background-color: rgba(39,132,195,1);
   color: #fff;
 }
+
+// @media @phone {
+
+// }
 </style>

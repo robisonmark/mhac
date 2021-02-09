@@ -1,213 +1,51 @@
 <template>
   <div class="">
     <header class="contentPad">
-      
-      CREATE A Tournament
+      <!-- CREATE A Tournament
 
-      
       <br/>
-  
       <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
         <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
-      </ul>
+      </ul> -->
 
       <div class="buttonCon">
-        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
-          <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
-          <span class="focused">Edit</span>
-        </div>
-
-        <div class="switch" v-if="edit" @click="edit = !edit">
-          <font-awesome-icon :icon="['fas', 'check']" class="icon"></font-awesome-icon>
-          <span class="focused">Done Editing</span>
+        <div class = "switch">
 
         </div>
       </div>
     </header>
-    <!-- <div class="bracket fourteenU">
-      <ul v-for="(game, index) in fourteenUBoys" :key="index">
-        <td>{{game.game}}</td>
-        <td>{{game.date}}</td>
-        <td>{{game.time}}</td>
-        <td>
-          <span v-html="game.matchup.team1"></span>
-          vs.
-          <span v-html="game.matchup.team2"></span>
-        </td>
-        <td class="final">
-          <template v-if="game.matchup.scoreTeam1">
-            {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-            <div>{{results(game.matchup)}}</div>
-          </template>
-          <template v-else>
-            --
-          </template>
-        </td>
-        <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-      </ul>
-    </div> -->
 
-    <div class="tournamentSchedule">
-      <editTable :columns="columns" :config="config" :tabledata="tournament" v-model="newGame" :edit="edit" />
+    <div class="contentPad">
+      <!-- <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
+        <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
+      </ul> -->
+      <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" >
+        
+        <template slot="tbody">
+          
+            <tournamentGame v-for="(data, index) in games" :game="data" :key="index" />
+            <!-- <tournamentGame v-for="(data, index) in sixteenUBoys" :game="data" :key="index" />
+            <tournamentGame v-for="(data, index) in eighteenUBoys" :game="data" :key="index" />
+            <tournamentGame v-for="(data, index) in eighteenUGirls" :game="data" :key="index" /> -->
+
+
+            <template v-if="newGame">
+              <tournamentGame :game=newTournamentGame :new_game=true @add-game="addGame" />
+            </template>
+            <div>
+              <font-awesome-icon :icon="['fas', 'plus']" class="icon" @click="newGame = !newGame"></font-awesome-icon>
+              Add Tournament Game
+            </div>
+          
+        </template>
+      </editTable>
     </div>
-
 
     <div class="tournamentSchedule">
       <button @click="save()">
         Save
       </button>
-        <!-- <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">14U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th>Level</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in fourteenUBoys" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
-                vs.
-                <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">16U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th> -->
-              <!-- <th class="final">Final Score</th> -->
-              <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
-            <!-- </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in sixteenUBoys" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
-                vs.
-                <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td> -->
-              <!-- <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template> -->
-              <!-- </td> -->
-              <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
-            <!-- </tr>
-          </tbody>
-        </table> -->
-<!-- 
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">18U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th> -->
-              <!-- <th class="final">Final Score</th> -->
-              <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
-            <!-- </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in eighteenUBoys" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
-                vs.
-                <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td> -->
-              <!-- <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template> -->
-              <!-- </td> -->
-              <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
-            <!-- </tr>
-          </tbody>
-        </table> -->
-
-        <!-- <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">18U Girls</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th> -->
-              <!-- <th class="final">Final Score</th> -->
-              <!-- <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th> -->
-            <!-- </tr>
-          </thead>
-          <tbody> -->
-            <!-- <template>
-              <tableRow v-model="game"></tableRow>
-            </template> -->
-            <!-- <tr v-for="(game, index) in eighteenUGirls" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span v-html="game.matchup.team1"></span>
-                <input v-model.number="game.matchup.scoreTeam1" @blur="updateBracket(game)" />
-                vs.
-                <span v-html="game.matchup.team2"></span>
-                <input v-model.number="game.matchup.scoreTeam2" @blur="updateBracket(game)" />
-              </td> -->
-              <!-- <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template> -->
-              <!-- </td> -->
-              <!-- <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td> -->
-            <!-- </tr>
-          </tbody>
-        </table> -->
-      </div>
+    </div>
   </div>
 </template>
 
@@ -215,6 +53,8 @@
 import { api } from '@/api/endpoints'
 
 import editTable from '@/components/editTable'
+import selectbox from '../selectbox'
+import tournamentGame from './tournamentGame'
 
 import _ from 'lodash'
 
@@ -222,10 +62,12 @@ import _ from 'lodash'
 import { root } from '@/mixins/root'
 
 export default {
+  name: 'adminTournament',
   data () {
     return {
       games: [],
       oldBracket: [],
+      newGame: false,
       columns: [
         {
           name: 'Game',
@@ -235,35 +77,98 @@ export default {
         {
           name: 'Date',
           field_name: 'date',
-          type: 'text'
+          type: 'date'
         },
         {
           name: 'Time',
           field_name: 'time',
+          type: 'time'
+        },
+        {
+          name: 'Description',
+          field_name: 'Game Description',
           type: 'text'
         },
         {
-          name: 'Matchup',
-          field_name: 'matchup',
+          name: 'Home Seed',
+          field_name: 'matchup.team1Seed',
           type: 'text'
         },
         {
-          name: 'Level',
-          field_name: 'level',
+          name: 'Home Team',
+          field_name: 'matchup.team1',
+          type: 'text'
+        },
+        {
+          name: 'Away Seed',
+          field_name: 'matchup.team2Seed',
+          type: 'text'
+        },
+        {
+          name: 'Away team',
+          field_name: 'matchup.team2',
+          type: 'text'
+        },
+        {
+          name: 'Home Score',
+          field_name: 'matchup.team1Score',
+          type: 'text'
+        },
+        {
+          name: 'Away Score',
+          field_name: 'matchup.team2Score',
+          type: 'text'
+        },
+        {
+          name: 'Winner From Game',
+          field_name: 'matchup.winners_from',
+          type: 'text'
+        },
+        {
+          name: 'Loser From Game',
+          field_name: 'matchup.losers_from',
+          type: 'text'
+        },
+        {
+          name: 'Tournament Level',
+          field_name: 'tournament',
           type: 'text'
         }
       ],
       config: {
         page: 'tournament'
       },
-      tournament:[],
-      newGame: {},
+      tournament: [],
+      newTournamentGame: {
+        game: '',
+        date: '',
+        time: '',
+        game_description: '',
+        matchup: {
+          team1: '',
+          scoreTeam1: '',
+          team1Seed: '',
+          team2: '',
+          scoreTeam2: '',
+          team2Seed: '',
+          winner_to: '',
+          loser_to: ''
+        },
+        location: {
+          address: '',
+          name: ''
+        },
+        seasons: {}
+      },
+      tournamentGame: {},
       edit: false,
       activeTournaments: []
     }
   },
   components: {
-    editTable: editTable
+    editTable: editTable,
+    selectbox: selectbox, 
+    tournamentGame: tournamentGame
   },
   computed: {
     seasons () {
@@ -297,15 +202,22 @@ export default {
   watch: {
   },
   created () {
-    this.getActiveTournaments()
+    // this.getActiveTournaments()
     this.initTourney()
+    this.$root.$on('toggleEdit', () => { this.edit = !this.edit })
+    this.$root.$on('newGame', () => { this.newGame = !this.newGame })
   },
   methods: {
-    getActiveTournaments() {
-      api.getActiveTournaments().then(response => {
-        this.activeTournaments = response.data
-      })
+    toggleEdit () {
+      this.edit = !this.edit
     },
+    // getActiveTournaments () {
+    //   api.getActiveTournaments().then(response => {
+    //     response.data.forEach(season => {
+    //       this.activeTournaments.push(season)
+    //     })
+    //   })
+    // },
     initTourney () {
       this.thinking = true
       // this.$router.push('/manage/chattanooga_patriots')
@@ -317,7 +229,7 @@ export default {
         })
     },
     updateBracket (game) {
-      // this.oldBracket = _.cloneDeep(this.games)
+
       if (game.matchup.scoreTeam1 !== '' && game.matchup.scoreTeam2 !== '') {
         const winner = this.results(game.matchup)
         const loser = game.matchup.team1 === winner ? game.matchup.team2 : game.matchup.team1
@@ -368,13 +280,20 @@ export default {
       } else {
         return matchup.team2
       }
+    },
+    addGame(game){
+      console.log(game)
+      this.games.push(game)
     }
   }
 }
 </script>
 
 <style scoped lang="less">
+
 @import '../../assets/less/utils/variables.less';
+@import '../../assets/less/utils/breakpoints.less';
+
 main{
   display:flex;
   flex-direction:row;
@@ -387,13 +306,14 @@ main{
   list-style:none;
   padding:0;
 }
-  .round .spacer{ flex-grow:1; }
-  .round .spacer:first-child,
-  .round .spacer:last-child{ flex-grow:.5; }
 
-  .round .game-spacer{
-    flex-grow:1;
-  }
+.round .spacer{ flex-grow:1; }
+.round .spacer:first-child,
+.round .spacer:last-child{ flex-grow:.5; }
+
+.round .game-spacer{
+  flex-grow:1;
+}
 
 /*
  *  General Styles
@@ -409,22 +329,51 @@ li.game{
   padding-left:20px;
 }
 
-  li.game.winner{
-    font-weight:bold;
-  }
-  li.game span{
-    float:right;
-    margin-right:5px;
-  }
+li.game.winner{
+  font-weight:bold;
+}
+li.game span{
+  float:right;
+  margin-right:5px;
+}
 
-  li.game-top{ border-bottom:1px solid #aaa; }
+li.game-top{ border-bottom:1px solid #aaa; }
 
-  li.game-spacer{
-    border-right:1px solid #aaa;
-    min-height:40px;
-  }
+li.game-spacer{
+  border-right:1px solid #aaa;
+  min-height:40px;
+}
 
-  li.game-bottom{
-    border-top:1px solid #aaa;
+li.game-bottom{
+  border-top:1px solid #aaa;
+}
+
+table {
+  // margin-top: -40px;
+  &:before {
+    content: '';
+    display: block;
+    height: 40px;
+    width: 100%;
+    width: calc(100% + 2.4rem);
+    border-left: 2px solid transparent;
+    position: absolute;
+    -webkit-transform: skewX(-45deg);
+    transform: skewX(-45deg);
+    top: 0;
+    right: -20px;
+    z-index: 5;
   }
+}
+
+#levels {
+  width: 200px;
+  vertical-align: middle;
+  margin-left: 32px;
+}
+
+@media @phone{
+
+}
+
 </style>

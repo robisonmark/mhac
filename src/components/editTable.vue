@@ -36,6 +36,9 @@
               <template v-else-if="column.field_name === 'host'">
                 <div tabindex="0" :class="{'vs': data[column.field_name]}" class="currentCustom">{{data[column.field_name] ? 'vs' : '@'}}</div>
               </template>
+              <template v-else-if="column.field_name==='feet' || column.field_name==='inches' ">
+                {{ data['height'][column.field_name] }}
+              </template>
               <template v-else>
                 {{ data[column.field_name]}}
               </template>

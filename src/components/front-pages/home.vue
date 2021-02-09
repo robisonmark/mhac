@@ -4,8 +4,8 @@
       <div class="col-md-8 col-lg-9">
         <div class="hero">
           <div class="tagline">
-            <h2>And so it begins...</h2>
-            <h2>{{ activeYear.name }} is offically under way!</h2>
+            <h2>The {{ activeYear.name}} is coming to an end...</h2>
+            <h2>Make plans to attend MHAC tournament!</h2>
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@
         Chattanooga Patriots 18U Girls</p>
         <br />
         <b>Way to represent the MHAC!</b> -->
-        <!-- <h3>For Information on the 2020 Tournament please go to <router-link :to="{ 'path': '/tournament2020' }">Tournament Central</router-link></h3> -->
+        <h3>For Information on the 2021 Tournament please go to <router-link :to="{ 'path': '/tournament' }">Tournament Central</router-link></h3>
       </div>
 
       <!-- <footer class="col-12 text-right">

@@ -79,17 +79,24 @@
           </div>
           <nav :class="[openMenu ? 'open' : 'close']">
             <router-link :to="{ path: '/' }">Home</router-link>
-            <router-link :to="{ path: '/tournament2020' }">Tournament Central</router-link>
+            <!--  -->
+            <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
+              Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon> 
+                <ul v-show="showTournament" class="tourn_nav_dropdown">
+                  <li><router-link :to="{ path: '/tournament'}">Tournament Central</router-link> </li>
+                  <li><a href='https://mhac-merch.square.site'> Tournament Merch</a></li>
+                  <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li>
+                </ul>
+            </span>
             <router-link :to="{ path: '/compliance' }">Compliance</router-link>
             <router-link :to="{ path: '/schedules' }">Schedules</router-link>
             <router-link :to="{ path: '/stats' }">Stats</router-link>
             <span class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
-            <!-- <div class="dropdown" @click="showSchools = !showSchools" ref="schoolDropDown"> -->
-              Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
+              Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> 
+              <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
               <ul v-show="showSchools" class="nav_dropdown">
                 <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">
                   {{team.team_name}}
-                  <!-- <span class="imgCon"><img :src="'/static/color-team-logos/' + team.logo_color" :alt="team.team_name + ' ' + team.team_mascot"/></span> -->
                 </router-link>
               </ul>
             </span>
@@ -115,6 +122,7 @@ export default {
       openMenu: false,
       showLogin: false,
       showSchools: false,
+      showTournament: false,
       thinking: false,
       username: '',
       password: ''
@@ -165,6 +173,9 @@ export default {
     },
     displayDrop () {
       this.showSchools = !this.showSchools
+    },
+    tournamentDrop () {
+      this.showTournament = !this.showTournament
     },
     goToLogin () {
       if (!this.loggedIn) {
@@ -532,7 +543,52 @@ export default {
             }
           }
         }
+
+        .tourn_nav_dropdown {
+          color: #2A2A2A;
+          top: 4.5rem;
+          box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
+          right: 200;
+          position: absolute;
+          width: auto;
+          font-weight: 400;
+          text-align: right;
+          white-space: nowrap;
+          background: rgba(255,255,255, 0.95);
+          font-size: .9rem;
+          letter-spacing: -.2px;
+          li {
+            padding: .2rem 1rem;
+            
+            cursor: pointer;
+            font-family: 'Lato';
+            &:after {
+              height: 1px;
+              background: var(--bg-color);
+              width: calc(100% + .75rem);
+              margin-right: -.5rem;
+              float: right;
+            }
+            .imgCon {
+              height: 60px;
+              width: 50px
+            }
+            img {
+              max-width: 100%;
+              max-height: 100%;
+            }
+            &:hover {
+              color: @conf-blue;
+            }
+            a {
+              color: #2A2A2A;
+              width: calc(100% + .80rem);
+            }
+          }
+        }
+
       }
+
       .hamburger {
         display: none;
       }
