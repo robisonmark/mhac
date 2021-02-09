@@ -1,15 +1,12 @@
 <template>
   <div class="con-admin">
-    <!-- <nav class="sidebar" >
-      <div class="mobile-drop" @click="collapse = !collapse">
-        <div>Admin Sites <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon></div>
-      </div>
+    <nav class="sidebar">
       <ul :style="cssVars">
         <router-link :to="{ path: '/admin/edit_frontpage'}" tag="li">Edit Front Page</router-link>
         <router-link :to="{ path: '/admin/tournament'}" tag="li">Manage Tournament</router-link>
         <router-link :to="{ path: '/manage/'}" tag="li">Manage Teams</router-link>
       </ul>
-    </nav> -->
+    </nav>
     <router-view class="admin" />
     <img class="bottom-logo" :src="greyLogo" />
 
@@ -204,34 +201,37 @@ li.game{
   display: grid;
   grid-template-columns: 15rem auto;
   // grid-auto-rows: minmax(35px, auto);
-  // .sidebar {
-  //   background-color: #fff;
-  //   .team-logo {
-  //     width: 100%;
-  //     min-height: 10rem;
-  //     display: flex;
-  //     img {
-  //       width: 75%;
-  //       display: block;
-  //       margin: auto;
-  //     }
-  //   }
-  //   // Override Chrome Browser Defaults
-  //   ul {
-  //     margin-block-start: 0px;
-  //     margin-block-end: 0px;
-  //     margin-inline-start: 0px;
-  //     margin-inline-end: 0px;
-  //     padding-inline-start: 0px;
-  //   }
-  //   li {
-  //     text-decoration: none;
-  //     list-style: none;
-  //     text-align: left;
-  //     padding-left: 2rem;
-  //     height: 3rem;
-  //     display: flex;
-  //     align-items: center;
+  .sidebar {
+    background-color: #0C4B75;
+    color: #fff;
+    .team-logo {
+      width: 100%;
+      min-height: 10rem;
+      display: flex;
+      img {
+        width: 75%;
+        display: block;
+        margin: auto;
+      }
+    }
+    // Override Chrome Browser Defaults
+    ul {
+      margin-block-start: 0px;
+      margin-block-end: 0px;
+      margin-inline-start: 0px;
+      margin-inline-end: 0px;
+      padding-inline-start: 0px;
+    }
+    li {
+      text-decoration: none;
+      list-style: none;
+      text-align: left;
+      padding-left: 2rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+    }
+  }
 
   //     &:nth-child(even) {
   //       background-color: grey;

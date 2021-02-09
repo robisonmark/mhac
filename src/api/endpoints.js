@@ -59,6 +59,28 @@ export class api {
   }
 
   /***
+     * Get Team Count (For Tournament Games)
+     * @param {string} method - Get
+     * @param {string} seasonId - Season Level ID
+     * @return - JSON Object of players by team
+    ***/
+  static async getTeamCount (seasonId) {
+    // if (store.state.user.signInUserSession.idToken.jwtToken) {
+    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
+    // } else {
+    //   await Auth.currentAuthenticatedUser().then(response => {
+    //     // console.log('current:', response)
+    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
+    //     // console.log(user)
+    //   })
+    // }
+    return robros({
+      url: '/getTeamCount/' + seasonId,
+      method: 'GET'
+    })
+  }
+
+  /***
      * Get Standings
      * @param {string} method - Put or Post. Method sent to the api
      * @param {object} body - Player JSON Body
@@ -381,7 +403,7 @@ export class api {
     } else if (slug === '' && seasonid !== null) {
       slug = seasonid
     }
-    
+
     return robros({
       url: '/getSeasonTeams/' + slug,
       method: 'GET'
@@ -411,13 +433,13 @@ export class api {
     })
   }
 
-    /***
+  /***
      * Add Game
      * @param {string} method - Put or Post. Method sent to the api
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-   static async updateGame (body) {
+  static async updateGame (body) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -433,7 +455,6 @@ export class api {
       data: body
     })
   }
-
 
   /***
      * Get Tournament Info
@@ -452,7 +473,7 @@ export class api {
     //   })
     // }
     return robros({
-      url: '/getTournamentInformation',
+      url: '/getTournamentInformation/',
       method: 'GET'
     })
   }
@@ -499,7 +520,7 @@ export class api {
     //     // console.log(user)
     //   })
     // }
-    
+
     return robros({
       url: '/getActiveYear',
       method: 'GET'
@@ -516,19 +537,19 @@ export class api {
     //     // console.log(user)
     //   })
     // }
-    
+
     return robros({
       url: '/lookupTeamByStandings/' + season_id + '/' + rank,
       method: 'GET'
     })
   }
 
-    /***
+  /***
      * Get a List of Players
      * @param {object} team - Team UUID
      * @return - JSON Object of players by team
     ***/
-   static async getAdminPlayers (team) {
+  static async getAdminPlayers (team) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -543,13 +564,14 @@ export class api {
       method: 'GET'
     })
   }
-    /***
+
+  /***
      * Get a List of Players
      * @param {string} method - Put or Post. Method sent to the api
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-   static async updateTournamentGame (body) {
+  static async updateTournamentGame (body) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -566,5 +588,4 @@ export class api {
       data: body
     })
   }
-
 }
