@@ -54,24 +54,20 @@
          Don't forget to order merchandise for the 2020-2021 tournament. This year we are offering T-Shirts, Crewneck Sweatshirts, and Hoodies. To order, visit <a href="https://mhac-merch.square.site/">https://mhac-merch.square.site</a>.
       </p>
       <div class="filterBar">
-        <input type="radio" v-model="bracketFormat" value="list" id="list"> <label for="list">List</label>
-        <input type="radio" v-model="bracketFormat" value="bracket" id="bracket"> <label for="bracket">Bracket</label>
+        <label for="list" class="toggle-buttons toggle-buttons-left" :class="[bracketFormat === 'list' ? 'active' : '']">
+          <input type="radio" v-model="bracketFormat" value="list" id="list"> 
+          <font-awesome-icon :icon="['fas', 'list-ol']" class="icon"></font-awesome-icon>
+        </label>
+        <label for="bracket" class="toggle-buttons toggle-buttons-right" :class="[bracketFormat === 'bracket' ? 'active' : '']">
+          <input type="radio" v-model="bracketFormat" value="bracket" id="bracket">
+          <font-awesome-icon :icon="['fas', 'stream']" class="icon"></font-awesome-icon>
+        </label>
       </div>
+
       <TournamentBracket v-if="Object.keys(games).length >= 1 && bracketFormat === 'bracket'" :games="games"></TournamentBracket>
       <TournamentList :games="games" v-else></TournamentList>
+      
       <div class="sponsors">
-      </div>
-    </div>
-    <div class="bracketModal" v-if="showBracket">
-      <div class="custom-select"  @click="showLevels = !showLevels">
-        <div disabled>{{filterBy.level.level}}</div>
-        <div class="options-menu">
-          <template>
-            <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
-              {{lvl.level}}
-            </div>
-          </template>
-        </div>
       </div>
     </div>
   </div>
@@ -107,8 +103,7 @@ export default {
           end_date: ''
         }
       },
-      games: {},
-      showBracket: false
+      games: {}
     }
   },
 
@@ -121,18 +116,6 @@ export default {
     levels () {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
-    },
-    fourteenUBoys () {
-      return this.games.filter(game => { return game.seasons.level === '14U Boys' })
-    },
-    sixteenUBoys () {
-      return this.games.filter(game => { return game.seasons.level === '16U Boys' })
-    },
-    eighteenUBoys () {
-      return this.games.filter(game => { return game.seasons.level === '18U Boys' })
-    },
-    eighteenUGirls () {
-      return this.games.filter(game => { return game.seasons.level === '18U Girls' })
     }
   },
   created () {
@@ -165,10 +148,56 @@ h5 {
   padding-bottom: 1rem;
 }
 
+.filterBar {
+  line-height: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.toggle-buttons {
+  border: 1px solid #0C4B75;
+  color: #0C4B75;
+  display: inline-flex;
+  padding: 5px;
+  margin-bottom: 0;
+
+  // &-left {
+  //   border-radius: 5px 0 0 5px;
+  // }
+
+  // &-right {
+  //   border-radius: 0 5px 5px 0;
+  // }
+
+  &.active {
+    background: #0C4B75;
+    color: #fff;
+    border: 1px solid #0C4B75;
+  }
+
+  input {
+    display: none;
+  }
+
+  .icon {
+    font-size: 1.2rem;
+  }
+}
+
 ::v-deep .levelHead {
   padding:.75rem;
   background-color: rgba(39,132,195,1);
   color: #fff;
+
+  &-div {
+    box-sizing: border-box;
+    line-height: 1;
+  }
+
+  td {
+    line-height: 2;
+  }
 }
 
 // @media @phone {
