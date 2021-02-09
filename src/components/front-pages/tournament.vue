@@ -6,13 +6,12 @@
       <p>There will be four tournaments. All games will be played at <a href='https://www.google.com/maps/place/106+Gallatin+Pike+N,+Madison,+TN+37115/@36.264061,-86.7130334,17z/data=!3m1!4b1!4m5!3m4!1s0x88644302d8537e4d:0x747b45d0cbfa0f87!8m2!3d36.264061!4d-86.7108447'> Madison Church of Christ, 106 Gallatin Pike N, Madison, TN 37115</a>. The first round games of the tournament will be played on Thursday.  The semi-finals on Friday, and tiger consolation and championship games on Saturday.  Madison CoC will be hosting a concession stand there for those wanting a meal, snack or drink.
       </p>
 
-      <p> 
+      <p>
         The tournament schedule is based on 8 teams for 18U(HSV) boys, 6 teams for 16u(HSJV) boys, 7 teams for 14U(MSV) boys and 4 teams for 18U(HSV) girls.
       </p>
       <p>
         <b>Gate and Concession money</b>
-        <br />The MHAC Conference is covering all costs for the tournament(refs and gym floor).  Because of this we will be collecting the gate money and money from attendees.  We really need to make sure and support the tournament to help cover all the costs. 
-
+        <br />The MHAC Conference is covering all costs for the tournament(refs and gym floor).  Because of this we will be collecting the gate money and money from attendees.  We really need to make sure and support the tournament to help cover all the costs.
       </p>
       <p>
         <b>Gate fees</b>
@@ -26,7 +25,7 @@
           <li>6 years old and under will get in free</li>
         </ul>
         
-        There will be a total of 22 games in the tournament, Feb 11th, 12th & 13th.
+        There will be a total of 21 games in the tournament, Feb 11th, 12th & 13th.
       </p>
       <p>
         <b>Payment Methods</b>
@@ -39,7 +38,7 @@
       <p>
         <b>We need your help!</b>
         <br />
-          As the tournament approaches we are making plans to provide the best experience for your students. We have volunteer positions available for running the camera or operating the gate. Below you will find a link to the signup page where you can select to fill a time slot.   
+          As the tournament approaches we are making plans to provide the best experience for your students. We have volunteer positions available for running the camera or operating the gate. Below you will find a link to the signup page where you can select to fill a time slot.
         <br />
         Click the link to sign-up below.
         <br />
@@ -48,211 +47,48 @@
       <p>
         Please <a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">download the tournament packet</a> for more information.
       </p>
-      
+
       <br />
 
       <p>
-         Don't forget to order merchandise for the 2020-2021 tournament. This year we are offering T-Shirts, Crewneck Sweatshirts, and Hoodies. To order, visit <a href="https://mhac-merch.square.site/">https://mhac-merch.square.site</a>.  
+         Don't forget to order merchandise for the 2020-2021 tournament. This year we are offering T-Shirts, Crewneck Sweatshirts, and Hoodies. To order, visit <a href="https://mhac-merch.square.site/">https://mhac-merch.square.site</a>.
       </p>
-      <div class="tournamentSchedule">
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">14U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th class="final">Final Score</th>
-              <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in fourteenUBoys" :key="index">
-              <td>{{game.logical_game_number}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td >
-                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
-                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                  vs.
-                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-                </template>
-                <template v-else>
-                  <span > {{game.game_description}} </span>
-                </template>
-              </td>
-              
-              <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template>
-              </td>
-              <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">16U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th class="final">Final Score</th>
-              <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in sixteenUBoys" :key="index">
-              <td>{{game.logical_game_number}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                     <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
-                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                  vs.
-                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-                </template>
-                <template v-else>
-                  <span > {{game.game_description}} </span>
-                </template>
-              </td>
-              <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template>
-              </td>
-              <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">18U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th class="final">Final Score</th>
-              <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in eighteenUBoys" :key="index">
-              <td>{{game.logical_game_number}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
-                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                  vs.
-                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-                </template>
-                <template v-else>
-                  <span > {{game.game_description}} </span>
-                </template>
-              </td>
-              <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template>
-              </td>
-              <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">18U Girls</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th class="final">Final Score</th>
-              <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in eighteenUGirls" :key="index">
-              <td>{{game.logical_game_number}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null) && game.display">
-                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                  vs.
-                  <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-                </template>
-                <template v-else>
-                  <span > {{game.game_description}} </span>
-                </template>
-              </td>
-              <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template>
-              </td>
-              <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="filterBar">
+        <label for="list" class="toggle-buttons toggle-buttons-left" :class="[bracketFormat === 'list' ? 'active' : '']">
+          <input type="radio" v-model="bracketFormat" value="list" id="list"> 
+          <font-awesome-icon :icon="['fas', 'list-ol']" class="icon"></font-awesome-icon>
+        </label>
+        <label for="bracket" class="toggle-buttons toggle-buttons-right" :class="[bracketFormat === 'bracket' ? 'active' : '']">
+          <input type="radio" v-model="bracketFormat" value="bracket" id="bracket">
+          <font-awesome-icon :icon="['fas', 'stream']" class="icon"></font-awesome-icon>
+        </label>
       </div>
+
+      <TournamentBracket v-if="Object.keys(games).length >= 1 && bracketFormat === 'bracket'" :games="games"></TournamentBracket>
+      <TournamentList :games="games" v-else></TournamentList>
+      
       <div class="sponsors">
-      </div>
-    </div>
-    <div class="bracketModal" v-if="showBracket">
-      <div class="custom-select"  @click="showLevels = !showLevels">
-        <div disabled>{{filterBy.level.level}}</div>
-        <div class="options-menu">
-          <template>
-            <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
-              {{lvl.level}}
-            </div>
-          </template>
-        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+// Api
 import { api } from '../../api/endpoints.js'
+
+// components
+import TournamentBracket from '@/components/tournament/bracket'
+import TournamentList from '@/components/tournament/list'
+
+// Third Party Helpers
+import { groupBy } from 'lodash'
 
 export default {
   name: 'tournament2020',
   data () {
     return {
+      bracketFormat: 'list',
       filterBy: {
         team: {
           slug: '',
@@ -267,44 +103,28 @@ export default {
           end_date: ''
         }
       },
-      games: [],
-      showBracket: false
+      games: {}
     }
   },
+
+  components: {
+    TournamentBracket: TournamentBracket,
+    TournamentList: TournamentList
+  },
+
   computed: {
     levels () {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
-    },
-    fourteenUBoys () {
-      return this.games.filter(game => { return game.seasons.level === '14U Boys' })
-    },
-    sixteenUBoys () {
-      return this.games.filter(game => { return game.seasons.level === '16U Boys' })
-    },
-    eighteenUBoys () {
-      return this.games.filter(game => { return game.seasons.level === '18U Boys' })
-    },
-    eighteenUGirls () {
-      return this.games.filter(game => { return game.seasons.level === '18U Girls' })
     }
   },
   created () {
     this.initTourney()
   },
   methods: {
-    results (matchup) {
-      if (parseInt(matchup.scoreTeam1) > parseInt(matchup.scoreTeam2)) {
-        return matchup.team1
-      } else {
-        return matchup.team2
-      }
-    },
     initTourney () {
-      // this.thinking = true
-      // this.$router.push('/manage/chattanooga_patriots')
       api.getTournamentInformation().then(response => {
-        this.games = response.data.games
+        this.games = groupBy(response.data.games, 'seasons.level')
       })
         .catch(err => {
           console.log(err)
@@ -328,36 +148,56 @@ h5 {
   padding-bottom: 1rem;
 }
 
-.tournamentSchedule {
-  margin-top: 4rem;
+.filterBar {
+  line-height: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
-table {
-  width: 100%;
-  margin-bottom: 2rem;
-  td, th {
-    padding: .3rem .5rem;
+
+.toggle-buttons {
+  border: 1px solid #0C4B75;
+  color: #0C4B75;
+  display: inline-flex;
+  padding: 5px;
+  margin-bottom: 0;
+
+  // &-left {
+  //   border-radius: 5px 0 0 5px;
+  // }
+
+  // &-right {
+  //   border-radius: 0 5px 5px 0;
+  // }
+
+  &.active {
+    background: #0C4B75;
+    color: #fff;
+    border: 1px solid #0C4B75;
   }
-  th {
-    font-weight: 200;
+
+  input {
+    display: none;
   }
-  tbody tr {
-    border-bottom: 1px solid #CFCDCD;
-    // padding:.75rem;
+
+  .icon {
+    font-size: 1.2rem;
   }
 }
-.winner {
-  font-weight: 600;
-}
-.final {
-  text-align: right;
-  div{
-    font-style: italic;
-  }
-}
-.levelHead {
+
+::v-deep .levelHead {
   padding:.75rem;
   background-color: rgba(39,132,195,1);
   color: #fff;
+
+  &-div {
+    box-sizing: border-box;
+    line-height: 1;
+  }
+
+  td {
+    line-height: 2;
+  }
 }
 
 // @media @phone {
