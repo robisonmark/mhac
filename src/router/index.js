@@ -376,6 +376,7 @@ export const router = new Router({
           }
         },
         {
+          // Is this needed?
           path: 'seasons',
           name: 'adminSeason',
           component: adminSeason,
