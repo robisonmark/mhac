@@ -24,8 +24,8 @@
           <li>Tournament Family 4 or more - $70 (On Friday the price drops to $50) </li>
           <li>6 years old and under will get in free</li>
         </ul>
-
-        There will be a total of 25 games in the tournament, Feb 11th, 12th & 13th.
+        
+        There will be a total of 21 games in the tournament, Feb 11th, 12th & 13th.
       </p>
       <p>
         <b>Payment Methods</b>

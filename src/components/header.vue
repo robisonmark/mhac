@@ -314,7 +314,7 @@ export default {
       .mobile-drop {
         display: none;
       }
-      &nav {
+      & nav {
         display: flex;
         flex-direction: column;
         position: relative;
@@ -557,32 +557,33 @@ export default {
           background: rgba(255,255,255, 0.95);
           font-size: .9rem;
           letter-spacing: -.2px;
-          li { 
-              a {
-                color: #2A2A2A;
-                 width: calc(100% + .80rem);
-              }
-              padding: .2rem 1rem;
-              cursor: pointer;
-              font-family: 'Lato';
-              &:after {
-                height: 1px;
-                background: var(--bg-color);
-                width: calc(100% + .75rem);
-                margin-right: -.5rem;
-                float: right;
-              }
-              .imgCon {
-                height: 60px;
-                width: 50px
-              }
-              img {
-                max-width: 100%;
-                max-height: 100%;
-              }
-              &:hover {
-                color: @conf-blue;
-              }
+          li {
+            padding: .2rem 1rem;
+            
+            cursor: pointer;
+            font-family: 'Lato';
+            &:after {
+              height: 1px;
+              background: var(--bg-color);
+              width: calc(100% + .75rem);
+              margin-right: -.5rem;
+              float: right;
+            }
+            .imgCon {
+              height: 60px;
+              width: 50px
+            }
+            img {
+              max-width: 100%;
+              max-height: 100%;
+            }
+            &:hover {
+              color: @conf-blue;
+            }
+            a {
+              color: #2A2A2A;
+              width: calc(100% + .80rem);
+            }
           }
         }
 
