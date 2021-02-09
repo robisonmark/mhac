@@ -12,7 +12,7 @@ import stats from '@/components/front-pages/stats'
 import schools from '@/components/front-pages/schools'
 import contact from '@/components/front-pages/contact'
 
-import bracket from '@/components/bracket'
+import bracket from '@/components/tournament/bracket'
 
 // Team Management Components
 import TeamManagement from '@/components/TeamManagement'

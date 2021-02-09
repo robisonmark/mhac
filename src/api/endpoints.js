@@ -473,7 +473,7 @@ export class api {
     //   })
     // }
     return robros({
-      url: '/getTournamentInformation',
+      url: '/getTournamentInformation/',
       method: 'GET'
     })
   }
