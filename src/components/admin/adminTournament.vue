@@ -19,7 +19,7 @@
       <!-- <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
         <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
       </ul> -->
-      <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" >
+      <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" @lookup="updateBracket">
         
         <template slot="tbody">
           
@@ -70,9 +70,9 @@ export default {
       newGame: false,
       columns: [
         {
-          name: 'Game',
+          name: 'Game_Number',
           field_name: 'game',
-          type: 'text'
+          type: 'number'
         },
         {
           name: 'Date',
@@ -120,12 +120,12 @@ export default {
           type: 'text'
         },
         {
-          name: 'Winner From Game',
+          name: 'Winner To Game',
           field_name: 'matchup.winners_from',
           type: 'text'
         },
         {
-          name: 'Loser From Game',
+          name: 'Loser To Game',
           field_name: 'matchup.losers_from',
           type: 'text'
         },
@@ -140,6 +140,7 @@ export default {
       },
       tournament: [],
       newTournamentGame: {
+        logical_game_number: '',
         game: '',
         date: '',
         time: '',
@@ -174,14 +175,6 @@ export default {
     seasons () {
       return this.$store.state.seasons
     },
-    // tournaments () {
-    //   let t = []
-    //   api.getActiveTournaments().then(response => {
-    //     // this.activeTournaments = response.data
-    //     t = response.data
-    //   })
-    //   return t
-    // },
     levels () {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
@@ -202,7 +195,6 @@ export default {
   watch: {
   },
   created () {
-    // this.getActiveTournaments()
     this.initTourney()
     this.$root.$on('toggleEdit', () => { this.edit = !this.edit })
     this.$root.$on('newGame', () => { this.newGame = !this.newGame })
@@ -211,13 +203,6 @@ export default {
     toggleEdit () {
       this.edit = !this.edit
     },
-    // getActiveTournaments () {
-    //   api.getActiveTournaments().then(response => {
-    //     response.data.forEach(season => {
-    //       this.activeTournaments.push(season)
-    //     })
-    //   })
-    // },
     initTourney () {
       this.thinking = true
       // this.$router.push('/manage/chattanooga_patriots')
@@ -284,6 +269,23 @@ export default {
     addGame(game){
       console.log(game)
       this.games.push(game)
+    },
+    newLookup () {
+
+    },
+    lookupTeam (teamSeed, season_id, team) {
+      // console.log("LookupTeam:", teamSeed, this.game.seasons.season_id)
+      if (teamSeed !== null && this.game.seasons.season_id !== undefined) {
+        api.getTeamByStandings(this.game.seasons.season_id, teamSeed).then(response => {
+          // console.log("Lookup team", team, response.data.team_name)
+          if (team === 1) {
+            this.game.matchup.team1 = response.data.team_name
+            }
+          if (team === 2) {
+            this.game.matchup.team2 = response.data.team_name
+            }
+        })
+      }
     }
   }
 }
