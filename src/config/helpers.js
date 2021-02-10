@@ -6,6 +6,10 @@ function formatDate (date) {
   // add minutes to offset timezone difference from UTC
   date = addMinutes(date, date.getTimezoneOffset())
   return format(new Date(date), CONSTANTS.date_format)
+  // Where did this come from?
+  // console.log(date)
+  // var dateToDisplay = date.replace('-', '/')
+  // return format(new Date(dateToDisplay), CONSTANTS.date_format)
 }
 
 function formatTime (time) {
