@@ -27,6 +27,8 @@ import admin from '@/components/admin'
 // import login from '@/components/admin/login'
 import adminTournament from '@/components/admin/adminTournament'
 import editHomepage from '@/components/admin/editHomepage'
+import manageStandings from '@/components/admin/manageStandings'
+
 
 // Config Helpers
 import config from '@/config/helpers'
@@ -254,6 +256,15 @@ export const router = new Router({
           path: 'tournament',
           name: 'adminTournament',
           component: adminTournament,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          }
+        },
+        {
+          path: 'manage_standings',
+          name: 'manageStandings',
+          component: manageStandings,
           meta: {
             requiresAuth: true,
             section: 'admin'
