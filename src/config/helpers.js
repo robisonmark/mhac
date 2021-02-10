@@ -5,7 +5,9 @@ function generateBracket (count) {
 }
 
 function formatDate (date) {
-  return format(new Date(date), CONSTANTS.date_format)
+  // console.log(date)
+  var dateToDisplay = date.replace('-', '/')
+  return format(new Date(dateToDisplay), CONSTANTS.date_format)
 }
 
 function formatTime (time) {
