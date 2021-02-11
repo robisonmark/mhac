@@ -112,13 +112,19 @@ export default {
           this.bracketMatchups = []
 
           brackets[level.level] = await this.getBracket(teamCount)
+
           for (var i = 0; brackets[level.level].length > i; i++) {
             brackets[level.level][i].gameInfo = this.games[level.level].filter(game => {
               return brackets[level.level][i].seeds.includes(parseInt(game.matchup.team1Seed))
             })[0]
 
             if (!brackets[level.level][i].gameInfo) {
-              brackets[level.level][i].gameInfo = this.games[level.level].filter(game => brackets[level.level][i].gameNo === parseInt(game.logical_game_number))[0]
+              brackets[level.level][i].gameInfo = this.games[level.level].filter(game => {
+                if (game.logical_game_number) {
+                  return brackets[level.level][i].gameNo === game.logical_game_number
+                }
+              })
+              brackets[level.level][i].gameInfo = brackets[level.level][i].gameInfo[0]
             }
           }
           brackets[level.level] = groupBy(brackets[level.level], 'roundNo')
@@ -152,6 +158,8 @@ export default {
 
       var matches = [[1, 2]]
 
+      let gameNo = 0
+
       for (var round = 1; round < rounds; round++) {
         var roundMatches = []
         var sum = Math.pow(2, round + 1) + 1
@@ -174,13 +182,12 @@ export default {
       let baseT = base / 2
       let baseC = base / 2
       let nextInc = base / 2
-      let gameNo = 0
 
       for (let i = 1; i <= (base - 1); i++) {
         let baseR = i / baseT
         let isBye = false
 
-        if (byesRemaining > 0 && (i % 2 !== 0 || byesRemaining >= (baseT - i))) {
+        if (byesRemaining > 0 && (i % 2 !== 0 && byesRemaining >= (baseT - i))) {
           isBye = true
           byesRemaining--
         }
