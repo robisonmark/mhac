@@ -134,6 +134,7 @@ export default {
     this.initYear()
   },
   methods: {
+<<<<<<< HEAD
     initPage () {
       pages.get('home').then(response => {
         // console.log(response)
@@ -147,6 +148,8 @@ export default {
     getRandomInt (max) {
       return Math.floor(Math.random() * max)
     },
+=======
+>>>>>>> 3365301 (updates to tournament bracket)
     initYear () {
       api.getActiveYear().then(response => {
         this.activeYear = response.data
