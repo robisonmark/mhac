@@ -118,7 +118,15 @@ export default {
             })[0]
 
             if (!brackets[level.level][i].gameInfo) {
-              brackets[level.level][i].gameInfo = this.games[level.level].filter(game => brackets[level.level][i].gameNo === parseInt(game.logical_game_number))[0]
+              brackets[level.level][i].gameInfo = this.games[level.level].filter(game => {
+                // console.log(game.matchup.losers_from)
+                if (game.matchup.losers_from) {
+                  let new_key = level.level + ' Consolation'
+                  brackets[new_key] = game
+                } else {
+                  brackets[level.level][i].gameNo === parseInt(game.logical_game_number)
+                }
+              })[0]
             }
           }
           brackets[level.level] = groupBy(brackets[level.level], 'roundNo')
