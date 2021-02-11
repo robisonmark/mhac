@@ -136,7 +136,7 @@ const actions = {
         }
       })
     }
-
+    
     if (userTeam.length >= 1) {
       await context.commit('set_user', userTeam[0])
       await context.commit('set_slug', userTeam[0].slug)

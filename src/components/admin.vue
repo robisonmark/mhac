@@ -19,6 +19,8 @@
 import { api } from '../api/endpoints.js'
 import { mapGetters } from 'vuex'
 
+import { mapState, mapGetters } from 'vuex'
+
 export default {
   name: 'admin',
   data () {
