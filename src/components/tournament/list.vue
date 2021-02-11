@@ -22,10 +22,10 @@
           <td >
             <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null)">
               <span v-if="game.matchup.team2 === null" v-html="game.game_description"> </span>
-              <span v-else :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
+              <span v-else :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
               vs.
               <span v-if="game.matchup.team1 === null" v-html="game.game_description"> </span>
-              <span v-else :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
+              <span v-else :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
             </template>
             <template v-else>
               <span > {{game.game_description}} </span>
@@ -45,135 +45,6 @@
         </tr>
       </tbody>
     </table>
-
-    <!-- <table>
-      <thead>
-        <tr class="levelHead">
-          <td colspan="6">16U Boys</td>
-        <tr>
-        <tr>
-          <th>Game #</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Matchup</th>
-          <th class="final">Final Score</th>
-          <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(game, index) in sixteenUBoys" :key="index">
-          <td>{{game.game}}</td>
-          <td>{{game.date}}</td>
-          <td>{{game.time}}</td>
-          <td>
-            <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null)">
-              <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-              vs.
-              <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-            </template>
-            <template v-else>
-              <span > {{game.game_description}} </span>
-            </template>
-          </td>
-          <td class="final">
-            <template v-if="game.matchup.scoreTeam1">
-              {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-              <div>{{results(game.matchup)}}</div>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </td>
-          <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <table>
-      <thead>
-        <tr class="levelHead">
-          <td colspan="6">18U Boys</td>
-        <tr>
-        <tr>
-          <th>Game #</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Matchup</th>
-          <th class="final">Final Score</th>
-          <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(game, index) in eighteenUBoys" :key="index">
-          <td>{{game.game}}</td>
-          <td>{{game.date}}</td>
-          <td>{{game.time}}</td>
-          <td>
-            <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null)">
-              <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-              vs.
-              <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-            </template>
-            <template v-else>
-              <span > {{game.game_description}} </span>
-            </template>
-          </td>
-          <td class="final">
-            <template v-if="game.matchup.scoreTeam1">
-              {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-              <div>{{results(game.matchup)}}</div>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </td>
-          <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <table>
-      <thead>
-        <tr class="levelHead">
-          <td colspan="6">18U Girls</td>
-        <tr>
-        <tr>
-          <th>Game #</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Matchup</th>
-          <th class="final">Final Score</th>
-          <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(game, index) in eighteenUGirls" :key="index">
-          <td>{{game.game}}</td>
-          <td>{{game.date}}</td>
-          <td>{{game.time}}</td>
-          <td>
-            <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null)">
-              <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-              vs.
-              <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-            </template>
-            <template v-else>
-              <span > {{game.game_description}} </span>
-            </template>
-          </td>
-          <td class="final">
-            <template v-if="game.matchup.scoreTeam1">
-              {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-              <div>{{results(game.matchup)}}</div>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </td>
-          <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-        </tr>
-      </tbody>
-    </table> -->
   </div>
 </template>
 

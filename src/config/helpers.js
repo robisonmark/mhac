@@ -1,13 +1,11 @@
-import { format } from 'date-fns'
-
-function generateBracket (count) {
-  console.log('implement this')
-}
+// Third Party Helpers
+import { format, addMinutes } from 'date-fns'
 
 function formatDate (date) {
-  // console.log(date)
-  var dateToDisplay = date.replace('-', '/')
-  return format(new Date(dateToDisplay), CONSTANTS.date_format)
+  date = new Date(date)
+  // add minutes to offset timezone difference from UTC
+  date = addMinutes(date, date.getTimezoneOffset())
+  return format(new Date(date), CONSTANTS.date_format)
 }
 
 function formatTime (time) {
