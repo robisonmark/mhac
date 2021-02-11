@@ -17,8 +17,8 @@
       <tbody>
         <tr v-for="(game, index) in level" :key="index">
           <td>{{game.game}}</td>
-          <td>{{$config.formatDate(game.date)}}</td>
-          <td>{{$config.formatTime(game.time)}}</td>
+          <td>{{game.date}}</td>
+          <td>{{game.time}}</td>
           <td >
             <template v-if="(game.matchup.team1 !== null || game.matchup.team2 !== null)">
               <span v-if="game.matchup.team2 === null" v-html="game.game_description"> </span>
