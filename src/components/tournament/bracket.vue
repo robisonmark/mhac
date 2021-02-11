@@ -20,13 +20,16 @@
                     <div></div>
                   </template>
                   <template v-else>
-                    <div class="team team-top">
+                    <div class="team team-top" :class="[(game.gameInfo) ? results(game.gameInfo.matchup.team1, game.gameInfo.matchup) : '']">
                       <span class="team-seed">{{(game.gameInfo) ? game.gameInfo.matchup.team1Seed : '' }}</span>
-                      {{(game.gameInfo) ? game.gameInfo.matchup.team1 : ''}}
+                      <span class="grow1">{{(game.gameInfo) ? game.gameInfo.matchup.team1 : ''}}</span>
+                      <span class="team-score">{{(game.gameInfo) ? game.gameInfo.matchup.scoreTeam1 : '' }}</span>
                     </div>
-                    <div class="team team-bottom">
+                    <!-- <div class="team team-bottom" :class="[game.gameInfo.matchup.scoreTeam2 && game.gameInfo.matchup.team2 === results(game.gameInfo.matchup) ? 'winner' : '']"> -->
+                      <div class="team team-bottom">
                       <span class="team-seed">{{(game.gameInfo) ? game.gameInfo.matchup.team2Seed : '' }}</span>
-                      {{(game.gameInfo) ? game.gameInfo.matchup.team2 : ''}}
+                      <span class="grow1">{{(game.gameInfo) ? game.gameInfo.matchup.team2 : ''}}</span>
+                      <span class="team-score">{{(game.gameInfo) ? game.gameInfo.matchup.scoreTeam2 : '' }}</span>
                     </div>
                     <div class="game">
                       <div class="game-number">Game {{(game.gameInfo) ? game.gameInfo.game : ''}}</div>
@@ -52,7 +55,7 @@
 import { api } from '@/api/endpoints.js'
 
 // Third Party
-import { groupBy } from 'lodash'
+import { groupBy, sortBy } from 'lodash'
 
 export default {
   name: 'TournamentBracket',
@@ -80,6 +83,14 @@ export default {
   },
 
   methods: {
+    results (team, matchup) {
+      if (parseInt(matchup.scoreTeam1) > parseInt(matchup.scoreTeam2)) {
+        return 'winner'
+      } else {
+        return ''
+      }
+    },
+
     async getTeamCount (seasonId) {
       return await api.getTeamCount(seasonId).then(response => {
         return response.data
@@ -88,7 +99,9 @@ export default {
 
     initTourney () {
       const brackets = {}
-      this.$store.state.seasons.forEach(level => {
+      const levels = this.$store.getters.seasons
+
+      levels.forEach(level => {
         this.getTeamCount(level.season_id).then(async (teamCount) => {
           if (level.level === '14U Boys') {
             teamCount -= 1
@@ -105,15 +118,7 @@ export default {
             })[0]
 
             if (!brackets[level.level][i].gameInfo) {
-              brackets[level.level][i].gameInfo = this.games[level.level].filter(game => {
-                // console.log(game.matchup.losers_from)
-                if (game.matchup.losers_from) {
-                  let new_key = level.level + ' Consolation'
-                  brackets[new_key] = game
-                } else {
-                  brackets[level.level][i].gameNo === parseInt(game.logical_game_number)
-                }
-              })[0]
+              brackets[level.level][i].gameInfo = this.games[level.level].filter(game => brackets[level.level][i].gameNo === parseInt(game.logical_game_number))[0]
             }
           }
           brackets[level.level] = groupBy(brackets[level.level], 'roundNo')
@@ -521,6 +526,10 @@ html, body, .brackets, .wrapper {
   &-bottom {
     order:1;
   }
+  &.winner {
+    font-weight: 600;
+    font-style: italic;
+  }
 }
 
 .round-details {
@@ -545,6 +554,15 @@ html, body, .brackets, .wrapper {
   background-color: #fff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   opacity: 1;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.grow1 {
+  flex-grow: 1;
+  padding-left: 5px;
 }
 
 .game {

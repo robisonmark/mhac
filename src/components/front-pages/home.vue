@@ -139,9 +139,8 @@ export default {
     this.initYear()
   },
   methods: {
-    initYear(){
+    initYear () {
       api.getActiveYear().then(response => {
-        console.log(response)
         this.activeYear = response.data
       })
     },
