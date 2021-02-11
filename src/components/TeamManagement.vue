@@ -12,6 +12,9 @@
         <router-link :to="{ path: '/manage/' + team + '/stats'}" tag="li">Stats</router-link>
         <router-link :to="{ path: '/manage/' + team + '/schedule'}" tag="li">Schedule</router-link>
         <router-link :to="{ path: '/manage/' + team + '/profile'}" tag="li">Team Profile</router-link>
+        <template v-if="admin">
+          <router-link :to="{ name: 'admin'}" tag="li">Admin</router-link>
+        </template>
       </ul>
     </nav>
     <router-view class="team-management" :style="cssVars" />
@@ -62,7 +65,7 @@ export default {
       }
     },
     admin () {
-      if (this.$store.state.userGroups.includes('Admin')) {
+      if (this.$store.getters.userGroups.includes('Admin')) {
         return true
       } else {
         return false

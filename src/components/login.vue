@@ -1,3 +1,6 @@
+/** 
+  TODO: signout reset slug, team, usergroups, users, userattributes, auth, teamLevels
+*/
 <template>
   <div class="flex-con">
     <amplify-authenticator v-if="authState !== 'signedin'" :styles="styles"></amplify-authenticator>
@@ -11,6 +14,8 @@
 <script lang="js">
 import { onAuthUIStateChange } from '@aws-amplify/ui-components'
 
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'AuthStateApp',
   data () {
@@ -21,6 +26,9 @@ export default {
         border: '1px solid #121212;'
       }
     }
+  },
+  computed: {
+    ...mapGetters(['userGroups', 'team'])
   },
   watch: {
     authState: {
@@ -41,8 +49,12 @@ export default {
   },
   methods: {
     goToTeamManagement () {
-      const team = this.$store.getters.team
-      this.$router.push({ name: 'teamDashboard', params: { slug: team } })
+      if (this.userGroups[0] === 'Admin') {
+        this.$router.push({ name: 'admin' })
+      } else {
+        const team = this.team
+        this.$router.push({ name: 'teamDashboard', params: { slug: team } })
+      }
     }
   },
   beforeDestroy () {

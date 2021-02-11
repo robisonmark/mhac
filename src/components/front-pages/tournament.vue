@@ -124,6 +124,10 @@ export default {
   methods: {
     initTourney () {
       api.getTournamentInformation().then(response => {
+        response.data.games.forEach((game) => {
+          game.date = this.$config.formatDate(game.date)
+          game.time = this.$config.formatTime(game.time)
+        })
         this.games = groupBy(response.data.games, 'seasons.level')
       })
         .catch(err => {
