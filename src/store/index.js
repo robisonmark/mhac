@@ -42,6 +42,7 @@ const mutations = {
     state.user.slug = payload.slug
   },
   set_slug (state, payload) {
+    console.log(payload)
     state.slug = payload
   },
   set_teamAssocLvl (state, payload) {
@@ -124,7 +125,6 @@ const actions = {
     const teams = store.getters.teams
 
     let userTeam = []
-
     if (payload) {
       userTeam = teams.filter(team => payload === team.slug)
     } else if (groups) {
@@ -136,7 +136,8 @@ const actions = {
         }
       })
     }
-    if (userTeam.length === 1) {
+    
+    if (userTeam.length >= 1) {
       await context.commit('set_user', userTeam[0])
       await context.commit('set_slug', userTeam[0].slug)
     }
@@ -211,6 +212,9 @@ const getters = {
   },
   seasonTeams (state) {
     return state.season_teams
+  },
+  slug (state) {
+    return state.slug
   },
   configOptions (state) {
     return state.groups

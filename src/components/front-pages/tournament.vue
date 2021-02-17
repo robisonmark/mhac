@@ -24,7 +24,7 @@
           <li>Tournament Family 4 or more - $70 (On Friday the price drops to $50) </li>
           <li>6 years old and under will get in free</li>
         </ul>
-        
+
         There will be a total of 21 games in the tournament, Feb 11th, 12th & 13th.
       </p>
       <p>
@@ -53,20 +53,20 @@
       <p>
          Don't forget to order merchandise for the 2020-2021 tournament. This year we are offering T-Shirts, Crewneck Sweatshirts, and Hoodies. To order, visit <a href="https://mhac-merch.square.site/">https://mhac-merch.square.site</a>.
       </p>
-      <div class="filterBar">
+      <!-- <div class="filterBar">
         <label for="list" class="toggle-buttons toggle-buttons-left" :class="[bracketFormat === 'list' ? 'active' : '']">
-          <input type="radio" v-model="bracketFormat" value="list" id="list"> 
+          <input type="radio" v-model="bracketFormat" value="list" id="list">
           <font-awesome-icon :icon="['fas', 'list-ol']" class="icon"></font-awesome-icon>
         </label>
         <label for="bracket" class="toggle-buttons toggle-buttons-right" :class="[bracketFormat === 'bracket' ? 'active' : '']">
           <input type="radio" v-model="bracketFormat" value="bracket" id="bracket">
           <font-awesome-icon :icon="['fas', 'stream']" class="icon"></font-awesome-icon>
         </label>
-      </div>
+      </div> -->
 
       <TournamentBracket v-if="Object.keys(games).length >= 1 && bracketFormat === 'bracket'" :games="games"></TournamentBracket>
       <TournamentList :games="games" v-else></TournamentList>
-      
+
       <div class="sponsors">
       </div>
     </div>
@@ -124,6 +124,10 @@ export default {
   methods: {
     initTourney () {
       api.getTournamentInformation().then(response => {
+        response.data.games.forEach((game) => {
+          game.date = this.$config.formatDate(game.date)
+          game.time = this.$config.formatTime(game.time)
+        })
         this.games = groupBy(response.data.games, 'seasons.level')
       })
         .catch(err => {
