@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import pages from '@/api/pages'
+
 export default {
   name: 'compliance',
   data () {
@@ -88,7 +90,17 @@ export default {
       ]
     }
   },
-  methods: {}
+  created () {
+    this.initCompliance()
+  },
+  methods: {
+    initCompliance () {
+      pages.get('compliance')
+        .then(response => {
+          this.compliance = response.content
+        })
+    }
+  }
 }
 // https://www.nchclive.com/guidelines/
 </script>

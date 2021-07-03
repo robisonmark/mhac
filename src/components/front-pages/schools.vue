@@ -4,7 +4,7 @@
       <div class="logo-color col">
         <!-- <div class="image-con"> -->
           <img v-if="program.logo_color" :src="'/static/color-team-logos/' + program.logo_color" :alt="program.team_name + ' ' + program.team_mascot"/>
-          
+
         <!-- </div> -->
       </div>
       <div class="col-8 top-layer">

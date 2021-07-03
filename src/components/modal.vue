@@ -2,8 +2,8 @@
     <div class="modal" v-show="showModal">
         <div class="modal-wrapper">
             <div class="modal-container">
-                <div class="modal-header"> 
-                    {{ modalTitle }} 
+                <div class="modal-header">
+                    {{ modalTitle }}
                 </div>
                 <div class="modal-body">
                     <slot name="modalBody">
@@ -16,20 +16,20 @@
     </div>
 </template>
 
-  <script>
-    export default {
-        name: 'modal',
-        props: [
-            'showModal',
-            'modalTitle',
-            'value'
-        ],
-        methods: {
-            close() {
-                this.$root.$emit('toggleModal');
-            }            
-        }
-    };
+<script>
+export default {
+  name: 'modal',
+  props: [
+    'showModal',
+    'modalTitle',
+    'value'
+  ],
+  methods: {
+    close () {
+      this.$root.$emit('toggleModal')
+    }
+  }
+}
 </script>
 
 <style>

@@ -27,7 +27,6 @@ import adminTournament from '@/components/admin/adminTournament'
 import editHomepage from '@/components/admin/editHomepage'
 import manageStandings from '@/components/admin/manageStandings'
 
-
 // Config Helpers
 import config from '@/config/helpers'
 

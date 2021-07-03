@@ -1,4 +1,4 @@
-/** 
+/**
   TODO: signout reset slug, team, usergroups, users, userattributes, auth, teamLevels
 */
 <template>

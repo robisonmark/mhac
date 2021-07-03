@@ -527,7 +527,7 @@ export class api {
     })
   }
 
-  static async getTeamByStandings (season_id, rank) {
+  static async getTeamByStandings (seasonId, rank) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -539,7 +539,7 @@ export class api {
     // }
 
     return robros({
-      url: '/lookupTeamByStandings/' + season_id + '/' + rank,
+      url: '/lookupTeamByStandings/' + seasonId + '/' + rank,
       method: 'GET'
     })
   }
