@@ -20,14 +20,13 @@
         <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
       </ul> -->
       <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" @lookup="updateBracket">
-        
+
         <template slot="tbody">
-          
+
             <tournamentGame v-for="(data, index) in games" :game="data" :key="index" />
             <!-- <tournamentGame v-for="(data, index) in sixteenUBoys" :game="data" :key="index" />
             <tournamentGame v-for="(data, index) in eighteenUBoys" :game="data" :key="index" />
             <tournamentGame v-for="(data, index) in eighteenUGirls" :game="data" :key="index" /> -->
-
 
             <template v-if="newGame">
               <tournamentGame :game=newTournamentGame :new_game=true @add-game="addGame" />
@@ -36,7 +35,7 @@
               <font-awesome-icon :icon="['fas', 'plus']" class="icon" @click="newGame = !newGame"></font-awesome-icon>
               Add Tournament Game
             </div>
-          
+
         </template>
       </editTable>
     </div>
@@ -53,13 +52,13 @@
 import { api } from '@/api/endpoints'
 
 import editTable from '@/components/editTable'
-import selectbox from '../selectbox'
+// import selectbox from '../selectbox'
 import tournamentGame from './tournamentGame'
 
 import _ from 'lodash'
 
 // mixins
-import { root } from '@/mixins/root'
+// import { root } from '@/mixins/root'
 
 export default {
   name: 'adminTournament',
@@ -168,7 +167,7 @@ export default {
   },
   components: {
     editTable: editTable,
-    selectbox: selectbox, 
+    // selectbox: selectbox,
     tournamentGame: tournamentGame
   },
   computed: {
@@ -214,7 +213,6 @@ export default {
         })
     },
     updateBracket (game) {
-
       if (game.matchup.scoreTeam1 !== '' && game.matchup.scoreTeam2 !== '') {
         const winner = this.results(game.matchup)
         const loser = game.matchup.team1 === winner ? game.matchup.team2 : game.matchup.team1
@@ -266,24 +264,26 @@ export default {
         return matchup.team2
       }
     },
-    addGame(game){
+    addGame (game) {
       console.log(game)
       this.games.push(game)
     },
     newLookup () {
 
     },
-    lookupTeam (teamSeed, season_id, team) {
+    lookupTeam (teamSeed, seasonId, team) {
+      // TODO: Figure out Use
+      console.log(seasonId)
       // console.log("LookupTeam:", teamSeed, this.game.seasons.season_id)
       if (teamSeed !== null && this.game.seasons.season_id !== undefined) {
         api.getTeamByStandings(this.game.seasons.season_id, teamSeed).then(response => {
           // console.log("Lookup team", team, response.data.team_name)
           if (team === 1) {
             this.game.matchup.team1 = response.data.team_name
-            }
+          }
           if (team === 2) {
             this.game.matchup.team2 = response.data.team_name
-            }
+          }
         })
       }
     }

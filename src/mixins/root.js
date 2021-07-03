@@ -51,12 +51,11 @@ export const root = {
         let formattedDates = ''
         if (time === false) {
           if (date) {
-            date = new Date(date+'T00:00:00')
+            date = new Date(date + 'T00:00:00')
             formattedDates = format(date, this.dateFormat)
             return formattedDates
           }
         } else {
-          console.log("here")
           formattedDates = format(date, 'M/dd/yyyy HH:mm')
           return formattedDates
         }

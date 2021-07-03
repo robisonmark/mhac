@@ -246,9 +246,7 @@ export default {
         console.log(this.newGame.season, team.level_name)
         if (team.id !== this.$store.state.user.team_id && team.level_name === this.newGame.season.level) {
           return team
-        }
-        else if (team.id !== this.$store.state.user.team_id) {
-          
+        } else if (team.id !== this.$store.state.user.team_id) {
           return team
         }
       })
