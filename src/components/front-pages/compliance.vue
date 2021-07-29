@@ -3,7 +3,7 @@
     <div class="page-styles">
       <div class="row">
         <div class="col-9 compliance-content">
-          <template v-for="content in compliance">
+          <!-- <template v-for="content in compliance">
             <div :key="content.key" :class="{'intro': content.section === 'Intro'}">
               <h2 v-if="content.displayHeader">{{content.section}}</h2>
               <template v-if="content.content">
@@ -15,6 +15,25 @@
                   <div class="subsection" :key="section.key">
                     <h3 v-if="section.displayHeader">{{section.section}}</h3>
                     <p v-for="(paragraph, index) in section.content" :key="index">{{paragraph}}</p>
+                  </div>
+                </template>
+              </template>
+
+            </div>
+          </template>
+          <hr /> -->
+          <template v-for="section in new_compliance.section">
+            <div :key="section.id" :class="{'intro': section.sectionHeader === 'Intro'}">
+              <h2 v-if="section.displaySectionTitle">{{section.sectionHeader}}</h2>
+              <template v-if="section.content">
+                <span v-html="section.content"></span>
+              </template>
+
+              <template v-if="section.subsections">
+                <template v-for="section in section.subsections">
+                  <div class="subsection" :key="section.id">
+                    <h3 v-if="section.value.displayHeader">{{section.value.header}}</h3>
+                    <p v-html="section.value.content"></p>
                   </div>
                 </template>
               </template>
@@ -87,7 +106,8 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      new_compliance: []
     }
   },
   created () {
@@ -97,7 +117,8 @@ export default {
     initCompliance () {
       pages.get('compliance')
         .then(response => {
-          this.compliance = response.content
+          console.log(response)
+          this.new_compliance = response
         })
     }
   }

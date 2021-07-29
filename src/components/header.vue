@@ -80,15 +80,15 @@
           <nav :class="[openMenu ? 'open' : 'close']">
             <router-link :to="{ path: '/' }">Home</router-link>
             <!--  -->
-            <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
+            <!-- <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
               Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
                 <ul v-show="showTournament" class="tourn_nav_dropdown">
                   <li><router-link :to="{ path: '/tournament'}">Tournament Central</router-link> </li>
                   <li><a href='https://mhac-merch.square.site'> Tournament Merch</a></li>
                   <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li>
                 </ul>
-            </span>
-            <router-link :to="{ path: '/compliance' }">Compliance</router-link>
+            </span> -->
+            <router-link :to="{ path: '/about' }">About</router-link>
             <router-link :to="{ path: '/schedules' }">Schedules</router-link>
             <router-link :to="{ path: '/stats' }">Stats</router-link>
             <span class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
