@@ -11,6 +11,7 @@ import schedules from '@/components/front-pages/schedules'
 import stats from '@/components/front-pages/stats'
 import schools from '@/components/front-pages/schools'
 import contact from '@/components/front-pages/contact'
+import hallOfFame from '@/components/front-pages/hallOfFame'
 
 // Team Management Components
 import TeamManagement from '@/components/TeamManagement'
@@ -24,6 +25,7 @@ import profile from '@/components/team-management/profile'
 import admin from '@/components/admin'
 // import login from '@/components/admin/login'
 import adminTournament from '@/components/admin/adminTournament'
+import adminSeason from '@/components/admin/adminSeason'
 import editHomepage from '@/components/admin/editHomepage'
 import manageStandings from '@/components/admin/manageStandings'
 
@@ -80,13 +82,23 @@ export const router = new Router({
       }
     },
     {
-      path: '/compliance',
-      name: 'compliance',
+      path: '/about',
+      name: 'about',
       component: compliance,
       meta: {
         requiresAuth: false,
         section: 'public',
-        title: 'Compliance | Midsouth Homeschool Athletics'
+        title: 'About | Midsouth Homeschool Athletics'
+      }
+    },
+    {
+      path: '/hall-of-fame',
+      name: 'hall-of-fame',
+      component: hallOfFame,
+      meta: {
+        requiresAuth: false,
+        section: 'public',
+        title: 'Hall of Fame | Midsouth Homeschool Athletics'
       }
     },
     {
@@ -243,6 +255,15 @@ export const router = new Router({
           path: 'tournament',
           name: 'adminTournament',
           component: adminTournament,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          }
+        },
+        {
+          path: 'seasons',
+          name: 'adminSeason',
+          component: adminSeason,
           meta: {
             requiresAuth: true,
             section: 'admin'
