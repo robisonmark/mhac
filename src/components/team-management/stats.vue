@@ -376,7 +376,7 @@
 
 <script>
 // api
-import { api } from '../../api/endpoints.js'
+import { api } from '@/api/endpoints'
 import _ from 'lodash'
 import { mapState } from 'vuex'
 

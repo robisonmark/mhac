@@ -16,8 +16,7 @@
 
 <script>
 // api
-import { api } from '../api/endpoints.js'
-import { mapGetters } from 'vuex'
+import { api } from '@/api/endpoints'
 
 import { mapGetters } from 'vuex'
 

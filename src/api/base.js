@@ -40,7 +40,7 @@ export const robros = axios.create({
  * through wagtail.
  */
 export const content = axios.create({
-  baseURL: process.env.VUE_APP_CONTENT_API+ '/api/v2/'
+  baseURL: process.env.VUE_APP_CONTENT_API + '/api/v2/'
   // commented out because of CORS
   // withCredentials: false,
   // headers: {

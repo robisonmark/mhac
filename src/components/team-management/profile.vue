@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { api } from '../../api/endpoints.js'
+import { api } from '@/api/endpoints.js'
 // import { mapState } from 'vuex'
 
 export default {
