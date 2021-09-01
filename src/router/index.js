@@ -13,7 +13,6 @@ import schools from '@/components/front-pages/schools'
 import contact from '@/components/front-pages/contact'
 import hallOfFame from '@/components/front-pages/hallOfFame'
 
-
 // Team Management Components
 import TeamManagement from '@/components/TeamManagement'
 import teamhome from '@/components/team-management/teamhome'

@@ -161,7 +161,7 @@ export default {
         'Roster'
         // 'Staff'
       ],
-      selectedSection: 'Schedule',
+      selectedSection: 'Roster',
       showDatePicker: false,
       showSeasons: false,
       showSections: false,
