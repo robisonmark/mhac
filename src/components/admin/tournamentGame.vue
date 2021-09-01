@@ -18,13 +18,13 @@
       </td>
       <td class="input-con">
         {{game.matchup.team1}}
-      </td> 
+      </td>
       <td class="input-con">
         <input type="int" v-model="game.matchup.team2Seed" />
       </td>
       <td class="input-con">
         {{game.matchup.team2}}
-      </td> 
+      </td>
       <td class="input-con">
         <input type="int" v-model="game.matchup.scoreTeam1" />
       </td>
@@ -69,13 +69,13 @@
       </td>
       <td class="input-con">
         {{game.matchup.team1}}
-      </td> 
+      </td>
       <td class="input-con">
         {{game.matchup.team2Seed}}
       </td>
       <td class="input-con">
         {{game.matchup.team2}}
-      </td> 
+      </td>
       <td class="input-con">
         {{game.matchup.scoreTeam1}}
       </td>
@@ -100,23 +100,22 @@
 </template>
 
 <script>
-import { api } from '@/api/endpoints';
-import selectbox from "../selectbox";
+import { api } from '@/api/endpoints'
+import selectbox from '../selectbox'
 
 // mixins
-import { root } from '@/mixins/root';
-
+// import { root } from '@/mixins/root'
 
 export default {
-  name: "tournamentGame",
-  data() {
+  name: 'tournamentGame',
+  data () {
     return {
       edit: false
-    };
+    }
   },
-  props: ["game", "new_game"],
+  props: ['game', 'new_game'],
   components: {
-    selectbox: selectbox,
+    selectbox: selectbox
   },
   computed: {
     seasons () {
@@ -125,40 +124,40 @@ export default {
   },
   methods: {
     toggleEdit () {
-      console.log("Edit")
+      console.log('Edit')
       this.$root.$emit('toggleEdit')
       this.edit = !this.edit
     },
-    addGame (game){
-      console.log("AddGame")
+    addGame (game) {
+      console.log('AddGame')
       this.$emit('add-game', game)
       this.$root.$emit('newGame')
     },
     save (game) {
-        api.updateTournamentGame(game).then(response => {
-          if (response.status === 200) {
-            console.log(response)
-            if (game.matchup.scoreTeam1 > game.matchup.scoreTeam2) {
-              this.$emit('lookup', game )
-            }
+      api.updateTournamentGame(game).then(response => {
+        if (response.status === 200) {
+          console.log(response)
+          if (game.matchup.scoreTeam1 > game.matchup.scoreTeam2) {
+            this.$emit('lookup', game)
           }
-          
-        })
-        console.log(game)
+        }
+      })
+      console.log(game)
       this.toggleEdit()
-
-      },
-    lookupTeam (teamSeed, season_id, team) {
+    },
+    lookupTeam (teamSeed, seasonId, team) {
+      // TODO: look into use
+      console.log(seasonId)
       // console.log("LookupTeam:", teamSeed, this.game.seasons.season_id)
       if (teamSeed !== null && this.game.seasons.season_id !== undefined) {
         api.getTeamByStandings(this.game.seasons.season_id, teamSeed).then(response => {
           // console.log("Lookup team", team, response.data.team_name)
           if (team === 1) {
             this.game.matchup.team1 = response.data.team_name
-            }
+          }
           if (team === 2) {
             this.game.matchup.team2 = response.data.team_name
-            }
+          }
         })
       }
     }
@@ -166,35 +165,35 @@ export default {
   watch: {
     'game.matchup.team1Seed': {
       handler (newValue) {
-        if (this.game.seasons.season_id !== undefined){
+        if (this.game.seasons.season_id !== undefined) {
           this.lookupTeam(newValue, this.game.seasons.season_id, 1)
         }
       }
     },
     'game.matchup.team2Seed': {
       handler (newValue) {
-        if (this.game.seasons.season_id !== undefined){
+        if (this.game.seasons.season_id !== undefined) {
           this.lookupTeam(newValue, this.game.seasons.season_id, 2)
         }
       }
     },
     'game.seasons': {
       handler (newValue) {
-        if ( this.game.matchup.team1Seed !== undefined ) {
+        if (this.game.matchup.team1Seed !== undefined) {
           this.lookupTeam(this.game.matchup.team1Seed, newValue.season_id, 1)
         }
-        if ( this.game.matchup.team2Seed !== undefined ) {
+        if (this.game.matchup.team2Seed !== undefined) {
           this.lookupTeam(this.game.matchup.team2Seed, newValue.season_id, 2)
         }
       }
-    },
+    }
   }
-};
+}
 </script>
 
 <style scoped lang="less">
 @import '../../assets/less/utils/variables.less';
-@import '../../assets/less/utils/breakpoints.less'; 
+@import '../../assets/less/utils/breakpoints.less';
 
 table {
   // margin-top: -40px;

@@ -80,19 +80,20 @@
           <nav :class="[openMenu ? 'open' : 'close']">
             <router-link :to="{ path: '/' }">Home</router-link>
             <!--  -->
-            <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
-              Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon> 
+            <!-- <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
+
+              Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
                 <ul v-show="showTournament" class="tourn_nav_dropdown">
                   <li><router-link :to="{ path: '/tournament'}">Tournament Central</router-link> </li>
                   <li><a href='https://mhac-merch.square.site'> Tournament Merch</a></li>
                   <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li>
                 </ul>
-            </span>
-            <router-link :to="{ path: '/compliance' }">Compliance</router-link>
+            </span> -->
+            <router-link :to="{ path: '/about' }">About</router-link>
             <router-link :to="{ path: '/schedules' }">Schedules</router-link>
-            <router-link :to="{ path: '/stats' }">Stats</router-link>
+            <!-- <router-link :to="{ path: '/stats' }">Stats</router-link> -->
             <span class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
-              Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon> 
+              Schools <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
               <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
               <ul v-show="showSchools" class="nav_dropdown">
                 <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">
@@ -176,6 +177,7 @@ export default {
     },
     tournamentDrop () {
       this.showTournament = !this.showTournament
+      // this.$router.push({ name: 'about' })
     },
     goToLogin () {
       if (!this.loggedIn) {
@@ -544,7 +546,7 @@ export default {
           }
         }
 
-        .tourn_nav_dropdown {
+        .about_nav_dropdown {
           color: #2A2A2A;
           top: 4.5rem;
           box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
@@ -559,7 +561,7 @@ export default {
           letter-spacing: -.2px;
           li {
             padding: .2rem 1rem;
-            
+
             cursor: pointer;
             font-family: 'Lato';
             &:after {
@@ -706,6 +708,13 @@ export default {
   }
 
   .dropdown {
+    cursor: pointer;
+    .dropIcon {
+      margin-left: .5rem;
+    }
+  }
+
+  .about_dropdown {
     cursor: pointer;
     .dropIcon {
       margin-left: .5rem;

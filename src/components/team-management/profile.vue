@@ -72,14 +72,14 @@
 
 <script>
 import { api } from '../../api/endpoints.js'
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 
 export default {
   name: 'profile',
   data () {
     return {
       team: {
-        
+
       }
     }
   },
@@ -88,16 +88,16 @@ export default {
   },
   watch: {
     '$route.params.slug': {
-      handler(newValue){
+      handler (newValue) {
         this.getTeam()
       }
     }
   },
   methods: {
     getTeam () {
-      api.getTeams(this.$route.params.slug).then( response => {
+      api.getTeams(this.$route.params.slug).then(response => {
         this.team = response.data[0]
-      }) 
+      })
     }
   }
 }

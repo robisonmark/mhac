@@ -246,9 +246,7 @@ export default {
         console.log(this.newGame.season, team.level_name)
         if (team.id !== this.$store.state.user.team_id && team.level_name === this.newGame.season.level) {
           return team
-        }
-        else if (team.id !== this.$store.state.user.team_id) {
-          
+        } else if (team.id !== this.$store.state.user.team_id) {
           return team
         }
       })
@@ -282,13 +280,11 @@ export default {
     addNewGame () {
       this.schedule.push(this.newGame)
     },
-
     deleteGame (data, id) {
       api.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
         this.schedule.splice(id, 1)
       })
     },
-
     async getSeasonTeamId (slug, gameSeason) {
       if (gameSeason === undefined) {
         gameSeason = this.newGame.season.season_id
