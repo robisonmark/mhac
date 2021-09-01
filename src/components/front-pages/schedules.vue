@@ -78,8 +78,8 @@
             </tr>
           </tbody>
           <tbody>
-            <template v-if="games.length >= 1">
-              <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in games" :key="game.game_id">
+            <template v-if="filteredGames.length >= 1">
+              <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in filteredGames" :key="game.game_id">
                 <td class="date">
                   {{ game.game_date }}
                   <div class="time">{{game.game_time}}</div>
@@ -243,7 +243,9 @@ export default {
           end_date: ''
         }
       },
+      // games: [],
       games: [],
+      level_filter: '',
       showDatePicker: false,
       showLevels: false,
       showTeams: false,
@@ -259,6 +261,12 @@ export default {
     levels () {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
+    },
+    filteredGames () {
+      if (this.level_filter === '') {
+        return this.games
+      }
+      return this.games.filter(game => (game.season.season_id === this.level_filter) - 1)
     }
   },
   watch: {
@@ -271,7 +279,8 @@ export default {
     'filterBy.level': {
       deep: true,
       handler (newValue, oldValue) {
-        this.initSchedule(newValue.season_id)
+        // this.initSchedule(newValue.season_id)
+        this.level_filter = newValue.season_id
       }
     }
   },
