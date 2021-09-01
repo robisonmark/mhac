@@ -270,9 +270,9 @@ export default {
     newLookup () {
 
     },
-
     lookupTeam (teamSeed, seasonId, team) {
       // TODO: Figure out Use
+      console.log(seasonId)
       // console.log("LookupTeam:", teamSeed, this.game.seasons.season_id)
       if (teamSeed !== null && this.game.seasons.season_id !== undefined) {
         api.getTeamByStandings(this.game.seasons.season_id, teamSeed).then(response => {

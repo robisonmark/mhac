@@ -4,7 +4,6 @@
       <ul>
         <router-link :to="{ name: 'teamDashboard', params: { slug: slug }}" tag="li" class="nav-item">Manage Teams</router-link>
         <router-link :to="{ path: '/admin/tournament'}" tag="li" class="nav-item">Manage Tournament</router-link>
-
         <router-link :to="{ path: '/admin/seasons'}" tag="li" class="nav-item">Manage Seasons</router-link>
       </ul>
     </nav>
@@ -18,7 +17,6 @@
 // api
 import { api } from '../api/endpoints.js'
 import { mapGetters } from 'vuex'
-
 
 export default {
   name: 'admin',
