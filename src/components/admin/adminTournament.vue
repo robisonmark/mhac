@@ -20,7 +20,6 @@
         <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
       </ul> -->
       <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" @lookup="updateBracket">
-
         <template slot="tbody">
 
             <tournamentGame v-for="(data, index) in games" :game="data" :key="index" />
@@ -271,9 +270,9 @@ export default {
     newLookup () {
 
     },
+
     lookupTeam (teamSeed, seasonId, team) {
       // TODO: Figure out Use
-      console.log(seasonId)
       // console.log("LookupTeam:", teamSeed, this.game.seasons.season_id)
       if (teamSeed !== null && this.game.seasons.season_id !== undefined) {
         api.getTeamByStandings(this.game.seasons.season_id, teamSeed).then(response => {

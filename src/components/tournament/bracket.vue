@@ -55,7 +55,7 @@
 import { api } from '@/api/endpoints.js'
 
 // Third Party
-import { groupBy } from 'lodash'
+import { groupBy, sortBy } from 'lodash'
 
 export default {
   name: 'TournamentBracket',
