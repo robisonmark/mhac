@@ -13,7 +13,15 @@
       <div class="col-12">
         <div class="row filter-bar">
           <div class="col-md-4">
-            <h2>2020 - 2021 Schedule</h2>
+            <div v-if="edit === false" @click="edit= !edit">
+              <h2>{{activeYear.name}} Schedule</h2>
+            </div>
+            <div v-if="edit === true">
+              <ul class="options-menu">
+                <li class="option" v-for="year in years" :key="year.year" @click="setYear(year)"> {{ year.name }} </li>
+              </ul>
+              <h2>{{activeYear.name}} Schedule</h2>
+            </div>
           </div>
           <div class="col-md-6">
             <div class="filters">
@@ -70,8 +78,8 @@
             </tr>
           </tbody>
           <tbody>
-            <template v-if="games.length >= 1">
-              <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in games" :key="game.game_id">
+            <template v-if="filteredGames.length >= 1">
+              <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in filteredGames" :key="game.game_id">
                 <td class="date">
                   {{ game.game_date }}
                   <div class="time">{{game.game_time}}</div>
@@ -214,8 +222,13 @@ export default {
   name: 'schedules',
   data () {
     return {
+      activeYear: {
+        name: '',
+        year: ''
+      },
       currentSort: 'game_date',
       currentSortDir: 'asc',
+      edit: false,
       filterBy: {
         team: {
           slug: '',
@@ -230,10 +243,13 @@ export default {
           end_date: ''
         }
       },
+      // games: [],
       games: [],
+      level_filter: '',
       showDatePicker: false,
       showLevels: false,
-      showTeams: false
+      showTeams: false,
+      years: []
     }
   },
   mixins: [root],
@@ -245,6 +261,12 @@ export default {
     levels () {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
+    },
+    filteredGames () {
+      if (this.level_filter === '') {
+        return this.games
+      }
+      return this.games.filter(game => (game.season.season_id === this.level_filter) - 1)
     }
   },
   watch: {
@@ -257,11 +279,14 @@ export default {
     'filterBy.level': {
       deep: true,
       handler (newValue, oldValue) {
-        this.initSchedule(newValue.season_id)
+        // this.initSchedule(newValue.season_id)
+        this.level_filter = newValue.season_id
       }
     }
   },
   created () {
+    this.getActiveYear()
+    this.getYears()
     this.initSchedule()
 
     this.$root.$on('close', payload => {
@@ -270,12 +295,25 @@ export default {
     })
   },
   methods: {
+    getActiveYear () {
+      api.getYear(true).then(response => {
+        console.log(response.data)
+        this.activeYear = response.data
+      })
+    },
+    getYears () {
+      api.getYear(false).then(response => {
+        console.log(response.data)
+        this.years = response.data
+      })
+    },
     // formatDate: this.$formatDate,
     goToMap (url) {
       window.location.replace(url)
     },
-    initSchedule (level, team) {
-      api.getSchedule(level, team).then(response => {
+    initSchedule (level, team, year) {
+      // TODO: ADD YEAR
+      api.getSchedule(level, team, year).then(response => {
         const fixedData = []
         response.data.forEach(game => {
           if (game.game_time === '12:00 AM ') {
@@ -284,7 +322,6 @@ export default {
           fixedData.push(game)
         })
         this.games = fixedData
-        // this.sortTable('game_date')
       })
     },
     checkResult (me, opponent) {
@@ -297,6 +334,11 @@ export default {
       } else {
         return ''
       }
+    },
+    setYear (year) {
+      this.activeYear = year
+      this.edit = false
+      this.initSchedule(undefined, undefined, year.year)
     },
     setTeam (team) {
       this.filterBy.team.slug = team.slug
@@ -594,5 +636,10 @@ h2 {
       color: lighten(#2784C3, 20%)
     }
   }
+}
+
+ul{
+  background: #2784C3;
+  z-index: 1;
 }
 </style>

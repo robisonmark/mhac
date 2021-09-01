@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'hall_of_fame',
+  name: 'hallOfFame',
   data () {
     return {
       components: [
