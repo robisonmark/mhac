@@ -51,14 +51,14 @@ export default {
       currentSeason: [],
       edit: true,
       new_season: {
-          "level": "",
-          "season_name": "",
-          "season_start_date": "",
-          "roster_submission_deadline": "",
-          "tournament_start_date": "",
-          "sport": "",
-          "year": "",
-          "slug": ""
+        level: '',
+        season_name: '',
+        season_start_date: '',
+        roster_submission_deadline: '',
+        tournament_start_date: '',
+        sport: '',
+        year: '',
+        slug: ''
       }
     }
   },
@@ -86,7 +86,6 @@ export default {
 <style scoped lang="less">
 @import "../../assets/less/utils/variables.less";
 @import "../../assets/less/utils/breakpoints.less";
-
 
 main {
   display: flex;
