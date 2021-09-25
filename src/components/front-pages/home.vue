@@ -140,8 +140,12 @@ export default {
         this.tagline_1 = response.tagline_line1
         this.tagline_2 = response.tagline_line2
         this.message = response.message
-        this.hero = process.env.VUE_APP_CONTENT_API + response.hero_image.meta.download_url
+        this.num_images = response.hero_image.length
+        this.hero = process.env.VUE_APP_IMAGE_API + response.hero_image[this.getRandomInt(this.num_images)].carousel_image.meta.download_url
       })
+    },
+    getRandomInt(max) {
+      return Math.floor(Math.random() * max);
     },
     initYear () {
       api.getActiveYear().then(response => {
