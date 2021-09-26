@@ -92,6 +92,16 @@ export const router = new Router({
       }
     },
     {
+      path: '/history',
+      name: 'about',
+      component: compliance,
+      meta: {
+        requiresAuth: false,
+        section: 'public',
+        title: 'About | Midsouth Homeschool Athletics'
+      }
+    },
+    {
       path: '/hall-of-fame',
       name: 'hall-of-fame',
       component: hallOfFame,
