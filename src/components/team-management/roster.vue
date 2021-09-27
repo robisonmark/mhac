@@ -97,7 +97,6 @@ import _ from 'lodash'
 
 // components
 import editTable from '@/components/editTable'
-// import selectbox from '../selectbox'
 
 // third party
 import Multiselect from 'vue-multiselect'
@@ -189,7 +188,6 @@ export default {
   components: {
     editTable: editTable,
     Multiselect
-    // selectbox: selectbox
   },
   computed: {
     seasons () {

@@ -39,6 +39,9 @@
               <template v-else-if="column.field_name==='feet' || column.field_name==='inches' ">
                 {{ data['height'][column.field_name] }}
               </template>
+              <template v-else-if="column.field_name==='archive'">
+                  <input type='checkbox' v-model="value[column.field_name]" id="index" disabled>
+              </template>
               <template v-else>
                 {{ data[column.field_name]}}
               </template>
@@ -58,7 +61,6 @@
           <tr class="split-fields">
             <!-- <td></td> -->
             <template v-for="(field, index) in columns">
-
               <td v-if="!field.field_name.includes('id') && !field.field_name.includes('actions')" :key="index" class="input-con">
                 <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" v-model="value[field.field_name]"></selectbox>
 
@@ -67,7 +69,6 @@
                 <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :multiple="true" :taggable="true" @tag="addTag"></multiselect>
 
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
-                <!-- <input type="text" v-model="value[key]" /> -->
 
                 <!-- <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span> -->
               </td>

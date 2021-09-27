@@ -1,39 +1,62 @@
 <template>
   <div class="">
-    <template v-if=" edit === true">
-      <td class="input-con">
-        "Levels Dropdown or all levels"
-        <selectbox
-          id="levels"
-          :options="seasons"
-          :trackby="'level'"
-          placeholder="Select Level"
-          v-model="new_season.level"
-        ></selectbox>
-      </td>
-      <td class="input-con">
-        "season_name str input"
-      </td>
-      <td class="input-con">
-        "date picker season_start_date"
-        <input type='date' v-model="new_season.season_start_date">
-      </td>
-      <td class="input-con">
-        "date picker roster submission deadline "
-      </td>
-      <td class="input-con">
-        "date picker tournamentdate"
-      </td>
-      <td class="input-con">
-        "year dropdown"
-      </td>
-      <td class="input-con">
-        "slug if individual level otherwise auto generate in the pattern season_name_level_name_sport_name"
-      </td>
-    </template>
-    <template v-if="edit === false">
-      Current Season: {{ currentSeason }}
-    </template>
+    <header class="contentPad">
+      <!-- <h2>{{this.$config.seasonYear}} Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2> -->
+      <div class="buttonCon">
+        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+          <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
+          <span class="focused">Edit</span>
+        </div>
+
+        <div class="switch" v-if="edit" @click="edit = !edit">
+          <font-awesome-icon :icon="['fas', 'check']" class="icon"></font-awesome-icon>
+          <span class="focused">Done Editing</span>
+
+        </div>
+      </div>
+    </header>
+
+  <div class="contentPad">
+    <editTable  :columns="columns" :config="config" :tabledata="seasons" v-model="new_season" :edit="edit">
+      <template slot="tbody">
+      </template>
+      <template slot="tbody" v-if=" edit === true">
+        <td class="input-con">
+          <selectbox
+            id="level"
+            :options="levels"
+            :trackby="'name'"
+            placeholder="Select Level"
+            v-model="new_season.level"
+          ></selectbox>
+        </td>
+        <td class="input-con">
+          <input type='text' v-model="new_season.season_name">
+        </td>
+        <td class="input-con">
+          <input type='date' v-model="new_season.season_start_date">
+        </td>
+        <td class="input-con">
+          <input type='date' v-model="new_season.roster_submission_deadline">
+        </td>
+        <td class="input-con">
+          <input type='date' v-model="new_season.tournament_start_date">
+        </td>
+        <td class="input-con">
+          <input type='text' v-model="new_season.year">
+        </td>
+        <td class="input-con">
+          <input type='text' v-model="new_season.slug">
+        </td>
+        <td class="input-con">
+          <input type='checkbox' v-model="new_season.archive">
+        </td>
+      </template>
+      <template v-if="edit === false">
+        Current Season: {{ currentSeason }}
+      </template>
+    </editTable>
+  </div>
 
   </div>
 </template>
@@ -42,6 +65,7 @@
 import { api } from '@/api/endpoints'
 // import _ from 'lodash'
 import selectbox from '../selectbox'
+import editTable from '@/components/editTable'
 
 export default {
   name: 'adminSeasons',
@@ -49,25 +73,84 @@ export default {
     return {
       years: [],
       currentSeason: [],
-      edit: true,
+      edit: false,
       new_season: {
-        level: '',
+        level: {},
         season_name: '',
         season_start_date: '',
         roster_submission_deadline: '',
         tournament_start_date: '',
         sport: '',
         year: '',
-        slug: ''
+        slug: '',
+        archive: false
+      },
+      // seasons: [],
+      columns: [
+        {
+          name: 'Level',
+          icon: '',
+          field_name: 'level',
+          type: 'select'
+        },
+        {
+          name: 'Season Name',
+          icon: '',
+          field_name: 'season_name',
+          type: 'text'
+        },
+        {
+          name: 'Season Start Date',
+          icon: '',
+          field_name: 'season_start_date',
+          type: 'date'
+        },
+        {
+          name: 'Roster Submission Deadline',
+          icon: '',
+          field_name: 'roster_submission_deadline',
+          type: 'date'
+        },
+        {
+          name: 'Tournament Start Date',
+          icon: '',
+          field_name: 'tournament_start_date',
+          type: 'date'
+        },
+        {
+          name: 'Year',
+          icon: '',
+          field_name: 'year',
+          type: 'text'
+        },
+        {
+          name: 'Slug',
+          icon: '',
+          field_name: 'slug',
+          type: 'text'
+        },
+        {
+          name: 'Archive',
+          icon: '',
+          field_name: 'archive',
+          type: 'checkbox'
+        }
+      ],
+      config: {
+        page: 'season'
       }
     }
   },
   components: {
-    selectbox: selectbox
+    selectbox: selectbox,
+    editTable: editTable
   },
   computed: {
     seasons () {
       return this.$store.state.seasons
+    },
+    levels () {
+      return this.$store.state.levels
     }
   },
   created () {
