@@ -603,4 +603,12 @@ export class api {
       method: 'GET'
     })
   }
+
+  static async getAdminSeasons () {
+   
+    return robros({
+      url: '/getAdminSeasons' ,
+      method: 'GET'
+    })
+  }
 }

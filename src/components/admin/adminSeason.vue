@@ -8,10 +8,14 @@
           <span class="focused">Edit</span>
         </div>
 
-        <div class="switch" v-if="edit" @click="edit = !edit">
+        <!-- <div class="switch" v-if="edit" @click="edit = !edit">
           <font-awesome-icon :icon="['fas', 'check']" class="icon"></font-awesome-icon>
           <span class="focused">Done Editing</span>
-
+        </div> -->
+        <div class="switch" v-if="edit" @click="save()">
+          <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
+          <span class="focused" v-if="!saving">Save</span>
+          <span v-else>saving...</span>
         </div>
       </div>
     </header>
@@ -20,37 +24,78 @@
     <editTable  :columns="columns" :config="config" :tabledata="seasons" v-model="new_season" :edit="edit">
       <template slot="tbody">
       </template>
-      <template slot="tbody" v-if=" edit === true">
-        <td class="input-con">
-          <selectbox
-            id="level"
-            :options="levels"
-            :trackby="'name'"
-            placeholder="Select Level"
-            v-model="new_season.level"
-          ></selectbox>
-        </td>
-        <td class="input-con">
-          <input type='text' v-model="new_season.season_name">
-        </td>
-        <td class="input-con">
-          <input type='date' v-model="new_season.season_start_date">
-        </td>
-        <td class="input-con">
-          <input type='date' v-model="new_season.roster_submission_deadline">
-        </td>
-        <td class="input-con">
-          <input type='date' v-model="new_season.tournament_start_date">
-        </td>
-        <td class="input-con">
-          <input type='text' v-model="new_season.year">
-        </td>
-        <td class="input-con">
-          <input type='text' v-model="new_season.slug">
-        </td>
-        <td class="input-con">
-          <input type='checkbox' v-model="new_season.archive">
-        </td>
+      <template slot="tbody" v-if="edit">
+        <tr v-for="(season, index) in seasons" :key="index">
+          <td class="input-con">
+            <multiselect
+              v-model="season.level"
+              label="name"
+              track-by="id"
+              :options="levels"
+              :closeOnSelect="false"
+              :optionHeight="10"
+              :multiple="false"
+              :taggable="true"
+              :hideSelected="true"
+            ></multiselect>
+          </td>
+          <td class="input-con">
+            <input type='text' v-model="season.season_name">
+          </td>
+          <td class="input-con">
+            <input type='date' v-model="season.season_start_date">
+          </td>
+          <td class="input-con">
+            <input type='date' v-model="season.roster_submission_deadline">
+          </td>
+          <td class="input-con">
+            <input type='date' v-model="season.tournament_start_date">
+          </td>
+          <td class="input-con">
+            <input type='text' v-model="season.year">
+          </td>
+          <td class="input-con">
+            <input type='text' v-model="season.slug">
+          </td>
+          <td class="input-con">
+            <input type='checkbox' v-model="season.archive">
+          </td>
+        </tr>
+        <tr>
+          <td class="input-con">
+            <multiselect
+              v-model="new_season.level"
+              label="name"
+              :options="levels"
+              :closeOnSelect="false"
+              :optionHeight="10"
+              :multiple="true"
+              :taggable="true"
+              :hideSelected="true"
+            ></multiselect>
+          </td>
+          <td class="input-con">
+            <input type='text' v-model="new_season.season_name">
+          </td>
+          <td class="input-con">
+            <input type='date' v-model="new_season.season_start_date">
+          </td>
+          <td class="input-con">
+            <input type='date' v-model="new_season.roster_submission_deadline">
+          </td>
+          <td class="input-con">
+            <input type='date' v-model="new_season.tournament_start_date">
+          </td>
+          <td class="input-con">
+            <input type='text' v-model="new_season.year">
+          </td>
+          <td class="input-con">
+            <input type='text' v-model="new_season.slug">
+          </td>
+          <td class="input-con">
+            <input type='checkbox' v-model="new_season.archive">
+          </td>
+        </tr>
       </template>
       <template v-if="edit === false">
         Current Season: {{ currentSeason }}
@@ -64,8 +109,11 @@
 <script>
 import { api } from '@/api/endpoints'
 // import _ from 'lodash'
-import selectbox from '../selectbox'
+// import selectbox from '../selectbox'
 import editTable from '@/components/editTable'
+
+// third party
+import Multiselect from 'vue-multiselect'
 
 export default {
   name: 'adminSeasons',
@@ -75,7 +123,7 @@ export default {
       currentSeason: [],
       edit: false,
       new_season: {
-        level: {},
+        level: '',
         season_name: '',
         season_start_date: '',
         roster_submission_deadline: '',
@@ -87,16 +135,18 @@ export default {
       },
       // seasons: [],
       columns: [
-        {
-          name: 'Level',
-          icon: '',
-          field_name: 'level',
-          type: 'select'
-        },
+        // {
+        //   name: 'Level',
+        //   icon: '',
+        //   field_name: 'level',
+        //   type: 'multiselect',
+        //   track_by: 'name',
+        //   model: 'season.levels'
+        // },
         {
           name: 'Season Name',
           icon: '',
-          field_name: 'season_name',
+          field_name: 'season_names',
           type: 'text'
         },
         {
@@ -123,12 +173,12 @@ export default {
           field_name: 'year',
           type: 'text'
         },
-        {
-          name: 'Slug',
-          icon: '',
-          field_name: 'slug',
-          type: 'text'
-        },
+        // {
+        //   name: 'Slug',
+        //   icon: '',
+        //   field_name: 'slug',
+        //   type: 'text'
+        // },
         {
           name: 'Archive',
           icon: '',
@@ -138,16 +188,25 @@ export default {
       ],
       config: {
         page: 'season'
-      }
+      },
+      saving: false,
+      saved: false,
+      updated: []
     }
   },
   components: {
-    selectbox: selectbox,
-    editTable: editTable
+    editTable: editTable,
+    Multiselect
   },
   computed: {
     seasons () {
-      return this.$store.state.seasons
+      const seasonArr = []
+      api.getAdminSeasons().then(response=> {
+        this.seasonArr = response.data
+        console.log(JSON.stringify(this.seasonArr))
+      })
+      
+      return this.seasonArr
     },
     levels () {
       return this.$store.state.levels
@@ -161,6 +220,23 @@ export default {
       api.getCurrentSeasons().then(response => {
         this.currentSeason = response.data
       })
+    },
+    save () {
+      // console.log(this.new_season)
+      this.edit = !this.edit
+    },
+    initNewSeason () {
+      this.new_season = {
+        level: {},
+        season_name: '',
+        season_start_date: '',
+        roster_submission_deadline: '',
+        tournament_start_date: '',
+        sport: '',
+        year: '',
+        slug: '',
+        archive: false
+      }
     }
   }
 }

@@ -24,6 +24,12 @@
                   {{c.level_name }}
                 </template>
               </template>
+              <template v-else-if="column.field_name === 'level'">
+                {{data[column.field_name].name}}
+                <!-- <template v-for="(c) in data[column.field_name]">
+                  {{data[column.field_name]}}
+                </template> -->
+              </template>
               <template v-else-if="column.field_name === 'age'">
                   {{ age(data['birth_date']) }}
               </template>
@@ -66,7 +72,15 @@
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay(field.field_name)" @keyup.space="changeDisplay(field.field_name)" :class="{'vs': value[field.field_name]}" class="currentCustom">{{value[field.field_name] ? 'vs' : '@'}}</div>
 
-                <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :multiple="true" :taggable="true" @tag="addTag"></multiselect>
+                <multiselect v-else-if="field.type === 'multiselect' && field.field_name==='season_roster'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :multiple="true" :taggable="true" @tag="addTag"></multiselect>
+                <multiselect v-else-if="field.type === 'multiselect' && field.field_name==='level'"
+                v-model="value[field.model]"
+                label="name"
+                :options="selectOptions(field.field_name)"
+                :closeOnSelect="false"
+                :multiple="true"
+                :taggable="true"
+                @tag="addTag"></multiselect>
 
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
 
@@ -181,6 +195,9 @@ export default {
           })
         case 'season_roster':
           return this.$store.getters.teamLevels
+        case 'level':
+          console.log(this.tabledata.level)
+          return this.tabledata.level
       }
     },
     addTag (newTag) {
