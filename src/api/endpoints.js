@@ -4,7 +4,7 @@
  * TODO: Create a function for chaining params
  * TODO: Better Parameter Chaining
 ***/
-// import axios from 'axios'
+
 import { robros } from './base'
 // import { Auth } from 'aws-amplify'
 // import { store } from '@/store/index'
@@ -325,7 +325,7 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getSchedule (season, team) {
+  static async getSchedule (season, team, year) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -341,6 +341,8 @@ export class api {
 
     if (season !== undefined && team === undefined) {
       addedParams = '/' + season
+    } else if (year !== undefined) {
+      addedParams = '/' + year
     } else if (season !== undefined && team !== undefined) {
       addedParams = '/' + season + '/' + team
     } else if (season === undefined && team !== undefined) {
@@ -586,6 +588,19 @@ export class api {
       url: '/updateTournamentGame/',
       method: 'POST',
       data: body
+    })
+  }
+
+  static async getYear (active) {
+    let returnUrl = ''
+    if (active === true) {
+      returnUrl = '/getActiveYear'
+    } else {
+      returnUrl = '/getYears/'
+    }
+    return robros({
+      url: returnUrl,
+      method: 'GET'
     })
   }
 }
