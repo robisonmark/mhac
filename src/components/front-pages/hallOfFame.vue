@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import { api } from '@/api/endpoints'
+
 export default {
   name: 'hallOfFame',
   data () {
