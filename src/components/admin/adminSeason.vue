@@ -21,15 +21,15 @@
     </header>
 
   <div class="contentPad">
-    <editTable  :columns="columns" :config="config" :tabledata="seasons" v-model="new_season" :edit="edit">
+    <editTable  :columns="columns" :config="config" :tabledata="seasonArr" v-model="new_season" :edit="edit">
       <template slot="tbody">
       </template>
       <template slot="tbody" v-if="edit">
-        <tr v-for="(season, index) in seasons" :key="index">
+        <tr v-for="(season, index) in seasonArr" :key="index">
           <td class="input-con">
-            <multiselect
+            <!-- <multiselect
               v-model="season.level"
-              label="name"
+              label="level_name"
               track-by="id"
               :options="levels"
               :closeOnSelect="false"
@@ -37,35 +37,41 @@
               :multiple="false"
               :taggable="true"
               :hideSelected="true"
-            ></multiselect>
+              @input="addToUpdateList(season)"
+            ></multiselect> -->
+            <selectbox id='level'
+              :options="levels"
+              :trackby="'level_name'"
+              v-model="season.level"
+              ></selectbox>
           </td>
           <td class="input-con">
-            <input type='text' v-model="season.season_name">
+            <input type='text' v-model="season.season_name" @input="addToUpdateList(season)">
           </td>
           <td class="input-con">
-            <input type='date' v-model="season.season_start_date">
+            <input type='date' v-model="season.season_start_date" @input="addToUpdateList(season)">
           </td>
           <td class="input-con">
-            <input type='date' v-model="season.roster_submission_deadline">
+            <input type='date' v-model="season.roster_submission_deadline" @input="addToUpdateList(season)">
           </td>
           <td class="input-con">
-            <input type='date' v-model="season.tournament_start_date">
+            <input type='date' v-model="season.tournament_start_date" @input="addToUpdateList(season)">
           </td>
           <td class="input-con">
-            <input type='text' v-model="season.year">
+            <input type='text' v-model="season.year" @input="addToUpdateList(season)">
           </td>
           <td class="input-con">
-            <input type='text' v-model="season.slug">
+            <input type='text' v-model="season.slug" @input="addToUpdateList(season)">
           </td>
           <td class="input-con">
-            <input type='checkbox' v-model="season.archive">
+            <input type='checkbox' v-model="season.archive" @input="addToUpdateList(season)">
           </td>
         </tr>
         <tr>
           <td class="input-con">
             <multiselect
               v-model="new_season.level"
-              label="name"
+              label="level_name"
               :options="levels"
               :closeOnSelect="false"
               :optionHeight="10"
@@ -97,9 +103,6 @@
           </td>
         </tr>
       </template>
-      <template v-if="edit === false">
-        Current Season: {{ currentSeason }}
-      </template>
     </editTable>
   </div>
 
@@ -109,11 +112,12 @@
 <script>
 import { api } from '@/api/endpoints'
 // import _ from 'lodash'
-// import selectbox from '../selectbox'
+import selectbox from '../selectbox'
 import editTable from '@/components/editTable'
 
 // third party
 import Multiselect from 'vue-multiselect'
+// import selectbox from '../selectbox.vue'
 
 export default {
   name: 'adminSeasons',
@@ -122,31 +126,31 @@ export default {
       years: [],
       currentSeason: [],
       edit: false,
+      seasonArr: [],
       new_season: {
-        level: '',
+        level: [],
         season_name: '',
         season_start_date: '',
         roster_submission_deadline: '',
         tournament_start_date: '',
-        sport: '',
+        sport: 'Basketball',
         year: '',
         slug: '',
         archive: false
       },
-      // seasons: [],
       columns: [
-        // {
-        //   name: 'Level',
-        //   icon: '',
-        //   field_name: 'level',
-        //   type: 'multiselect',
-        //   track_by: 'name',
-        //   model: 'season.levels'
-        // },
+        {
+          name: 'Levels',
+          icon: '',
+          field_name: 'level',
+          type: 'multiselect',
+          track_by: 'id',
+          model: 'level.level_name'
+        },
         {
           name: 'Season Name',
           icon: '',
-          field_name: 'season_names',
+          field_name: 'season_name',
           type: 'text'
         },
         {
@@ -173,12 +177,12 @@ export default {
           field_name: 'year',
           type: 'text'
         },
-        // {
-        //   name: 'Slug',
-        //   icon: '',
-        //   field_name: 'slug',
-        //   type: 'text'
-        // },
+        {
+          name: 'Slug',
+          icon: '',
+          field_name: 'slug',
+          type: 'text'
+        },
         {
           name: 'Archive',
           icon: '',
@@ -191,43 +195,98 @@ export default {
       },
       saving: false,
       saved: false,
-      updated: []
+      updated: [],
+      added: []
     }
   },
   components: {
     editTable: editTable,
-    Multiselect
+    Multiselect,
+    selectbox: selectbox
   },
   computed: {
-    seasons () {
-      const seasonArr = []
-      api.getAdminSeasons().then(response=> {
-        this.seasonArr = response.data
-        console.log(JSON.stringify(this.seasonArr))
-      })
-      
-      return this.seasonArr
-    },
     levels () {
       return this.$store.state.levels
     }
   },
   created () {
     this.getCurrentSeason()
+    this.seasons()
+  },
+  watch: {
+    new_season: {
+      deep: true,
+      handler (newValue) {
+        const idx = this.added.indexOf(newValue)
+        if (idx >= 0) {
+          this.added[idx] = newValue
+        } else {
+          this.added.push(newValue)
+        }       
+      }
+    }
   },
   methods: {
+    addToUpdateList (id) {
+      console.log('addtolist')
+      let add = true
+      let i = 0
+      for (i = 0; i < this.updated.length; i++) {
+        if (this.updated[i] === id) {
+          add = false
+        }
+      }
+      if (add) {
+        this.updated.push(id)
+      }
+    },
+    seasons () {
+      const seasonArr = []
+      api.getAdminSeasons().then(response=> {
+        this.seasonArr = response.data
+      })
+      
+      return this.seasonArr
+    },
     getCurrentSeason () {
       api.getCurrentSeasons().then(response => {
         this.currentSeason = response.data
       })
     },
     save () {
-      // console.log(this.new_season)
+      console.log(JSON.stringify(this.added))
+      // console.log(JSON.stringify(this.updated))
+      
+      if (this.updated.length > 0) {
+          api.updateSeason()
+            .then(response => {
+              console.log(this.updated)
+              this.updated = []
+            })
+            .catch(err => {
+              console.log(err)
+            })
+      }
+      console.log(this.added.length)
+      if (this.added.length > 0) {
+        console.log("here")
+        this.added.forEach(season => {
+          api.addSeason(season)
+            .then(response => {
+              console.log(response)
+              this.initNewSeason()
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        })
+      }
+      this.seasons()
       this.edit = !this.edit
     },
     initNewSeason () {
       this.new_season = {
-        level: {},
+        level: [],
         season_name: '',
         season_start_date: '',
         roster_submission_deadline: '',
