@@ -72,14 +72,14 @@
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay(field.field_name)" @keyup.space="changeDisplay(field.field_name)" :class="{'vs': value[field.field_name]}" class="currentCustom">{{value[field.field_name] ? 'vs' : '@'}}</div>
 
-                <multiselect v-else-if="field.type === 'multiselect' && field.field_name==='season_roster'" 
-                  v-model="value[field.model]" 
-                  label="level_name" 
-                  track-by="team_id" 
-                  :options="selectOptions(field.field_name)" 
-                  :closeOnSelect=false  
-                  :multiple="true" 
-                  :taggable="true" 
+                <multiselect v-else-if="field.type === 'multiselect' && field.field_name==='season_roster'"
+                  v-model="value[field.model]"
+                  label="level_name"
+                  track-by="team_id"
+                  :options="selectOptions(field.field_name)"
+                  :closeOnSelect=false
+                  :multiple="true"
+                  :taggable="true"
                   @tag="addTag"></multiselect>
                 <multiselect v-else-if="field.type === 'multiselect' && field.field_name==='levels'"
                   v-model="value[field.model]"

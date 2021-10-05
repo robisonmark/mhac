@@ -27,18 +27,6 @@
       <template slot="tbody" v-if="edit">
         <tr v-for="(season, index) in seasonArr" :key="index">
           <td class="input-con">
-            <!-- <multiselect
-              v-model="season.level"
-              label="level_name"
-              track-by="id"
-              :options="levels"
-              :closeOnSelect="false"
-              :optionHeight="10"
-              :multiple="false"
-              :taggable="true"
-              :hideSelected="true"
-              @input="addToUpdateList(season)"
-            ></multiselect> -->
             <selectbox id='level'
               :options="levels"
               :trackby="'level_name'"
@@ -222,7 +210,7 @@ export default {
           this.added[idx] = newValue
         } else {
           this.added.push(newValue)
-        }       
+        }
       }
     }
   },
@@ -241,11 +229,9 @@ export default {
       }
     },
     seasons () {
-      const seasonArr = []
-      api.getAdminSeasons().then(response=> {
+      api.getAdminSeasons().then(response => {
         this.seasonArr = response.data
       })
-      
       return this.seasonArr
     },
     getCurrentSeason () {
@@ -256,20 +242,18 @@ export default {
     save () {
       console.log(JSON.stringify(this.added))
       // console.log(JSON.stringify(this.updated))
-      
       if (this.updated.length > 0) {
-          api.updateSeason()
-            .then(response => {
-              console.log(this.updated)
-              this.updated = []
-            })
-            .catch(err => {
-              console.log(err)
-            })
+        api.updateSeason()
+          .then(response => {
+            console.log(this.updated)
+            this.updated = []
+          })
+          .catch(err => {
+            console.log(err)
+          })
       }
       console.log(this.added.length)
       if (this.added.length > 0) {
-        console.log("here")
         this.added.forEach(season => {
           api.addSeason(season)
             .then(response => {

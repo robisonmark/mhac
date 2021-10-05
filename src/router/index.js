@@ -26,6 +26,7 @@ import admin from '@/components/admin'
 // import login from '@/components/admin/login'
 import adminTournament from '@/components/admin/adminTournament'
 import adminSeason from '@/components/admin/adminSeason'
+import adminSeasonTeams from '@/components/admin/adminSeasonTeams'
 import editHomepage from '@/components/admin/editHomepage'
 import manageStandings from '@/components/admin/manageStandings'
 
@@ -274,6 +275,15 @@ export const router = new Router({
           path: 'seasons',
           name: 'adminSeason',
           component: adminSeason,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          }
+        },
+        {
+          path: 'seasonsTeams',
+          name: 'adminSeasonTeams',
+          component: adminSeasonTeams,
           meta: {
             requiresAuth: true,
             section: 'admin'

@@ -605,24 +605,13 @@ export class api {
   }
 
   static async getAdminSeasons () {
-   
     return robros({
-      url: '/getAdminSeasons' ,
+      url: '/getAdminSeasons',
       method: 'GET'
     })
   }
 
   static async updateSeason (body) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
-
     return robros({
       url: '/updateSeason',
       method: 'PUT',
