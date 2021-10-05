@@ -1,5 +1,6 @@
 <template>
   <div class="">
+    <h2> Manage Seasons </h2>
     <header class="contentPad">
       <!-- <h2>{{this.$config.seasonYear}} Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2> -->
       <div class="buttonCon">
