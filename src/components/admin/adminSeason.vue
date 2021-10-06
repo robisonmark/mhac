@@ -55,12 +55,26 @@
           <td class="input-con">
             <input type='checkbox' v-model="season.archive" @input="addToUpdateList(season)">
           </td>
+          <multiselect
+              v-model="season.season_teams"
+              label="team_name"
+              track-by="team_id"
+              :options="teams"
+              :closeOnSelect="false"
+              :optionHeight="20"
+              :multiple="true"
+              :taggable="true"
+              :hideSelected="true"
+              @input="addToUpdateList(season)"
+            >
+            </multiselect>
         </tr>
         <tr>
           <td class="input-con">
             <multiselect
               v-model="new_season.level"
               label="level_name"
+              track-by="level_id"
               :options="levels"
               :closeOnSelect="false"
               :optionHeight="10"
@@ -90,6 +104,18 @@
           <td class="input-con">
             <input type='checkbox' v-model="new_season.archive">
           </td>
+           <multiselect
+              v-model="new_season.season_teams"
+              label="team_name"
+              track-by="team_id"
+              :options="teams"
+              :closeOnSelect="false"
+              :optionHeight="10"
+              :multiple="true"
+              :taggable="true"
+              :hideSelected="true"
+            >
+            </multiselect>
         </tr>
       </template>
     </editTable>
@@ -125,7 +151,8 @@ export default {
         sport: 'Basketball',
         year: '',
         slug: '',
-        archive: false
+        archive: false,
+        season_teams: []
       },
       columns: [
         {
@@ -177,6 +204,14 @@ export default {
           icon: '',
           field_name: 'archive',
           type: 'checkbox'
+        },
+        {
+          name: 'SeasonTeams',
+          icon: '',
+          field_name: 'team_name',
+          type: 'multiselect',
+          track_by: 'team_id',
+          model: 'team_name'
         }
       ],
       config: {
@@ -196,11 +231,14 @@ export default {
   computed: {
     levels () {
       return this.$store.state.levels
+    },
+    teams () {
+      return this.$store.state.teams
     }
   },
   created () {
-    this.getCurrentSeason()
     this.seasons()
+    this.getCurrentSeason()
   },
   watch: {
     new_season: {
@@ -217,7 +255,7 @@ export default {
   },
   methods: {
     addToUpdateList (id) {
-      console.log('addtolist')
+      // console.log('addtolist')
       let add = true
       let i = 0
       for (i = 0; i < this.updated.length; i++) {
@@ -233,7 +271,6 @@ export default {
       api.getAdminSeasons().then(response => {
         this.seasonArr = response.data
       })
-      return this.seasonArr
     },
     getCurrentSeason () {
       api.getCurrentSeasons().then(response => {
@@ -241,24 +278,23 @@ export default {
       })
     },
     save () {
-      console.log(JSON.stringify(this.added))
-      // console.log(JSON.stringify(this.updated))
+      // console.log(JSON.stringify(this.added))
+      console.log(JSON.stringify(this.updated))
       if (this.updated.length > 0) {
-        api.updateSeason()
+        api.updateSeason(this.updated)
           .then(response => {
-            console.log(this.updated)
             this.updated = []
           })
           .catch(err => {
             console.log(err)
           })
       }
-      console.log(this.added.length)
+      // console.log(this.added.length)
       if (this.added.length > 0) {
         this.added.forEach(season => {
           api.addSeason(season)
             .then(response => {
-              console.log(response)
+              // console.log(response)
               this.initNewSeason()
             })
             .catch(err => {
@@ -266,7 +302,7 @@ export default {
             })
         })
       }
-      this.seasons()
+      // this.seasons()
       this.edit = !this.edit
     },
     initNewSeason () {
@@ -377,3 +413,4 @@ table {
 @media @phone {
 }
 </style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

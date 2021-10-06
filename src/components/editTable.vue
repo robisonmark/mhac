@@ -26,9 +26,6 @@
               </template>
               <template v-else-if="column.field_name === 'level'">
                 {{data[column.field_name].level_name}}
-                <!-- <template v-for="(c) in data[column.field_name]">
-                  {{c.level_name}}
-                </template> -->
               </template>
               <template v-else-if="column.field_name === 'age'">
                   {{ age(data['birth_date']) }}
@@ -36,9 +33,6 @@
               <template v-else-if="column.field_name === 'opponent'">
                 {{ data[column.field_name].team_name }}
               </template>
-              <!-- <template v-else-if="column.field_name == 'level_name'">
-                {{ data['opponent'].level_name }}
-              </template> -->
               <template v-else-if="column.field_name === 'host'">
                 <div tabindex="0" :class="{'vs': data[column.field_name]}" class="currentCustom">{{data[column.field_name] ? 'vs' : '@'}}</div>
               </template>
@@ -47,6 +41,11 @@
               </template>
               <template v-else-if="column.field_name==='archive'">
                   <input type='checkbox' v-model="data[column.field_name]" id="index" disabled>
+              </template>
+              <template v-else-if="column.field_name === 'team_name'">
+                  <template v-for="(c) in data['season_teams']">
+                    {{c.team_name }}
+                  </template>
               </template>
               <template v-else>
                 {{ data[column.field_name] }}
@@ -90,6 +89,15 @@
                   :multiple="true"
                   :taggable="true"
                   @tag="addTag"></multiselect>
+                <!-- <multiselect v-else-if="field.type === 'multiselect' && field.field_name==='team_name'"
+                  v-model="value[field.model]"
+                  label="team_name"
+                  :options="selectOptions(field.field_name)"
+                  track-by="team_id"
+                  :closeOnSelect="false"
+                  :multiple="true"
+                  :taggable="true"
+                  @tag="addTag"></multiselect> -->
 
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
 
@@ -206,6 +214,8 @@ export default {
           return this.$store.getters.teamLevels
         case 'levels':
           return this.tabledata
+        case 'team_name':
+          return this.$store.state.teams
       }
     },
     addTag (newTag) {

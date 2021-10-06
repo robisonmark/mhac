@@ -405,7 +405,7 @@ export class api {
     } else if (slug === '' && seasonid !== null) {
       slug = seasonid
     }
-
+    console.log('/getSeasonTeams/' + slug)
     return robros({
       url: '/getSeasonTeams/' + slug,
       method: 'GET'

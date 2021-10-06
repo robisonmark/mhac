@@ -265,7 +265,7 @@ export default {
         api.getAdminPlayers(this.$route.params.slug).then(response => {
           this.roster = response.data
           this.fullRoster = _.cloneDeep(this.roster)
-          console.log(JSON.stringify(this.roster))
+          // console.log(JSON.stringify(this.roster))
         })
       }
     },
