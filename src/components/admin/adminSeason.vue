@@ -322,6 +322,7 @@ export default {
 }
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style scoped lang="less">
 @import "../../assets/less/utils/variables.less";
 @import "../../assets/less/utils/breakpoints.less";
@@ -412,5 +413,21 @@ table {
 
 @media @phone {
 }
+
+.multiselect__tag {
+  position: relative;
+  display: inline-block;
+  padding: 4px 26px 4px 10px;
+  border-radius: 5px;
+  margin-right: 10px;
+  color: #fff;
+  line-height: 1;
+  background: @nav-blue;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
 </style>
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
