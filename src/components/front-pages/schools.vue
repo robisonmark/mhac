@@ -23,11 +23,11 @@
                   </div>
                 </div>
 
-                <div class="custom-select" @click.stop="showSections = !showSections, showSeasons = false">
+                <div class="custom-select" @click.stop="showSeasons = false">
                   <div disabled>{{selectedSection}}</div>
-                  <div class="options-menu">
+                  <div class="roster-label">
                     <template>
-                      <div class="option" v-for="(section, index) in sections" :key="index" v-show="showSections" @click="selectedSection = section">
+                      <div class="option" v-for="(section, index) in sections" :key="index" v-show="showSections">
                         {{section}}
                       </div>
                     </template>
@@ -157,7 +157,6 @@ export default {
       roster: [],
       schedule: [],
       sections: [
-        'Schedule',
         'Roster'
         // 'Staff'
       ],
@@ -543,6 +542,28 @@ export default {
     &.noHover:hover {
       background-color: #fff;
     }
+  }
+}
+
+.roster-label {
+  position: absolute;
+  width: 250px;
+  background: #0C4B75;
+  // padding: .5rem;
+  top: calc(1.5rem);
+  left: -3px;
+  z-index: 2;
+  box-shadow: 1px 2px 4px #0C4B75;
+  .option {
+    padding: .2rem .5rem;
+    width: 100%;
+    cursor: pointer;
+    // &:hover {
+    //   background-color: lighten(#0C4B75, 10%);
+    // }
+    // &.noHover:hover {
+    //   background-color: #fff;
+    // }
   }
 }
 table {
