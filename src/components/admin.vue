@@ -5,6 +5,7 @@
         <router-link :to="{ name: 'teamDashboard', params: { slug: slug }}" tag="li" class="nav-item">Manage Teams</router-link>
         <router-link :to="{ path: '/admin/tournament'}" tag="li" class="nav-item">Manage Tournament</router-link>
         <router-link :to="{ path: '/admin/seasons'}" tag="li" class="nav-item">Manage Seasons</router-link>
+        <!-- <router-link :to="{ path: '/admin/seasonsTeams'}" tag="li" class="nav-item">Manage SeasonsTeams</router-link> -->
       </ul>
     </nav>
     <router-view class="admin" />
