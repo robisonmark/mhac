@@ -24,6 +24,12 @@
                   {{c.level_name }}
                 </template>
               </template>
+              <template v-else-if="column.field_name === 'level'">
+                {{data[column.field_name].level_name}}
+                <!-- <template v-for="(c) in data[column.field_name]">
+                  {{c.level_name}}
+                </template> -->
+              </template>
               <template v-else-if="column.field_name === 'age'">
                   {{ age(data['birth_date']) }}
               </template>
@@ -39,8 +45,11 @@
               <template v-else-if="column.field_name==='feet' || column.field_name==='inches' ">
                 {{ data['height'][column.field_name] }}
               </template>
+              <template v-else-if="column.field_name==='archive'">
+                  <input type='checkbox' v-model="data[column.field_name]" id="index" disabled>
+              </template>
               <template v-else>
-                {{ data[column.field_name]}}
+                {{ data[column.field_name] }}
               </template>
             </td>
           </template>
@@ -58,16 +67,31 @@
           <tr class="split-fields">
             <!-- <td></td> -->
             <template v-for="(field, index) in columns">
-
               <td v-if="!field.field_name.includes('id') && !field.field_name.includes('actions')" :key="index" class="input-con">
                 <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" v-model="value[field.field_name]"></selectbox>
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay(field.field_name)" @keyup.space="changeDisplay(field.field_name)" :class="{'vs': value[field.field_name]}" class="currentCustom">{{value[field.field_name] ? 'vs' : '@'}}</div>
 
-                <multiselect v-else-if="field.type === 'multiselect'" v-model="value[field.model]" label="level_name" track-by="team_id" :options="selectOptions(field.field_name)" :closeOnSelect=false  :multiple="true" :taggable="true" @tag="addTag"></multiselect>
+                <multiselect v-else-if="field.type === 'multiselect' && field.field_name==='season_roster'" 
+                  v-model="value[field.model]" 
+                  label="level_name" 
+                  track-by="team_id" 
+                  :options="selectOptions(field.field_name)" 
+                  :closeOnSelect=false  
+                  :multiple="true" 
+                  :taggable="true" 
+                  @tag="addTag"></multiselect>
+                <multiselect v-else-if="field.type === 'multiselect' && field.field_name==='levels'"
+                  v-model="value[field.model]"
+                  label="level_name"
+                  :options="selectOptions(field.field_name)"
+                  track-by="id"
+                  :closeOnSelect="false"
+                  :multiple="true"
+                  :taggable="true"
+                  @tag="addTag"></multiselect>
 
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
-                <!-- <input type="text" v-model="value[key]" /> -->
 
                 <!-- <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span> -->
               </td>
@@ -180,6 +204,8 @@ export default {
           })
         case 'season_roster':
           return this.$store.getters.teamLevels
+        case 'levels':
+          return this.tabledata
       }
     },
     addTag (newTag) {

@@ -46,8 +46,17 @@
               <input type="text" v-model="player.height.inches" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <multiselect v-model="player.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true" @input="addToUpdateList(player)"></multiselect>
-
+              <multiselect
+                v-model="player.season_roster"
+                label="level_name"
+                track-by="team_id"
+                :options="$store.getters.teamLevels"
+                :closeOnSelect="false"
+                :optionHeight="10"
+                :multiple="true"
+                :taggable="true"
+                @input="addToUpdateList(player)">
+              </multiselect>
             </td>
           </tr>
           <tr>
@@ -97,7 +106,6 @@ import _ from 'lodash'
 
 // components
 import editTable from '@/components/editTable'
-// import selectbox from '../selectbox'
 
 // third party
 import Multiselect from 'vue-multiselect'
@@ -189,7 +197,6 @@ export default {
   components: {
     editTable: editTable,
     Multiselect
-    // selectbox: selectbox
   },
   computed: {
     seasons () {
@@ -214,7 +221,6 @@ export default {
       deep: true,
       handler (newValue) {
         const idx = this.added.indexOf(newValue)
-        // console.log("WatchNewPlayer", idx, newValue)
         if (idx >= 0) {
           this.added[idx] = newValue
         } else {
@@ -259,7 +265,7 @@ export default {
         api.getAdminPlayers(this.$route.params.slug).then(response => {
           this.roster = response.data
           this.fullRoster = _.cloneDeep(this.roster)
-          // console.log(this.roster)
+          console.log(JSON.stringify(this.roster))
         })
       }
     },
