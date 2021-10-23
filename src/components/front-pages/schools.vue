@@ -95,7 +95,11 @@
                   <td>{{player.first_name}} {{player.last_name}}</td>
                   <td v-html="player.position"></td>
                   <td v-html="player.age"></td>
-                  <td v-html="player.height"></td>
+                  <td>
+                    <template v-if="player.height.feet != 0 "> 
+                      {{player.height.feet}}  ' {{player.height.inches}} "
+                    </template>
+                  </td>
                 </tr>
               </tbody>
             </table>
