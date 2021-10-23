@@ -32,9 +32,9 @@
           </div>
 
           <div class="content-divider">
-            <div class="button ghost print" @click="print()">
+            <!-- <div class="button ghost print" @click="print()">
               <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
-            </div>
+            </div> -->
           </div>
 
           <div v-if="selectedSection === 'Schedule'">
@@ -96,7 +96,7 @@
                   <td v-html="player.position"></td>
                   <td v-html="player.age"></td>
                   <td>
-                    <template v-if="player.height.feet != 0 "> 
+                    <template v-if="player.height.feet != 0">
                       {{player.height.feet}}  ' {{player.height.inches}} "
                     </template>
                   </td>
@@ -129,6 +129,10 @@
 <script>
 // api
 import { api } from '../../api/endpoints.js'
+
+// mixins
+import { root } from '../../mixins/root'
+
 import _ from 'lodash'
 
 export default {
@@ -164,6 +168,7 @@ export default {
       teamAssocLvl: []
     }
   },
+  mixins: [root],
   computed: {
     footerLoc: {
       get: function () {
