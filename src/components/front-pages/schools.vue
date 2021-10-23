@@ -23,15 +23,8 @@
                   </div>
                 </div>
 
-                <div class="custom-select" @click.stop="showSeasons = false">
+                <div class="roster-label-outer" @click.stop="showSeasons = false">
                   <div disabled>{{selectedSection}}</div>
-                  <div class="roster-label">
-                    <template>
-                      <div class="option" v-for="(section, index) in sections" :key="index" v-show="showSections">
-                        {{section}}
-                      </div>
-                    </template>
-                  </div>
                 </div>
 
               </div>
@@ -491,6 +484,25 @@ export default {
 }
 .content {
   padding: 2rem 1rem;
+}
+.roster-label-outer {
+  display: inline-block;
+  position: relative;
+  font-size: 1rem;
+  width: 45%;
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    transform: skewX(-45deg);
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+    width: 100%;
+    height: 1.8rem;
+    top: 0;
+    left: .5rem;
+  }
 }
 .custom-select {
   display: inline-block;

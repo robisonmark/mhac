@@ -40,10 +40,10 @@
               <input type="date" v-model="player.birth_date"  @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.height.feet" @input="addToUpdateList(player)" />
+              <input type="number" v-model="player.height.feet" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.height.inches" @input="addToUpdateList(player)" />
+              <input type="number" v-model="player.height.inches" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
               <multiselect
@@ -79,10 +79,10 @@
               <input type="date" v-model="newPlayer.birth_date" />
             </td>
             <td class="stat">
-              <input type="text" v-model="newPlayer.height.feet" />
+              <input type="number" v-model="newPlayer.height.feet" />
             </td>
             <td class="stat">
-              <input type="text" v-model="newPlayer.height.inches" />
+              <input type="number" v-model="newPlayer.height.inches" />
             </td>
             <td class="stat">
               <multiselect v-model="newPlayer.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true"></multiselect>
@@ -285,15 +285,15 @@ export default {
     },
     initNewPlayer () {
       this.newPlayer = {
-        player_number: '',
+        player_number: NaN,
         first_name: '',
         last_name: '',
         id: null,
         position: '',
         birth_date: '',
         height: {
-          feet: '',
-          inches: ''
+          feet: 0,
+          inches: 0
         },
         team: this.$store.state.user.team_id,
         season_roster: [],
@@ -349,15 +349,14 @@ export default {
         })
       }
 
-      console.log('added', this.added)
-      if (this.added.length > 1 || this.added[0].player_number !== '') {
+      console.log('added', this.added.length, JSON.stringify(this.added))
+      if (this.added.length >= 1 ) {
         this.added.forEach(player => {
-        // console.log("save", this.newPlayer !== this.initNewPlayer(), this.newPlayer, this.initNewPlayer())
+          // console.log("save", this.newPlayer !== this.initNewPlayer(), this.newPlayer, this.initNewPlayer())
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
           console.log(JSON.stringify(playerJson))
-          // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
-
+          
           api.addPlayer(playerJson)
             .then(response => {
               console.log(response)
