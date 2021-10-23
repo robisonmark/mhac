@@ -96,7 +96,7 @@
                   <td v-html="player.position"></td>
                   <td v-html="player.age"></td>
                   <td>
-                    <template v-if="player.height.feet != 0">
+                    <template v-if="player.height.feet != 0 "> 
                       {{player.height.feet}}  ' {{player.height.inches}} "
                     </template>
                   </td>
