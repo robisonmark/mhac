@@ -79,7 +79,7 @@
           </div>
           <nav :class="[openMenu ? 'open' : 'close']">
             <router-link :to="{ path: '/' }">Home</router-link>
-            <!--
+            
             <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
               Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
                 <ul v-show="showTournament" class="tourn_nav_dropdown">
@@ -87,16 +87,17 @@
                   <li><a href='https://mhac-merch.square.site'> Tournament Merch</a></li>
                   <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li>
                 </ul>
-            </span> -->
-            <span class="about_dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
-              About<font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
-              <ul v-show="showTournament" class="about_nav_dropdown">
+            </span>
+            <!-- <span class="about_dropdown" @click="tournamentDrop" ref="aboutDropDown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
+              About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
+              <ul v-show="showAbout" class="about_nav_dropdown">
                   <li><router-link :to="{ path: '/about' }">MHAC History</router-link></li>
                   <li><a href="https://mhac-media-docs.s3.us-east-2.amazonaws.com/MHAC+Bylaws+March+2021.pdf" target="_blank">Bylaws  <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
                   <li><router-link :to="{ path: '/hall-of-fame' }">Past Champions</router-link></li>
                   <li><a href="https://nchclive.com" target="_blank">NCHBC <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
               </ul>
-            </span>
+            </span> -->
+            <router-link :to="{ path: '/about' }">About</router-link>
             <router-link :to="{ path: '/schedules' }">Schedules</router-link>
             <!-- <router-link :to="{ path: '/stats' }">Stats</router-link> -->
             <span class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
@@ -131,6 +132,7 @@ export default {
       showLogin: false,
       showSchools: false,
       showTournament: false,
+      showAbout:false,
       thinking: false,
       username: '',
       password: ''
@@ -554,6 +556,49 @@ export default {
         }
 
         .about_nav_dropdown {
+          color: #2A2A2A;
+          top: 4.5rem;
+          box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
+          right: 200;
+          position: absolute;
+          width: auto;
+          font-weight: 400;
+          text-align: right;
+          white-space: nowrap;
+          background: rgba(255,255,255, 0.95);
+          font-size: .9rem;
+          letter-spacing: -.2px;
+          li {
+            padding: .2rem 1rem;
+
+            cursor: pointer;
+            font-family: 'Lato';
+            &:after {
+              height: 1px;
+              background: var(--bg-color);
+              width: calc(100% + .75rem);
+              margin-right: -.5rem;
+              float: right;
+            }
+            .imgCon {
+              height: 60px;
+              width: 50px
+            }
+            img {
+              max-width: 100%;
+              max-height: 100%;
+            }
+            &:hover {
+              color: @conf-blue;
+            }
+            a {
+              color: #2A2A2A;
+              width: calc(100% + .80rem);
+            }
+          }
+        }
+
+        .tourn_nav_dropdown {
           color: #2A2A2A;
           top: 4.5rem;
           box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);

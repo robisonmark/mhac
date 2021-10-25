@@ -3,7 +3,7 @@
     <div class="page-styles">
       <div class="row print-only align-items-start justify-content-between">
         <div class="col">
-          <h2>2020 - 2021 Schedule</h2>
+          <h2>2021 - 2022 Schedule</h2>
         </div>
         <div class="col right">
           <div>{{filterBy.team.name}}</div>
@@ -58,9 +58,9 @@
             </div>
           </div>
           <div class="col-md-2 text-right">
-            <div class="button ghost print" @click="print()">
+            <!-- <div class="button ghost print" @click="print()">
               <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
