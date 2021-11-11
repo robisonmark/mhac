@@ -10,6 +10,7 @@
         <div class="row align-items-center">
           <div class="col conference conference-info">
             <img class="conference conference-logo" src="/static/washedout-team-logo/mhac-greyscale.png" />
+            <p><a href='https://www.facebook.com/mhacsports' target="_blank"><font-awesome-icon :icon="['fab','facebook-square']" size="3x"></font-awesome-icon></a>  <a href='https://www.instagram.com/mhacsports' target="_blank"><font-awesome-icon :icon="['fab','instagram']" size="3x"></font-awesome-icon></a></p>
             <p>&copy; {{ new Date().getFullYear() }} Midsouth Homeschool Athletic Conference</p>
             <p>All Rights Reserved | Terms of Service | Privacy Policy</p>
           </div>
