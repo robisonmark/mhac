@@ -603,4 +603,27 @@ export class api {
       method: 'GET'
     })
   }
+
+  static async getAdminSeasons () {
+    return robros({
+      url: '/getAdminSeasons',
+      method: 'GET'
+    })
+  }
+
+  static async updateSeason (body) {
+    return robros({
+      url: '/updateSeason',
+      method: 'PUT',
+      data: body
+    })
+  }
+
+  static async addSeason (body) {
+    return robros({
+      url: '/addSeason',
+      method: 'POST',
+      data: body
+    })
+  }
 }

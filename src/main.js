@@ -12,6 +12,8 @@ import { dom, library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faFacebookSquare, faInstagram } from '@fortawesome/free-brands-svg-icons'
+
 
 import '@aws-amplify/ui-vue'
 import Amplify from 'aws-amplify'
@@ -56,7 +58,7 @@ Vue.directive('stickBottom', {
 /* ********************************* *\
           Init Components
 \* ********************************* */
-library.add(fas, far)
+library.add(fas, far, faFacebookSquare, faInstagram)
 dom.watch()
 
 Vue.config.productionTip = false
