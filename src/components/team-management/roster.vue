@@ -352,13 +352,11 @@ export default {
         })
       }
 
-      // console.log('added', this.added.length, JSON.stringify(this.added))
       if (this.added.length >= 1 ) {
         this.added.forEach(player => {
           // console.log("save", this.newPlayer !== this.initNewPlayer(), this.newPlayer, this.initNewPlayer())
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
-          // console.log(JSON.stringify(playerJson))
           
           api.addPlayer(playerJson)
             .then(response => {
