@@ -249,7 +249,7 @@ export default {
         .then(response => {
           this.program = response.data[0]
           this.getSeasonTeams(this.$route.params.slug)
-          console.log(this.teamAssocLvl)
+          // console.log(this.teamAssocLvl)
           this.initRoster(this.teamAssocLvl.team_id)
         })
 
@@ -259,11 +259,11 @@ export default {
       const footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
       const bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
 
-      console.log('top: ', document.getElementById('publicMainFooter').scrollTop)
-      console.log('y: ', footerTop.y)
-      console.log('bottom: ', bottomLogoPos.y)
-      console.log('bool: ', footerTop.top <= (bottomLogoPos.bottom))
-      console.log('pos: ', (bottomLogoPos.y - footerTop.y) + 'px')
+      // console.log('top: ', document.getElementById('publicMainFooter').scrollTop)
+      // console.log('y: ', footerTop.y)
+      // console.log('bottom: ', bottomLogoPos.y)
+      // console.log('bool: ', footerTop.top <= (bottomLogoPos.bottom))
+      // console.log('pos: ', (bottomLogoPos.y - footerTop.y) + 'px')
 
       if (footerTop.top <= bottomLogoPos.bottom) {
         this.$refs.bottomLogo.style.bottom = (bottomLogoPos.bottom - footerTop.top) + 'px'
@@ -273,7 +273,7 @@ export default {
     },
     initRoster (id) {
       api.getPlayers(id).then(response => {
-        console.log(id, response)
+        // console.log(id, response)
         // response.data.forEach(player => {
         //   player.number = player.number
         // })
@@ -295,7 +295,7 @@ export default {
     initLeveledRoster (lvlId) {
       api.getRoster(lvlId).then(response => {
         const rosterArr = []
-        console.log(response)
+        // console.log(response)
         // this.fullRoster.forEach(player => {
         response.data.forEach(lvlPlayer => {
           rosterArr.push(lvlPlayer)

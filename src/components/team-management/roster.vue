@@ -34,11 +34,12 @@
               <input type="text" v-model="player.position" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <template>{{age(player.birth_date)}}</template>
+              <!-- <template>{{player.age}}</template> -->
+              <input type="number" v-model="player.age" @input="addToUpdateList(player)" />
             </td>
-            <td class="stat">
+            <!-- <td class="stat">
               <input type="date" v-model="player.birth_date"  @input="addToUpdateList(player)" />
-            </td>
+            </td> -->
             <td class="stat">
               <input type="number" v-model="player.height.feet" @input="addToUpdateList(player)" />
             </td>
@@ -73,11 +74,12 @@
               <input type="text" v-model="newPlayer.position" />
             </td>
             <td class="stat">
-              <template>{{age(newPlayer.birth_date)}}</template>
+              <!-- <template>{{newPlayer.age}}</template> -->
+              <input type="number" v-model="newPlayer.age" />
             </td>
-            <td class="stat">
+            <!-- <td class="stat">
               <input type="date" v-model="newPlayer.birth_date" />
-            </td>
+            </td> -->
             <td class="stat">
               <input type="number" v-model="newPlayer.height.feet" />
             </td>
@@ -149,14 +151,14 @@ export default {
           name: 'Age',
           icon: '',
           field_name: 'age',
-          type: 'text'
+          type: 'int'
         },
-        {
-          name: 'Birthdate',
-          icon: '',
-          field_name: 'birth_date',
-          type: 'date'
-        },
+        // {
+        //   name: 'Birthdate',
+        //   icon: '',
+        //   field_name: 'birth_date',
+        //   type: 'date'
+        // },
         {
           name: 'Feet',
           icon: '',
@@ -265,7 +267,7 @@ export default {
         api.getAdminPlayers(this.$route.params.slug).then(response => {
           this.roster = response.data
           this.fullRoster = _.cloneDeep(this.roster)
-          // console.log(JSON.stringify(this.roster))
+          console.log(JSON.stringify(this.roster))
         })
       }
     },
@@ -290,7 +292,8 @@ export default {
         last_name: '',
         id: null,
         position: '',
-        birth_date: '',
+        // birth_date: '',
+        age: '',
         height: {
           feet: 0,
           inches: 0
@@ -301,14 +304,14 @@ export default {
       }
       return this.newPlayer
     },
-    age (Birthday) {
-      Birthday = new Date(Birthday + 'T00:00:00')
-      var ageDifMs = Date.now() - Birthday.getTime()
-      var ageDate = new Date(ageDifMs) // miliseconds from epoch
-      return Math.abs(ageDate.getUTCFullYear() - 1970)
-    },
+    // age (Birthday) {
+    //   Birthday = new Date(Birthday + 'T00:00:00')
+    //   var ageDifMs = Date.now() - Birthday.getTime()
+    //   var ageDate = new Date(ageDifMs) // miliseconds from epoch
+    //   return Math.abs(ageDate.getUTCFullYear() - 1970)
+    // },
     addToUpdateList (id) {
-      console.log('addtolist')
+      // console.log('addtolist')
       let add = true
       let i = 0
       for (i = 0; i < this.updated.length; i++) {
@@ -321,9 +324,9 @@ export default {
       }
     },
     updatePlayers () {
-      console.log('updatePlayers')
+      // console.log('updatePlayers')
       this.updated.forEach(index => {
-        console.log(index)
+        // console.log(index)
         // const playerId = this.roster[index].id
         // console.log(playerId)
         // api.updatePlayer(playerId, this.roster[index])
@@ -333,7 +336,7 @@ export default {
       })
     },
     save () {
-      console.log(this.updated)
+      // console.log(this.updated)
       if (this.updated.length > 0) {
         this.updated.forEach(player => {
           // console.log("UpdatePlayer", player)
@@ -349,13 +352,11 @@ export default {
         })
       }
 
-      console.log('added', this.added.length, JSON.stringify(this.added))
       if (this.added.length >= 1 ) {
         this.added.forEach(player => {
           // console.log("save", this.newPlayer !== this.initNewPlayer(), this.newPlayer, this.initNewPlayer())
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
-          console.log(JSON.stringify(playerJson))
           
           api.addPlayer(playerJson)
             .then(response => {
