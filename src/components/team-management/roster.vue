@@ -2,7 +2,6 @@
   <div class="hello">
     <header class="contentPad">
       <h2>Current Roster</h2>
-
       <div class="buttonCon">
         <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
@@ -18,6 +17,12 @@
       </div>
     </header>
     <div class="contentPad">
+      <p v-if="errors.length">
+        <b>Please correct the following error(s):</b>
+        <ul>
+          <li v-for="(error, index) in errors" :key=index>{{ error.player.first_name + ' ' + error.player.last_name + ': ' +  error.error }}</li>
+        </ul>
+      </p>
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
         <template slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
@@ -193,7 +198,8 @@ export default {
       saved: false,
       saving: false,
       updated: [],
-      added: []
+      added: [],
+      errors: [],
     }
   },
   components: {
@@ -292,7 +298,6 @@ export default {
         last_name: '',
         id: null,
         position: '',
-        // birth_date: '',
         age: '',
         height: {
           feet: 0,
@@ -336,10 +341,8 @@ export default {
       })
     },
     save () {
-      // console.log(this.updated)
       if (this.updated.length > 0) {
         this.updated.forEach(player => {
-          // console.log("UpdatePlayer", player)
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
           api.updatePlayer(player.id, playerJson)
@@ -348,13 +351,17 @@ export default {
             })
             .catch(err => {
               console.log(err)
+              this.errors.push({"player": player, "error":  "Age is a required field"} )
             })
         })
       }
 
       if (this.added.length >= 1 ) {
         this.added.forEach(player => {
-          // console.log("save", this.newPlayer !== this.initNewPlayer(), this.newPlayer, this.initNewPlayer())
+          
+          if (isNaN(player.age)|| player.age === '') {
+            this.errors.push({player: player, error:  "Age is a required field"})
+          }
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
           
@@ -364,10 +371,9 @@ export default {
             })
             .catch(err => {
               console.log(err)
+              this.errors.push(playerJson)
             })
 
-        // this.$root.$emit('saved')
-        // this.$root.$off('save')
         })
         this.roster.push(this.newPlayer)
         this.initNewPlayer()
