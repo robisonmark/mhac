@@ -596,7 +596,7 @@ export class api {
     if (active === true) {
       returnUrl = '/getActiveYear'
     } else {
-      returnUrl = '/getYears/'
+      returnUrl = '/getYears'
     }
     return robros({
       url: returnUrl,
