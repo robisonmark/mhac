@@ -221,17 +221,17 @@ export default {
   width: 100%;
   height: 51vh;
   position: relative;
-  &:before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgb(26,26,26);
-    background: -moz-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
-    background: -webkit-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
-    background: linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1a1a1a",endColorstr="#f2f2f2",GradientType=1);
-  }
+  // &:before {
+  //   content: '';
+  //   position: absolute;
+  //   width: 100%;
+  //   height: 100%;
+  //   background: rgb(26,26,26);
+  //   background: -moz-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
+  //   background: -webkit-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
+  //   background: linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
+  //   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1a1a1a",endColorstr="#f2f2f2",GradientType=1);
+  // }
   @media @phone {
     order: 2;
   }
