@@ -358,7 +358,6 @@ export default {
 
       if (this.added.length >= 1 ) {
         this.added.forEach(player => {
-          
           if (isNaN(player.age)|| player.age === '') {
             this.errors.push({player: player, error:  "Age is a required field"})
           }
