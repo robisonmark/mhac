@@ -6,6 +6,8 @@ import Router from 'vue-router'
 // import website from '@/components/website'
 import home from '@/components/front-pages/home'
 import tournament from '@/components/front-pages/tournament'
+import tournamentBracket from '@/components/front-pages/tournament-bracket'
+import tournamentHotel from '@/components/front-pages/tournament-hotel'
 import compliance from '@/components/front-pages/compliance'
 import schedules from '@/components/front-pages/schedules'
 import stats from '@/components/front-pages/stats'
@@ -79,7 +81,27 @@ export const router = new Router({
       meta: {
         requiresAuth: false,
         section: 'public',
-        title: '2020 Season Tournament | Midsouth Homeschool Athletics'
+        title: '202q Season Tournament | Midsouth Homeschool Athletics'
+      }
+    },
+    {
+      path: '/tournament-brackets',
+      name: 'tournamentBracket',
+      component: tournamentBracket,
+      meta: {
+        requiresAuth: false,
+        section: 'public',
+        title: '2021 Season Tournament | Midsouth Homeschool Athletics'
+      }
+    },
+    {
+      path: '/tournament-hotels',
+      name: 'tournamentHotel',
+      component: tournamentHotel,
+      meta: {
+        requiresAuth: false,
+        section: 'public',
+        title: '2021 Season Tournament | Midsouth Homeschool Athletics'
       }
     },
     {
