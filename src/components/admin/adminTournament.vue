@@ -1,13 +1,6 @@
 <template>
   <div class="">
     <header class="contentPad">
-      <!-- CREATE A Tournament
-
-      <br/>
-      <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
-        <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
-      </ul> -->
-
       <div class="buttonCon">
         <div class = "switch">
 
@@ -16,18 +9,10 @@
     </header>
 
     <div class="contentPad">
-      <!-- <ul v-for="(tournament, index) in this.activeTournaments" :key="index">
-        <li>{{ tournament.season.level + ' ' + tournament.year }} </li>
-      </ul> -->
       <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" @lookup="updateBracket">
 
         <template slot="tbody">
-
             <tournamentGame v-for="(data, index) in games" :game="data" :key="index" />
-            <!-- <tournamentGame v-for="(data, index) in sixteenUBoys" :game="data" :key="index" />
-            <tournamentGame v-for="(data, index) in eighteenUBoys" :game="data" :key="index" />
-            <tournamentGame v-for="(data, index) in eighteenUGirls" :game="data" :key="index" /> -->
-
             <template v-if="newGame">
               <tournamentGame :game=newTournamentGame :new_game=true @add-game="addGame" />
             </template>
@@ -41,9 +26,9 @@
     </div>
 
     <div class="tournamentSchedule">
-      <button @click="save()">
+      <!-- <button @click="save()">
         Save
-      </button>
+      </button> -->
     </div>
   </div>
 </template>
@@ -111,27 +96,32 @@ export default {
         {
           name: 'Home Score',
           field_name: 'matchup.team1Score',
-          type: 'text'
+          type: 'number'
         },
         {
           name: 'Away Score',
           field_name: 'matchup.team2Score',
-          type: 'text'
+          type: 'number'
         },
         {
           name: 'Winner To Game',
-          field_name: 'matchup.winners_from',
+          field_name: 'matchup.winners_to',
           type: 'text'
         },
         {
           name: 'Loser To Game',
-          field_name: 'matchup.losers_from',
+          field_name: 'matchup.losers_to',
           type: 'text'
         },
         {
           name: 'Tournament Level',
           field_name: 'tournament',
           type: 'text'
+        },
+        {
+          name: 'Display',
+          field_name: 'display',
+          type: 'boolean'
         }
       ],
       config: {
@@ -145,20 +135,19 @@ export default {
         time: '',
         game_description: '',
         matchup: {
-          team1: '',
-          scoreTeam1: '',
-          team1Seed: '',
-          team2: '',
-          scoreTeam2: '',
-          team2Seed: '',
-          winner_to: '',
-          loser_to: ''
+          // team1: '',
+          // team1Seed: '',
+          // team2: '',
+          // team2Seed: '',
+          // winner_to: '',
+          // loser_to: ''
         },
         location: {
           address: '',
           name: ''
         },
-        seasons: {}
+        seasons: {},
+        display: false
       },
       tournamentGame: {},
       edit: false,

@@ -83,9 +83,11 @@
             <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
               Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
                 <ul v-show="showTournament" class="tourn_nav_dropdown">
-                  <li><router-link :to="{ path: '/tournament'}">Tournament Central</router-link> </li>
-                  <li><a href='https://mhac-merch.square.site'> Tournament Merch</a></li>
-                  <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li>
+                  <li><router-link :to="{ path: '/tournament'}">General Information</router-link> </li>
+                  <li><router-link :to="{ path: '/tournament-brackets'}">Brackets</router-link></li>
+                  <li><router-link :to="{ path: '/tournament-hotels'}">Hotels</router-link></li>
+                  <!-- <li><a href='https://mhac-merch.square.site'> Tournament Merch</a></li> -->
+                  <!-- <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li> -->
                 </ul>
             </span>
             <!-- <span class="about_dropdown" @click="tournamentDrop" ref="aboutDropDown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
