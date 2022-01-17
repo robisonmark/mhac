@@ -23,15 +23,8 @@
                   </div>
                 </div>
 
-                <div class="custom-select" @click.stop="showSections = !showSections, showSeasons = false">
+                <div class="roster-label-outer" @click.stop="showSeasons = false">
                   <div disabled>{{selectedSection}}</div>
-                  <div class="options-menu">
-                    <template>
-                      <div class="option" v-for="(section, index) in sections" :key="index" v-show="showSections" @click="selectedSection = section">
-                        {{section}}
-                      </div>
-                    </template>
-                  </div>
                 </div>
 
               </div>
@@ -39,9 +32,9 @@
           </div>
 
           <div class="content-divider">
-            <div class="button ghost print" @click="print()">
+            <!-- <div class="button ghost print" @click="print()">
               <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
-            </div>
+            </div> -->
           </div>
 
           <div v-if="selectedSection === 'Schedule'">
@@ -102,7 +95,11 @@
                   <td>{{player.first_name}} {{player.last_name}}</td>
                   <td v-html="player.position"></td>
                   <td v-html="player.age"></td>
-                  <td v-html="player.height"></td>
+                  <td>
+                    <template v-if="player.height.feet != 0">
+                      {{player.height.feet}}  ' {{player.height.inches}} "
+                    </template>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -132,6 +129,10 @@
 <script>
 // api
 import { api } from '../../api/endpoints.js'
+
+// mixins
+import { root } from '../../mixins/root'
+
 import _ from 'lodash'
 
 export default {
@@ -157,7 +158,6 @@ export default {
       roster: [],
       schedule: [],
       sections: [
-        'Schedule',
         'Roster'
         // 'Staff'
       ],
@@ -168,6 +168,7 @@ export default {
       teamAssocLvl: []
     }
   },
+  mixins: [root],
   computed: {
     footerLoc: {
       get: function () {
@@ -248,7 +249,7 @@ export default {
         .then(response => {
           this.program = response.data[0]
           this.getSeasonTeams(this.$route.params.slug)
-          console.log(this.teamAssocLvl)
+          // console.log(this.teamAssocLvl)
           this.initRoster(this.teamAssocLvl.team_id)
         })
 
@@ -258,11 +259,11 @@ export default {
       const footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
       const bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
 
-      console.log('top: ', document.getElementById('publicMainFooter').scrollTop)
-      console.log('y: ', footerTop.y)
-      console.log('bottom: ', bottomLogoPos.y)
-      console.log('bool: ', footerTop.top <= (bottomLogoPos.bottom))
-      console.log('pos: ', (bottomLogoPos.y - footerTop.y) + 'px')
+      // console.log('top: ', document.getElementById('publicMainFooter').scrollTop)
+      // console.log('y: ', footerTop.y)
+      // console.log('bottom: ', bottomLogoPos.y)
+      // console.log('bool: ', footerTop.top <= (bottomLogoPos.bottom))
+      // console.log('pos: ', (bottomLogoPos.y - footerTop.y) + 'px')
 
       if (footerTop.top <= bottomLogoPos.bottom) {
         this.$refs.bottomLogo.style.bottom = (bottomLogoPos.bottom - footerTop.top) + 'px'
@@ -272,7 +273,7 @@ export default {
     },
     initRoster (id) {
       api.getPlayers(id).then(response => {
-        console.log(id, response)
+        // console.log(id, response)
         // response.data.forEach(player => {
         //   player.number = player.number
         // })
@@ -294,7 +295,7 @@ export default {
     initLeveledRoster (lvlId) {
       api.getRoster(lvlId).then(response => {
         const rosterArr = []
-        console.log(response)
+        // console.log(response)
         // this.fullRoster.forEach(player => {
         response.data.forEach(lvlPlayer => {
           rosterArr.push(lvlPlayer)
@@ -493,6 +494,25 @@ export default {
 .content {
   padding: 2rem 1rem;
 }
+.roster-label-outer {
+  display: inline-block;
+  position: relative;
+  font-size: 1rem;
+  width: 45%;
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    transform: skewX(-45deg);
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+    width: 100%;
+    height: 1.8rem;
+    top: 0;
+    left: .5rem;
+  }
+}
 .custom-select {
   display: inline-block;
   position: relative;
@@ -543,6 +563,28 @@ export default {
     &.noHover:hover {
       background-color: #fff;
     }
+  }
+}
+
+.roster-label {
+  position: absolute;
+  width: 250px;
+  background: #0C4B75;
+  // padding: .5rem;
+  top: calc(1.5rem);
+  left: -3px;
+  z-index: 2;
+  box-shadow: 1px 2px 4px #0C4B75;
+  .option {
+    padding: .2rem .5rem;
+    width: 100%;
+    cursor: pointer;
+    // &:hover {
+    //   background-color: lighten(#0C4B75, 10%);
+    // }
+    // &.noHover:hover {
+    //   background-color: #fff;
+    // }
   }
 }
 table {

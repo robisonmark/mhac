@@ -591,12 +591,28 @@ export class api {
     })
   }
 
+    /***
+     * 
+     * 
+     * 
+     * 
+    ***/
+     static async addTournamentGame (body) { 
+      return robros({
+        url: '/addTournamentGame/',
+        method: 'POST',
+        data: body
+      })
+    }
+
+
+
   static async getYear (active) {
     let returnUrl = ''
     if (active === true) {
       returnUrl = '/getActiveYear'
     } else {
-      returnUrl = '/getYears/'
+      returnUrl = '/getYears'
     }
     return robros({
       url: returnUrl,

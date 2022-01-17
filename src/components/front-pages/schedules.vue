@@ -3,7 +3,7 @@
     <div class="page-styles">
       <div class="row print-only align-items-start justify-content-between">
         <div class="col">
-          <h2>2020 - 2021 Schedule</h2>
+          <h2>2021 - 2022 Schedule</h2>
         </div>
         <div class="col right">
           <div>{{filterBy.team.name}}</div>
@@ -58,9 +58,9 @@
             </div>
           </div>
           <div class="col-md-2 text-right">
-            <div class="button ghost print" @click="print()">
+            <!-- <div class="button ghost print" @click="print()">
               <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -79,10 +79,11 @@
           </tbody>
           <tbody>
             <template v-if="filteredGames.length >= 1">
-              <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in filteredGames" :key="game.game_id">
+              <!-- <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in filteredGames" :key="game.game_id"> -->
+                <tr class="game" v-for="game in filteredGames" :key="game.game_id">
                 <td class="date">
-                  {{ game.game_date }}
-                  <div class="time">{{game.game_time}}</div>
+                  {{ $config.formatDate(game.game_date)  }}
+                  <div class="time">{{$config.formatTime(game.game_time)}}</div>
                 </td>
 
                 <!-- AWAY TEAM -->
@@ -102,7 +103,7 @@
                 <!-- HOME TEAM -->
                 <td class="team_info">
                   <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.team_name).logo_color" />
-                  <div class="team_name" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">{{game.home_team.name}}</div>
+                  <div class="team_name" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">{{game.home_team.team_name}}</div>
                   <span class="level" v-if="game.home_team.level_name" v-html="game.home_team.level_name"></span>
                 </td>
                 <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
@@ -117,7 +118,8 @@
                     <div>{{game.home_team.city_state_zip}}</div>
                   </span>
                 </td> -->
-              </router-link>
+                </tr>
+              <!-- </router-link> -->
             </template>
             <template v-else>
               <tr>
@@ -266,7 +268,7 @@ export default {
       if (this.level_filter === '') {
         return this.games
       }
-      return this.games.filter(game => (game.season.season_id === this.level_filter) - 1)
+      return this.games.filter(game => (game.season.season_id === this.level_filter))
     }
   },
   watch: {
@@ -297,13 +299,13 @@ export default {
   methods: {
     getActiveYear () {
       api.getYear(true).then(response => {
-        console.log(response.data)
+        // console.log(response.data)
         this.activeYear = response.data
       })
     },
     getYears () {
       api.getYear(false).then(response => {
-        console.log(response.data)
+        // console.log(response.data)
         this.years = response.data
       })
     },

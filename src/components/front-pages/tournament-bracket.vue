@@ -70,7 +70,7 @@
         </label>
       </div> -->
 
-      <TournamentBracket v-if="Object.keys(games).length >= 1 && bracketFormat === 'bracket'" :games="games"></TournamentBracket>
+      <!-- <TournamentBracket v-if="Object.keys(games).length >= 1 && bracketFormat === 'bracket'" :games="games"></TournamentBracket> -->
       <!-- <TournamentList :games="games" v-else></TournamentList> -->
 
       <div class="sponsors">
@@ -85,14 +85,14 @@ import { api } from '../../api/endpoints.js'
 import pages from '@/api/pages'
 
 // components
-import TournamentBracket from '@/components/tournament/bracket'
+// import TournamentBracket from '@/components/tournament/bracket'
 // import TournamentList from '@/components/tournament/list'
 
 // Third Party Helpers
 import { groupBy } from 'lodash'
 
 export default {
-  name: 'tournament',
+  name: 'tournamentBracket',
   data () {
     return {
       tournament: [],
@@ -116,7 +116,7 @@ export default {
   },
 
   components: {
-    TournamentBracket: TournamentBracket
+    // TournamentBracket: TournamentBracket
   //   TournamentList: TournamentList
   },
 
@@ -127,24 +127,24 @@ export default {
     }
   },
   created () {
-    this.initTourney()
+    // this.initTourney()
     this.initTournament()
   },
   methods: {
-    initTourney () {
-      api.getTournamentInformation().then(response => {
-        response.data.games.forEach((game) => {
-          game.date = this.$config.formatDate(game.date)
-          game.time = this.$config.formatTime(game.time)
-        })
-        this.games = groupBy(response.data.games, 'seasons.level')
-      })
-        .catch(err => {
-          console.log(err)
-        })
-    },
+    // initTourney () {
+    //   api.getTournamentInformation().then(response => {
+    //     response.data.games.forEach((game) => {
+    //       game.date = this.$config.formatDate(game.date)
+    //       game.time = this.$config.formatTime(game.time)
+    //     })
+    //     this.games = groupBy(response.data.games, 'seasons.level')
+    //   })
+    //     .catch(err => {
+    //       console.log(err)
+    //     })
+    // },
     initTournament () {
-      pages.get('tournament')
+      pages.get('tournament-brackets')
         .then(response => {
           console.log(response)
           this.tournament = response

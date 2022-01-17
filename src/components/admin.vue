@@ -36,14 +36,14 @@ export default {
     }
   },
   computed: {
-    // slug: {
-    //   get: function () {
-    //     return this.$store.getters.teams[0].slug
-    //   },
-    //   set: function (newValue) {
-    //     console.log(newValue)
-    //   }
-    // },
+    slug: {
+      get: function () {
+        return this.$store.getters.teams[0].slug
+      },
+      set: function (newValue) {
+        console.log(newValue)
+      }
+    },
     // cssVars () {
     //   let teamMain = ''
     //   let teamSecond = ''
