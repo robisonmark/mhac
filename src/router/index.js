@@ -81,7 +81,7 @@ export const router = new Router({
       meta: {
         requiresAuth: false,
         section: 'public',
-        title: '202q Season Tournament | Midsouth Homeschool Athletics'
+        title: '2022 Season Tournament | Midsouth Homeschool Athletics'
       }
     },
     {
@@ -91,7 +91,7 @@ export const router = new Router({
       meta: {
         requiresAuth: false,
         section: 'public',
-        title: '2021 Season Tournament | Midsouth Homeschool Athletics'
+        title: '2022 Season Tournament | Midsouth Homeschool Athletics'
       }
     },
     {
@@ -101,7 +101,7 @@ export const router = new Router({
       meta: {
         requiresAuth: false,
         section: 'public',
-        title: '2021 Season Tournament | Midsouth Homeschool Athletics'
+        title: '2022 Season Tournament | Midsouth Homeschool Athletics'
       }
     },
     {

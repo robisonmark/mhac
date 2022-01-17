@@ -59,10 +59,15 @@
         </table>
       </div>
 
-      <div v-else-if="selectedGame && boxscore">
+      <div v-else-if="selectedGame">
 
         <table class="scoreTable">
          <thead>
+            <tr class="rowZero" v-if="!boxscore">
+              <th colspan="3">
+                ** You are not the home team, and will not be able to edit the box score
+              </th>
+            </tr>
             <tr class="rowOne">
               <th colspan="2">Box Score</th>
               <th v-for="(quarter, key, index) in quarters" :key="index" class="text-center quarter">{{Object.keys(quarter)[0]}}</th>
@@ -82,11 +87,11 @@
               </td>
 
               <td v-for="(period,index ) in gameScore.period_scores" :key=index class="quarter">
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.period_scores[index].home_score " />
+                <input v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.period_scores[index].home_score " />
                 <template v-else>{{period.home_score}}</template>
               </td>
               <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter"> -->
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.home_score" />
+                <input v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.home_score" />
                 <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  -->
               <td v-else class="finalScore text-center">{{gameScore.final_scores.home_score}}</td>
             </tr>
@@ -101,11 +106,11 @@
                 <div class="mascot">{{programInfo(selectedGame.away_team.team_name).team_mascot}}</div>
               </td>
               <td v-for="(period,index) in gameScore.period_scores" :key=index >
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.period_scores[index].away_score" />
+                  <input v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.period_scores[index].away_score" />
                 <template v-else>{{period.away_score}}</template>
               </td>
               <!-- <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter"> -->
-                <input v-if="edit === true" type="number" min="0" v-model="gameScore.final_scores.away_score" />
+                <input v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.away_score" />
                 <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template> -->
               <td v-else class="finalScore text-center">{{gameScore.final_scores.away_score}}</td>
             </tr>
@@ -119,7 +124,7 @@
               </div> -->
             </div>
             <div class="col text-right">
-              <div v-if="edit === true" class="button" @click="addOvertime">
+              <div v-if="edit === true && boxscore" class="button" @click="addOvertime">
                 <font-awesome-icon :icon="['fas', 'stopwatch']" class="icon"></font-awesome-icon> Add Overtime
               </div>
             </div>
@@ -127,7 +132,7 @@
         </div>
       </div>
 
-      <div v-if="selectedGame" :id="[boxscore ? 'playerStats' : '']">
+      <div v-if="selectedGame" :id="'playerStats'">
         <editTable :columns="columns" :config="config" :tabledata="stats" v-model="newGameStats">
 
           <template slot="thead">
@@ -389,7 +394,6 @@ export default {
   data () {
     return {
       boxscore: false,
-      compositStats: true, // what is this?
       columns: [
         {
           name: '#',
@@ -721,7 +725,6 @@ export default {
       this.overtimeCount++
     },
     backToGameStats () {
-      // this.resetStats()
       this.newGameStats.game_id = ''
       this.selectedGame = false
       this.boxscore = false
@@ -743,7 +746,6 @@ export default {
         }
         if (this.newGameStats.game_scores !== null) {
           this.gameScore.period_scores = this.newGameStats.game_scores
-          // console.log("newGameStatsInit", this.gameScore.period_scores, this.gameScore.period_scores.length )
           if (this.gameScore.period_scores.length > 4) {
             const quarterAdd = this.gameScore.period_scores.length - 4
 
@@ -821,7 +823,6 @@ export default {
         delete newPlayer.player_stats
 
         flattenedStats.push(newPlayer)
-        // console.log(player)
       })
 
       playerStats.player_stats = flattenedStats
@@ -830,7 +831,7 @@ export default {
       let stats = {}
       stats = { ...playerStats, ...finalScores }
 
-      console.log('sent stats', JSON.stringify(stats))
+      // console.log('sent stats', JSON.stringify(stats))
 
       api.addGameResults(this.newGameStats.game_id, stats)
         .then(response => {
@@ -853,8 +854,6 @@ export default {
     teamTotal (stat) {
       let total = 0
       this.newGameStats.player_stats.forEach(player => {
-        // console.log(player)
-        // console.log(_.get(player.player_stats, stat))
         total += (parseInt(_.get(player.player_stats, stat)) || 0)
       })
 
