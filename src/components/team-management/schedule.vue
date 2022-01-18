@@ -85,7 +85,7 @@
                 :optionHeight="10"
                 :multiple="false"
                 :taggable="false"
-                
+
                 >
               </multiselect>
             </td>
@@ -229,23 +229,23 @@ export default {
 
     selectOptions () {
       // update to getter and setter
-      let teamList = []
+      const teamList = []
       if (!this.newGame.season) {
-         this.$store.getters.seasonTeams.filter(team => {
-          if (team.slug !=  this.$store.state.user.slug && 
+        this.$store.getters.seasonTeams.filter(team => {
+          if (team.slug !== this.$store.state.user.slug &&
           !teamList.some(e => e.slug === team.slug)) {
-             teamList.push(team)
+            teamList.push(team)
           }
         })
       } else {
         this.$store.getters.seasonTeams.filter(team => {
-        if (team.slug !== this.$store.state.user.slug && 
-            team.level_name === this.newGame.season.level && 
+          if (team.slug !== this.$store.state.user.slug &&
+            team.level_name === this.newGame.season.level &&
             !teamList.some(e => e.slug === team.slug)
-        ) {
-          teamList.push(team)
-        }
-      })
+          ) {
+            teamList.push(team)
+          }
+        })
       }
       return teamList
     },
@@ -275,8 +275,8 @@ export default {
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
-    teamInList(teamListObject, newTeam ) { 
-      return teamListObject.slug === newTeam.slug;
+    teamInList (teamListObject, newTeam) {
+      return teamListObject.slug === newTeam.slug
     },
     addNewGame () {
       this.schedule.push(this.newGame)

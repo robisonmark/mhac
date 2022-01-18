@@ -42,7 +42,6 @@ const mutations = {
     state.user.slug = payload.slug
   },
   set_slug (state, payload) {
-    console.log(payload)
     state.slug = payload
   },
   set_teamAssocLvl (state, payload) {
@@ -65,7 +64,6 @@ const mutations = {
     state.seasons = payload
   },
   set_teams (state, payload) {
-    // console.log('set_teams', payload)
     state.teams = payload
   },
   set_levels (state, payload) {
@@ -115,6 +113,11 @@ const actions = {
 
   async setTeams (context) {
     await api.getTeams().then(response => {
+      // TODO: Convert this to be an object with slug as the object key ie/
+      // {
+      //  slug1: {team object},
+      //  slug2: {team_object}
+      // }
       context.commit('set_teams', response.data)
     })
   },

@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     user () {
-      return this.$store.state.getters.user
+      return this.$store.getters.user
     },
     cssVars () {
       let teamMain = ''

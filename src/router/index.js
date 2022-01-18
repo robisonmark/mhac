@@ -15,6 +15,10 @@ import schools from '@/components/front-pages/schools'
 import contact from '@/components/front-pages/contact'
 import hallOfFame from '@/components/front-pages/hallOfFame'
 
+// View
+// Public UI
+import scoreboard from '@/views/public_ui/Scoreboard'
+
 // Team Management Components
 import TeamManagement from '@/components/TeamManagement'
 import teamhome from '@/components/team-management/teamhome'
@@ -181,6 +185,31 @@ export const router = new Router({
       //     component: second,
       //     meta: {
       // 'requiresAuth': false,
+      //       'section': 'public'
+      //     }
+      //   }
+      // ]
+    },
+    {
+      // add slug if needed to differenciate games
+      path: '/live',
+      name: 'livevideo',
+      component: scoreboard,
+      props: true,
+      meta: {
+        requiresAuth: false,
+        section: 'public',
+        // TODO: String literal interpolation to add game
+        title: 'Live Video | Midsouth Homeschool Athletics'
+      }
+      // Add children if we want a scoreboard component a primary
+      // children: [
+      //   {
+      //     path: '/scoreboard',
+      //     name: 'scoreboard',
+      //     component: scoreboard,
+      //     meta: {
+      //       'requiresAuth': true,
       //       'section': 'public'
       //     }
       //   }

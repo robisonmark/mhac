@@ -103,7 +103,6 @@ export default {
 
       levels.forEach(level => {
         this.getTeamCount(level.season_id).then(async (teamCount) => {
-
           this.round = 1
           this.seeds = [1, 2]
           this.bracketMatchups = []

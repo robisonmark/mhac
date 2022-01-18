@@ -79,7 +79,7 @@
           </div>
           <nav :class="[openMenu ? 'open' : 'close']">
             <router-link :to="{ path: '/' }">Home</router-link>
-            
+
             <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
               Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
                 <ul v-show="showTournament" class="tourn_nav_dropdown">
@@ -134,7 +134,7 @@ export default {
       showLogin: false,
       showSchools: false,
       showTournament: false,
-      showAbout:false,
+      showAbout: false,
       thinking: false,
       username: '',
       password: ''

@@ -217,7 +217,6 @@ h3{
   }
 }
 
-
 .table-of-contents {
   position: sticky;
   top: 9rem;

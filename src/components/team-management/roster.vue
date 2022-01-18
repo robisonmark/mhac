@@ -199,7 +199,7 @@ export default {
       saving: false,
       updated: [],
       added: [],
-      errors: [],
+      errors: []
     }
   },
   components: {
@@ -351,19 +351,19 @@ export default {
             })
             .catch(err => {
               console.log(err)
-              this.errors.push({"player": player, "error":  "Age is a required field"} )
+              this.errors.push({ player: player, error: 'Age is a required field' })
             })
         })
       }
 
-      if (this.added.length >= 1 ) {
+      if (this.added.length >= 1) {
         this.added.forEach(player => {
-          if (isNaN(player.age)|| player.age === '') {
-            this.errors.push({player: player, error:  "Age is a required field"})
+          if (isNaN(player.age) || player.age === '') {
+            this.errors.push({ player: player, error: 'Age is a required field' })
           }
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
-          
+
           api.addPlayer(playerJson)
             .then(response => {
               console.log(response)
@@ -372,7 +372,6 @@ export default {
               console.log(err)
               this.errors.push(playerJson)
             })
-
         })
         this.roster.push(this.newPlayer)
         this.initNewPlayer()

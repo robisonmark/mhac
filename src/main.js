@@ -14,7 +14,6 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faFacebookSquare, faInstagram } from '@fortawesome/free-brands-svg-icons'
 
-
 import '@aws-amplify/ui-vue'
 import Amplify from 'aws-amplify'
 import awsconfig from './aws-exports'

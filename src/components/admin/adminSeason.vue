@@ -430,4 +430,3 @@ table {
   text-overflow: ellipsis;
 }
 </style>
-
