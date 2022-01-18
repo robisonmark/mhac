@@ -1,0 +1,131 @@
+<template>
+  <div class="scoreboard" @keydown.space="timer">
+    <teamBlock location="home" v-model="home_team_slug"></teamBlock>
+
+    <div class="gameStats">
+      <div class="score">
+        <scoreBlock location="home" v-model="home_score"></scoreBlock> |
+        <scoreBlock location="away" v-model="away_score"></scoreBlock>
+      </div>
+      <div class="timeBlock">
+        <div class="quarter">
+          Q {{quarter}} |
+        </div>
+        <div class="timeRemaining">
+          <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{(time_remaining.seconds === 60 || time_remaining.seconds === 0) ? '00' : time_remaining.seconds }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.hundreds_seconds}}</template>
+        </div>
+      </div>
+    </div>
+
+    <teamBlock location="away" v-model="away_team_slug"></teamBlock>
+  </div>
+</template>
+
+<script>
+import team from '@/components/front-pages/live_video/scoreboard/team'
+import score from '@/components/front-pages/live_video/scoreboard/score'
+
+export default {
+  name: 'scoreboard',
+  data () {
+    return {
+      away_score: 0,
+      away_team_slug: 'life_christian',
+      away_timeouts: 5,
+
+      home_score: 0,
+      home_team_slug: 'western_kentucky',
+      home_timeouts: 5,
+
+      quarter: 1,
+      time_remaining: {
+        minutes: 9,
+        seconds: 0,
+        hundreds_seconds: 100
+      },
+      timer_running: false
+    }
+  },
+
+  components: {
+    // flair left
+    teamBlock: team,
+    scoreBlock: score
+    // flair right
+  },
+
+  mounted () {
+    const self = this
+    window.addEventListener('keyup', function (event) {
+      if (event.code === 'Space') {
+        self.timer()
+      }
+    })
+  },
+
+  methods: {
+    resetTimer () {
+      // timer = 5
+      // counterCon.innerHTML = '0' + timer
+      // playbtn.style.display = 'inline-block'
+      // stopbtn.style.display = 'none'
+    },
+    timer () {
+      if (this.timer_running) {
+        this.stopTimer()
+      } else {
+        this.runTimer()
+      }
+      this.timer_running = !this.timer_running
+    },
+    runTimer () {
+      const self = this
+      Window.timerFunc = setInterval(function () {
+        const timerRemaining = (self.time_remaining.hundreds_seconds * 1000) + (self.time_remaining.seconds * 60) + self.time_remaining.minutes
+        if (timerRemaining > 0) {
+          self.time_remaining.hundreds_seconds -= 1
+        }
+
+        if (self.time_remaining.hundreds_seconds === 0) {
+          self.time_remaining.seconds -= 1
+          self.time_remaining.hundreds_seconds = 100
+        }
+
+        if (self.time_remaining.seconds === 0) {
+          self.time_remaining.minutes -= 1
+          self.time_remaining.seconds = 59
+        }
+
+        if (Object.entries(timerRemaining) === 0) {
+          clearInterval(Window.timerFunc)
+          // resetTimer()
+        }
+      }, 10)
+    },
+    stopTimer () {
+      clearInterval(Window.timerFunc)
+    }
+  }
+}
+</script>
+
+<style lang="less">
+  .scoreboard {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+  .gameStats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .score {
+      display: flex;
+      justify-content: center;
+    }
+    .timeBlock {
+      display: flex;
+      justify-content: center;
+    }
+  }
+</style>
