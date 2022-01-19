@@ -37,6 +37,10 @@ export default {
       home_team_slug: 'western_kentucky',
       home_timeouts: 5,
 
+      isKeyDown: false,
+
+      keys: [],
+
       quarter: 1,
       time_remaining: {
         minutes: 9,
@@ -56,19 +60,38 @@ export default {
 
   mounted () {
     const self = this
-    window.addEventListener('keyup', function (event) {
+    window.addEventListener('keydown', function (event) {
+      self.isKeyDown = true
+      self.keys.push(event.code)
       if (event.code === 'Space') {
         self.timer()
       }
+      if (['Numpad1', 'NumpadAdd'].every(v => self.keys.includes(v))) {
+        console.log(self.keys.filter(key => key === 'Numpad1').length)
+        self.home_score += self.keys.filter(key => key === 'Numpad1').length
+      }
+      if (['Numpad1', 'NumpadSubtract'].every(v => self.keys.includes(v))) {
+        if (self.home_score > 0) {
+          self.home_score -= 1
+        }
+      }
     })
+
+    window.addEventListener('keyup', function (event) {
+      self.isKeyDown = false
+      self.keys.length = 0
+    })
+
+    // window.addEventListener('keyup', function (event) {
+    //   if (event.code === 'Numpad1') {
+    //     self.home_score += 1
+    //   }
+    // })
   },
 
   methods: {
     resetTimer () {
-      // timer = 5
-      // counterCon.innerHTML = '0' + timer
-      // playbtn.style.display = 'inline-block'
-      // stopbtn.style.display = 'none'
+      // TODO: set to time or restart
     },
     timer () {
       if (this.timer_running) {
@@ -98,7 +121,6 @@ export default {
 
         if (Object.entries(timerRemaining) === 0) {
           clearInterval(Window.timerFunc)
-          // resetTimer()
         }
       }, 10)
     },

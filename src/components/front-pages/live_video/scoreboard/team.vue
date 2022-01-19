@@ -26,10 +26,10 @@ export default {
       return this.$store.getters.teams.filter(team => team.slug === this.value)[0]
     },
     team_color () {
-      return `#${this.team.main_color}`
+      return `#${this.$store.getters.teams.filter(team => team.slug === this.value)[0].main_color}`
     },
     logo () {
-      return `/static/color-team-logos/${this.team.logo_color}`
+      return `/static/color-team-logos/${this.$store.getters.teams.filter(team => team.slug === this.value)[0].logo_color}`
     }
   },
 
