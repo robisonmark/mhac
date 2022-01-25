@@ -4,9 +4,10 @@
     <div class="home_team">
       <div class="score_window">{{home_score}}</div>
       <div class="button_row">
-        <button class="point_one">+1</button>
-        <button class="point_two">+2</button>
-        <button class="point_three">+3</button>
+        <button class="point_one" @click="changeScore('home', 1)">+1</button>
+        <button class="point_two" @click="changeScore('home', 2)">+2</button>
+        <button class="point_three" @click="changeScore('home', 3)">+3</button>
+        <button class="remove_score" @click="changeScore('home', -1)">-1</button>
         <button class="timeout">Timeout</button>
         <button class="foul">Team Foul</button>
       </div>
@@ -14,16 +15,20 @@
     <div class="game_info_block">
       <div class="timer">{{time_remaining.minutes}} : {{time_remaining.seconds}}</div>
       <div class="period">{{period}}</div>
-      <button class="period">Period +1</button>
-      <button class="clock">Advance Clock</button>
-      <button class="clock_reset">Reset Clock</button>
+      <button class="period" :disabled="period === game_rules.period" @click="addPeriod()">Period +1</button>
+      <button class="clock" @click="timer()">
+        <template v-if="timer_running">Stop</template>
+        <template v-else>Start</template> Clock
+      </button>
+      <button v-if="!timer_running" class="clock_reset" @click="resetTimer()">Reset Clock</button>
     </div>
     <div class="away_team">
       <div class="score_window">{{away_score}}</div>
       <div class="button_row">
-        <button class="point_one">+1</button>
-        <button class="point_two">+2</button>
-        <button class="point_three">+3</button>
+        <button class="point_one" @click="changeScore('away', 1)">+1</button>
+        <button class="point_two" @click="changeScore('away', 2)">+2</button>
+        <button class="point_three" @click="changeScore('away', 3)">+3</button>
+        <button class="remove_score" @click="changeScore('away', -1)">-1</button>
         <button class="timeout">Timeout</button>
         <button class="foul">Foul +1</button>
       </div>
@@ -32,6 +37,7 @@
 </template>
 
 <script>
+import { cloneDeep } from 'lodash'
 export default {
   name: 'scoreboard',
   data () {
@@ -102,8 +108,21 @@ export default {
   },
 
   methods: {
+    addPeriod () {
+      if (this.period < this.game_rules.periods) {
+        this.period += 1
+      }
+    },
+    changeScore (team, amount) {
+      if (team === 'home') {
+        this.home_score += amount
+      } else {
+        this.away_score += amount
+      }
+    },
     resetTimer () {
       // TODO: set to time or restart
+      this.time_remaining = cloneDeep(this.game_rules.time_remaining)
     },
     timer () {
       if (this.timer_running) {
