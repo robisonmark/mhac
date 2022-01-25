@@ -35,7 +35,7 @@ export default {
 
   mounted () {
     // TODO remove the doc.getElementById
-    var c = document.getElementById('canvas_home')
+    // var c = document.getElementById('canvas_home')
     // var ctx = c.getContext('2d')
     // ctx.moveTo(30, 0)
     // ctx.lineTo(170, 0)

@@ -1,3 +1,4 @@
+// TODO: Page not found error/redirect inside before resolve
 import Vue from 'vue'
 import Router from 'vue-router'
 // import second from '@/components/second'
@@ -14,10 +15,13 @@ import stats from '@/components/front-pages/stats'
 import schools from '@/components/front-pages/schools'
 import contact from '@/components/front-pages/contact'
 import hallOfFame from '@/components/front-pages/hallOfFame'
+import videofeed from '@/components/front-pages/live_video/video_iframe'
 
 // View
 // Public UI
+import livestream from '@/views/public_ui/LiveStream'
 import scoreboard from '@/views/public_ui/Scoreboard'
+import scoreapp from '@/views/public_ui/ScoreApp'
 
 // Team Management Components
 import TeamManagement from '@/components/TeamManagement'
@@ -120,12 +124,12 @@ export const router = new Router({
     },
     {
       path: '/history',
-      name: 'about',
+      name: 'history',
       component: compliance,
       meta: {
         requiresAuth: false,
         section: 'public',
-        title: 'About | Midsouth Homeschool Athletics'
+        title: 'History | Midsouth Homeschool Athletics'
       }
     },
     {
@@ -192,28 +196,45 @@ export const router = new Router({
     },
     {
       // add slug if needed to differenciate games
-      path: '/live',
-      name: 'livevideo',
-      component: scoreboard,
+      path: '/livestream',
+      // name: 'livevideo',
+      component: livestream,
       props: true,
       meta: {
         requiresAuth: false,
         section: 'public',
         // TODO: String literal interpolation to add game
         title: 'Live Video | Midsouth Homeschool Athletics'
-      }
-      // Add children if we want a scoreboard component a primary
-      // children: [
-      //   {
-      //     path: '/scoreboard',
-      //     name: 'scoreboard',
-      //     component: scoreboard,
-      //     meta: {
-      //       'requiresAuth': true,
-      //       'section': 'public'
-      //     }
-      //   }
-      // ]
+      },
+      children: [
+        {
+          path: '',
+          name: 'videofeed',
+          component: videofeed,
+          meta: {
+            requiresAuth: false,
+            section: 'public'
+          }
+        },
+        {
+          path: 'scoreapp',
+          name: 'scoreapp',
+          component: scoreapp,
+          meta: {
+            requiresAuth: false,
+            section: 'public'
+          }
+        },
+        {
+          path: 'scoreboard',
+          name: 'scoreboard',
+          component: scoreboard,
+          meta: {
+            requiresAuth: false,
+            section: 'public'
+          }
+        }
+      ]
     },
     {
       path: '/manage/:slug',
