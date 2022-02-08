@@ -1,9 +1,21 @@
 <template>
-  <div :id='`canvas_${location}`' :class='`team_block team_block-${location}`' :style='{ backgroundColor: team_color }'>
-    <div class="team_logo">
-      <img :src="logo" />
+  <div class="wrapper">
+    <div :id='`canvas_${location}`' :class='`team_block team_block-${location}`' :style='{ backgroundColor: team_color }'>
+      <div class="team_logo">
+        <img :src="logo" />
+      </div>
+      {{value}}
     </div>
-    {{value}}
+    <div :class='`team_stats team_stats_${location}`' :style='{ backgroundColor: team_color }'>
+      <div>
+        <div class="timeout_bubble" v-for="(timeout, key) in timeouts" :key="key">
+        </div>
+      </div>
+
+      <div v-if="bonus" class="bonus">
+        Bonus
+      </div>
+    </div>
   </div>
 </template>
 
@@ -12,24 +24,40 @@ export default {
   name: 'team',
   data () {
     return {
-
+      // team_color: '#ffffff'
     }
   },
 
   props: [
+    'bonus',
     'location',
+    'timeouts',
     'value'
   ],
 
+  async beforeCreate () {
+    await this.$store.dispatch('setTeams')
+  },
+
+  // created () {
+  //   if (this.$store.getters.teams) {
+  //     this.team_color = `#${this.$store.getters.teams.filter(team => team.slug === this.value)[0].main_color}`
+  //   } else {
+  //     this.$store.dispatch('setTeams').then(team => {
+  //       console.log(team)
+  //     })
+  //   }
+  // },
+
   computed: {
     team () {
-      return this.$store.getters.teams.filter(team => team.slug === this.value)[0]
+      return this.$store.getters.teams.length > 0 ? this.$store.getters.teams.filter(team => team.slug === this.value)[0] : {}
     },
     team_color () {
-      return `#${this.$store.getters.teams.filter(team => team.slug === this.value)[0].main_color}`
+      return this.$store.getters.teams.length > 0 ? `#${this.$store.getters.teams.filter(team => team.slug === this.value)[0].main_color}` : '#ffffff'
     },
     logo () {
-      return `/static/color-team-logos/${this.$store.getters.teams.filter(team => team.slug === this.value)[0].logo_color}`
+      return this.$store.getters.teams.length > 0 ? `/static/color-team-logos/${this.$store.getters.teams.filter(team => team.slug === this.value)[0].logo_color}` : ''
     }
   },
 
@@ -76,6 +104,40 @@ export default {
     height: 35px;
     img {
       width: 100%;
+    }
+  }
+
+  .team_stats {
+    padding-left: 10px;
+    padding-right: 10px;
+    filter: brightness(85%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-flow: row;
+    height: 18px;
+    position: relative;
+
+    .timeout_bubble {
+      height: 8px;
+      width: 8px;
+      margin: 2px;
+      background-color: #fff;
+      border-radius: 50%;
+      display: inline-block;
+      position: relative;
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+
+    .bonus {
+      font-size: 12px;
+      color: #fff;
+    }
+
+    &_away {
+      flex-flow: row-reverse;
     }
   }
 </style>

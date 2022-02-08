@@ -111,15 +111,15 @@ const actions = {
     })
   },
 
-  async setTeams (context) {
-    await api.getTeams().then(response => {
+  async setTeams ({ commit }) {
+    commit('set_teams', await api.getTeams().then(response => {
       // TODO: Convert this to be an object with slug as the object key ie/
       // {
       //  slug1: {team object},
       //  slug2: {team_object}
       // }
-      context.commit('set_teams', response.data)
-    })
+      return response.data
+    }))
   },
 
   async setTeam (context, payload) {
@@ -178,7 +178,24 @@ const actions = {
 }
 
 const getters = {
-  // make.getters(state)
+  get_team_by_slug: (state) =>
+    (slug) => {
+      console.log(slug)
+      console.log(state.teams)
+      return state.teams.filter(team => team.slug === slug)[0]
+    },
+  get_team_color_by_slug: (state) =>
+    (slug) => {
+      console.log(slug)
+      console.log(state.teams)
+      return state.teams.filter(team => team.slug === slug)[0]
+    },
+  get_team_logo_by_slug: (state) =>
+    (slug) => {
+      console.log(slug)
+      console.log(state.teams)
+      return state.teams.filter(team => team.slug === slug)[0]
+    },
   user () {
     return state.user
   },

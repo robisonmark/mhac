@@ -231,7 +231,7 @@ export const router = new Router({
           component: scoreboard,
           meta: {
             requiresAuth: false,
-            section: 'public'
+            section: 'scoreboard'
           }
         }
       ]
