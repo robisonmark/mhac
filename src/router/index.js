@@ -195,13 +195,11 @@ export const router = new Router({
       // ]
     },
     {
-      // add slug if needed to differenciate games
       path: '/livestream',
-      // name: 'livevideo',
       component: livestream,
       props: true,
       meta: {
-        requiresAuth: false,
+        requiresAuth: true,
         section: 'public',
         // TODO: String literal interpolation to add game
         title: 'Live Video | Midsouth Homeschool Athletics'
@@ -212,17 +210,39 @@ export const router = new Router({
           name: 'videofeed',
           component: videofeed,
           meta: {
-            requiresAuth: false,
+            requiresAuth: true,
             section: 'public'
           }
-        },
+        }
+      ]
+    },
+    {
+      path: '/obs',
+      component: livestream,
+      props: true,
+      meta: {
+        requiresAuth: (process.env.NODE_ENV === 'production'),
+        section: 'public',
+        // TODO: String literal interpolation to add game
+        title: 'Video Control | Midsouth Homeschool Athletics'
+      },
+      children: [
+        // {
+        //   path: '',
+        //   name: 'videofeed',
+        //   component: videofeed,
+        //   meta: {
+        //     requiresAuth: (process.env.NODE_ENV === 'production'),
+        //     section: 'scoreboard'
+        //   }
+        // },
         {
           path: 'scoreapp',
           name: 'scoreapp',
           component: scoreapp,
           meta: {
-            requiresAuth: false,
-            section: 'public'
+            requiresAuth: (process.env.NODE_ENV === 'production'),
+            section: 'scoreboard'
           }
         },
         {
@@ -230,7 +250,7 @@ export const router = new Router({
           name: 'scoreboard',
           component: scoreboard,
           meta: {
-            requiresAuth: false,
+            requiresAuth: (process.env.NODE_ENV === 'production'),
             section: 'scoreboard'
           }
         }
@@ -366,6 +386,15 @@ export const router = new Router({
     // NEED ERROR ROUTES and THINK THROUGH NON INDEXING PAGES
   ]
 })
+
+// pattern idea for making sure proper store values are present
+// https://stackoverflow.com/questions/42603909/accessing-vuex-state-when-defining-vue-router-routes
+// https://github.com/vuejs/vuex-router-sync
+// router.beforeEach((to, from, next) => {
+//   // access store via `router.app.$store` here.
+//   if (router.app.$store.getters('user')) next();
+//   else next({ name: 'login' });
+// })
 
 router.beforeResolve(async (to, from, next) => {
   if (Object.prototype.hasOwnProperty.call(to, 'meta')) {

@@ -4,9 +4,9 @@
       <div class="team_logo">
         <img :src="logo" />
       </div>
-      {{team_name}}
+      <div class="team_name">{{team_name}}</div>
     </div>
-    <div :class='`team_stats team_stats_${location}`' :style='{ backgroundColor: secondary_color }'>
+    <div :class='`team_stats team_stats_${location}`' :style='{ backgroundColor: team_color }'>
       <div>
         <div class="timeout_bubble" v-for="(timeout, key) in timeouts" :key="key">
         </div>
