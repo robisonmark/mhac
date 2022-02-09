@@ -43,7 +43,7 @@ import manageStandings from '@/components/admin/manageStandings'
 // Config Helpers
 import config from '@/config/helpers'
 
-import { store } from '../store/index'
+import { store, scoreControllerStore } from '../store/index'
 
 const $config = config.CONSTANTS
 

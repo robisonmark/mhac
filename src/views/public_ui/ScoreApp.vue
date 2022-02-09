@@ -33,6 +33,10 @@
         <button class="foul">Foul +1</button>
       </div>
     </div>
+    <div>
+      <input v-model = 'webSocket'> </input>
+      <button class="foul" @click="submitWebsocket">submit</button>
+    </div>
   </div>
 </template>
 
@@ -71,13 +75,14 @@ export default {
         hundreds_seconds: 100
       },
       timer_running: false,
-      connection: false
+      connection: false,
+      webSocket: ''
     }
   },
   created () {
     console.log('Starting connection to WebSocket Server')
     this.connection = new WebSocket('ws://192.168.1.74:4444')
-    this.connection.onmessage = (data) => this.messageReceived(data)
+    // this.connection.onmessage = (data) => this.messageReceived(data)
     this.connection.onopen = (event) => this.messageSend(event)
   },
 
@@ -113,19 +118,16 @@ export default {
   },
 
   methods: {
-    callStore (data) {
-      this.$store.dispatch(...data)
-    },
+
     messageSend (data) {
       console.log(JSON.stringify(data))
       // console.log("Successfully connected to the echo websocket server...")
       this.connection.send(JSON.stringify(data))
     },
-    messageReceived () {
-      let message = JSON.parse(data.data)
-      console.log("Message Recieved: ", message)
-      this.callSocket(message.data)
-    },
+    // messageReceived (data) {
+    //   const message = JSON.parse(data.data)
+    //   // console.log('Message Recieved: ', message)
+    // },
     addPeriod () {
       if (this.period < this.game_rules.periods) {
         this.period += 1
