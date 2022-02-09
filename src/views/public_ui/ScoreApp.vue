@@ -1,6 +1,79 @@
 <template>
   <div class="scoreapp">
-    <button class="set_game_rules">Set Game Rules Modal</button>
+    <v-container>
+      <v-row>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +1</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -1</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Home Possesion</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Away Possesion</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -1</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +1</v-btn>
+        </v-col>
+      </v-row>
+      
+      <v-row>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +2</v-btn>
+        </v-col>
+        <!-- <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -2</v-btn>
+        </v-col> -->
+        <v-col align-self='center' cols=4></v-col>
+        <!-- <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -2</v-btn>
+        </v-col> -->
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +2</v-btn>
+        </v-col>
+      </v-row>
+      
+      <v-row>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +3</v-btn>
+        </v-col>
+        <!-- <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -3</v-btn>
+        </v-col> -->
+        <v-col cols=4></v-col>
+        <!-- <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -3</v-btn>
+        </v-col> -->
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +3</v-btn>
+        </v-col>
+      </v-row>
+      
+      <v-row>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Home TimeOut</v-btn>
+        </v-col>
+        <v-col></v-col>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Start Clock</v-btn>
+        </v-col>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Stop Clock</v-btn>
+        </v-col>
+        <v-col></v-col>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Away TimeOut</v-btn>
+        </v-col>
+        
+      </v-row>
+    
+    </v-container>
+    <!-- <button class="set_game_rules">Set Game Rules Modal</button>
     <div class="home_team">
       <div class="score_window">{{home_score}}</div>
       <div class="button_row">
@@ -34,8 +107,8 @@
       </div>
     </div>
     <div>
-      <input v-model = 'webSocket'> </input>
-      <button class="foul" @click="submitWebsocket">submit</button>
+      <input v-model = 'webSocket'> </input> -->
+     
     </div>
   </div>
 </template>
