@@ -4,7 +4,8 @@
       <div class="team_logo">
         <img :src="logo" />
       </div>
-      <div class="team_name">{{team_name}}</div>
+      <div class="team_name" :style='{ color: secondary_color }'>{{team_name}}</div>
+      <scoreBlock :location="location" v-model="score"></scoreBlock>
     </div>
     <div :class='`team_stats team_stats_${location}`' :style='{ backgroundColor: team_color }'>
       <div>
@@ -18,6 +19,8 @@
 </template>
 
 <script>
+import score from '@/components/front-pages/live_video/scoreboard/score'
+
 export default {
   name: 'team',
   data () {
@@ -30,9 +33,14 @@ export default {
     'bonus',
     'bonusPlus',
     'location',
+    'score',
     'timeouts',
     'value'
   ],
+
+  components: {
+    scoreBlock: score
+  },
 
   async beforeCreate () {
     await this.$store.dispatch('setTeams')
@@ -81,6 +89,7 @@ export default {
 </script>
 
 <style lang="less">
+  @import (css) url('https://fonts.googleapis.com/css2?family=Teko&display=swap');
   .team_block {
     display: flex;
     flex-flow: row;
@@ -110,6 +119,13 @@ export default {
     img {
       width: 100%;
     }
+  }
+
+  .team_name {
+    font-family: 'Teko', sans-serif;
+
+    font-size: 1.5rem;
+    line-height: .8;
   }
 
   .team_stats {

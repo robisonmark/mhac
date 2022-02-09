@@ -1,12 +1,12 @@
 <template>
   <div class="scoreboard" @keydown.space="timer">
-    <teamBlock location="home" v-model="home_team_slug" :timeouts="home_timeouts" :bonus="home_fouls >= 5" :bonusPlus="home_fouls >= 10"></teamBlock>
+    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts" :bonus="home_fouls >= 5" :bonusPlus="home_fouls >= 10"></teamBlock>
 
     <div class="gameStats">
-      <div class="score">
+      <!-- <div class="score">
         <scoreBlock location="home" v-model="home_score"></scoreBlock> |
         <scoreBlock location="away" v-model="away_score"></scoreBlock>
-      </div>
+      </div> -->
       <div class="timeBlock">
         <div class="quarter">
           Q {{quarter}} |
@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <teamBlock location="away" v-model="away_team_slug" :timeouts="away_timeouts" :bonus="away_fouls >= 5" :bonusPlus="away_fouls >= 10"></teamBlock>
+    <teamBlock location="away" v-model="away_team_slug" :score="away_score" :timeouts="away_timeouts" :bonus="away_fouls >= 5" :bonusPlus="away_fouls >= 10"></teamBlock>
   </div>
 </template>
 
