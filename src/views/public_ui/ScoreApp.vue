@@ -71,7 +71,7 @@ export default {
         hundreds_seconds: 100
       },
       timer_running: false,
-      connection: undefined
+      connection: false
     }
   },
   created () {
@@ -113,8 +113,18 @@ export default {
   },
 
   methods: {
-    callSocket (data) {
+    callStore (data) {
       this.$store.dispatch(...data)
+    },
+    messageSend (data) {
+      console.log(JSON.stringify(data))
+      // console.log("Successfully connected to the echo websocket server...")
+      this.connection.send(JSON.stringify(data))
+    },
+    messageReceived () {
+      let message = JSON.parse(data.data)
+      console.log("Message Recieved: ", message)
+      this.callSocket(message.data)
     },
     addPeriod () {
       if (this.period < this.game_rules.periods) {
