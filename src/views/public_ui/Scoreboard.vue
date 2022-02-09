@@ -1,6 +1,6 @@
 <template>
   <div class="scoreboard" @keydown.space="timer">
-    <teamBlock location="home" v-model="home_team_slug" :timeouts="home_timeouts" :bonus="home_fouls >= 5"></teamBlock>
+    <teamBlock location="home" v-model="home_team_slug" :timeouts="home_timeouts" :bonus="home_fouls >= 5" :bonusPlus="home_fouls >= 10"></teamBlock>
 
     <div class="gameStats">
       <div class="score">
@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <teamBlock location="away" v-model="away_team_slug" :timeouts="away_timeouts" :bonus="away_fouls >= 5"></teamBlock>
+    <teamBlock location="away" v-model="away_team_slug" :timeouts="away_timeouts" :bonus="away_fouls >= 5" :bonusPlus="away_fouls >= 10"></teamBlock>
   </div>
 </template>
 
@@ -29,10 +29,10 @@ export default {
   name: 'scoreboard',
   data () {
     return {
-      away_fouls: 5,
+      away_fouls: 4,
       away_score: 0,
       away_team_slug: 'life_christian',
-      away_timeouts: 5,
+      away_timeouts: 4,
 
       home_fouls: 0,
       home_score: 0,

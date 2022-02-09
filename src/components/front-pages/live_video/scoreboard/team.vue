@@ -4,17 +4,15 @@
       <div class="team_logo">
         <img :src="logo" />
       </div>
-      {{value}}
+      {{team_name}}
     </div>
-    <div :class='`team_stats team_stats_${location}`' :style='{ backgroundColor: team_color }'>
+    <div :class='`team_stats team_stats_${location}`' :style='{ backgroundColor: secondary_color }'>
       <div>
         <div class="timeout_bubble" v-for="(timeout, key) in timeouts" :key="key">
         </div>
       </div>
 
-      <div v-if="bonus" class="bonus">
-        Bonus
-      </div>
+      <div v-if="bonus" class="bonus">Bonus<template v-if="bonusPlus">+</template></div>
     </div>
   </div>
 </template>
@@ -30,6 +28,7 @@ export default {
 
   props: [
     'bonus',
+    'bonusPlus',
     'location',
     'timeouts',
     'value'
@@ -55,6 +54,12 @@ export default {
     },
     team_color () {
       return this.$store.getters.teams.length > 0 ? `#${this.$store.getters.teams.filter(team => team.slug === this.value)[0].main_color}` : '#ffffff'
+    },
+    team_name () {
+      return this.$store.getters.teams.length > 0 ? this.$store.getters.teams.filter(team => team.slug === this.value)[0].team_name : ''
+    },
+    secondary_color () {
+      return this.$store.getters.teams.length > 0 ? `#${this.$store.getters.teams.filter(team => team.slug === this.value)[0].secondary_color}` : '#ffffff'
     },
     logo () {
       return this.$store.getters.teams.length > 0 ? `/static/color-team-logos/${this.$store.getters.teams.filter(team => team.slug === this.value)[0].logo_color}` : ''
