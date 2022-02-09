@@ -38,6 +38,8 @@
 
 <script>
 import { cloneDeep } from 'lodash'
+import score_controller_store from '../../store/score_controller_store';
+
 export default {
   name: 'scoreboard',
   data () {
@@ -50,7 +52,7 @@ export default {
         timeouts_allowed: 5,
         penalties_allowed: 7,
         time_remaining: {
-          minutes: 9,
+          minutes: 1,
           seconds: 0,
           hundreds_seconds: 100
         }
@@ -65,15 +67,22 @@ export default {
 
       period: 1,
       time_remaining: {
-        minutes: 9,
+        minutes: 1,
         seconds: 0,
         hundreds_seconds: 100
       },
-      timer_running: false
+      timer_running: false,
+      connection: undefined
     }
   },
-
+  created () {
+    console.log("Starting connection to WebSocket Server")
+    this.connection = new WebSocket("ws://192.168.1.74:4444")
+    this.connection.onmessage = (data) => this.messageReceived(data)
+    this.connection.onopen = (event) => this.messageSend(event)
+  },
   components: {
+    score_controller_store
   },
 
   mounted () {
@@ -108,6 +117,9 @@ export default {
   },
 
   methods: {
+    callSocket (data) {
+      this.$score_controller_store.dispatch(...data)
+    },
     addPeriod () {
       if (this.period < this.game_rules.periods) {
         this.period += 1
