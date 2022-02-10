@@ -39,11 +39,13 @@ import adminSeason from '@/components/admin/adminSeason'
 // import adminSeasonTeams from '@/components/admin/adminSeasonTeams'
 import editHomepage from '@/components/admin/editHomepage'
 import manageStandings from '@/components/admin/manageStandings'
+import adminObs from '@/components/admin/adminObs'
 
 // Config Helpers
 import config from '@/config/helpers'
 
 import { store, scoreControllerStore } from '../store/index'
+// import { component } from 'vue/types/umd'
 
 const $config = config.CONSTANTS
 
@@ -380,7 +382,17 @@ export const router = new Router({
             requiresAuth: true,
             section: 'admin'
           }
+        },
+        {
+          path: 'admin_obs',
+          name: 'adminObs',
+          component: adminObs,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          }
         }
+
       ]
     }
     // NEED ERROR ROUTES and THINK THROUGH NON INDEXING PAGES
