@@ -1,10 +1,12 @@
 <template>
   <div class="wrapper">
     <div :id='`canvas_${location}`' :class='`team_block team_block-${location}`' :style='{ backgroundColor: team_color }'>
-      <div class="team_logo">
-        <img :src="logo" />
+      <div :class='`team_logo team_logo_${location}`' :style='{ backgroundColor: secondary_color }'>
+        <img :src="logo" :class='`${location}`' />
       </div>
-      <div class="team_name" :style='{ color: secondary_color }'>{{team_name}}</div>
+      <div class="team_name_wrapper">
+        <div :class='`team_name team_name-${location}`' :style='{ color: secondary_color }'>{{team_name}}</div>
+      </div>
       <scoreBlock :location="location" v-model="score"></scoreBlock>
     </div>
     <div :class='`team_stats team_stats_${location}`' :style='{ backgroundColor: team_color }'>
@@ -96,18 +98,15 @@ export default {
     width: 300px;
     height: 50px;
     align-items: center;
-    padding-left: 10px;
-    padding-right: 10px;
+    overflow: hidden;
 
     &-home {
-      // transform: perspective(10px) rotateX(1deg);
-      // .team_logo img {
-      //   transform: skewX(45deg);
-      // }
+      padding-right: 10px;
     }
 
     &-away {
       flex-flow: row-reverse;
+      padding-left: 10px;
     }
   }
 
@@ -115,10 +114,40 @@ export default {
     display: flex;
     flex-flow: row;
     justify-content: center;
-    height: 35px;
-    img {
-      width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    background-color: #000;
+    height: 100%;
+    width: 82.5px;
+
+    &_home {
+      transform: skewX(45deg);
+      padding-left: 10px;
     }
+    &_away {
+      transform: skewX(-45deg);
+      padding-right: 10px;
+    }
+
+    img {
+      // width: 100%;
+      // height: 35px;
+      display: flex;
+      flex-flow: row;
+      justify-content: center;
+      width: 100%;
+      &.away {
+        transform: skewX(45deg);
+      }
+      &.home  {
+        transform: skewX(-45deg);
+      }
+    }
+  }
+
+  .team_name_wrapper {
+    flex-grow: 1;
   }
 
   .team_name {

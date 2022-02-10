@@ -76,7 +76,7 @@ export default {
   },
   created () {
     console.log('Starting connection to WebSocket Server')
-    this.connection = new WebSocket('ws://192.168.1.74:4444')
+    this.connection = new WebSocket('ws://192.168.1.39:4444')
     this.connection.onmessage = (data) => this.messageReceived(data)
     this.connection.onopen = (event) => this.messageSend(event)
   },
@@ -122,8 +122,8 @@ export default {
       this.connection.send(JSON.stringify(data))
     },
     messageReceived () {
-      let message = JSON.parse(data.data)
-      console.log("Message Recieved: ", message)
+      const message = JSON.parse(data.data)
+      console.log('Message Recieved: ', message)
       this.callSocket(message.data)
     },
     addPeriod () {

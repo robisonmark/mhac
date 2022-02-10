@@ -8,11 +8,11 @@
         <scoreBlock location="away" v-model="away_score"></scoreBlock>
       </div> -->
       <div class="timeBlock">
-        <div class="quarter">
-          Q {{quarter}} |
-        </div>
         <div class="timeRemaining">
           <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{(time_remaining.seconds === 60 || time_remaining.seconds === 0) ? '00' : time_remaining.seconds }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.hundreds_seconds}}</template>
+        </div>
+        <div class="quarter">
+          {{getNumberWithOrdinal(quarter)}}
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
 
 <script>
 import team from '@/components/front-pages/live_video/scoreboard/team'
-import score from '@/components/front-pages/live_video/scoreboard/score'
+// import score from '@/components/front-pages/live_video/scoreboard/score'
 
 export default {
   name: 'scoreboard',
@@ -31,12 +31,12 @@ export default {
     return {
       away_fouls: 4,
       away_score: 0,
-      away_team_slug: 'life_christian',
+      away_team_slug: 'tennessee_heat',
       away_timeouts: 4,
 
       home_fouls: 0,
       home_score: 0,
-      home_team_slug: 'western_kentucky',
+      home_team_slug: 'daniel_1',
       home_timeouts: 5,
 
       isKeyDown: false,
@@ -54,10 +54,8 @@ export default {
   },
 
   components: {
-    // flair left
-    teamBlock: team,
-    scoreBlock: score
-    // flair right
+    teamBlock: team
+    // scoreBlock: score
   },
 
   mounted () {
@@ -92,6 +90,11 @@ export default {
   },
 
   methods: {
+    getNumberWithOrdinal (n) {
+      var s = ['th', 'st', 'nd', 'rd']
+      var v = n % 100
+      return n + (s[(v - 20) % 10] || s[v] || s[0])
+    },
     resetTimer () {
       // TODO: set to time or restart
     },
@@ -134,10 +137,12 @@ export default {
 </script>
 
 <style lang="less">
+  @import (css) url('https://fonts.googleapis.com/css2?family=Teko&display=swap');
   .scoreboard {
     display: flex;
     width: 100%;
     justify-content: center;
+    overflow: hidden;
   }
   .gameStats {
     display: flex;
@@ -148,8 +153,16 @@ export default {
       justify-content: center;
     }
     .timeBlock {
-      display: flex;
+      font-family: 'Teko', sans-serif;
+
       justify-content: center;
+      align-items: center;
+      flex-flow: column;
+      font-size: 1.7rem;
+      margin: 0.5rem 1rem;
+      line-height: .7;
+      text-align: center;
+      letter-spacing: 1px;
     }
   }
 </style>
