@@ -121,6 +121,9 @@ export default {
       }
   }
   },
+  beforeCreate() {
+    this.$store.dispatch('setWebSocket')
+  },
 
   created () {
     this.$store.dispatch('setWebSocket')
