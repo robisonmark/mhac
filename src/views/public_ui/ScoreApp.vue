@@ -24,7 +24,7 @@
 
       <v-row>
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score +2</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementHome', 2)">Score +2</v-btn>
         </v-col>
         <!-- <v-col>
           <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -2</v-btn>
@@ -34,13 +34,13 @@
           <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -2</v-btn>
         </v-col> -->
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score +2</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementAway', 2)">Score +2</v-btn>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score +3</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementHome', 3)">Score +3</v-btn>
         </v-col>
         <!-- <v-col>
           <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -3</v-btn>
@@ -50,7 +50,7 @@
           <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -3</v-btn>
         </v-col> -->
         <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score +3</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementAway', 3)">Score +3</v-btn>
         </v-col>
       </v-row>
 
