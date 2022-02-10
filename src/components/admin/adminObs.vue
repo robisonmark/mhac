@@ -30,6 +30,7 @@ export default {
     save() {
       api.updateWebSocketUrl({webSocketUrl: this.websocketUrl}).then(response => {
         this.websocketUrl = response.data["webSocketUrl"];
+        this.$store.dispatch('setWebSocket', this.websocketUrl)
       });
     }
   }

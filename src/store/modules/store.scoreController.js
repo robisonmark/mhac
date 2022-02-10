@@ -58,7 +58,7 @@ const state = {
     running: false
   },
   editable: false,
-  websocket: 'ws://014a-2600-1700-4051-23d0-29d0-dbfa-8dbb-c5b6.ngrok.io'
+  websocket: ''
 }
 
 let intervalID
@@ -93,7 +93,7 @@ const mutations = {
   setPossession: (state, value) => state.possession = value,
   toggleEditable: (state) => state.editable = !state.editable,
   toggleClock: (state, payload) => state.clock.running = payload,
-  setWebSocket: (state, value) => state.websocket = value
+  setWebSocket: (state, payload) => state.websocket = payload
 }
 
 const actions = {
@@ -167,14 +167,17 @@ const actions = {
   setPossession (context, payload) {
     context.commit('setPossession', payload)
   },
-  setWebSocket (context, payload) {
-    context.commit('setWebSocket', payload)
+  setWebSocket (context) {
+    context.commit('setWebSocket', api.getWebSocketUrl()
+                                  .then(response => { 
+                                    return response.data["webSocketUrl"];
+                                  }))
   }
 }
 const getters = {
   minutes (state) { return Math.floor(state.clock.time / 60) },
   seconds (state) { return state.clock.time % 60 },
-  websocket (state) { return state.websocket }
+  getWebsocket (state) { return state.websocket }
 }
 
 export default {

@@ -189,26 +189,35 @@ export default {
         hundreds_seconds: 100
       },
       timer_running: false,
-      connection: false,
-      webSocket: ''
+      connection: false
     }
   },
 
   computed: {
     teams () {
       return this.$store.getters.teams.length > 0 ? this.$store.getters.teams : []
-    }
+    },
+    webSocketURL () {
+        return this.$store.getters.getWebsocket
+      }
   },
 
-  async beforeCreate () {
-    await this.$store.dispatch('setTeams')
+  watch: {
+    webSocketURL: {
+      handler: function () {
+        this.connection = new WebSocket(this.webSocketURL)
+        // this.connection.onmessage = (event) => this.messageReceived(event)
+        this.connection.onopen = (event) => this.messageSend(event)
+      }
+    }
+  },
+  beforeCreate () {
+    this.$store.dispatch('setTeams')
+    this.$store.dispatch('setWebSocket')
   },
 
   created () {
-    console.log('Starting connection to WebSocket Server')
-    this.connection = new WebSocket('ws://014a-2600-1700-4051-23d0-29d0-dbfa-8dbb-c5b6.ngrok.io')
-    // this.connection.onmessage = (data) => this.messageReceived(data)
-    this.connection.onopen = (event) => this.messageSend(event)
+
   },
 
   mounted () {
@@ -252,7 +261,6 @@ export default {
           action: action,
           value: value
         }
-
       }
       this.connection.send(JSON.stringify(socketData))
     },

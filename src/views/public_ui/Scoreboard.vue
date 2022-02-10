@@ -46,8 +46,9 @@ export default {
         minutes: 9,
         seconds: 0,
         hundreds_seconds: 100
-      }
+      },
       // timer_running: false
+      connection: false
     }
   },
 
@@ -101,7 +102,10 @@ export default {
       get: function () {
         return this.$store.state.scoreController.clock.running
       }
-    }
+    },
+    webSocketURL () {
+        return this.$store.getters.getWebsocket
+      }
   },
 
   watch: {
@@ -110,18 +114,24 @@ export default {
         this.timer()
       },
       deep: true
-    }
+    },
+    webSocketURL: {
+       handler: function () {
+        this.connectWebSocket()
+      }
+  }
   },
 
   created () {
-    console.log('Starting connection to WebSocket Server')
-    this.connection = new WebSocket(this.$store.state.scoreController.websocket)
-    this.connection.onmessage = (event) => this.messageReceived(event)
+    this.$store.dispatch('setWebSocket')
+    console.log("here")
     // this.connection.onopen = (event) => this.messageSend(event)
   },
 
   mounted () {
     const self = this
+
+
     window.addEventListener('keydown', function (event) {
       self.isKeyDown = true
       self.keys.push(event.code)
@@ -144,14 +154,14 @@ export default {
       self.keys.length = 0
     })
 
-    // window.addEventListener('keyup', function (event) {
-    //   if (event.code === 'Numpad1') {
-    //     self.home_score += 1
-    //   }
-    // })
   },
 
   methods: {
+    connectWebSocket() {
+      console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
+      this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      this.connection.onmessage = (event) => this.messageReceived(event)
+    },
     getNumberWithOrdinal (n) {
       if (n <= 4) {
         var s = ['th', 'st', 'nd', 'rd']
