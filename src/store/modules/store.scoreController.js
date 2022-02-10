@@ -45,18 +45,22 @@ const state = {
     home: 0,
     away: 0
   },
+  timeouts: {
+    home: 5,
+    away: 5
+  },
   period: 1,
   possession: {},
   period_time: 8,
   clock: {
-    time: 8*60,
+    time: 8 * 60,
     running: false
   },
   editable: false,
   websocket: 'ws://localhost:4444'
 }
 
-let intervalID;
+let intervalID
 
 // const vuexLocal = new VuexPersistence({
 //   storage: window.sessionStorage
@@ -75,9 +79,11 @@ const mutations = {
   incrementHomeFouls: (state) => state.fouls.home++,
   decrementHomeFouls: (state) => state.fouls.home && state.fouls.home--,
   setHomeFouls: (state, payload) => state.fouls.home = payload,
+  decrementHomeTimeouts: (state) => state.timeouts.home && state.timeouts.home--,
   incrementAwayFouls: (state) => state.fouls.away++,
   decrementAwayFouls: (state) => state.fouls.away && state.fouls.away--,
   setAwayFouls: (state, payload) => state.fouls.away = payload,
+  decrementAwayTimeouts: (state) => state.timeouts.away && state.timeouts.away--,
   incrementPeriod: (state) => state.period++,
   decrementPeriod: (state) => state.period && state.period--,
   setPeriod: (state, payload) => state.period = payload,
@@ -107,7 +113,7 @@ const actions = {
     }
   },
   updateClock ({ state, commit, dispatch }, amount) {
-    const time = state.clock.time + amount;
+    const time = state.clock.time + amount
 
     if (time < 0) {
       commit('setTime', 0)
@@ -118,11 +124,11 @@ const actions = {
     commit('setTime', time)
   },
   incrementClock ({ getters, commit }) {
-    const time = getters.minutes + 1;
+    const time = getters.minutes + 1
     commit('setTime', time * 60)
   },
   decrementClock ({ getters, commit }) {
-    const time = getters.minutes - 1;
+    const time = getters.minutes - 1
     commit('setTime', time * 60)
   },
   incrementAway (context, payload) {
@@ -132,7 +138,7 @@ const actions = {
   setAway (context, payload) {
     context.commit('setAway', payload)
   },
-  incrementHome (context, payload){
+  incrementHome (context, payload) {
     context.commit('incrementHome', payload)
   },
   setHome (context, payload) {
@@ -147,14 +153,14 @@ const actions = {
   setPeriod (context, payload) {
     context.commit('setPeriod', payload)
   },
-  setWebSocket(context, payload) {
+  setWebSocket (context, payload) {
     context.commit('setWebSocket', payload)
   }
 }
 const getters = {
-  minutes(state){ return Math.floor(state.clock.time / 60)},
-  seconds(state){return state.clock.time % 60},
-  websocket(state){return state.websocket}
+  minutes (state) { return Math.floor(state.clock.time / 60) },
+  seconds (state) { return state.clock.time % 60 },
+  websocket (state) { return state.websocket }
 }
 
 export default {

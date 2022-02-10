@@ -32,12 +32,12 @@ export default {
       // away_fouls: 4,
       // away_score: 0,
       away_team_slug: 'tennessee_heat',
-      away_timeouts: 4,
+      // away_timeouts: 4,
 
       // home_fouls: 0,
       // home_score: 0,
       home_team_slug: 'daniel_1',
-      home_timeouts: 5,
+      // home_timeouts: 5,
 
       isKeyDown: false,
 
@@ -114,6 +114,16 @@ export default {
     home_score: {
       get: function () {
         return this.$store.state.scoreController.score.home
+      }
+    },
+    home_timeouts: {
+      get: function () {
+        return this.$store.state.scoreController.timeouts.home
+      }
+    },
+    away_timeouts: {
+      get: function () {
+        return this.$store.state.scoreController.timeouts.away
       }
     }
   },
