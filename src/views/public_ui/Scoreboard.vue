@@ -119,7 +119,7 @@ export default {
        handler: function () {
         this.connectWebSocket()
       }
-  }
+    }
   },
   beforeCreate() {
     this.$store.dispatch('setWebSocket')
