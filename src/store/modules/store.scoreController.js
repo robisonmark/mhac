@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import Vue from 'vue'
 import Vuex from 'vuex'
 // import VuexPersistence from 'vuex-persist'
@@ -50,14 +51,14 @@ const state = {
     away: 5
   },
   period: 1,
-  possession: {},
+  possession: '',
   period_time: 8,
   clock: {
     time: 8 * 60,
     running: false
   },
   editable: false,
-  websocket: 'ws://localhost:4444'
+  websocket: 'ws://014a-2600-1700-4051-23d0-29d0-dbfa-8dbb-c5b6.ngrok.io'
 }
 
 let intervalID
@@ -91,6 +92,7 @@ const mutations = {
   setTime: (state, time) => state.clock.time = time,
   setPossession: (state, value) => state.possession = value,
   toggleEditable: (state) => state.editable = !state.editable,
+  toggleClock: (state, payload) => state.clock.running = payload,
   setWebSocket: (state, value) => state.websocket = value
 }
 
@@ -141,17 +143,29 @@ const actions = {
   incrementHome (context, payload) {
     context.commit('incrementHome', payload)
   },
+  incrementPeriod (context, payload) {
+    context.commit('incrementPeriod', payload)
+  },
   setHome (context, payload) {
     context.commit('setHome', payload)
   },
+  incrementHomeFouls (context, payload) {
+    context.commit('incrementHomeFouls', payload)
+  },
   setHomeFouls (context, payload) {
     context.commit('setHomeFouls', payload)
+  },
+  incrementAwayFouls (context, payload) {
+    context.commit('incrementAwayFouls', payload)
   },
   setAwayFouls (context, payload) {
     context.commit('setAwayFouls', payload)
   },
   setPeriod (context, payload) {
     context.commit('setPeriod', payload)
+  },
+  setPossession (context, payload) {
+    context.commit('setPossession', payload)
   },
   setWebSocket (context, payload) {
     context.commit('setWebSocket', payload)

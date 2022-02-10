@@ -1,6 +1,6 @@
 <template>
   <div class="scoreboard" @keydown.space="timer">
-    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts" :bonus="home_fouls >= 5" :bonusPlus="home_fouls >= 10"></teamBlock>
+    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts" :bonus="home_fouls >= 5" :bonusPlus="home_fouls >= 10" :possession="nextPossession === 'home'"></teamBlock>
 
     <div class="gameStats">
       <!-- <div class="score">
@@ -11,13 +11,11 @@
         <div class="timeRemaining">
           <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{(time_remaining.seconds === 60 || time_remaining.seconds === 0) ? '00' : time_remaining.seconds }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.hundreds_seconds}}</template>
         </div>
-        <div class="quarter">
-          {{getNumberWithOrdinal(quarter)}}
-        </div>
+        <div class="period">{{period}}</div>
       </div>
     </div>
 
-    <teamBlock location="away" v-model="away_team_slug" :score="away_score" :timeouts="away_timeouts" :bonus="away_fouls >= 5" :bonusPlus="away_fouls >= 10"></teamBlock>
+    <teamBlock location="away" v-model="away_team_slug" :score="away_score" :timeouts="away_timeouts" :bonus="away_fouls >= 5" :bonusPlus="away_fouls >= 10" :possession="nextPossession === 'away'"></teamBlock>
   </div>
 </template>
 
@@ -43,13 +41,75 @@ export default {
 
       keys: [],
 
-      quarter: 1,
+      // period: 1,
       time_remaining: {
         minutes: 9,
         seconds: 0,
         hundreds_seconds: 100
+      }
+      // timer_running: false
+    }
+  },
+
+  components: {
+    teamBlock: team
+    // scoreBlock: score
+  },
+
+  computed: {
+    away_fouls: {
+      get: function () {
+        return this.$store.state.scoreController.fouls.away
+      }
+    },
+    away_score: {
+      get: function () {
+        return this.$store.state.scoreController.score.away
+      }
+    },
+    home_fouls: {
+      get: function () {
+        return this.$store.state.scoreController.fouls.home
+      }
+    },
+    home_score: {
+      get: function () {
+        return this.$store.state.scoreController.score.home
+      }
+    },
+    home_timeouts: {
+      get: function () {
+        return this.$store.state.scoreController.timeouts.home
+      }
+    },
+    away_timeouts: {
+      get: function () {
+        return this.$store.state.scoreController.timeouts.away
+      }
+    },
+    period: {
+      get: function () {
+        return this.getNumberWithOrdinal(this.$store.state.scoreController.period)
+      }
+    },
+    nextPossession: {
+      get: function () {
+        return this.$store.state.scoreController.possession
+      }
+    },
+    timer_running: {
+      get: function () {
+        return this.$store.state.scoreController.clock.running
+      }
+    }
+  },
+
+  watch: {
+    timer_running: {
+      handler: function () {
+        this.timer()
       },
-      timer_running: false
+      deep: true
     }
   },
 
@@ -58,11 +118,6 @@ export default {
     this.connection = new WebSocket(this.$store.state.scoreController.websocket)
     this.connection.onmessage = (event) => this.messageReceived(event)
     // this.connection.onopen = (event) => this.messageSend(event)
-  },
-
-  components: {
-    teamBlock: team
-    // scoreBlock: score
   },
 
   mounted () {
@@ -95,43 +150,16 @@ export default {
     //   }
     // })
   },
-  computed: {
-    away_fouls: {
-      get: function () {
-        return this.$store.state.scoreController.fouls.away
-      }
-    },
-    away_score: {
-      get: function () {
-        return this.$store.state.scoreController.score.away
-      }
-    },
-    home_fouls: {
-      get: function () {
-        return this.$store.state.scoreController.fouls.home
-      }
-    },
-    home_score: {
-      get: function () {
-        return this.$store.state.scoreController.score.home
-      }
-    },
-    home_timeouts: {
-      get: function () {
-        return this.$store.state.scoreController.timeouts.home
-      }
-    },
-    away_timeouts: {
-      get: function () {
-        return this.$store.state.scoreController.timeouts.away
-      }
-    }
-  },
+
   methods: {
     getNumberWithOrdinal (n) {
-      var s = ['th', 'st', 'nd', 'rd']
-      var v = n % 100
-      return n + (s[(v - 20) % 10] || s[v] || s[0])
+      if (n <= 4) {
+        var s = ['th', 'st', 'nd', 'rd']
+        var v = n % 100
+        return n + (s[(v - 20) % 10] || s[v] || s[0])
+      } else {
+        return `OT ${n - 4}`
+      }
     },
     callStore (data) {
       console.log(data)
@@ -196,6 +224,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 65px;
     .score {
       display: flex;
       justify-content: center;
@@ -203,6 +232,7 @@ export default {
     .timeBlock {
       font-family: 'Teko', sans-serif;
 
+      background-color: #fff;
       justify-content: center;
       align-items: center;
       flex-flow: column;
@@ -212,5 +242,8 @@ export default {
       text-align: center;
       letter-spacing: 1px;
     }
+  }
+  .period {
+    white-space: nowrap;
   }
 </style>

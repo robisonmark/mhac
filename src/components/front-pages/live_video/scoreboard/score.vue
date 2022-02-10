@@ -25,7 +25,9 @@ export default {
 
     display: flex;
     flex-flow: row;
-    margin: .5em;
     font-size: 3em;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
   }
 </style>

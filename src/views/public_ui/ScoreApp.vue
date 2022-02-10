@@ -1,75 +1,114 @@
 <template>
-  <div class="scoreapp">
+  <v-app class="scoreapp">
     <v-container>
       <v-row>
-        <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementHome', 1)">Score +1</v-btn>
+        <v-col>
+          <h2>Home</h2>
+          <v-select v-model="home"
+            :items="teams"
+            label="home"
+            item-text="team_name"
+            item-value="slug"
+            dense
+            return-object
+          ></v-select>
         </v-col>
-        <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementHome', -1)">Score -1</v-btn>
+        <v-col>
         </v-col>
-        <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Home Possesion</v-btn>
-        </v-col>
-        <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Away Possesion</v-btn>
-        </v-col>
-        <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementAway', -1)">Score -1</v-btn>
-        </v-col>
-        <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementAway', 1)">Score +1</v-btn>
+        <v-col>
+          <h2>Away</h2>
+          <v-select v-model="away"
+            :items="teams"
+            label="away"
+            item-text="team_name"
+            item-value="slug"
+            dense
+            return-object
+          ></v-select>
         </v-col>
       </v-row>
-
-      <v-row>
-        <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementHome', 2)">Score +2</v-btn>
+      <v-row :style='`{ backgroundColor: #${home.team_color} }`'>
+        <v-col class="home">
+          <v-row>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHome', 1)">Score +1</v-btn>
+            </v-col>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHome', -1)">Score -1</v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHome', 2)">Score +2</v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHome', 3)">Score +3</v-btn>
+            </v-col>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('decrementHomeTimeouts', 0)">Timeout</v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHomeFouls', 1)">Team Foul</v-btn>
+            </v-col>
+          </v-row>
         </v-col>
-        <!-- <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -2</v-btn>
-        </v-col> -->
-        <v-col align-self='center' cols=4></v-col>
-        <!-- <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -2</v-btn>
-        </v-col> -->
-        <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementAway', 2)">Score +2</v-btn>
+        <!-- <v-col></v-col> -->
+        <v-col class="center">
+          <v-row>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('toggleClock', true)">Start Clock</v-btn>
+            </v-col>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('toggleClock', false)">Stop Clock</v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)">Period</v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'home')"><font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Possesion</v-btn>
+            </v-col>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')"><font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon> Possesion</v-btn>
+            </v-col>
+          </v-row>
         </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementHome', 3)">Score +3</v-btn>
+        <!-- <v-col></v-col> -->
+        <v-col class="away">
+          <v-row>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', -1)">Score -1</v-btn>
+            </v-col>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 1)">Score +1</v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 2)">Score +2</v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 3)">Score +3</v-btn>
+            </v-col>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('decrementAwayTimeouts', 0)">Timeout</v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAwayFouls', 1)">Team Foul</v-btn>
+            </v-col>
+          </v-row>
         </v-col>
-        <!-- <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -3</v-btn>
-        </v-col> -->
-        <v-col cols=4></v-col>
-        <!-- <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -3</v-btn>
-        </v-col> -->
-        <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementAway', 3)">Score +3</v-btn>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Home TimeOut</v-btn>
-        </v-col>
-        <v-col></v-col>
-        <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Start Clock</v-btn>
-        </v-col>
-        <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Stop Clock</v-btn>
-        </v-col>
-        <v-col></v-col>
-        <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Away TimeOut</v-btn>
-        </v-col>
-
       </v-row>
 
     </v-container>
@@ -110,16 +149,18 @@
       <input v-model = 'webSocket'> </input> -->
 
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script>
 import { cloneDeep } from 'lodash'
 
 export default {
-  name: 'scoreboard',
+  name: 'scoreapp',
   data () {
     return {
+      away: '',
+      home: '',
       away_score: 0,
       away_timeouts: 5,
 
@@ -152,9 +193,20 @@ export default {
       webSocket: ''
     }
   },
+
+  computed: {
+    teams () {
+      return this.$store.getters.teams.length > 0 ? this.$store.getters.teams : []
+    }
+  },
+
+  async beforeCreate () {
+    await this.$store.dispatch('setTeams')
+  },
+
   created () {
     console.log('Starting connection to WebSocket Server')
-    this.connection = new WebSocket('ws://192.168.1.39:4444')
+    this.connection = new WebSocket('ws://014a-2600-1700-4051-23d0-29d0-dbfa-8dbb-c5b6.ngrok.io')
     // this.connection.onmessage = (data) => this.messageReceived(data)
     this.connection.onopen = (event) => this.messageSend(event)
   },

@@ -4,8 +4,8 @@
       <div :class='`team_logo team_logo_${location}`' :style='{ backgroundColor: secondary_color }'>
         <img :src="logo" :class='`${location}`' />
       </div>
-      <div class="team_name_wrapper">
-        <div :class='`team_name team_name-${location}`' :style='{ color: secondary_color }'>{{team_name}}</div>
+      <div class="team_name team_name_wrapper">
+        <div :class='`team_name team_name_${location}`' :style='{ color: secondary_color }'>{{team_name}}</div>
       </div>
       <scoreBlock :location="location" v-model="score"></scoreBlock>
     </div>
@@ -14,8 +14,8 @@
         <div class="timeout_bubble" v-for="(timeout, key) in timeouts" :key="key">
         </div>
       </div>
-
       <div v-if="bonus" class="bonus">Bonus<template v-if="bonusPlus">+</template></div>
+      <div v-if="possession" :class="`possession possession_${location}`">P</div>
     </div>
   </div>
 </template>
@@ -35,6 +35,7 @@ export default {
     'bonus',
     'bonusPlus',
     'location',
+    'possession',
     'score',
     'timeouts',
     'value'
@@ -146,15 +147,26 @@ export default {
     }
   }
 
-  .team_name_wrapper {
-    flex-grow: 1;
-  }
-
   .team_name {
     font-family: 'Teko', sans-serif;
 
     font-size: 1.5rem;
     line-height: .8;
+    display: flex;
+    flex-grow: 1;
+
+    &_home {
+      justify-content: flex-end;
+    }
+
+    &_away {
+      justify-content: flex-start;
+    }
+
+    &_wrapper {
+      flex-grow: 1;
+      width: 125px;
+    }
   }
 
   .team_stats {
@@ -182,12 +194,72 @@ export default {
     }
 
     .bonus {
-      font-size: 12px;
+      font-size: 15px;
       color: #fff;
+      font-family: 'Teko', sans-serif;
+      flex-grow: 1;
+      padding: 5px;
+      line-height: 1;
+      height: 100%;
     }
 
     &_away {
       flex-flow: row-reverse;
+    }
+  }
+
+  .possession {
+    font-family: 'Teko', sans-serif;
+    width: 14px;
+    background-color: #fff;
+    padding: 3px;
+    position: relative;
+    height: 100%;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:after,
+    &:before {
+      content: "";
+      position: absolute;
+      width: 3px;
+      height: 50%;
+    }
+    &:before {
+      top: 0px;
+    }
+    &:after {
+      bottom: 0px;
+    }
+
+    &_home {
+      &:after,
+      &:before {
+        right: 100%;
+      }
+
+      &:before {
+        background: linear-gradient(to top left, #fff 50%, transparent 51%);
+      }
+      &:after {
+        background: linear-gradient(to bottom left, #fff 50%, transparent 51%);
+      }
+    }
+
+    &_away {
+      &:after,
+      &:before {
+        left: 100%;
+      }
+
+      &:before {
+        background: linear-gradient(to top right, #fff 50%, transparent 51%);
+      }
+      &:after {
+        background: linear-gradient(to bottom right, #fff 50%, transparent 51%);
+      }
     }
   }
 </style>
