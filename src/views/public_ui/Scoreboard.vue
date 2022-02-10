@@ -29,13 +29,13 @@ export default {
   name: 'scoreboard',
   data () {
     return {
-      away_fouls: 4,
+      // away_fouls: 4,
       // away_score: 0,
       away_team_slug: 'tennessee_heat',
       away_timeouts: 4,
 
-      home_fouls: 0,
-      home_score: 0,
+      // home_fouls: 0,
+      // home_score: 0,
       home_team_slug: 'daniel_1',
       home_timeouts: 5,
 
@@ -96,10 +96,24 @@ export default {
     // })
   },
   computed: {
+    away_fouls: {
+      get: function () {
+        return this.$store.state.scoreController.fouls.away
+      }
+    },
     away_score: {
       get: function () {
-        console.log(this.$store.state.scoreController.score.away)//, this.$store.state.score.away)
         return this.$store.state.scoreController.score.away
+      }
+    },
+    home_fouls: {
+      get: function () {
+        return this.$store.state.scoreController.fouls.home
+      }
+    },
+    home_score: {
+      get: function () {
+        return this.$store.state.scoreController.score.home
       }
     }
   },

@@ -3,71 +3,71 @@
     <v-container>
       <v-row>
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +1</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementHome', 1)">Score +1</v-btn>
         </v-col>
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -1</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementHome', -1)">Score -1</v-btn>
         </v-col>
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Home Possesion</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Home Possesion</v-btn>
         </v-col>
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Away Possesion</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Away Possesion</v-btn>
         </v-col>
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -1</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementAway', -1)">Score -1</v-btn>
         </v-col>
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +1</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket('incrementAway', 1)">Score +1</v-btn>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +2</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score +2</v-btn>
         </v-col>
         <!-- <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -2</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -2</v-btn>
         </v-col> -->
         <v-col align-self='center' cols=4></v-col>
         <!-- <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -2</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -2</v-btn>
         </v-col> -->
         <v-col align-self='center'>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +2</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score +2</v-btn>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +3</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score +3</v-btn>
         </v-col>
         <!-- <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -3</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -3</v-btn>
         </v-col> -->
         <v-col cols=4></v-col>
         <!-- <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -3</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score -3</v-btn>
         </v-col> -->
         <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +3</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Score +3</v-btn>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Home TimeOut</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Home TimeOut</v-btn>
         </v-col>
         <v-col></v-col>
         <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Start Clock</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Start Clock</v-btn>
         </v-col>
         <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Stop Clock</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Stop Clock</v-btn>
         </v-col>
         <v-col></v-col>
         <v-col>
-          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Away TimeOut</v-btn>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket()">Away TimeOut</v-btn>
         </v-col>
 
       </v-row>
@@ -191,6 +191,19 @@ export default {
   },
 
   methods: {
+    submitWebsocket (action, value) {
+      const socketData = {
+        'request-type': 'BroadcastCustomMessage',
+        'message-id': '1234',
+        realm: action,
+        data: {
+          action: action,
+          value: value
+        }
+
+      }
+      this.connection.send(JSON.stringify(socketData))
+    },
 
     messageSend (data) {
       console.log(JSON.stringify(data))
