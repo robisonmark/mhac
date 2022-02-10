@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       away_fouls: 4,
-      away_score: 0,
+      // away_score: 0,
       away_team_slug: 'tennessee_heat',
       away_timeouts: 4,
 
@@ -51,6 +51,13 @@ export default {
       },
       timer_running: false
     }
+  },
+
+  created () {
+    console.log('Starting connection to WebSocket Server')
+    this.connection = new WebSocket(this.$store.state.scoreController.websocket)
+    this.connection.onmessage = (event) => this.messageReceived(event)
+    // this.connection.onopen = (event) => this.messageSend(event)
   },
 
   components: {
@@ -88,13 +95,30 @@ export default {
     //   }
     // })
   },
-
+  computed: {
+    away_score: {
+      get: function () {
+        console.log(this.$store.state.scoreController.score.away)//, this.$store.state.score.away)
+        return this.$store.state.scoreController.score.away
+      }
+    }
+  },
   methods: {
     getNumberWithOrdinal (n) {
       var s = ['th', 'st', 'nd', 'rd']
       var v = n % 100
       return n + (s[(v - 20) % 10] || s[v] || s[0])
     },
+    callStore (data) {
+      console.log(data)
+      this.$store.dispatch(data.action, data.value)
+    },
+    messageReceived (data) {
+      const message = JSON.parse(data.data)
+      console.log('Message Recieved: ', message)
+      this.callStore(message.data)
+    },
+
     resetTimer () {
       // TODO: set to time or restart
     },

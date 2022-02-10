@@ -5,13 +5,10 @@ import Vuex from 'vuex'
 // api
 import { api } from '@/api/endpoints.js'
 
-// Modules
-import auth from './modules/store.auth'
-
 Vue.use(Vuex)
 
-const namespaced = true
-const modules = { auth }
+const namespaced = false
+// const modules = { auth }
 const strict = false
 
 // export enum Possessions {
@@ -55,7 +52,8 @@ const state = {
     time: 8*60,
     running: false
   },
-  editable: false
+  editable: false,
+  websocket: 'ws://localhost:4444'
 }
 
 let intervalID;
@@ -86,7 +84,8 @@ const mutations = {
   setClock: (state, running) => state.clock.running = running,
   setTime: (state, time) => state.clock.time = time,
   setPossession: (state, value) => state.possession = value,
-  toggleEditable: (state) => state.editable = !state.editable
+  toggleEditable: (state) => state.editable = !state.editable,
+  setWebSocket: (state, value) => state.websocket = value
 }
 
 const actions = {
@@ -118,49 +117,52 @@ const actions = {
 
     commit('setTime', time)
   },
-  // incrementClock({ getters, commit }) {
-    // const time = getters.minutes + 1;
-    // commit('setTime', time * 60)
-  // },
-  // decrementClock({ getters, commit }) {
-    // const time = getters.minutes - 1;
-    // commit('setTime', time * 60)
-  // },
-  incrementAway(context, payload) {
+  incrementClock ({ getters, commit }) {
+    const time = getters.minutes + 1;
+    commit('setTime', time * 60)
+  },
+  decrementClock ({ getters, commit }) {
+    const time = getters.minutes - 1;
+    commit('setTime', time * 60)
+  },
+  incrementAway (context, payload) {
     // console.log("Payload ", payload)
     context.commit('incrementAway', payload)
   },
-  setAway(context, payload) {
+  setAway (context, payload) {
     context.commit('setAway', payload)
   },
-  incrementHome(context, payload){
+  incrementHome (context, payload){
     context.commit('incrementHome', payload)
   },
-  setHome(context, payload) {
+  setHome (context, payload) {
     context.commit('setHome', payload)
   },
-  setHomeFouls(context, payload) {
+  setHomeFouls (context, payload) {
     context.commit('setHomeFouls', payload)
   },
-  setAwayFouls(context, payload) {
+  setAwayFouls (context, payload) {
     context.commit('setAwayFouls', payload)
   },
-  setPeriod(context, payload) {
+  setPeriod (context, payload) {
     context.commit('setPeriod', payload)
+  },
+  setWebSocket(context, payload) {
+    context.commit('setWebSocket', payload)
   }
 }
 const getters = {
-  minutes: state => Math.floor(state.clock.time / 60),
-  seconds: state => state.clock.time % 60
+  minutes(state){ return Math.floor(state.clock.time / 60)},
+  seconds(state){return state.clock.time % 60},
+  websocket(state){return state.websocket}
 }
 
-export const scoreControllerStore = new Vuex.Store({
+export default {
   state,
   strict,
   actions,
-  modules,
+  // modules,
   getters,
   mutations,
   namespaced
-})
-
+}

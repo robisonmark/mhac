@@ -1,6 +1,79 @@
 <template>
   <div class="scoreapp">
-    <button class="set_game_rules">Set Game Rules Modal</button>
+    <v-container>
+      <v-row>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +1</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -1</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Home Possesion</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Away Possesion</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -1</v-btn>
+        </v-col>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +1</v-btn>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +2</v-btn>
+        </v-col>
+        <!-- <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -2</v-btn>
+        </v-col> -->
+        <v-col align-self='center' cols=4></v-col>
+        <!-- <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -2</v-btn>
+        </v-col> -->
+        <v-col align-self='center'>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +2</v-btn>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +3</v-btn>
+        </v-col>
+        <!-- <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -3</v-btn>
+        </v-col> -->
+        <v-col cols=4></v-col>
+        <!-- <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score -3</v-btn>
+        </v-col> -->
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Score +3</v-btn>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Home TimeOut</v-btn>
+        </v-col>
+        <v-col></v-col>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Start Clock</v-btn>
+        </v-col>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Stop Clock</v-btn>
+        </v-col>
+        <v-col></v-col>
+        <v-col>
+          <v-btn elevation="2" small x-large x-small @click="submitWebsocket">Away TimeOut</v-btn>
+        </v-col>
+
+      </v-row>
+
+    </v-container>
+    <!-- <button class="set_game_rules">Set Game Rules Modal</button>
     <div class="home_team">
       <div class="score_window">{{home_score}}</div>
       <div class="button_row">
@@ -32,6 +105,10 @@
         <button class="timeout">Timeout</button>
         <button class="foul">Foul +1</button>
       </div>
+    </div>
+    <div>
+      <input v-model = 'webSocket'> </input> -->
+
     </div>
   </div>
 </template>
@@ -71,13 +148,14 @@ export default {
         hundreds_seconds: 100
       },
       timer_running: false,
-      connection: false
+      connection: false,
+      webSocket: ''
     }
   },
   created () {
     console.log('Starting connection to WebSocket Server')
     this.connection = new WebSocket('ws://192.168.1.39:4444')
-    this.connection.onmessage = (data) => this.messageReceived(data)
+    // this.connection.onmessage = (data) => this.messageReceived(data)
     this.connection.onopen = (event) => this.messageSend(event)
   },
 
@@ -113,19 +191,16 @@ export default {
   },
 
   methods: {
-    callStore (data) {
-      this.$store.dispatch(...data)
-    },
+
     messageSend (data) {
       console.log(JSON.stringify(data))
       // console.log("Successfully connected to the echo websocket server...")
       this.connection.send(JSON.stringify(data))
     },
-    messageReceived () {
-      const message = JSON.parse(data.data)
-      console.log('Message Recieved: ', message)
-      this.callSocket(message.data)
-    },
+    // messageReceived (data) {
+    //   const message = JSON.parse(data.data)
+    //   // console.log('Message Recieved: ', message)
+    // },
     addPeriod () {
       if (this.period < this.game_rules.periods) {
         this.period += 1

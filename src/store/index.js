@@ -6,12 +6,12 @@ import { api } from '@/api/endpoints.js'
 
 // Modules
 import auth from './modules/store.auth'
-import storeScoreContoller from './modules/store.scoreController'
+import scoreController from './modules/store.scoreController'
 
 Vue.use(Vuex)
 
 const namespaced = true
-const modules = { auth, storeScoreContoller }
+const modules = { auth, scoreController }
 const strict = false
 
 const state = {
