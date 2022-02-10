@@ -167,8 +167,8 @@ const actions = {
   setPossession (context, payload) {
     context.commit('setPossession', payload)
   },
-  setWebSocket (context) {
-    context.commit('setWebSocket', api.getWebSocketUrl()
+  async setWebSocket (context) {
+    await context.commit('setWebSocket', api.getWebSocketUrl()
                                   .then(response => { 
                                     return response.data["webSocketUrl"];
                                   }))

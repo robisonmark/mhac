@@ -126,8 +126,8 @@ export default {
   },
 
   created () {
-    this.$store.dispatch('setWebSocket')
-    console.log("here")
+    // this.$store.dispatch('setWebSocket')
+    // console.log("here")
     // this.connection.onopen = (event) => this.messageSend(event)
   },
 
