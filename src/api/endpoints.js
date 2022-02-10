@@ -640,4 +640,20 @@ export class api {
       data: body
     })
   }
+
+  static async getWebSocketUrl () {
+    return robros({
+      url: '/websocketUrl',
+      method: 'GET'
+    })
+  }
+  
+  static async updateWebSocketUrl (body) {
+    return robros({
+      url: '/websocketUrl',
+      method: 'POST',
+      data: body
+    })
+  }
 }
+
