@@ -29,5 +29,7 @@ export default {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
+    backdrop-filter: brightness(85%);
+    width: 40px;
   }
 </style>

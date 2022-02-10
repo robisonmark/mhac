@@ -7,7 +7,7 @@
       <div class="team_name team_name_wrapper">
         <div :class='`team_name team_name_${location}`' :style='{ color: secondary_color }'>{{team_name}}</div>
       </div>
-      <scoreBlock :location="location" v-model="score"></scoreBlock>
+      <scoreBlock :location="location" v-model="score" :style='{ color: "#fff" }'></scoreBlock>
     </div>
     <div :class='`team_stats team_stats_${location}`' :style='{ backgroundColor: team_color }'>
       <div>
@@ -102,12 +102,12 @@ export default {
     overflow: hidden;
 
     &-home {
-      padding-right: 10px;
+      // padding-right: 10px;
     }
 
     &-away {
       flex-flow: row-reverse;
-      padding-left: 10px;
+      // padding-left: 10px;
     }
   }
 
@@ -154,9 +154,12 @@ export default {
     line-height: .8;
     display: flex;
     flex-grow: 1;
+    padding-left: 5px;
+    padding-right: 5px;
 
     &_home {
       justify-content: flex-end;
+      text-align: right;
     }
 
     &_away {

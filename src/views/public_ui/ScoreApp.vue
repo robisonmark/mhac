@@ -310,7 +310,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   // @import (css) url('vuetify/dist/vuetify.min.css');
 
 

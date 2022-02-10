@@ -8,9 +8,9 @@
         <scoreBlock location="away" v-model="away_score"></scoreBlock>
       </div> -->
       <div class="timeBlock">
-        <!-- <div class="timeRemaining">
-          <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{(time_remaining.seconds === 60 || time_remaining.seconds === 0) ? '00' : time_remaining.seconds }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.hundreds_seconds}}</template>
-        </div> -->
+        <div class="timeRemaining">
+          <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{displaySeconds(time_remaining.seconds) }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.hundreds_seconds}}</template>
+        </div>
         <div class="period">{{period}}</div>
       </div>
     </div>
@@ -29,12 +29,12 @@ export default {
     return {
       // away_fouls: 4,
       // away_score: 0,
-      away_team_slug: 'life_christian',
+      away_team_slug: 'daniel_1',
       // away_timeouts: 4,
 
       // home_fouls: 0,
       // home_score: 0,
-      home_team_slug: 'covenant_christian',
+      home_team_slug: 'western_kentucky',
       // home_timeouts: 5,
 
       isKeyDown: false,
@@ -109,6 +109,10 @@ export default {
     timer_running: {
       get: function () {
         return this.$store.state.scoreController.clock.running
+      },
+
+      set: function (newValue) {
+        console.log(newValue)
       }
     },
     webSocketURL () {
@@ -196,12 +200,13 @@ export default {
       // TODO: set to time or restart
     },
     timer () {
+      console.log(this.timer_running)
       if (this.timer_running) {
-        this.stopTimer()
-      } else {
         this.runTimer()
+      } else {
+        this.stopTimer()
       }
-      this.timer_running = !this.timer_running
+      // this.timer_running = !this.timer_running
     },
     runTimer () {
       const self = this
@@ -228,6 +233,15 @@ export default {
     },
     stopTimer () {
       clearInterval(Window.timerFunc)
+    },
+    displaySeconds (seconds) {
+      if (seconds === 60 || seconds === 0) {
+        return '00'
+      } else if (seconds < 10) {
+        return '0' + seconds.toString()
+      } else {
+        return seconds
+      }
     }
   }
 }
