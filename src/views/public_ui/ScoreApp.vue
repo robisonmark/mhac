@@ -11,6 +11,7 @@
             item-value="slug"
             dense
             return-object
+            change="submitWebsocket('setHomeTeam', `${select.src}`)"
           ></v-select>
         </v-col>
         <v-col>
@@ -24,6 +25,7 @@
             item-value="slug"
             dense
             return-object
+            change="submitWebsocket('setAwayTeam', `${select.src}`)"
           ></v-select>
         </v-col>
       </v-row>
@@ -68,7 +70,10 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)">Period</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)">Period +</v-btn>
+            </v-col>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('decrementPeriod', -1)">Period -</v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -112,48 +117,21 @@
       </v-row>
 
     </v-container>
-    <!-- <button class="set_game_rules">Set Game Rules Modal</button>
-    <div class="home_team">
-      <div class="score_window">{{home_score}}</div>
-      <div class="button_row">
-        <button class="point_one" @click="changeScore('home', 1)">+1</button>
-        <button class="point_two" @click="changeScore('home', 2)">+2</button>
-        <button class="point_three" @click="changeScore('home', 3)">+3</button>
-        <button class="remove_score" @click="changeScore('home', -1)">-1</button>
-        <button class="timeout">Timeout</button>
-        <button class="foul">Team Foul</button>
-      </div>
-    </div>
-    <div class="game_info_block">
-      <div class="timer">{{time_remaining.minutes}} : {{time_remaining.seconds}}</div>
-      <div class="period">{{period}}</div>
-      <button class="period" :disabled="period === game_rules.period" @click="addPeriod()">Period +1</button>
-      <button class="clock" @click="timer()">
-        <template v-if="timer_running">Stop</template>
-        <template v-else>Start</template> Clock
-      </button>
-      <button v-if="!timer_running" class="clock_reset" @click="resetTimer()">Reset Clock</button>
-    </div>
-    <div class="away_team">
-      <div class="score_window">{{away_score}}</div>
-      <div class="button_row">
-        <button class="point_one" @click="changeScore('away', 1)">+1</button>
-        <button class="point_two" @click="changeScore('away', 2)">+2</button>
-        <button class="point_three" @click="changeScore('away', 3)">+3</button>
-        <button class="remove_score" @click="changeScore('away', -1)">-1</button>
-        <button class="timeout">Timeout</button>
-        <button class="foul">Foul +1</button>
-      </div>
-    </div>
-    <div>
-      <input v-model = 'webSocket'> </input> -->
-
     </div>
   </v-app>
 </template>
 
 <script>
 import { cloneDeep } from 'lodash'
+import Vue from 'vue'
+import Vuetify from 'vuetify'
+// import 'vuetify/dist/vuetify.min.css'
+
+Vue.use(Vuetify)
+
+const opts = {}
+
+// export default new Vuetify(opts)
 
 
 export default {

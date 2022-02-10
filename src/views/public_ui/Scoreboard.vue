@@ -8,9 +8,9 @@
         <scoreBlock location="away" v-model="away_score"></scoreBlock>
       </div> -->
       <div class="timeBlock">
-        <div class="timeRemaining">
+        <!-- <div class="timeRemaining">
           <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{(time_remaining.seconds === 60 || time_remaining.seconds === 0) ? '00' : time_remaining.seconds }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.hundreds_seconds}}</template>
-        </div>
+        </div> -->
         <div class="period">{{period}}</div>
       </div>
     </div>
@@ -29,25 +29,23 @@ export default {
     return {
       // away_fouls: 4,
       // away_score: 0,
-      away_team_slug: 'tennessee_heat',
+      away_team_slug: 'life_christian',
       // away_timeouts: 4,
 
       // home_fouls: 0,
       // home_score: 0,
-      home_team_slug: 'daniel_1',
+      home_team_slug: 'covenant_christian',
       // home_timeouts: 5,
 
       isKeyDown: false,
 
       keys: [],
 
-      // period: 1,
       time_remaining: {
-        minutes: 9,
+        minutes: 7,
         seconds: 0,
         hundreds_seconds: 100
       },
-      // timer_running: false
       connection: false
     }
   },
@@ -58,6 +56,16 @@ export default {
   },
 
   computed: {
+    away_team_slug: {
+      get: function () {
+        return this.$store.state.scoreController.away_team_slug
+      }
+    },
+    home_team_slug: {
+      get: function () {
+        return this.$store.state.scoreController.home_team_slug
+      }
+    },
     away_fouls: {
       get: function () {
         return this.$store.state.scoreController.fouls.away

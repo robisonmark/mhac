@@ -50,9 +50,11 @@ const state = {
     home: 5,
     away: 5
   },
+  away_team_slug: 'life_christian',
+  home_team_slug: 'covenant_christian',
   period: 1,
   possession: '',
-  period_time: 8,
+  period_time: 6,
   clock: {
     time: 8 * 60,
     running: false
@@ -71,6 +73,8 @@ let intervalID
 // const audio = new Audio('/buzzer.mp3');
 
 const mutations = {
+  setAwayTeam: (state, payload) => state.away_team_slug = payload,
+  setHomeTeam: (state, payload) => state.home_team_slug = payload,
   incrementHome: (state, payload) => state.score.home += payload,
   decrementHome: (state) => state.score.home && state.score.home--,
   setHome: (state, payload) => state.score.home = payload,
@@ -97,6 +101,13 @@ const mutations = {
 }
 
 const actions = {
+  setAwayTeam (context, payload) {
+    context.commit('setAwayTeam', payload)
+  },
+  setHomeTeam (context, payload) {
+    context.commit('setHomeTeam', payload)
+  },
+
   startClock ({ commit, dispatch }) {
     commit('setClock', true)
 
@@ -145,6 +156,9 @@ const actions = {
   },
   incrementPeriod (context, payload) {
     context.commit('incrementPeriod', payload)
+  },
+  decrementPeriod (context, payload) {
+    context.commit('decrementPeriod', payload)
   },
   setHome (context, payload) {
     context.commit('setHome', payload)

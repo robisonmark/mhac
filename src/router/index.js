@@ -243,7 +243,7 @@ export const router = new Router({
           name: 'scoreapp',
           component: scoreapp,
           meta: {
-            requiresAuth: (process.env.NODE_ENV === 'production'),
+            // requiresAuth: (process.env.NODE_ENV === 'production'),
             section: 'scoreboard'
           }
         },
@@ -252,7 +252,7 @@ export const router = new Router({
           name: 'scoreboard',
           component: scoreboard,
           meta: {
-            requiresAuth: (process.env.NODE_ENV === 'production'),
+            // requiresAuth: (process.env.NODE_ENV === 'production'),
             section: 'scoreboard'
           }
         }
