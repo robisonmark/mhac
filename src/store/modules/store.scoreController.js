@@ -112,7 +112,11 @@ const mutations = {
   toggleClock: (state, payload) => state.clock.running = payload,
   setWebSocket: (state, payload) => state.websocket = payload,
   setHalf: (state) => state.half = !state.half,
-  setFinal: (state) => state.final = !state.final
+  setFinal: (state) => state.final = !state.final,
+  resetFouls: (state, payload) => {
+    state.fouls.home = payload
+    state.fouls.away = payload
+  }
 }
 
 const actions = {
@@ -207,6 +211,9 @@ const actions = {
   },
   setFinal (context, payload) {
     context.commit('setFinal', payload)
+  },
+  resetFouls (context, payload) {
+    context.commit('resetFouls', payload)
   }
 }
 const getters = {

@@ -49,7 +49,7 @@ export default {
           seconds: 0,
           hundreds_seconds: 100
         },
-        bonus_fouls: 8,
+        bonus_fouls: 7,
         double_bonus_fouls: 10
       },
 
@@ -150,6 +150,14 @@ export default {
           seconds: 0,
           hundreds_seconds: 100
         }
+        console.log(this.getNumberWithOrdinal(this.$store.state.scoreController.period) === 'OT 1')
+        if (this.getNumberWithOrdinal(this.$store.state.scoreController.period) === 'OT 1') {
+          const data = {
+            action: 'resetFouls',
+            value: this.game_rules.bonus_fouls
+          }
+          this.callStore(data)
+        }
       },
       deep: true
     },
@@ -157,8 +165,11 @@ export default {
       handler: function (newValue) {
         if (newValue === true) {
           this.timeouts = this.game_rules.timeouts_allowed
-          this.home_fouls = this.game_rules.bonus_fouls
-          this.away_fouls = this.game_rules.bonus_fouls
+          const data = {
+            action: 'resetFouls',
+            value: this.game_rules.bonus_fouls
+          }
+          this.callStore(data)
         }
       },
       deep: true
