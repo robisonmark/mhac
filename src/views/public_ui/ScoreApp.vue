@@ -332,12 +332,16 @@ export default {
   }
 }
 </script>
-
+<style>
+  .v-btn__content {
+    color: #eee !important;
+  }
+</style>
 <style lang="less" scoped>
   @import (css) url('https://cdn.jsdelivr.net/npm/vuetify@1.x/dist/vuetify.min.css');
 
-  .v-btn__content {
-    color: #eee;
+  /deep/ .v-btn__content {
+    color: #eee !important;
   }
 
   .container {
