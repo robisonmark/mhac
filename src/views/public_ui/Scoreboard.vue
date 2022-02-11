@@ -29,12 +29,12 @@ export default {
     return {
       // away_fouls: 4,
       // away_score: 0,
-      away_team_slug: 'daniel_1',
+      // away_team_slug: 'daniel_1',
       // away_timeouts: 4,
 
       // home_fouls: 0,
       // home_score: 0,
-      home_team_slug: 'western_kentucky',
+      // home_team_slug: 'western_kentucky',
       // home_timeouts: 5,
 
       isKeyDown: false,
@@ -116,11 +116,21 @@ export default {
       }
     },
     webSocketURL () {
-        return this.$store.getters.getWebsocket
-      }
+      return this.$store.getters.getWebsocket
+    }
   },
 
   watch: {
+    period: {
+      handler: function () {
+        this.time_remaining = {
+          minutes: 7,
+          seconds: 0,
+          hundreds_seconds: 100
+        }
+      },
+      deep: true
+    },
     timer_running: {
       handler: function () {
         this.timer()
@@ -128,12 +138,12 @@ export default {
       deep: true
     },
     webSocketURL: {
-       handler: function () {
+      handler: function () {
         this.connectWebSocket()
       }
     }
   },
-  beforeCreate() {
+  beforeCreate () {
     this.$store.dispatch('setWebSocket')
   },
 
@@ -145,7 +155,6 @@ export default {
 
   mounted () {
     const self = this
-
 
     window.addEventListener('keydown', function (event) {
       self.isKeyDown = true
@@ -168,11 +177,10 @@ export default {
       self.isKeyDown = false
       self.keys.length = 0
     })
-
   },
 
   methods: {
-    connectWebSocket() {
+    connectWebSocket () {
       console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
       this.connection = new WebSocket(this.$store.getters.getWebsocket)
       this.connection.onmessage = (event) => this.messageReceived(event)
