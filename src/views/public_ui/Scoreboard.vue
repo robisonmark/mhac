@@ -262,6 +262,10 @@ export default {
 
 <style lang="less">
   @import (css) url('https://fonts.googleapis.com/css2?family=Teko&display=swap');
+  ::v-deep html,
+  ::v-deep body {
+    overflow: hidden;
+  }
   .scoreboard {
     display: flex;
     width: 100%;
