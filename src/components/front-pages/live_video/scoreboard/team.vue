@@ -15,7 +15,9 @@
         </div>
       </div>
       <div v-if="bonus" class="bonus">Bonus<template v-if="bonusPlus">+</template></div>
-      <div v-if="possession" :class="`possession possession_${location}`">P</div>
+      <div v-if="possession" :class="`possession possession_${location}`">
+        <img :src="`/static/scoreboard/poss_${location}.svg`"  />
+      </div>
     </div>
   </div>
 </template>
@@ -218,7 +220,7 @@ export default {
   .possession {
     font-family: 'Teko', sans-serif;
     width: 14px;
-    background-color: #fff;
+    // background-color: #fff;
     padding: 3px;
     position: relative;
     height: 100%;
@@ -227,46 +229,51 @@ export default {
     justify-content: center;
     align-items: center;
 
-    &:after,
-    &:before {
-      content: "";
-      position: absolute;
-      width: 3px;
-      height: 50%;
-    }
-    &:before {
-      top: 0px;
-    }
-    &:after {
-      bottom: 0px;
+    img {
+      height: 13px;
+      width: auto;
     }
 
-    &_home {
-      &:after,
-      &:before {
-        right: 100%;
-      }
+    // &:after,
+    // &:before {
+    //   content: "";
+    //   position: absolute;
+    //   width: 3px;
+    //   height: 50%;
+    // }
+    // &:before {
+    //   top: 0px;
+    // }
+    // &:after {
+    //   bottom: 0px;
+    // }
 
-      &:before {
-        background: linear-gradient(to top left, #fff 50%, transparent 51%);
-      }
-      &:after {
-        background: linear-gradient(to bottom left, #fff 50%, transparent 51%);
-      }
-    }
+    // &_home {
+    //   &:after,
+    //   &:before {
+    //     right: 100%;
+    //   }
 
-    &_away {
-      &:after,
-      &:before {
-        left: 100%;
-      }
+    //   &:before {
+    //     background: linear-gradient(to top left, #fff 50%, transparent 51%);
+    //   }
+    //   &:after {
+    //     background: linear-gradient(to bottom left, #fff 50%, transparent 51%);
+    //   }
+    // }
 
-      &:before {
-        background: linear-gradient(to top right, #fff 50%, transparent 51%);
-      }
-      &:after {
-        background: linear-gradient(to bottom right, #fff 50%, transparent 51%);
-      }
-    }
+    // &_away {
+    //   &:after,
+    //   &:before {
+    //     left: 100%;
+    //   }
+
+    //   &:before {
+    //     background: linear-gradient(to top right, #fff 50%, transparent 51%);
+    //   }
+    //   &:after {
+    //     background: linear-gradient(to bottom right, #fff 50%, transparent 51%);
+    //   }
+    // }
   }
 </style>
