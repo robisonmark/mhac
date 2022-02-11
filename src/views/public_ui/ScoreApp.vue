@@ -28,62 +28,61 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row :style='`{ backgroundColor: #${home.team_color} }`'>
+      <v-row>
         <v-col class="home" cols="4">
           <v-row>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('incrementHome', 1)" :style='`{ backgroundColor: #${home.team_color} }`'>Score +1</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHome', 1)" :style='{ backgroundColor: home_color}'>Score +1</v-btn>
             </v-col>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('incrementHome', -1)">Score -1</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHome', -1)" :style='{ backgroundColor: home_color}'>Score -1</v-btn>
             </v-col>
           </v-row>
           <v-row>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('incrementHome', 2)">Score +2</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHome', 2)" :style='{ backgroundColor: home_color}'>Score +2</v-btn>
             </v-col>
           </v-row>
           <v-row align-content="space-between">
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementHome', 3)">Score +3</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHome', 3)" :style='{ backgroundColor: home_color}'>Score +3</v-btn>
             </v-col>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementHomeTimeouts', 0)">Timeout</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('decrementHomeTimeouts', 0)" :style='{ backgroundColor: home_color}'>Timeout</v-btn>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementHomeFouls', 1)">Team Foul</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHomeFouls', 1)" :style='{ backgroundColor: home_color}'>Team Foul</v-btn>
             </v-col>
           </v-row>
         </v-col>
         <!-- <v-col></v-col> -->
         <v-col class="center">
           <v-row>
-            <v-col>
+            <v-col cols="6">
               <v-btn elevation="2" @click="submitWebsocket('toggleClock', true)" :style="{backgroundColor: 'green'}">Start Clock</v-btn>
             </v-col>
-            <v-spacer></v-spacer>
-            <v-col>
+            <v-col  cols="6">
               <v-btn elevation="2" @click="submitWebsocket('toggleClock', false)" :style="{backgroundColor: 'red'}">Stop Clock</v-btn>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)">Period +</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)" :style="{backgroundColor: 'grey'}">Period +</v-btn>
             </v-col>
             <v-spacer></v-spacer>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementPeriod', -1)">Period -</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('decrementPeriod', -1)" :style="{backgroundColor: 'grey'}">Period -</v-btn>
             </v-col>
           </v-row>
           <v-row>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'home')"><font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Poss</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'home')" :style='{ backgroundColor: home_color}'><font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Poss</v-btn>
             </v-col>
             <v-spacer></v-spacer>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')"><font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon> Poss</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')" :style='{ backgroundColor: away_color}'><font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon> Poss</v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -91,28 +90,30 @@
         <v-col class="away" cols="4">
           <v-row>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 1)">Score +1</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', -1)" :style='{ backgroundColor: away_color}'>Score -1</v-btn>
             </v-col>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('incrementAway', -1)">Score -1</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 1)" :style='{ backgroundColor: away_color}'>Score +1</v-btn>
             </v-col>
           </v-row>
           <v-row>
+            <v-col></v-col>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 2)">Score +2</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 2)" :style='{ backgroundColor: away_color}'>Score +2</v-btn>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 3)">Score +3</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('decrementAwayTimeouts', 0)" :style='{ backgroundColor: away_color}'>Timeout</v-btn>
             </v-col>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementAwayTimeouts', 0)">Timeout</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 3)" :style='{ backgroundColor: away_color}'>Score +3</v-btn>
             </v-col>
           </v-row>
           <v-row>
+            <v-col></v-col>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementAwayFouls', 1)">Team Foul</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAwayFouls', 1)" :style='{ backgroundColor: away_color}'>Team Foul</v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -139,7 +140,9 @@ export default {
   data () {
     return {
       away: '',
-      home: '',
+      home: {
+        main_color: '#fff'
+      },
       away_score: 0,
       away_timeouts: 5,
 
@@ -182,6 +185,12 @@ export default {
     },
     webSocketURL () {
       return this.$store.getters.getWebsocket
+    },
+    away_color () {
+      return `#${this.away.main_color}`
+    },
+    home_color () {
+      return `#${this.home.main_color}`
     }
   },
 
@@ -326,6 +335,14 @@ export default {
 
 <style lang="less" scoped>
   @import (css) url('https://cdn.jsdelivr.net/npm/vuetify@1.x/dist/vuetify.min.css');
+
+  .v-btn__content {
+    color: #eee;
+  }
+
+  .container {
+    padding: 24px !important; // vuetify overide
+  }
 
   .scoreboard {
     display: flex;

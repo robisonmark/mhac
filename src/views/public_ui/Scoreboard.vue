@@ -12,6 +12,7 @@
           <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{displaySeconds(time_remaining.seconds) }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.hundreds_seconds}}</template>
         </div>
         <div class="period">{{period}}</div>
+        <img class="logo_mhac" src="/static/color-team-logos/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
       </div>
     </div>
 
@@ -290,8 +291,15 @@ export default {
       text-align: center;
       letter-spacing: 1px;
     }
+
+    .timeRemaining {
+      font-size: 2.2rem;
+    }
   }
   .period {
     white-space: nowrap;
+  }
+  .logo_mhac {
+    width: 50px;
   }
 </style>

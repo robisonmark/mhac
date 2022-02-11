@@ -267,6 +267,10 @@ export default {
 
     }
 
+    .container {
+      padding: 0rem !important; // vuetify overide
+    }
+
     .container--header {
       height: 7rem;
       display: flex;
