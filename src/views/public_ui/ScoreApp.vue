@@ -139,7 +139,7 @@
         <v-col>
           <v-text-field v-model="time_remaining.hundreds_seconds" label="Hundreds"></v-text-field>
         </v-col>
-        <v-btn @click="submitWebsocket('setTime', time_remaining)">Submit</v-btn>
+        <v-btn @click="submitWebsocket('setTime', time_remaining)" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
     </v-container>
     <v-container>
