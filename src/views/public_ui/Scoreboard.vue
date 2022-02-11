@@ -195,7 +195,7 @@ export default {
       }
     },
     callStore (data) {
-      console.log(data)
+      console.log('hit')
       this.$store.dispatch(data.action, data.value)
     },
     messageReceived (data) {
@@ -208,7 +208,6 @@ export default {
       // TODO: set to time or restart
     },
     timer () {
-      console.log(this.timer_running)
       if (this.timer_running) {
         this.runTimer()
       } else {
@@ -219,23 +218,28 @@ export default {
     runTimer () {
       const self = this
       Window.timerFunc = setInterval(function () {
-        const timerRemaining = (self.time_remaining.hundreds_seconds * 1000) + (self.time_remaining.seconds * 60) + self.time_remaining.minutes
+        const timerRemaining = (self.time_remaining.hundreds_seconds / 100) + (self.time_remaining.seconds / 60) + self.time_remaining.minutes
+
+        if (Object.entries(timerRemaining) === 0) {
+          const data = {
+            action: 'toggleClock',
+            value: false
+          }
+          self.callStore(data)
+        }
+
         if (timerRemaining > 0) {
           self.time_remaining.hundreds_seconds -= 1
         }
 
-        if (self.time_remaining.hundreds_seconds === 0) {
+        if (self.time_remaining.hundreds_seconds === 0 && self.time_remaining.seconds > 0) {
           self.time_remaining.seconds -= 1
-          self.time_remaining.hundreds_seconds = 100
+          self.time_remaining.hundreds_seconds = 99
         }
 
-        if (self.time_remaining.seconds === 0) {
+        if (self.time_remaining.seconds === 0 && self.time_remaining.minutes > 0) {
           self.time_remaining.minutes -= 1
           self.time_remaining.seconds = 59
-        }
-
-        if (Object.entries(timerRemaining) === 0) {
-          clearInterval(Window.timerFunc)
         }
       }, 10)
     },
@@ -267,7 +271,9 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     width: 65px;
+    background-color: #fff;
     .score {
       display: flex;
       justify-content: center;
@@ -275,7 +281,6 @@ export default {
     .timeBlock {
       font-family: 'Teko', sans-serif;
 
-      background-color: #fff;
       justify-content: center;
       align-items: center;
       flex-flow: column;

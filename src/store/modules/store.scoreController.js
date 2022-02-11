@@ -183,9 +183,9 @@ const actions = {
   },
   async setWebSocket (context) {
     context.commit('setWebSocket', await api.getWebSocketUrl()
-                                  .then(response => { 
-                                    return response.data["webSocketUrl"];
-                                  }))
+      .then(response => {
+        return response.data.webSocketUrl
+      }))
   }
 }
 const getters = {

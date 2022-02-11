@@ -11,7 +11,7 @@
             item-value="slug"
             dense
             return-object
-            @change="submitWebsocket"
+            @change="setHome"
           ></v-select>
         </v-col>
         <v-spacer></v-spacer>
@@ -24,12 +24,12 @@
             item-value="slug"
             dense
             return-object
-            @change="submitWebsocket('setAwayTeam', `${select.src}`)"
+            @change="setAway"
           ></v-select>
         </v-col>
       </v-row>
       <v-row :style='`{ backgroundColor: #${home.team_color} }`'>
-        <v-col class="home" cols="3">
+        <v-col class="home" cols="4">
           <v-row>
             <v-col align-self='center'>
               <v-btn elevation="2" @click="submitWebsocket('incrementHome', 1)" :style='`{ backgroundColor: #${home.team_color} }`'>Score +1</v-btn>
@@ -43,7 +43,7 @@
               <v-btn elevation="2" @click="submitWebsocket('incrementHome', 2)">Score +2</v-btn>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row align-content="space-between">
             <v-col>
               <v-btn elevation="2" @click="submitWebsocket('incrementHome', 3)">Score +3</v-btn>
             </v-col>
@@ -58,41 +58,43 @@
           </v-row>
         </v-col>
         <!-- <v-col></v-col> -->
-        <v-col class="center" cols="3">
+        <v-col class="center">
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('toggleClock', true)">Start Clock</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('toggleClock', true)" :style="{backgroundColor: 'green'}">Start Clock</v-btn>
             </v-col>
+            <v-spacer></v-spacer>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('toggleClock', false)">Stop Clock</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('toggleClock', false)" :style="{backgroundColor: 'red'}">Stop Clock</v-btn>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
               <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)">Period +</v-btn>
             </v-col>
+            <v-spacer></v-spacer>
             <v-col>
               <v-btn elevation="2" @click="submitWebsocket('decrementPeriod', -1)">Period -</v-btn>
             </v-col>
           </v-row>
           <v-row>
-            <v-col align-self='center' cols="3">
+            <v-col align-self='center'>
               <v-btn elevation="2" @click="submitWebsocket('setPossession', 'home')"><font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Poss</v-btn>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col align-self='center' cols="3">
+            <v-col align-self='center'>
               <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')"><font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon> Poss</v-btn>
             </v-col>
           </v-row>
         </v-col>
         <!-- <v-col></v-col> -->
-        <v-col class="away" cols="3">
+        <v-col class="away" cols="4">
           <v-row>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('incrementAway', -1)">Score -1</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 1)">Score +1</v-btn>
             </v-col>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('incrementAway', 1)">Score +1</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAway', -1)">Score -1</v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -253,6 +255,16 @@ export default {
       console.log(JSON.stringify(data))
       // console.log("Successfully connected to the echo websocket server...")
       this.connection.send(JSON.stringify(data))
+    },
+
+    setHome (data) {
+      console.log(data.slug)
+      this.submitWebsocket('setHomeTeam', data.slug)
+    },
+
+    setAway (data) {
+      console.log(data.slug)
+      this.submitWebsocket('setAwayTeam', data.slug)
     },
     // messageReceived (data) {
     //   const message = JSON.parse(data.data)
