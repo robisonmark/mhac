@@ -66,7 +66,7 @@ const state = {
   final: false,
 
   time_remaining: {
-    minutes: 7,
+    minutes: 8,
     seconds: 0,
     hundreds_seconds: 100
   }
@@ -103,7 +103,7 @@ const mutations = {
   setPeriod: (state, payload) => state.period = payload,
   setClock: (state, running) => state.clock.running = running,
   setTime: (state, time) => {
-    state.time_remaining.miuntes = time.miuntes
+    state.time_remaining.minutes = time.minutes
     state.time_remaining.seconds = time.seconds
     state.time_remaining.hundreds_seconds = time.hundreds_seconds
   },

@@ -147,7 +147,6 @@
         <scoreboard></scoreboard>
       </v-row>
     </v-container>
-    </div>
   </v-app>
 </template>
 

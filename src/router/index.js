@@ -22,6 +22,7 @@ import videofeed from '@/components/front-pages/live_video/video_iframe'
 import livestream from '@/views/public_ui/LiveStream'
 import scoreboard from '@/views/public_ui/Scoreboard'
 import scoreapp from '@/views/public_ui/ScoreApp'
+import awards from '@/views/public_ui/live_video/awards'
 
 // Team Management Components
 import TeamManagement from '@/components/TeamManagement'
@@ -251,6 +252,15 @@ export const router = new Router({
           path: 'scoreboard',
           name: 'scoreboard',
           component: scoreboard,
+          meta: {
+            // requiresAuth: (process.env.NODE_ENV === 'production'),
+            section: 'scoreboard'
+          }
+        },
+        {
+          path: 'awards',
+          name: 'awards',
+          component: awards,
           meta: {
             // requiresAuth: (process.env.NODE_ENV === 'production'),
             section: 'scoreboard'

@@ -58,7 +58,7 @@ export default {
       keys: [],
 
       time_remaining: {
-        minutes: 7,
+        minutes: 8,
         seconds: 0,
         hundreds_seconds: 100
       },
@@ -146,7 +146,7 @@ export default {
     period: {
       handler: function () {
         this.time_remaining = {
-          minutes: 7,
+          minutes: 8,
           seconds: 0,
           hundreds_seconds: 100
         }
@@ -238,7 +238,6 @@ export default {
       }
     },
     callStore (data) {
-      console.log('hit')
       this.$store.dispatch(data.action, data.value)
     },
     messageReceived (data) {
