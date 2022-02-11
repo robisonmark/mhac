@@ -1,6 +1,6 @@
 <template>
   <div class="scoreboard" @keydown.space="timer">
-    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts" :bonus="home_fouls >= 5" :bonusPlus="home_fouls >= 10" :possession="nextPossession === 'home'"></teamBlock>
+    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts" :bonus="away_fouls >=  game_rules.bonus_fouls" :bonusPlus="home_fouls >= game_rules.double_bonus_fouls" :possession="nextPossession === 'home'"></teamBlock>
 
     <div class="gameStats">
       <!-- <div class="score">
@@ -11,7 +11,10 @@
         <div class="timeRemaining">
           <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{displaySeconds(time_remaining.seconds) }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.hundreds_seconds}}</template>
         </div>
-        <div class="period">{{period}}</div>
+        <div class="period" v-if="!final && !half">{{period}}</div>
+        <div class="period" v-if="!final && half">Half</div>
+        <div class="period" v-if="final">Final</div>
+
         <img class="logo_mhac" src="/static/color-team-logos/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
       </div>
     </div>
@@ -37,6 +40,18 @@ export default {
       // home_score: 0,
       // home_team_slug: 'western_kentucky',
       // home_timeouts: 5,
+      game_rules: {
+        periods: 4,
+        timeouts_allowed: 5,
+        penalties_allowed: 7,
+        time_remaining: {
+          minutes: 1,
+          seconds: 0,
+          hundreds_seconds: 100
+        },
+        bonus_fouls: 8,
+        double_bonus_fouls: 10
+      },
 
       isKeyDown: false,
 
@@ -118,6 +133,12 @@ export default {
     },
     webSocketURL () {
       return this.$store.getters.getWebsocket
+    },
+    half () {
+      return this.$store.state.scoreController.half
+    },
+    final () {
+      return this.$store.state.scoreController.final
     }
   },
 
@@ -128,6 +149,16 @@ export default {
           minutes: 7,
           seconds: 0,
           hundreds_seconds: 100
+        }
+      },
+      deep: true
+    },
+    half: {
+      handler: function (newValue) {
+        if (newValue === true) {
+          this.timeouts = this.game_rules.timeouts_allowed
+          this.home_fouls = this.game_rules.bonus_fouls
+          this.away_fouls = this.game_rules.bonus_fouls
         }
       },
       deep: true

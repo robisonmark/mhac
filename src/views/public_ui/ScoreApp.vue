@@ -85,6 +85,16 @@
               <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')" :style='{ backgroundColor: away_color}'><font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon> Poss</v-btn>
             </v-col>
           </v-row>
+
+          <v-row>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('setHalf', !half)" :style='{ backgroundColor: "grey"}'>Half</v-btn>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col align-self='center'>
+              <v-btn elevation="2" @click="submitWebsocket('setFinal', !final)" :style='{ backgroundColor: "grey"}'>Final</v-btn>
+            </v-col>
+          </v-row>
         </v-col>
         <!-- <v-col></v-col> -->
         <v-col class="away" cols="4">
@@ -117,6 +127,19 @@
             </v-col>
           </v-row>
         </v-col>
+      </v-row>
+      <v-row>
+        <v-subheader>Reset Time</v-subheader>
+        <v-col>
+          <v-text-field v-model="time_remaining.minutes" label="Minutes"></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field v-model="time_remaining.seconds" label="Seconds"></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field v-model="time_remaining.hundreds_seconds" label="Hundreds"></v-text-field>
+        </v-col>
+        <v-btn @click="submitWebsocket('setTime', time_remaining)">Submit</v-btn>
       </v-row>
     </v-container>
     <v-container>
@@ -166,7 +189,7 @@ export default {
 
       period: 1,
       time_remaining: {
-        minutes: 1,
+        minutes: 7,
         seconds: 0,
         hundreds_seconds: 100
       },
@@ -200,6 +223,12 @@ export default {
         this.connectWebSocket()
       }
     }
+    // time_remaining: {
+    //   handler: function () {
+    //     this.submitWebsocket('setTime', this.time_remaining)
+    //   }
+    // }
+
   },
   beforeCreate () {
     this.$store.dispatch('setTeams')

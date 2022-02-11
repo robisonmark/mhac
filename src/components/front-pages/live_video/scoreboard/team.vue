@@ -204,10 +204,14 @@ export default {
       padding: 5px;
       line-height: 1;
       height: 100%;
+      text-align: right;
     }
 
     &_away {
       flex-flow: row-reverse;
+      .bonus {
+        text-align: left;
+      }
     }
   }
 

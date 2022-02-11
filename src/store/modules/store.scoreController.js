@@ -60,7 +60,16 @@ const state = {
     running: false
   },
   editable: false,
-  websocket: ''
+  websocket: '',
+
+  half: false,
+  final: false,
+
+  time_remaining: {
+    minutes: 7,
+    seconds: 0,
+    hundreds_seconds: 100
+  }
 }
 
 let intervalID
@@ -93,11 +102,17 @@ const mutations = {
   decrementPeriod: (state) => state.period && state.period--,
   setPeriod: (state, payload) => state.period = payload,
   setClock: (state, running) => state.clock.running = running,
-  setTime: (state, time) => state.clock.time = time,
+  setTime: (state, time) => {
+    state.time_remaining.miuntes = time.miuntes
+    state.time_remaining.seconds = time.seconds
+    state.time_remaining.hundreds_seconds = time.hundreds_seconds
+  },
   setPossession: (state, value) => state.possession = value,
   toggleEditable: (state) => state.editable = !state.editable,
   toggleClock: (state, payload) => state.clock.running = payload,
-  setWebSocket: (state, payload) => state.websocket = payload
+  setWebSocket: (state, payload) => state.websocket = payload,
+  setHalf: (state) => state.half = !state.half,
+  setFinal: (state) => state.final = !state.final
 }
 
 const actions = {
@@ -186,6 +201,12 @@ const actions = {
       .then(response => {
         return response.data.webSocketUrl
       }))
+  },
+  setHalf (context, payload) {
+    context.commit('setHalf', payload)
+  },
+  setFinal (context, payload) {
+    context.commit('setFinal', payload)
   }
 }
 const getters = {
