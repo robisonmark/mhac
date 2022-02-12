@@ -171,9 +171,9 @@ export default {
           hundreds_seconds: 100
         }
         if (this.getNumberWithOrdinal(this.$store.state.scoreController.period).contains('OT')) {
-          this.time_remaining = this.gameRules.overtime.minutes
+          this.time_remaining.minutes = this.gameRules.overtime.minutes
         } else {
-          this.time_remaining = this.gameRules.time.minutes
+          this.time_remaining.minutes = this.gameRules.time.minutes
         }
         this.callStore({
           action: 'setTime',

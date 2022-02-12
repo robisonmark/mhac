@@ -253,7 +253,7 @@ export default {
         return this.$store.getters.away_score
       },
       set (newValue) {
-        this.away_score_override = newValue
+        this.away_score_override = Number(newValue)
       }
     },
     home_score: {
@@ -279,12 +279,12 @@ export default {
     // }
     away_score: {
       handler: function (newValue) {
-        this.away_score_override = newValue
+        this.away_score_override = Number(newValue)
       }
     },
     home_score: {
       handler: function (newValue) {
-        this.home_score_override = newValue
+        this.home_score_override = Number(newValue)
       }
     }
 
