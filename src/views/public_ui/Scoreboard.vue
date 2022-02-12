@@ -45,7 +45,7 @@ export default {
         timeouts_allowed: 5,
         penalties_allowed: 7,
         time_remaining: {
-          minutes: 1,
+          minutes: 8,
           seconds: 0,
           tenth_seconds: 10
         },
@@ -244,7 +244,8 @@ export default {
   methods: {
     connectWebSocket () {
       console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
-      this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      // this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      // this.connection = new WebSocket(this.$store.getters.getWebsocket)
       this.connection = new WebSocket('ws://172.20.1.171:8003/ws/1111')
       this.connection.onmessage = (event) => this.messageReceived(event)
     },
