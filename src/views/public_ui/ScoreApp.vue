@@ -161,10 +161,10 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-text-field number v-model="home_score_override" label="Home Score"></v-text-field>
+          <v-text-field type="number" v-model="home_score_override" label="Home Score"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field number v-model="away_score_override" label="Away Score"></v-text-field>
+          <v-text-field type="number" v-model="away_score_override" label="Away Score"></v-text-field>
         </v-col>
         <v-btn @click="resetScore" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
