@@ -244,9 +244,7 @@ export default {
   methods: {
     connectWebSocket () {
       console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
-      // this.connection = new WebSocket(this.$store.getters.getWebsocket)
-      // this.connection = new WebSocket(this.$store.getters.getWebsocket)
-      this.connection = new WebSocket('ws://172.20.1.171:8003/ws/1111')
+      this.connection = new WebSocket(this.$store.getters.getWebsocket)
       this.connection.onmessage = (event) => this.messageReceived(event)
     },
     getNumberWithOrdinal (n) {

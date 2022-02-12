@@ -77,7 +77,7 @@
         <v-col class="center">
           <v-row>
             <v-col cols="12">
-              <v-btn elevation="2" x-large @click="submitWebsocket('toggleClock', true)" :style="{backgroundColor: 'green'}">Toggle Clock</v-btn>
+              <v-btn elevation="2" block x-large @click="submitWebsocket('toggleClock', true)" :style="{backgroundColor: 'green'}">Toggle Clock</v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -294,8 +294,7 @@ export default {
   methods: {
     connectWebSocket () {
       console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
-      // this.connection = new WebSocket(this.$store.getters.getWebsocket)
-      this.connection = new WebSocket('ws://172.20.1.171:8003/ws/1111')
+      this.connection = new WebSocket(this.$store.getters.getWebsocket)
       this.connection.onopen = (event) => this.messageSend(event)
     },
     submitWebsocket (action, value) {
