@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // import VuexPersistence from 'vuex-persist'
+// TODO: Create a Persistent Source
 
 // api
 import { api } from '@/api/endpoints.js'
@@ -323,6 +324,10 @@ const getters = {
   homeFouls (state) { return state.fouls.home },
   awayFouls (state) { return state.fouls.away }
 }
+
+// const vuexLocal = new VuexPersistence({
+//   storage: window.localStorage
+// })
 
 export default {
   state,

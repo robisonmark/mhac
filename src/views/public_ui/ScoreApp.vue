@@ -145,6 +145,13 @@
           </v-row>
         </v-col>
       </v-row>
+    </v-container>
+    <v-container>
+      <v-row>
+        <scoreboard></scoreboard>
+      </v-row>
+    </v-container>
+    <v-container>
       <h3>Reset/Correct</h3>
       <v-row>
         <v-subheader>Reset Time</v-subheader>
@@ -167,11 +174,6 @@
           <v-text-field type="number" v-model="away_score_override" label="Away Score"></v-text-field>
         </v-col>
         <v-btn @click="resetScore" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
-      </v-row>
-    </v-container>
-    <v-container>
-      <v-row>
-        <scoreboard></scoreboard>
       </v-row>
     </v-container>
   </v-app>
