@@ -12,6 +12,54 @@ const namespaced = false
 // const modules = { auth }
 const strict = false
 
+const gameConfig = {
+  '14U': {
+    fouls_bonus: 7,
+    fouls_double_bonus: 10,
+    overtime: {
+      minutes: 3,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    time: {
+      minutes: 6,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    timeouts: 5
+  },
+  '16U': {
+    fouls_bonus: 7,
+    fouls_double_bonus: 10,
+    overtime: {
+      minutes: 3,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    time: {
+      minutes: 7,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    timeouts: 5
+  },
+  '18U': {
+    fouls_bonus: 7,
+    fouls_double_bonus: 10,
+    overtime: {
+      minutes: 4,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    time: {
+      minutes: 8,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    timeouts: 5
+  }
+}
+
 // export enum Possessions {
 //   None,
 //   Home = 'home',
@@ -68,7 +116,11 @@ const state = {
   time_remaining: {
     minutes: 8,
     seconds: 0,
-    hundreds_seconds: 100
+    tenth_seconds: 0
+  },
+
+  gameConfig: {
+
   }
 }
 
@@ -105,7 +157,7 @@ const mutations = {
   setTime: (state, time) => {
     state.time_remaining.minutes = time.minutes
     state.time_remaining.seconds = time.seconds
-    state.time_remaining.hundreds_seconds = time.hundreds_seconds
+    state.time_remaining.tenth_seconds = time.tenth_seconds
   },
   setPossession: (state, value) => state.possession = value,
   toggleEditable: (state) => state.editable = !state.editable,
@@ -116,6 +168,9 @@ const mutations = {
   resetFouls: (state, payload) => {
     state.fouls.home = payload
     state.fouls.away = payload
+  },
+  setGameConfig: (state, payload) => {
+    state.gameConfig = payload
   }
 }
 
@@ -214,12 +269,20 @@ const actions = {
   },
   resetFouls (context, payload) {
     context.commit('resetFouls', payload)
+  },
+  setTime (context, payload) {
+    context.commit('setTime', payload)
+  },
+  setGameConfig (context, payload) {
+    const ageconfig = gameConfig[payload]
+    context.commit('setGameConfig', ageconfig)
   }
 }
 const getters = {
   minutes (state) { return Math.floor(state.clock.time / 60) },
   seconds (state) { return state.clock.time % 60 },
-  getWebsocket (state) { return state.websocket }
+  getWebsocket (state) { return state.websocket },
+  getGameConfig (state) { return state.gameConfig }
 }
 
 export default {

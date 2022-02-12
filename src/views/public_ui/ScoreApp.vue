@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="3">
-          <h2>Home</h2>
+          <h3>Home</h3>
           <v-select v-model="home"
             :items="teams"
             label="home"
@@ -14,9 +14,19 @@
             @change="setHome"
           ></v-select>
         </v-col>
+        <v-col>
+          <v-select v-model="level"
+            :items="levels"
+            label="level"
+            item-text="level_name"
+            item-value="level_name"
+            @change="setConfig"
+          >
+          </v-select>
+        </v-col>
         <v-spacer></v-spacer>
         <v-col cols="3">
-          <h2>Away</h2>
+          <h3>Away</h3>
           <v-select v-model="away"
             :items="teams"
             label="away"
@@ -82,7 +92,7 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')" :style='{ backgroundColor: away_color}'><font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon> Poss</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')" :style='{ backgroundColor: away_color}'>Poss <font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon></v-btn>
             </v-col>
           </v-row>
 
@@ -137,7 +147,7 @@
           <v-text-field v-model="time_remaining.seconds" label="Seconds"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field v-model="time_remaining.hundreds_seconds" label="Hundreds"></v-text-field>
+          <v-text-field v-model="time_remaining.tenths_seconds" label="Tenths"></v-text-field>
         </v-col>
         <v-btn @click="submitWebsocket('setTime', time_remaining)" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
@@ -168,29 +178,20 @@ export default {
       away_score: 0,
       away_timeouts: 5,
 
-      game_rules: {
-        periods: 4,
-        timeouts_allowed: 5,
-        penalties_allowed: 7,
-        time_remaining: {
-          minutes: 1,
-          seconds: 0,
-          hundreds_seconds: 100
-        }
-      },
+      isKeyDown: false,
 
       home_score: 0,
       home_timeouts: 5,
 
-      isKeyDown: false,
-
       keys: [],
+
+      level: '',
 
       period: 1,
       time_remaining: {
         minutes: 7,
         seconds: 0,
-        hundreds_seconds: 100
+        tenths_seconds: 0
       },
       timer_running: false,
       connection: false
@@ -202,6 +203,9 @@ export default {
   },
 
   computed: {
+    levels () {
+      return this.$store.getters.levels
+    },
     teams () {
       return this.$store.getters.teams.length > 0 ? this.$store.getters.teams : []
     },
@@ -213,6 +217,9 @@ export default {
     },
     home_color () {
       return `#${this.home.main_color}`
+    },
+    game_config () {
+      return this.$store.getters.getGameConfig
     }
   },
 
@@ -229,9 +236,11 @@ export default {
     // }
 
   },
-  beforeCreate () {
-    this.$store.dispatch('setTeams')
-    this.$store.dispatch('setWebSocket')
+
+  async beforeCreate () {
+    await this.$store.dispatch('setTeams')
+    await this.$store.dispatch('setWebSocket')
+    await this.$store.dispatch('setLevels')
   },
 
   created () {
@@ -272,7 +281,8 @@ export default {
   methods: {
     connectWebSocket () {
       console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
-      this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      // this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      this.connection = new WebSocket('ws://172.20.1.171:8003/ws/1111')
       this.connection.onopen = (event) => this.messageSend(event)
     },
     submitWebsocket (action, value) {
@@ -356,6 +366,10 @@ export default {
     },
     stopTimer () {
       clearInterval(Window.timerFunc)
+    },
+    setConfig (levelName) {
+      const shortLevelName = levelName.split(' ')[0]
+      this.$store.dispatch('setGameConfig', shortLevelName)
     }
   }
 }

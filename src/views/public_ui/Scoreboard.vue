@@ -1,6 +1,6 @@
 <template>
   <div class="scoreboard" @keydown.space="timer">
-    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts" :bonus="away_fouls >=  game_rules.bonus_fouls" :bonusPlus="home_fouls >= game_rules.double_bonus_fouls" :possession="nextPossession === 'home'"></teamBlock>
+    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts" :bonus="away_fouls >=  gameRules.fouls_bonus" :bonusPlus="home_fouls >= gameRules.fouls_double_bonus" :possession="nextPossession === 'home'"></teamBlock>
 
     <div class="gameStats">
       <!-- <div class="score">
@@ -9,7 +9,7 @@
       </div> -->
       <div class="timeBlock">
         <div class="timeRemaining">
-          <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{displaySeconds(time_remaining.seconds) }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.hundreds_seconds}}</template>
+          <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{displaySeconds(time_remaining.seconds) }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.tenth_seconds}}</template>
         </div>
         <div class="period" v-if="!final && !half">{{period}}</div>
         <div class="period" v-if="!final && half">Half</div>
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <teamBlock location="away" v-model="away_team_slug" :score="away_score" :timeouts="away_timeouts" :bonus="away_fouls >= 5" :bonusPlus="away_fouls >= 10" :possession="nextPossession === 'away'"></teamBlock>
+    <teamBlock location="away" v-model="away_team_slug" :score="away_score" :timeouts="away_timeouts" :bonus="away_fouls >= gameRules.fouls_bonus" :bonusPlus="away_fouls >= gameRules.fouls_double_bonus" :possession="nextPossession === 'away'"></teamBlock>
   </div>
 </template>
 
@@ -47,7 +47,7 @@ export default {
         time_remaining: {
           minutes: 1,
           seconds: 0,
-          hundreds_seconds: 100
+          tenth_seconds: 10
         },
         bonus_fouls: 7,
         double_bonus_fouls: 10
@@ -60,7 +60,7 @@ export default {
       time_remaining: {
         minutes: 8,
         seconds: 0,
-        hundreds_seconds: 100
+        tenth_seconds: 0
       },
       connection: false
     }
@@ -139,10 +139,30 @@ export default {
     },
     final () {
       return this.$store.state.scoreController.final
+    },
+    gameRules: {
+      get: function () {
+        return this.$store.getters.getGameConfig
+      },
+
+      set: function (newValue) {
+        console.log(newValue)
+        this.home_timeouts = newValue.timeouts
+        this.away_timeouts = newValue.timeouts
+        this.time_remaining = newValue.time
+      }
     }
   },
 
   watch: {
+    gameRules: {
+      handler: function (newValue) {
+        this.home_timeouts = newValue.timeouts
+        this.away_timeouts = newValue.timeouts
+        this.time_remaining = newValue.time
+      },
+      deep: true
+    },
     period: {
       handler: function () {
         this.time_remaining = {
@@ -150,7 +170,6 @@ export default {
           seconds: 0,
           hundreds_seconds: 100
         }
-        console.log(this.getNumberWithOrdinal(this.$store.state.scoreController.period) === 'OT 1')
         if (this.getNumberWithOrdinal(this.$store.state.scoreController.period) === 'OT 1') {
           const data = {
             action: 'resetFouls',
@@ -226,6 +245,7 @@ export default {
     connectWebSocket () {
       console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
       this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      this.connection = new WebSocket('ws://172.20.1.171:8003/ws/1111')
       this.connection.onmessage = (event) => this.messageReceived(event)
     },
     getNumberWithOrdinal (n) {
@@ -260,7 +280,7 @@ export default {
     runTimer () {
       const self = this
       Window.timerFunc = setInterval(function () {
-        const timerRemaining = (self.time_remaining.hundreds_seconds / 100) + (self.time_remaining.seconds / 60) + self.time_remaining.minutes
+        const timerRemaining = (self.time_remaining.tenth_seconds / 10) + (self.time_remaining.seconds / 60) + self.time_remaining.minutes
 
         if (Object.entries(timerRemaining) === 0) {
           const data = {
@@ -271,19 +291,19 @@ export default {
         }
 
         if (timerRemaining > 0) {
-          self.time_remaining.hundreds_seconds -= 1
-        }
+          if (self.time_remaining.seconds === 0 && self.time_remaining.minutes > 0) {
+            self.time_remaining.minutes -= 1
+            self.time_remaining.seconds = 59
+          }
 
-        if (self.time_remaining.hundreds_seconds === 0 && self.time_remaining.seconds > 0) {
-          self.time_remaining.seconds -= 1
-          self.time_remaining.hundreds_seconds = 99
-        }
+          if (self.time_remaining.tenth_seconds === 0 && self.time_remaining.seconds > 0) {
+            self.time_remaining.seconds -= 1
+            self.time_remaining.tenth_seconds = 10
+          }
 
-        if (self.time_remaining.seconds === 0 && self.time_remaining.minutes > 0) {
-          self.time_remaining.minutes -= 1
-          self.time_remaining.seconds = 59
+          self.time_remaining.tenth_seconds -= 1
         }
-      }, 10)
+      }, 100)
     },
     stopTimer () {
       clearInterval(Window.timerFunc)

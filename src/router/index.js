@@ -45,7 +45,7 @@ import adminObs from '@/components/admin/adminObs'
 // Config Helpers
 import config from '@/config/helpers'
 
-import { store, scoreControllerStore } from '../store/index'
+import { store } from '../store/index'
 // import { component } from 'vue/types/umd'
 
 const $config = config.CONSTANTS
