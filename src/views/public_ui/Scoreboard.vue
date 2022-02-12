@@ -40,18 +40,18 @@ export default {
       // home_score: 0,
       // home_team_slug: 'western_kentucky',
       // home_timeouts: 5,
-      game_rules: {
-        periods: 4,
-        timeouts_allowed: 5,
-        penalties_allowed: 7,
-        time_remaining: {
-          minutes: 8,
-          seconds: 0,
-          tenth_seconds: 10
-        },
-        bonus_fouls: 7,
-        double_bonus_fouls: 10
-      },
+      // game_rules: {
+      //   periods: 4,
+      //   timeouts_allowed: 5,
+      //   penalties_allowed: 7,
+      //   time_remaining: {
+      //     minutes: 8,
+      //     seconds: 0,
+      //     tenth_seconds: 10
+      //   },
+      //   fouls_bonus: 7,
+      //   fouls_double_bonus: 10
+      // },
 
       isKeyDown: false,
 

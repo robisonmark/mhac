@@ -120,7 +120,19 @@ const state = {
   },
 
   gameConfig: {
-
+    fouls_bonus: 7,
+    fouls_double_bonus: 10,
+    overtime: {
+      minutes: 3,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    time: {
+      minutes: 6,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    timeouts: 5
   }
 }
 
@@ -189,7 +201,7 @@ const actions = {
     context.commit('decrementHomeTimeouts', payload)
   },
   decrementAwayTimeouts (context, payload) {
-    context.commit('decrementAwayTimeoutsx', payload)
+    context.commit('decrementAwayTimeouts', payload)
   },
   setAwayTeam (context, payload) {
     context.commit('setAwayTeam', payload)
