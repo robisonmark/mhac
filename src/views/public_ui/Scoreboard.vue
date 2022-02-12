@@ -165,15 +165,16 @@ export default {
     },
     period: {
       handler: function () {
+        console.log(this.period)
         this.time_remaining = {
           minutes: 0,
           seconds: 0,
           hundreds_seconds: 100
         }
         if (this.getNumberWithOrdinal(this.$store.state.scoreController.period).contains('OT')) {
-          this.time_remaining.minutes = this.gameRules.overtime.minutes
+          this.time_remaining = this.gameRules.overtime
         } else {
-          this.time_remaining.minutes = this.gameRules.time.minutes
+          this.time_remaining = this.gameRules.time
         }
         this.callStore({
           action: 'setTime',
