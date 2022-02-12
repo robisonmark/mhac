@@ -99,7 +99,11 @@ const mutations = {
   setAwayFouls: (state, payload) => state.fouls.away = payload,
   decrementAwayTimeouts: (state) => state.timeouts.away && state.timeouts.away--,
   incrementPeriod: (state) => state.period++,
-  decrementPeriod: (state) => state.period && state.period--,
+  decrementPeriod: (state) => {
+    if (state.period > 1) {
+      state.period && state.period--
+    }
+  },
   setPeriod: (state, payload) => state.period = payload,
   setClock: (state, running) => state.clock.running = running,
   setTime: (state, time) => {
@@ -120,6 +124,18 @@ const mutations = {
 }
 
 const actions = {
+  decrementHomeFouls (context, payload) {
+    context.commit('decrementHomeFouls', payload)
+  },
+  decrementAwayFouls (context, payload) {
+    context.commit('decrementAwayFouls', payload)
+  },
+  decrementHomeTimeouts (context, payload) {
+    context.commit('decrementHomeTimeouts', payload)
+  },
+  decrementAwayTimeouts (context, payload) {
+    context.commit('decrementAwayTimeoutsx', payload)
+  },
   setAwayTeam (context, payload) {
     context.commit('setAwayTeam', payload)
   },
@@ -219,7 +235,9 @@ const actions = {
 const getters = {
   minutes (state) { return Math.floor(state.clock.time / 60) },
   seconds (state) { return state.clock.time % 60 },
-  getWebsocket (state) { return state.websocket }
+  getWebsocket (state) { return state.websocket },
+  homeFouls (state) {return state.fouls.home},
+  awayFouls (state) {return state.fouls.away},
 }
 
 export default {

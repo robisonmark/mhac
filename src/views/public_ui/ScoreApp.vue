@@ -53,27 +53,21 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementHomeFouls', 1)" :style='{ backgroundColor: home_color}'>Team Foul</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementHomeFouls', 1)" :style='{ backgroundColor: home_color}'>Team Foul + </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('decrementHomeFouls', 1)" :style='{ backgroundColor: home_color}'>Team Foul - </v-btn>
+            </v-col>
+            <v-col>
+              Fouls: {{ home_fouls }}
             </v-col>
           </v-row>
         </v-col>
         <!-- <v-col></v-col> -->
         <v-col class="center">
           <v-row>
-            <v-col cols="6">
-              <v-btn elevation="2" @click="submitWebsocket('toggleClock', true)" :style="{backgroundColor: 'green'}">Start Clock</v-btn>
-            </v-col>
-            <v-col  cols="6">
-              <v-btn elevation="2" @click="submitWebsocket('toggleClock', false)" :style="{backgroundColor: 'red'}">Stop Clock</v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)" :style="{backgroundColor: 'grey'}">Period +</v-btn>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementPeriod', -1)" :style="{backgroundColor: 'grey'}">Period -</v-btn>
+            <v-col cols="12">
+              <v-btn elevation="2" x-large @click="submitWebsocket('toggleClock', true)" :style="{backgroundColor: 'green'}">Toggle Clock</v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -85,7 +79,15 @@
               <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')" :style='{ backgroundColor: away_color}'><font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon> Poss</v-btn>
             </v-col>
           </v-row>
-
+          <v-row>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)" :style="{backgroundColor: 'grey'}">Period +</v-btn>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('decrementPeriod', -1)" :style="{backgroundColor: 'grey'}">Period -</v-btn>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col align-self='center'>
               <v-btn elevation="2" @click="submitWebsocket('setHalf', !half)" :style='{ backgroundColor: "grey"}'>Half</v-btn>
@@ -121,9 +123,14 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col></v-col>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementAwayFouls', 1)" :style='{ backgroundColor: away_color}'>Team Foul</v-btn>
+              <v-btn elevation="2" @click="submitWebsocket('incrementAwayFouls', 1)" :style='{ backgroundColor: away_color}'>Team Foul + </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn elevation="2" @click="submitWebsocket('decrementAwayFouls', 1)" :style='{ backgroundColor: away_color}'>Team Foul - </v-btn>
+            </v-col>
+            <v-col>
+              Fouls: {{ away_fouls }}
             </v-col>
           </v-row>
         </v-col>
@@ -213,6 +220,12 @@ export default {
     },
     home_color () {
       return `#${this.home.main_color}`
+    },
+    home_fouls () {
+      return this.$store.getters.homeFouls
+    },
+    away_fouls () {
+      return this.$store.getters.awayFouls
     }
   },
 
@@ -272,7 +285,9 @@ export default {
   methods: {
     connectWebSocket () {
       console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
-      this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      // this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      this.connection = new WebSocket('ws://172.20.1.171:8003/ws/12345')
+      console.log(this.connection)
       this.connection.onopen = (event) => this.messageSend(event)
     },
     submitWebsocket (action, value) {
