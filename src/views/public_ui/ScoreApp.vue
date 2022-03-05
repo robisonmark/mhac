@@ -145,6 +145,14 @@
           </v-row>
         </v-col>
       </v-row>
+    </v-container>
+    <v-container>
+      <v-row>
+        <scoreboard></scoreboard>
+      </v-row>
+    </v-container>
+    <v-container>
+      <h3>Reset/Correct</h3>
       <v-row>
         <v-subheader>Reset Time</v-subheader>
         <v-col>
@@ -158,10 +166,14 @@
         </v-col>
         <v-btn @click="submitWebsocket('setTime', time_remaining)" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
-    </v-container>
-    <v-container>
       <v-row>
-        <scoreboard></scoreboard>
+        <v-col>
+          <v-text-field type="number" v-model="home_score_override" label="Home Score"></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field type="number" v-model="away_score_override" label="Away Score"></v-text-field>
+        </v-col>
+        <v-btn @click="resetScore" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
     </v-container>
   </v-app>
@@ -182,12 +194,14 @@ export default {
       home: {
         main_color: '#fff'
       },
-      away_score: 0,
+      // away_score: 0,
+      away_score_override: 0,
       away_timeouts: 5,
 
       isKeyDown: false,
 
-      home_score: 0,
+      // home_score: 0,
+      home_score_override: 0,
       home_timeouts: 5,
 
       keys: [],
@@ -233,6 +247,22 @@ export default {
     },
     away_fouls () {
       return this.$store.getters.awayFouls
+    },
+    away_score: {
+      get () {
+        return this.$store.getters.away_score
+      },
+      set (newValue) {
+        this.away_score_override = Number(newValue)
+      }
+    },
+    home_score: {
+      get () {
+        return this.$store.getters.home_score
+      },
+      set (newValue) {
+        this.home_score_override = newValue
+      }
     }
   },
 
@@ -241,12 +271,22 @@ export default {
       handler: function () {
         this.connectWebSocket()
       }
-    }
+    },
     // time_remaining: {
     //   handler: function () {
     //     this.submitWebsocket('setTime', this.time_remaining)
     //   }
     // }
+    away_score: {
+      handler: function (newValue) {
+        this.away_score_override = Number(newValue)
+      }
+    },
+    home_score: {
+      handler: function (newValue) {
+        this.home_score_override = Number(newValue)
+      }
+    }
 
   },
 
@@ -341,6 +381,13 @@ export default {
         this.away_score += amount
       }
     },
+    resetScore (team) {
+      if (this.$store.getters.home_score !== this.home_score_override) {
+        this.submitWebsocket('setHome', this.home_score_override)
+      } else if (this.$store.getters.away_score !== this.away_score_override) {
+        this.submitWebsocket('setAway', this.away_score_override)
+      }
+    },
     resetTimer () {
       // TODO: set to time or restart
       this.time_remaining = cloneDeep(this.game_rules.time_remaining)
@@ -381,7 +428,8 @@ export default {
     },
     setConfig (levelName) {
       const shortLevelName = levelName.split(' ')[0]
-      this.$store.dispatch('setGameConfig', shortLevelName)
+      this.submitWebsocket('setGameConfig', shortLevelName)
+      // this.$store.dispatch('setGameConfig', shortLevelName)
     }
   }
 }

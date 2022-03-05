@@ -86,7 +86,9 @@
                   <li><router-link :to="{ path: '/tournament'}">General Information</router-link> </li>
                   <li><router-link :to="{ path: '/tournament-brackets'}">Brackets</router-link></li>
                   <li><router-link :to="{ path: '/tournament-hotels'}">Hotels</router-link></li>
+                  <li><a href='https://www.dropbox.com/sh/dmk75k6rt0fu990/AABI6z3OksFGHMDbBG58A_tna?dl=0&fbclid=IwAR2CUwGfeTMck0UdXvsHrKeX1imbhk8DIdV_iPHCaQMpcpoKGnY94nXzqjM' target='_blank'> Tournament Photos <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon></a></li>
                   <!-- <li><a href='https://mhac-merch.square.site'> Tournament Merch</a></li> -->
+
                   <!-- <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li> -->
                 </ul>
             </span>

@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // import VuexPersistence from 'vuex-persist'
+// TODO: Create a Persistent Source
 
 // api
 import { api } from '@/api/endpoints.js'
@@ -146,45 +147,54 @@ let intervalID
 // const audio = new Audio('/buzzer.mp3');
 
 const mutations = {
+  // away team
   setAwayTeam: (state, payload) => state.away_team_slug = payload,
-  setHomeTeam: (state, payload) => state.home_team_slug = payload,
-  incrementHome: (state, payload) => state.score.home += payload,
-  decrementHome: (state) => state.score.home && state.score.home--,
-  setHome: (state, payload) => state.score.home = payload,
+  setAway: (state, payload) => state.score.away = payload,
+  setAwayFouls: (state, payload) => state.fouls.away = payload,
   incrementAway: (state, payload) => state.score.away += payload,
   decrementAway: (state) => state.score.away && state.score.away--,
-  setAway: (state, payload) => state.score.away = payload,
-  incrementHomeFouls: (state) => state.fouls.home++,
-  decrementHomeFouls: (state) => state.fouls.home && state.fouls.home--,
-  setHomeFouls: (state, payload) => state.fouls.home = payload,
-  decrementHomeTimeouts: (state) => state.timeouts.home && state.timeouts.home--,
   incrementAwayFouls: (state) => state.fouls.away++,
   decrementAwayFouls: (state) => state.fouls.away && state.fouls.away--,
-  setAwayFouls: (state, payload) => state.fouls.away = payload,
   decrementAwayTimeouts: (state) => state.timeouts.away && state.timeouts.away--,
-  incrementPeriod: (state) => state.period++,
-  decrementPeriod: (state) => {
-    if (state.period > 1) {
-      state.period && state.period--
-    }
-  },
+
+  // home team
+  setHomeTeam: (state, payload) => state.home_team_slug = payload,
+  setHome: (state, payload) => state.score.home = payload,
+  setHomeFouls: (state, payload) => state.fouls.home = payload,
+  incrementHome: (state, payload) => state.score.home += payload,
+  decrementHome: (state) => state.score.home && state.score.home--,
+  incrementHomeFouls: (state) => state.fouls.home++,
+  decrementHomeFouls: (state) => state.fouls.home && state.fouls.home--,
+  decrementHomeTimeouts: (state) => state.timeouts.home && state.timeouts.home--,
+
+  // game config
   setPeriod: (state, payload) => state.period = payload,
   setClock: (state, running) => state.clock.running = running,
+  setHalf: (state) => state.half = !state.half,
+  setFinal: (state) => state.final = !state.final,
   setTime: (state, time) => {
     state.time_remaining.minutes = time.minutes
     state.time_remaining.seconds = time.seconds
     state.time_remaining.tenth_seconds = time.tenth_seconds
   },
   setPossession: (state, value) => state.possession = value,
-  toggleEditable: (state) => state.editable = !state.editable,
   toggleClock: (state, payload) => state.clock.running = payload,
-  setWebSocket: (state, payload) => state.websocket = payload,
-  setHalf: (state) => state.half = !state.half,
-  setFinal: (state) => state.final = !state.final,
+  incrementPeriod: (state) => state.period++,
+  decrementPeriod: (state) => {
+    if (state.period > 1) {
+      state.period && state.period--
+    }
+  },
+
   resetFouls: (state, payload) => {
     state.fouls.home = payload
     state.fouls.away = payload
   },
+
+  toggleEditable: (state) => state.editable = !state.editable,
+
+  // Stream Config
+  setWebSocket: (state, payload) => state.websocket = payload,
   setGameConfig: (state, payload) => {
     state.gameConfig = payload
   }
@@ -314,6 +324,10 @@ const getters = {
   homeFouls (state) { return state.fouls.home },
   awayFouls (state) { return state.fouls.away }
 }
+
+// const vuexLocal = new VuexPersistence({
+//   storage: window.localStorage
+// })
 
 export default {
   state,

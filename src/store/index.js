@@ -113,14 +113,19 @@ const actions = {
   },
 
   async setTeams ({ commit }) {
-    commit('set_teams', await api.getTeams().then(response => {
-      // TODO: Convert this to be an object with slug as the object key ie/
-      // {
-      //  slug1: {team object},
-      //  slug2: {team_object}
-      // }
-      return response.data
-    }))
+    commit('set_teams',
+      await api.getTeams().then(response => {
+        // TODO: Convert this to be an object with slug as the object key ie/
+        // {
+        //  slug1: {team object},
+        //  slug2: {team_object}
+        // }
+        return response.data
+      }).catch(error => {
+        console.log(error)
+        return []
+      }
+      ))
   },
 
   async setTeam (context, payload) {

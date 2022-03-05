@@ -165,11 +165,21 @@ export default {
     },
     period: {
       handler: function () {
+        console.log(this.period)
         this.time_remaining = {
-          minutes: 8,
+          minutes: 0,
           seconds: 0,
           hundreds_seconds: 100
         }
+        if (this.getNumberWithOrdinal(this.$store.state.scoreController.period).contains('OT')) {
+          this.time_remaining = this.gameRules.overtime
+        } else {
+          this.time_remaining = this.gameRules.time
+        }
+        this.callStore({
+          action: 'setTime',
+          value: this.time_remaining
+        })
         if (this.getNumberWithOrdinal(this.$store.state.scoreController.period) === 'OT 1') {
           const data = {
             action: 'resetFouls',
@@ -182,8 +192,8 @@ export default {
     },
     half: {
       handler: function (newValue) {
-        if (newValue === true) {
-          this.timeouts = this.game_rules.timeouts_allowed
+        if (this.half === true) {
+          // this.timeouts = this.game_rules.timeouts_allowed
           const data = {
             action: 'resetFouls',
             value: this.game_rules.bonus_fouls
