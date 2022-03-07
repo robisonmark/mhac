@@ -59,7 +59,7 @@
       <p>
          Don't forget to order merchandise for the 2020-2021 tournament. This year we are offering T-Shirts, Crewneck Sweatshirts, and Hoodies. To order, visit <a href="https://mhac-merch.square.site/">https://mhac-merch.square.site</a>.
       </p>
-      <!-- <div class="filterBar">
+      <div class="filterBar">
         <label for="list" class="toggle-buttons toggle-buttons-left" :class="[bracketFormat === 'list' ? 'active' : '']">
           <input type="radio" v-model="bracketFormat" value="list" id="list">
           <font-awesome-icon :icon="['fas', 'list-ol']" class="icon"></font-awesome-icon>

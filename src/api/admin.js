@@ -10,7 +10,9 @@ class Admin {
   }
 
   handleSuccess (response) {
-    return response.data
+    // commented out because this controls all robros calls (base calls)
+    // return response.data // uncomment to only pass data as the response, not the response signature
+    return response
   }
 
   handleError (err) {

@@ -142,6 +142,12 @@ export default {
         this.message = response.message
         this.num_images = response.hero_image.length
         this.hero = process.env.VUE_APP_IMAGE_API + response.hero_image[this.getRandomInt(this.num_images)].carousel_image.meta.download_url
+      }).catch(() => {
+        this.tagline_1 = 'Your API Isn\'t'
+        this.tagline_2 = 'Running'
+        this.message = 'Page Body'
+        this.num_images = 1
+        this.hero = ''
       })
     },
     getRandomInt (max) {
