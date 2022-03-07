@@ -1,3 +1,4 @@
+// TODO: Separate into components and views
 <template>
   <div class="container">
     <div class="row">
@@ -403,6 +404,8 @@ export default {
   top: 130px;
   z-index: 2;
   box-shadow: 9px 6px 9px rgba(0, 0, 0, 0.16);
+  max-width: 300px;
+  max-height: 300px;
   // margin-top: 1rem;
   img {
     max-width: 98%;
