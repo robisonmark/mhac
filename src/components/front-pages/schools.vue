@@ -1,5 +1,6 @@
 // TODO: Separate into components and views
 <template>
+<div>
   <div class="container">
     <div class="row">
       <div class="logo-color col">
@@ -121,10 +122,11 @@
         </div>
       </div> -->
     </div>
-    <div class="bottom-logo" ref="bottomLogo">
-      <img v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey" :alt="program.team_name + ' ' + program.team_mascot"/>
-    </div>
   </div>
+  <div class="bottom-logo_con" ref="bottomLogo">
+    <img class="bottom-logo" v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey" :alt="program.team_name + ' ' + program.team_mascot"/>
+  </div>
+</div>
 </template>
 
 <script>
@@ -467,14 +469,17 @@ export default {
 .top-layer {
   z-index: 1;
 }
-.bottom-logo {
-  // position: fixed;
+.bottom-logo_con {
+  height: 125px;
   position: sticky;
-  right: 0;
-  left: 100%;
   bottom: 0;
-  max-height: 30rem;
-  max-width: 24rem;
+}
+.bottom-logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  max-height: 300px;
+  max-width: 250px;
   z-index: 0;
   opacity: .6;
   img {
