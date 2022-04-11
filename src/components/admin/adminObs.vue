@@ -8,33 +8,33 @@
   </div>
 </template>
 <script>
-import { api } from "@/api/endpoints";
+import { api } from '@/api/endpoints'
 
 export default {
-  name: "adminObs",
-  data() {
+  name: 'adminObs',
+  data () {
     return {
-      websocketUrl: ""
-    };
+      websocketUrl: ''
+    }
   },
-  created() {
-    this.getCurrentWebsocketInfo();
+  created () {
+    this.getCurrentWebsocketInfo()
   },
   methods: {
-    getCurrentWebsocketInfo() {
+    getCurrentWebsocketInfo () {
       api.getWebSocketUrl().then(response => {
-        console.log(response.data["webSocketUrl"]);
-        this.websocketUrl = response.data["webSocketUrl"];
-      });
+        console.log(response.data.webSocketUrl)
+        this.websocketUrl = response.data.webSocketUrl
+      })
     },
-    save() {
-      api.updateWebSocketUrl({webSocketUrl: this.websocketUrl}).then(response => {
-        this.websocketUrl = response.data["webSocketUrl"];
+    save () {
+      api.updateWebSocketUrl({ webSocketUrl: this.websocketUrl }).then(response => {
+        this.websocketUrl = response.data.webSocketUrl
         this.$store.dispatch('setWebSocket', this.websocketUrl)
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style scoped lang="less">
@@ -125,4 +125,3 @@ table {
 }
 
 </style>
-

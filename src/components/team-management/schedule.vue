@@ -134,7 +134,8 @@
 
 <script>
 // api
-import { api } from '../../api/endpoints.js'
+import { api } from '@/api/endpoints'
+import Admin from '@/api/admin'
 
 // components
 import editTable from '@/components/editTable'
@@ -282,22 +283,23 @@ export default {
       this.schedule.push(this.newGame)
     },
     deleteGame (data, id) {
-      api.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
+      Admin.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
         this.schedule.splice(id, 1)
       })
     },
-    async getSeasonTeamId (slug, gameSeason) {
-      if (gameSeason === undefined) {
-        gameSeason = this.newGame.season.season_id
-      }
-      // move this to vuex ?
-      let teamId = ''
-      await api.getSeasonTeams(slug, gameSeason)
-        .then(response => {
-          teamId = response.data.team_id
-        })
-      return teamId
-    },
+    // Check for Use Value then set if not available
+    // async getSeasonTeamId (slug, gameSeason) {
+    //   if (gameSeason === undefined) {
+    //     gameSeason = this.newGame.season.season_id
+    //   }
+    //   // move this to vuex ?
+    //   let teamId = ''
+    //   await api.getSeasonTeams(slug, gameSeason)
+    //     .then(response => {
+    //       teamId = response.data.team_id
+    //     })
+    //   return teamId
+    // },
 
     homeAwayDisplay (game) {
       game.host = !game.host
@@ -370,7 +372,7 @@ export default {
       // console.log('gameJson', gameJson, game.opponent.slug, this.$store.state.user.slug)
       if (this.edit && game.game_id) {
         gameJson.game_id = game.game_id
-        api.updateGame(gameJson)
+        Admin.updateGame(gameJson)
           .then(response => {
             // this.initNewGame(this.newGame.season.season_id)
           })
@@ -381,7 +383,7 @@ export default {
 
         // this.schedule.push(this.newGame)
       } else {
-        api.addGame(gameJson)
+        Admin.addGame(gameJson)
           .then(response => {
             this.initNewGame(this.newGame.season.season_id)
           })

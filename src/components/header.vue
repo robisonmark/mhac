@@ -78,8 +78,10 @@
             <font-awesome-icon :icon="openMenu ? ['fas', 'times'] : ['fas', 'bars']" class="icon"></font-awesome-icon>
           </div>
           <nav :class="[openMenu ? 'open' : 'close']">
+            <!-- Min Menu Items is 4 and a flex spacer -->
+            <div class="flex-spacer"></div>
             <router-link :to="{ path: '/' }">Home</router-link>
-
+            <!--
             <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
               Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
                 <ul v-show="showTournament" class="tourn_nav_dropdown">
@@ -87,12 +89,12 @@
                   <li><router-link :to="{ path: '/tournament-brackets'}">Brackets</router-link></li>
                   <li><router-link :to="{ path: '/tournament-hotels'}">Hotels</router-link></li>
                   <li><a href='https://www.dropbox.com/sh/dmk75k6rt0fu990/AABI6z3OksFGHMDbBG58A_tna?dl=0&fbclid=IwAR2CUwGfeTMck0UdXvsHrKeX1imbhk8DIdV_iPHCaQMpcpoKGnY94nXzqjM' target='_blank'> Tournament Photos <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon></a></li>
-                  <!-- <li><a href='https://mhac-merch.square.site'> Tournament Merch</a></li> -->
+                  <li><a href='https://mhac-merch.square.site'> Tournament Merch</a></li>
 
-                  <!-- <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li> -->
+                  <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li>
                 </ul>
             </span>
-            <!-- <span class="about_dropdown" @click="tournamentDrop" ref="aboutDropDown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
+            <span class="about_dropdown" @click="tournamentDrop" ref="aboutDropDown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
               About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
               <ul v-show="showAbout" class="about_nav_dropdown">
                   <li><router-link :to="{ path: '/about' }">MHAC History</router-link></li>
@@ -101,7 +103,16 @@
                   <li><a href="https://nchclive.com" target="_blank">NCHBC <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
               </ul>
             </span> -->
-            <router-link :to="{ path: '/about' }">About</router-link>
+            <span class="about_dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
+              About<font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
+              <font-awesome-icon class="dropIcon" v-if="showTournament === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
+              <ul v-show="showTournament" class="about_nav_dropdown">
+                  <li><router-link :to="{ path: '/about' }">Who We Are</router-link></li>
+                  <li><a href="https://mhac-media-docs.s3.us-east-2.amazonaws.com/MHAC+Bylaws+March+2021.pdf" target="_blank">Bylaws  <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
+                  <li><router-link :to="{ path: '/hall-of-fame' }">Past Champions</router-link></li>
+                  <li><a href="https://nchclive.com" target="_blank">NCHBC <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
+              </ul>
+            </span>
             <router-link :to="{ path: '/schedules' }">Schedules</router-link>
             <!-- <router-link :to="{ path: '/stats' }">Stats</router-link> -->
             <span class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
@@ -498,6 +509,11 @@ export default {
       display: flex;
       flex-flow: row;
       z-index: 1;
+      flex-shrink: 1;
+
+      &_wrapper {
+        width: calc(100% - 13rem);
+      }
 
       nav {
         display: flex;
@@ -512,12 +528,14 @@ export default {
         span {
           color: #fff;
           text-decoration: none;
+          position: relative;
           display: flex;
           flex-flow: row wrap;
           justify-content: center;
           align-items: center;
           height: 100%;
           flex-grow: 1;
+          max-width: 200px;
           &:hover{
             background-color: #fff;
             color: var(--bg-color);
@@ -647,6 +665,11 @@ export default {
               width: calc(100% + .80rem);
             }
           }
+        }
+
+        ul {
+          // TODO: understand individual styles
+          width: 100% !important; // This is overwriting individual styles
         }
 
       }

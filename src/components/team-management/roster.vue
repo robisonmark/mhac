@@ -107,7 +107,8 @@
 
 <script>
 // api
-import { api } from '../../api/endpoints.js'
+import { api } from '@/api/endpoints'
+import Admin from '@/api/admin'
 import { mapState } from 'vuex'
 import _ from 'lodash'
 
@@ -270,7 +271,7 @@ export default {
   methods: {
     initRoster () {
       if (this.$route.params.slug) {
-        api.getAdminPlayers(this.$route.params.slug).then(response => {
+        Admin.getAdminPlayers(this.$route.params.slug).then(response => {
           this.roster = response.data
           this.fullRoster = _.cloneDeep(this.roster)
           console.log(JSON.stringify(this.roster))
@@ -345,7 +346,7 @@ export default {
         this.updated.forEach(player => {
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
-          api.updatePlayer(player.id, playerJson)
+          Admin.updatePlayer(player.id, playerJson)
             .then(response => {
               console.log(response)
             })
@@ -363,8 +364,10 @@ export default {
           }
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
+          console.log(JSON.stringify(playerJson))
+          // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
 
-          api.addPlayer(playerJson)
+          Admin.addPlayer(playerJson)
             .then(response => {
               console.log(response)
             })

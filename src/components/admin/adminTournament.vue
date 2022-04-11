@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { api } from '@/api/endpoints'
+import Admin from '@/api/admin'
 
 import editTable from '@/components/editTable'
 // import selectbox from '../selectbox'
@@ -194,7 +194,7 @@ export default {
     initTourney () {
       this.thinking = true
       // this.$router.push('/manage/chattanooga_patriots')
-      api.getTournamentInformation().then(response => {
+      Admin.getTournamentInformation().then(response => {
         this.games = response.data.games
       })
         .catch(err => {
@@ -265,7 +265,7 @@ export default {
       console.log(seasonId)
       // console.log("LookupTeam:", teamSeed, this.game.seasons.season_id)
       if (teamSeed !== null && this.game.seasons.season_id !== undefined) {
-        api.getTeamByStandings(this.game.seasons.season_id, teamSeed).then(response => {
+        Admin.getTeamByStandings(this.game.seasons.season_id, teamSeed).then(response => {
           // console.log("Lookup team", team, response.data.team_name)
           if (team === 1) {
             this.game.matchup.team1 = response.data.team_name

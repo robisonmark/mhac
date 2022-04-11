@@ -127,7 +127,7 @@
 <script>
 import { api } from '@/api/endpoints'
 // import _ from 'lodash'
-import selectbox from '../selectbox'
+// import selectbox from '../selectbox'
 import editTable from '@/components/editTable'
 
 // third party
@@ -166,7 +166,7 @@ export default {
         {
           name: 'Season Name',
           icon: '',
-          field_name: 'season_name',
+          field_name: 'season_names',
           type: 'text'
         },
         {
@@ -193,12 +193,12 @@ export default {
           field_name: 'year',
           type: 'text'
         },
-        {
-          name: 'Slug',
-          icon: '',
-          field_name: 'slug',
-          type: 'text'
-        },
+        // {
+        //   name: 'Slug',
+        //   icon: '',
+        //   field_name: 'slug',
+        //   type: 'text'
+        // },
         {
           name: 'Archive',
           icon: '',

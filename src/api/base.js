@@ -25,13 +25,13 @@ import axios from 'axios'
 // export const content = Content
 
 export const robros = axios.create({
-  baseURL: process.env.VUE_APP_API_ENDPOINT,
-  withCredentials: false,
-  headers: {
-    'Content-type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-  }
+  baseURL: process.env.VUE_APP_API_ENDPOINT
+  // withCredentials: false,
+  // headers: {
+  //   'Content-type': 'application/json',
+  //   'Access-Control-Allow-Origin': '*',
+  //   'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+  // }
 })
 
 /**
