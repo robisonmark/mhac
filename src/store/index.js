@@ -65,7 +65,6 @@ const mutations = {
     state.seasons = payload
   },
   set_teams (state, payload) {
-    // console.log('set_teams', payload)
     state.teams = payload
   },
   set_levels (state, payload) {

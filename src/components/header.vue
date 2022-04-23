@@ -43,11 +43,6 @@
                   </a>
                 </li>
                 <li>
-                  <a href="http://patriot-basketball.com/">
-                    <img src="/static/color-team-logos/patriots.png" alt="Link to Team Site" />
-                  </a>
-                </li>
-                <li>
                   <a href="http://hendersonvilleroyals.com/">
                     <img src="/static/color-team-logos/royals.png" alt="Link to Team Site" />
                   </a>
@@ -59,7 +54,6 @@
                 </li>
                 <li class="button button--login" @click="goToLogin()" ref="showLogin">
                   <span v-if="!loggedIn">Login</span>
-                  <!-- <span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span> -->
                   <span v-else>
                     <template v-if="isPublic">
                       Team Management
@@ -79,7 +73,6 @@
           </div>
           <nav :class="[openMenu ? 'open' : 'close']">
             <router-link :to="{ path: '/' }">Home</router-link>
-            
             <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
               Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
                 <ul v-show="showTournament" class="tourn_nav_dropdown">
@@ -90,15 +83,6 @@
                   <!-- <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li> -->
                 </ul>
             </span>
-            <!-- <span class="about_dropdown" @click="tournamentDrop" ref="aboutDropDown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
-              About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
-              <ul v-show="showAbout" class="about_nav_dropdown">
-                  <li><router-link :to="{ path: '/about' }">MHAC History</router-link></li>
-                  <li><a href="https://mhac-media-docs.s3.us-east-2.amazonaws.com/MHAC+Bylaws+March+2021.pdf" target="_blank">Bylaws  <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
-                  <li><router-link :to="{ path: '/hall-of-fame' }">Past Champions</router-link></li>
-                  <li><a href="https://nchclive.com" target="_blank">NCHBC <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
-              </ul>
-            </span> -->
             <router-link :to="{ path: '/about' }">About</router-link>
             <router-link :to="{ path: '/schedules' }">Schedules</router-link>
             <!-- <router-link :to="{ path: '/stats' }">Stats</router-link> -->
@@ -114,7 +98,6 @@
           </nav>
         </div>
       </div>
-
     </div>
   </header>
 </template>
