@@ -16,7 +16,8 @@
 
 <script>
 // api
-import { api } from '../api/endpoints.js'
+import { api } from '@/api/endpoints'
+
 import { mapGetters } from 'vuex'
 
 export default {

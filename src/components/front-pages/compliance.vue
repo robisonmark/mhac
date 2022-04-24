@@ -139,7 +139,19 @@ export default {
     initCompliance () {
       pages.get('compliance')
         .then(response => {
+          // console.log(response)
           this.new_compliance = response
+        })
+        .catch((err) => {
+          console.error(err)
+          this.new_compliance = {
+            key: 1,
+            displayHeader: false,
+            section: 'Page Did Not Load Properly',
+            content: [
+              'Page did not load properly, please try loading page again.'
+            ]
+          }
         })
     }
   }
@@ -216,7 +228,6 @@ h3{
     }
   }
 }
-
 
 .table-of-contents {
   position: sticky;

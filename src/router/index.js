@@ -1,3 +1,4 @@
+// TODO: Page not found error/redirect inside before resolve
 import Vue from 'vue'
 import Router from 'vue-router'
 // import second from '@/components/second'
@@ -14,6 +15,14 @@ import stats from '@/components/front-pages/stats'
 import schools from '@/components/front-pages/schools'
 import contact from '@/components/front-pages/contact'
 import hallOfFame from '@/components/front-pages/hallOfFame'
+import videofeed from '@/components/front-pages/live_video/video_iframe'
+
+// View
+// Public UI
+import livestream from '@/views/public_ui/LiveStream'
+import scoreboard from '@/views/public_ui/Scoreboard'
+import scoreapp from '@/views/public_ui/ScoreApp'
+import awards from '@/views/public_ui/live_video/awards'
 
 // Team Management Components
 import TeamManagement from '@/components/TeamManagement'
@@ -27,15 +36,16 @@ import profile from '@/components/team-management/profile'
 import admin from '@/components/admin'
 // import login from '@/components/admin/login'
 import adminTournament from '@/components/admin/adminTournament'
-import adminSeason from '@/components/admin/adminSeason'
-// import adminSeasonTeams from '@/components/admin/adminSeasonTeams'
+// import adminSeason from '@/components/admin/adminSeason'
 import editHomepage from '@/components/admin/editHomepage'
 import manageStandings from '@/components/admin/manageStandings'
+import adminObs from '@/components/admin/adminObs'
 
 // Config Helpers
 import config from '@/config/helpers'
 
 import { store } from '../store/index'
+// import { component } from 'vue/types/umd'
 
 const $config = config.CONSTANTS
 
@@ -116,12 +126,12 @@ export const router = new Router({
     },
     {
       path: '/history',
-      name: 'about',
+      name: 'history',
       component: compliance,
       meta: {
         requiresAuth: false,
         section: 'public',
-        title: 'About | Midsouth Homeschool Athletics'
+        title: 'History | Midsouth Homeschool Athletics'
       }
     },
     {
@@ -185,6 +195,77 @@ export const router = new Router({
       //     }
       //   }
       // ]
+    },
+    {
+      path: '/livestream',
+      component: livestream,
+      props: true,
+      meta: {
+        requiresAuth: true,
+        section: 'public',
+        // TODO: String literal interpolation to add game
+        title: 'Live Video | Midsouth Homeschool Athletics'
+      },
+      children: [
+        {
+          path: '',
+          name: 'videofeed',
+          component: videofeed,
+          meta: {
+            requiresAuth: true,
+            section: 'public'
+          }
+        }
+      ]
+    },
+    {
+      path: '/obs',
+      component: livestream,
+      props: true,
+      meta: {
+        requiresAuth: (process.env.NODE_ENV === 'production'),
+        section: 'public',
+        // TODO: String literal interpolation to add game
+        title: 'Video Control | Midsouth Homeschool Athletics'
+      },
+      children: [
+        // {
+        //   path: '',
+        //   name: 'videofeed',
+        //   component: videofeed,
+        //   meta: {
+        //     requiresAuth: (process.env.NODE_ENV === 'production'),
+        //     section: 'scoreboard'
+        //   }
+        // },
+        {
+          path: 'scoreapp',
+          name: 'scoreapp',
+          component: scoreapp,
+          meta: {
+            // requiresAuth: (process.env.NODE_ENV === 'production'),
+            section: 'scoreboard'
+          }
+        },
+        {
+          path: 'scoreboard',
+          name: 'scoreboard',
+          component: scoreboard,
+          meta: {
+            // requiresAuth: (process.env.NODE_ENV === 'production'),
+            section: 'scoreboard'
+          }
+        },
+        {
+          path: 'awards',
+          name: 'awards',
+          component: awards,
+          meta: {
+            // requiresAuth: (process.env.NODE_ENV === 'production'),
+            section: 'scoreboard'
+          }
+        }
+      ]
     },
     {
       path: '/manage/:slug',
@@ -293,15 +374,15 @@ export const router = new Router({
             section: 'admin'
           }
         },
-        {
-          path: 'seasons',
-          name: 'adminSeason',
-          component: adminSeason,
-          meta: {
-            requiresAuth: true,
-            section: 'admin'
-          }
-        },
+        // {
+        //   path: 'seasons',
+        //   name: 'adminSeason',
+        //   component: adminSeason,
+        //   meta: {
+        //     requiresAuth: true,
+        //     section: 'admin'
+        //   }
+        // },
         {
           path: 'manage_standings',
           name: 'manageStandings',
@@ -310,12 +391,31 @@ export const router = new Router({
             requiresAuth: true,
             section: 'admin'
           }
+        },
+        {
+          path: 'admin_obs',
+          name: 'adminObs',
+          component: adminObs,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          }
         }
+
       ]
     }
     // NEED ERROR ROUTES and THINK THROUGH NON INDEXING PAGES
   ]
 })
+
+// pattern idea for making sure proper store values are present
+// https://stackoverflow.com/questions/42603909/accessing-vuex-state-when-defining-vue-router-routes
+// https://github.com/vuejs/vuex-router-sync
+// router.beforeEach((to, from, next) => {
+//   // access store via `router.app.$store` here.
+//   if (router.app.$store.getters('user')) next();
+//   else next({ name: 'login' });
+// })
 
 router.beforeResolve(async (to, from, next) => {
   if (Object.prototype.hasOwnProperty.call(to, 'meta')) {
