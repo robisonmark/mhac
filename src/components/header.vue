@@ -43,11 +43,6 @@
                   </a>
                 </li>
                 <li>
-                  <a href="http://patriot-basketball.com/">
-                    <img src="/static/color-team-logos/patriots.png" alt="Link to Team Site" />
-                  </a>
-                </li>
-                <li>
                   <a href="http://hendersonvilleroyals.com/">
                     <img src="/static/color-team-logos/royals.png" alt="Link to Team Site" />
                   </a>
@@ -59,7 +54,6 @@
                 </li>
                 <li class="button button--login" @click="goToLogin()" ref="showLogin">
                   <span v-if="!loggedIn">Login</span>
-                  <!-- <span v-else>Hi, AD <font-awesome-icon :icon="['fas', 'chevron-circle-down']"></font-awesome-icon></span> -->
                   <span v-else>
                     <template v-if="isPublic">
                       Team Management
@@ -94,6 +88,7 @@
                   <li><a href='https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021'> Sign-Up to Volunteer</a></li>
                 </ul>
             </span>
+            <router-link :to="{ path: '/about' }">About</router-link>
             <span class="about_dropdown" @click="tournamentDrop" ref="aboutDropDown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
               About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
               <ul v-show="showAbout" class="about_nav_dropdown">
@@ -127,7 +122,6 @@
           </nav>
         </div>
       </div>
-
     </div>
   </header>
 </template>
