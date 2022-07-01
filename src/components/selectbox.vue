@@ -25,12 +25,12 @@ export default {
   ],
   computed: {
     selected: {
-      get () { 
-        return this.value 
+      get () {
+        return this.value
       },
-      set (selected) { 
-        this.$emit('input', selected) 
-        }
+      set (selected) {
+        this.$emit('input', selected)
+      }
     }
   },
   watch: {

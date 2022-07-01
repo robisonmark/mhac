@@ -6,11 +6,12 @@ import { api } from '@/api/endpoints.js'
 
 // Modules
 import auth from './modules/store.auth'
+import scoreController from './modules/store.scoreController'
 
 Vue.use(Vuex)
 
 const namespaced = true
-const modules = { auth }
+const modules = { auth, scoreController }
 const strict = false
 
 const state = {
@@ -42,7 +43,6 @@ const mutations = {
     state.user.slug = payload.slug
   },
   set_slug (state, payload) {
-    console.log(payload)
     state.slug = payload
   },
   set_teamAssocLvl (state, payload) {
@@ -112,10 +112,20 @@ const actions = {
     })
   },
 
-  async setTeams (context) {
-    await api.getTeams().then(response => {
-      context.commit('set_teams', response.data)
-    })
+  async setTeams ({ commit }) {
+    commit('set_teams',
+      await api.getTeams().then(response => {
+        // TODO: Convert this to be an object with slug as the object key ie/
+        // {
+        //  slug1: {team object},
+        //  slug2: {team_object}
+        // }
+        return response.data
+      }).catch(error => {
+        console.log(error)
+        return []
+      }
+      ))
   },
 
   async setTeam (context, payload) {
@@ -135,7 +145,6 @@ const actions = {
         }
       })
     }
-
     if (userTeam.length >= 1) {
       await context.commit('set_user', userTeam[0])
       await context.commit('set_slug', userTeam[0].slug)
@@ -174,7 +183,24 @@ const actions = {
 }
 
 const getters = {
-  // make.getters(state)
+  get_team_by_slug: (state) =>
+    (slug) => {
+      console.log(slug)
+      console.log(state.teams)
+      return state.teams.filter(team => team.slug === slug)[0]
+    },
+  get_team_color_by_slug: (state) =>
+    (slug) => {
+      console.log(slug)
+      console.log(state.teams)
+      return state.teams.filter(team => team.slug === slug)[0]
+    },
+  get_team_logo_by_slug: (state) =>
+    (slug) => {
+      console.log(slug)
+      console.log(state.teams)
+      return state.teams.filter(team => team.slug === slug)[0]
+    },
   user () {
     return state.user
   },

@@ -6,6 +6,7 @@ import { store } from './store/index'
 
 // Styles and Components
 import './assets/less/main.less'
+import vuetify from '@/plugins/vuetify'
 
 // Font Awesome
 import { dom, library } from '@fortawesome/fontawesome-svg-core'
@@ -13,7 +14,6 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faFacebookSquare, faInstagram } from '@fortawesome/free-brands-svg-icons'
-
 
 import '@aws-amplify/ui-vue'
 import Amplify from 'aws-amplify'
@@ -70,6 +70,7 @@ new Vue({
   el: '#app',
   router,
   store,
+  vuetify,
   render: (h) => h(App)
 }).$mount('#app')
 

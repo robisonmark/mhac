@@ -1,27 +1,32 @@
 <template>
   <div id="app" :class="this.$route.meta.section" @click="clickAway()">
-    <!-- <headerComponent :styles="cssVars" v-if="this.$route.meta.section !== 'admin'"></headerComponent> -->
-    <headerComponent :styles="cssVars"></headerComponent>
-    <main>
-      <router-view class="body" />
-    </main>
-    <footer v-if="this.$route.meta.section === 'public'" class="main-footer" id="publicMainFooter">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col conference conference-info">
-            <img class="conference conference-logo" src="/static/washedout-team-logo/mhac-greyscale.png" />
-            <p><a href='https://www.facebook.com/mhacsports' target="_blank"><font-awesome-icon :icon="['fab','facebook-square']" size="3x"></font-awesome-icon></a>  <a href='https://www.instagram.com/mhacsports' target="_blank"><font-awesome-icon :icon="['fab','instagram']" size="3x"></font-awesome-icon></a></p>
-            <p>&copy; {{ new Date().getFullYear() }} Midsouth Homeschool Athletic Conference</p>
-            <p>All Rights Reserved | Terms of Service | Privacy Policy</p>
-          </div>
-          <div class="col-md-4">
-            <div class="border">
-              <img class="robros" src="/static/robros/robros-logo-optimized.png" />
+    <template v-if="this.$route.meta.section !== 'scoreboard'">
+      <!-- <headerComponent :styles="cssVars" v-if="this.$route.meta.section !== 'admin'"></headerComponent> -->
+      <headerComponent :styles="cssVars"></headerComponent>
+      <main>
+        <router-view class="body" />
+      </main>
+      <footer v-if="this.$route.meta.section === 'public'" class="main-footer" id="publicMainFooter">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col conference conference-info">
+              <img class="conference conference-logo" src="/static/washedout-team-logo/mhac-greyscale.png" />
+              <p><a href='https://www.facebook.com/mhacsports' target="_blank"><font-awesome-icon :icon="['fab','facebook-square']" size="3x"></font-awesome-icon></a>  <a href='https://www.instagram.com/mhacsports' target="_blank"><font-awesome-icon :icon="['fab','instagram']" size="3x"></font-awesome-icon></a></p>
+              <p>&copy; {{ new Date().getFullYear() }} Midsouth Homeschool Athletic Conference</p>
+              <p>All Rights Reserved | Terms of Service | Privacy Policy</p>
+            </div>
+            <div class="col-md-4">
+              <div class="border">
+                <img class="robros" src="/static/robros/robros-logo-optimized.png" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </template>
+    <template v-else>
+      <router-view class="body" />
+    </template>
   </div>
 </template>
 

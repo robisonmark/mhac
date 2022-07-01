@@ -81,7 +81,6 @@
 
 <script>
 // Api
-import { api } from '../../api/endpoints.js'
 import pages from '@/api/pages'
 
 // components
@@ -89,7 +88,6 @@ import pages from '@/api/pages'
 // import TournamentList from '@/components/tournament/list'
 
 // Third Party Helpers
-import { groupBy } from 'lodash'
 
 export default {
   name: 'tournamentBracket',
