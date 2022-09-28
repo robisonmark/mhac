@@ -3,7 +3,7 @@
     <div class="page-styles">
       <div class="row print-only align-items-start justify-content-between">
         <div class="col">
-          <h2>2019 - 2020 Schedule</h2>
+          <h2>2021 - 2022 Schedule</h2>
         </div>
         <div class="col right">
           <div>{{filterBy.team.name}}</div>
@@ -13,7 +13,15 @@
       <div class="col-12">
         <div class="row filter-bar">
           <div class="col-md-4">
-            <h2>2019 - 2020 Schedule</h2>
+            <div v-if="edit === false" @click="edit= !edit">
+              <h2>{{activeYear.name}} Schedule</h2>
+            </div>
+            <div v-if="edit === true">
+              <ul class="options-menu">
+                <li class="option" v-for="year in years" :key="year.year" @click="setYear(year)"> {{ year.name }} </li>
+              </ul>
+              <h2>{{activeYear.name}} Schedule</h2>
+            </div>
           </div>
           <div class="col-md-6">
             <div class="filters">
@@ -50,9 +58,9 @@
             </div>
           </div>
           <div class="col-md-2 text-right">
-            <div class="button ghost print" @click="print()">
+            <!-- <div class="button ghost print" @click="print()">
               <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -70,44 +78,48 @@
             </tr>
           </tbody>
           <tbody>
-            <template v-if="games.length >= 1">
-              <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.id }}" tag="tr" class="game" v-for="game in games" :key="game.game_id">
+            <template v-if="filteredGames.length >= 1">
+              <!-- <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in filteredGames" :key="game.game_id"> -->
+                <tr class="game" v-for="game in filteredGames" :key="game.game_id">
                 <td class="date">
-                  {{game.game_date}}
-                  <div class="time">{{game.game_time}}</div>
+                  {{ $config.formatDate(game.game_date)  }}
+                  <div class="time">{{$config.formatTime(game.game_time)}}</div>
                 </td>
 
                 <!-- AWAY TEAM -->
-                <td class="score" :class="checkResult(game.final_score.away, game.final_score.home)">
-                  {{game.final_score.away}}
+                <td class="score" :class="checkResult(game.final_scores.away, game.final_scores.home)">
+                  {{game.final_scores.away}}
                 </td>
                 <td class="team_info">
-                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.name).logo_color" />
-                  <div class="team_name" :class="checkResult(game.final_score.away, game.final_score.home)">{{game.away_team.name}}</div>
-                  <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
+                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.team_name).logo_color" />
+                  <div class="team_name" :class="checkResult(game.final_scores.away_score, game.final_scores.home_score)">{{game.away_team.team_name}}</div>
+                  <span class="level" v-if="game.away_team.level_name" v-html="game.away_team.level_name"></span>
                 </td>
-
+                  <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
+                  {{game.final_scores.away_score}}
+                </td>
                 <td><span class="at">@</span></td>
 
                 <!-- HOME TEAM -->
                 <td class="team_info">
-                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.name).logo_color" />
-                  <div class="team_name" :class="checkResult(game.final_score.home, game.final_score.away)">{{game.home_team.name}}</div>
-                  <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
+                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.team_name).logo_color" />
+                  <div class="team_name" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">{{game.home_team.team_name}}</div>
+                  <span class="level" v-if="game.home_team.level_name" v-html="game.home_team.level_name"></span>
                 </td>
-                <td class="score" :class="checkResult(game.final_score.home, game.final_score.away)">
-                  {{game.final_score.home}}
+                <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
+                  {{game.final_scores.home_score}}
                 </td>
 
-                <td class="location text-right">
+                <!-- <td class="location text-right">
                   <div>{{game.home_team.address_name}}</div>
                   <br/>
                   <span class="address" :href="'https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip" @click.stop="goToMap('https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip)">
                     <div>{{game.home_team.address_lines}}</div>
                     <div>{{game.home_team.city_state_zip}}</div>
                   </span>
-                </td>
-              </router-link>
+                </td> -->
+                </tr>
+              <!-- </router-link> -->
             </template>
             <template v-else>
               <tr>
@@ -205,12 +217,20 @@ import { api } from '../../api/endpoints.js'
 // mixins
 import { root } from '../../mixins/root'
 
+// helpers
+// import {formatDate} from '@/config/helpers'
+
 export default {
   name: 'schedules',
   data () {
     return {
+      activeYear: {
+        name: '',
+        year: ''
+      },
       currentSort: 'game_date',
       currentSortDir: 'asc',
+      edit: false,
       filterBy: {
         team: {
           slug: '',
@@ -225,10 +245,13 @@ export default {
           end_date: ''
         }
       },
+      // games: [],
       games: [],
+      level_filter: '',
       showDatePicker: false,
       showLevels: false,
-      showTeams: false
+      showTeams: false,
+      years: []
     }
   },
   mixins: [root],
@@ -240,6 +263,12 @@ export default {
     levels () {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
+    },
+    filteredGames () {
+      if (this.level_filter === '') {
+        return this.games
+      }
+      return this.games.filter(game => (game.season.season_id === this.level_filter))
     }
   },
   watch: {
@@ -252,11 +281,14 @@ export default {
     'filterBy.level': {
       deep: true,
       handler (newValue, oldValue) {
-        this.initSchedule(newValue.season_id)
+        // this.initSchedule(newValue.season_id)
+        this.level_filter = newValue.season_id
       }
     }
   },
   created () {
+    this.getActiveYear()
+    this.getYears()
     this.initSchedule()
 
     this.$root.$on('close', payload => {
@@ -265,11 +297,25 @@ export default {
     })
   },
   methods: {
+    getActiveYear () {
+      api.getYear(true).then(response => {
+        // console.log(response.data)
+        this.activeYear = response.data
+      })
+    },
+    getYears () {
+      api.getYear(false).then(response => {
+        // console.log(response.data)
+        this.years = response.data
+      })
+    },
+    // formatDate: this.$formatDate,
     goToMap (url) {
       window.location.replace(url)
     },
-    initSchedule (level, team) {
-      api.getSchedule(level, team).then(response => {
+    initSchedule (level, team, year) {
+      // TODO: ADD YEAR
+      api.getSchedule(level, team, year).then(response => {
         const fixedData = []
         response.data.forEach(game => {
           if (game.game_time === '12:00 AM ') {
@@ -278,7 +324,6 @@ export default {
           fixedData.push(game)
         })
         this.games = fixedData
-        // this.sortTable('game_date')
       })
     },
     checkResult (me, opponent) {
@@ -292,6 +337,11 @@ export default {
         return ''
       }
     },
+    setYear (year) {
+      this.activeYear = year
+      this.edit = false
+      this.initSchedule(undefined, undefined, year.year)
+    },
     setTeam (team) {
       this.filterBy.team.slug = team.slug
       this.filterBy.team.name = team.team_name
@@ -299,6 +349,7 @@ export default {
       // console.log(this.showTeams)
     },
     setLvl (lvl) {
+      console.log(lvl)
       this.filterBy.level.season_id = lvl.season_id
       this.filterBy.level.level = lvl.level
       // this.showTeams = false
@@ -587,5 +638,10 @@ h2 {
       color: lighten(#2784C3, 20%)
     }
   }
+}
+
+ul{
+  background: #2784C3;
+  z-index: 1;
 }
 </style>

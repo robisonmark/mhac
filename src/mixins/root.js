@@ -51,7 +51,7 @@ export const root = {
         let formattedDates = ''
         if (time === false) {
           if (date) {
-            date = new Date(date)
+            date = new Date(date + 'T00:00:00')
             formattedDates = format(date, this.dateFormat)
             return formattedDates
           }

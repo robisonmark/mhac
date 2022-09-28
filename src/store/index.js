@@ -6,17 +6,19 @@ import { api } from '@/api/endpoints.js'
 
 // Modules
 import auth from './modules/store.auth'
+import scoreController from './modules/store.scoreController'
 
 Vue.use(Vuex)
 
 const namespaced = true
-const modules = { auth }
+const modules = { auth, scoreController }
 const strict = false
 
 const state = {
+  slug: null,
   user: {
-    team_id: String,
-    slug: String
+    team_id: '',
+    slug: ''
   },
   userData: {},
   teamAssocLvl: {},
@@ -29,13 +31,19 @@ const state = {
   levels: [],
   fullSchedule: [],
   configOptions: [],
-  readWriteAccess: String
+  readWriteAccess: String,
+  season_teams: []
 }
 
 const mutations = {
   // make.mutations(state)
   set_user (state, payload) {
-    state.user = payload
+    // console.log('payload',payload)
+    state.user.team_id = payload.team_id
+    state.user.slug = payload.slug
+  },
+  set_slug (state, payload) {
+    state.slug = payload
   },
   set_teamAssocLvl (state, payload) {
     state.teamAssocLvl = payload
@@ -44,8 +52,8 @@ const mutations = {
     state.userGroups = payload
   },
   set_userAttributes (state, payload) {
-    console.log(state)
-    console.log(payload)
+    console.log('userAttributes', state)
+    console.log('userAttributes', payload)
   },
   set_loaded (state, payload) {
     state.loaded = payload
@@ -63,14 +71,17 @@ const mutations = {
     state.levels = payload
   },
   set_configOptions (state, payload) {
-    console.log(state)
-    console.log(payload)
+    console.log('configOptions', state)
+    console.log('configOptions', payload)
   },
   set_readWriteAccess (state, payload) {
     state.readWriteAccess = payload
   },
   set_fullSchedule (state, payload) {
     state.fullSchedule = payload
+  },
+  set_seasonTeams (state, payload) {
+    state.season_teams = payload
   }
 }
 
@@ -101,10 +112,43 @@ const actions = {
     })
   },
 
-  async setTeams (context) {
-    await api.getTeams().then(response => {
-      context.commit('set_teams', response.data)
-    })
+  async setTeams ({ commit }) {
+    commit('set_teams',
+      await api.getTeams().then(response => {
+        // TODO: Convert this to be an object with slug as the object key ie/
+        // {
+        //  slug1: {team object},
+        //  slug2: {team_object}
+        // }
+        return response.data
+      }).catch(error => {
+        console.log(error)
+        return []
+      }
+      ))
+  },
+
+  async setTeam (context, payload) {
+    await context.dispatch('setTeams')
+    const groups = store.getters.userGroups
+    const teams = store.getters.teams
+
+    let userTeam = []
+    if (payload) {
+      userTeam = teams.filter(team => payload === team.slug)
+    } else if (groups) {
+      userTeam = teams.filter(team => {
+        if (!groups.includes('Admin')) {
+          return team.slug === groups[0]
+        } else {
+          return team
+        }
+      })
+    }
+    if (userTeam.length >= 1) {
+      await context.commit('set_user', userTeam[0])
+      await context.commit('set_slug', userTeam[0].slug)
+    }
   },
 
   async setLevels (context, payload) {
@@ -126,23 +170,49 @@ const actions = {
     })
   },
 
+  async setSeasonTeams (context) {
+    await api.getSeasonTeams().then(response => {
+      context.commit('set_seasonTeams', response.data)
+    })
+  },
   load (context) {
     // ---- These events are emitted once the listed module is loaded ----- //
-    // Loads the vuex "es" module (Elastic Search) [MUST BE AFTER AUTH]
+    // Loads the vuex 'es' module (Elastic Search) [MUST BE AFTER AUTH]
     // EventBus.$on('auth/loaded', () => context.dispatch('es/load'))
   }
 }
 
 const getters = {
-  // make.getters(state)
-  user (state) {
+  get_team_by_slug: (state) =>
+    (slug) => {
+      console.log(slug)
+      console.log(state.teams)
+      return state.teams.filter(team => team.slug === slug)[0]
+    },
+  get_team_color_by_slug: (state) =>
+    (slug) => {
+      console.log(slug)
+      console.log(state.teams)
+      return state.teams.filter(team => team.slug === slug)[0]
+    },
+  get_team_logo_by_slug: (state) =>
+    (slug) => {
+      console.log(slug)
+      console.log(state.teams)
+      return state.teams.filter(team => team.slug === slug)[0]
+    },
+  user () {
     return state.user
   },
   team () {
-    return state.teams[0].slug
+    // console.log('team', state.user)
+    return state.user.slug
   },
-  teams () {
+  teams (state) {
     return state.teams
+  },
+  teamLevels (state) {
+    return state.teamAssocLvl
   },
   levels () {
     return state.levels
@@ -164,6 +234,12 @@ const getters = {
   },
   seasons (state) {
     return state.seasons
+  },
+  seasonTeams (state) {
+    return state.season_teams
+  },
+  slug (state) {
+    return state.slug
   },
   configOptions (state) {
     return state.groups

@@ -53,9 +53,8 @@ const actions = {
   },
 
   load (context, user) {
-    if (Object.prototype.hasOwnProperty.call(user.signInUserSession.accessToken.payload, 'cognito:groups')) {
-      context.commit('set_userGroups', user.signInUserSession.accessToken.payload['cognito:groups'], { root: true })
-    }
+    const groups = user.signInUserSession?.accessToken?.payload['cognito:groups']
+    context.commit('set_userGroups', groups, { root: true })
   }
 }
 

@@ -1,6 +1,6 @@
 <template>
   <select class="selectbox" v-model="selected">
-    <option value="" disabled selected>{{ this.$attrs.placeholder }}</option>
+    <option value="" disabled>{{ placeholder }}</option>
     <option v-for="(option, index) in options" :key="index" :value="option">
       <template v-if="$attrs.trackby !== ''">{{option[$attrs.trackby]}}</template>
       <template v-else>{{option}}</template>
@@ -20,12 +20,17 @@ export default {
   mixins: [],
   props: [
     'options',
-    'value'
+    'value',
+    'placeholder'
   ],
   computed: {
     selected: {
-      get () { return this.value },
-      set (selected) { this.$emit('input', selected) }
+      get () {
+        return this.value
+      },
+      set (selected) {
+        this.$emit('input', selected)
+      }
     }
   },
   watch: {

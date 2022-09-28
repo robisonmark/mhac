@@ -12,6 +12,9 @@
         <router-link :to="{ path: '/manage/' + team + '/stats'}" tag="li">Stats</router-link>
         <router-link :to="{ path: '/manage/' + team + '/schedule'}" tag="li">Schedule</router-link>
         <router-link :to="{ path: '/manage/' + team + '/profile'}" tag="li">Team Profile</router-link>
+        <template v-if="admin">
+          <router-link :to="{ name: 'admin'}" tag="li">Admin</router-link>
+        </template>
       </ul>
     </nav>
     <router-view class="team-management" :style="cssVars" />
@@ -42,17 +45,18 @@ export default {
     selectbox: selectbox
   },
   computed: {
+    user () {
+      return this.$store.getters.user
+    },
     cssVars () {
       let teamMain = ''
       let teamSecond = ''
-      this.$store.state.teams.forEach(team => {
-        if (team.team_id === this.$store.state.user.team_id) {
+      this.$store.getters.teams.filter(team => {
+        if (team.slug === this.$store.getters.user?.slug) {
           teamMain = '#' + team.main_color
           teamSecond = '#' + team.secondary_color
         }
       })
-      // const darker = Color(teamMain).darken(0.5).hex()
-      // const lighter = Color(teamMain).lighten(0.5).hex()
       return {
         '--bg-color': teamMain,
         '--team-second': teamSecond,
@@ -61,26 +65,22 @@ export default {
       }
     },
     admin () {
-      if (this.$store.state.userGroups.includes('Admin')) {
+      if (this.$store.getters.userGroups.includes('Admin')) {
         return true
       } else {
         return false
       }
     },
     teams () {
-      return this.$store.state.teams
+      return this.$store.getters.teams
     },
     selectedTeam: {
       get: function () {
-        // console.log('state teams', this.$store.state.teams)
-        return this.$store.state.teams.find(team => {
-          const user = {
-            team_id: team.team_id,
-            slug: team.slug
-          }
-          this.$store.dispatch('setUser', user)
-          return team.slug === this.$route.params.slug
-        })
+        if (this.$store.getters.userGroups[0] !== 'Admin') {
+          return this.$store.getters.teams.find(team => team.slug === this.$store.getters.userGroups[0])
+        } else {
+          return this.$store.getters.teams.find(team => team.slug === this.$route.params.slug)
+        }
       },
       set: function (newValue) {
         const user = {
@@ -93,14 +93,28 @@ export default {
 
         this.$router.push({ name: routeName, params: { slug: newValue.slug } })
         this.getSeasonTeams(newValue.slug)
+
+        console.log('here')
+        const team = this.getNewTeam(newValue.slug)
+
+        this.teamLogo = '/static/color-team-logos/' + team.logo_color
+        this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
       }
     }
   },
   watch: {
-    selectedTeam (newValue, oldValue) {
-      this.teamLogo = '/static/color-team-logos/' + newValue.logo_color
-      this.greyLogo = '/static/washedout-team-logo/' + newValue.logo_grey
+    async selectedTeam (newValue, oldValue) {
+      const team = await this.getNewTeam(newValue.slug)
+
+      this.teamLogo = '/static/color-team-logos/' + team.logo_color
+      this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
     }
+  },
+  beforeCreate () {
+    const slug = this.$route.params.slug
+    this.$store.dispatch('setTeam', slug)
+
+    this.$store.dispatch('setSeasonTeams')
   },
   created () {
     this.getSeasonTeams(this.$route.params.slug)
@@ -144,6 +158,12 @@ export default {
         .then(response => {
           this.$store.dispatch('setTeamAssocLvl', response.data)
         })
+    },
+
+    async getNewTeam (slug) {
+      return await api.getTeams(slug).then(response => {
+        return response.data[0]
+      })
     }
   }
 }

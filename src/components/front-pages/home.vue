@@ -2,17 +2,17 @@
   <div class="container">
     <div class="row hero-standings">
       <div class="col-md-8 col-lg-9">
-        <div class="hero">
+        <div class="hero" :style="{ backgroundImage:  'url(' + hero + ')' }">
           <div class="tagline">
-            <h2>And so it begins...</h2>
-            <h2>2019-20 is offically under way!</h2>
+            <h2>{{ tagline_1 }}</h2>
+            <h2>{{ tagline_2 }}</h2>
           </div>
         </div>
       </div>
       <div class="col-md-4 col-lg-3">
         <div class="standings">
           <div class="addPadding">
-            <h3>2019-20 Standings</h3>
+            <h3>{{ activeYear.name }} Standings</h3>
             <select v-model="season">
               <option v-for="sport in seasons" :key="sport.season_id" :value="sport">{{createName(sport)}}</option>
             </select>
@@ -41,20 +41,11 @@
               </tr>
 
               <template v-if="noStandings">
-                <!-- <tr>
-                  <td colspan="5" class="section-description">
-                    No Standings
-                  </td>
-                </tr> -->
-
                 <tr>
                   <td class="padding"></td>
                   <td colspan="3">
                     No Stats have been loaded. Please check back soon.
                   </td>
-                  <!-- <td>{{team_name}}</td>
-                  <td>{{team_record}}</td>
-                  <td>{{last_result}}</td> -->
                   <td class="padding"></td>
                 </tr>
               </template>
@@ -64,7 +55,6 @@
                   <td class="padding"></td>
                   <td class="mw-150px">{{standing.team_name}}</td>
                   <td class="center">{{standing.wins}}-{{standing.losses}}</td>
-                  <!-- <td class="center">--</td> -->
                   <th class="center">{{standing.games_behind}}</th>
                   <td class="padding"></td>
                 </tr>
@@ -76,11 +66,9 @@
     </div>
     <div class="row conference-blurb">
       <div class="col-md-9 conference-blurb-content">
-        <h1>Midsouth Homeschool Athletic Conference</h1>
-        <p>The MidSouth Homeschool Athletic Conference (MHAC) was formed in 2018, and is part of the Southeast Region for the National Christian HomeSchool Championships.  The MHAC has 8 member teams located in Tennesee, Southern Kentucky, and Northern Alabama. These teams currently compete in Boys and Girls 18U Basketball, and Boys 16U and 14U Basketball.</p>
-        <p>Each year the MHAC holds tournaments in each 18U, 16U and 14U age brackets.</p>
+       <span v-html="message"></span>
         <!-- <p>To inquire about joining the conference please email: email@personinconference.org</p> -->
-        <h3>NCHBC Southeast Regional Tournament </h3>
+        <!-- <h3>NCHBC Southeast Regional Tournament </h3>
         <P>Congratulations to WKy Trailblazer's 14U Boys and NCC Warriors 16U Girls on winning the Southeast Region Championships!</p>
 
         <p>LCA Lions 18U boys and NCC Warriors 18U Girls both ended the tournaments with 2nd place finishes!</p>
@@ -94,8 +82,8 @@
         Daniel 1 Academy 14U Boys<br />
         Chattanooga Patriots 18U Girls</p>
         <br />
-        <b>Way to represent the MHAC!</b>
-        <!-- <h3>For Information on the 2020 Tournament please go to <router-link :to="{ 'path': '/tournament2020' }">Tournament Central</router-link></h3> -->
+        <b>Way to represent the MHAC!</b> -->
+        <!-- <h3>For Information on the 2021 Tournament please go to <router-link :to="{ 'path': '/tournament' }">Tournament Central</router-link></h3> -->
       </div>
 
       <!-- <footer class="col-12 text-right">
@@ -108,6 +96,8 @@
 <script>
 // api
 import { api } from '../../api/endpoints.js'
+import pages from '../../api/pages.js'
+
 import _ from 'lodash'
 
 export default {
@@ -116,7 +106,12 @@ export default {
     return {
       currentStandings: {},
       noStandings: Boolean,
-      season: ''
+      season: '',
+      activeYear: {},
+      tagline_1: '',
+      tagline_2: '',
+      message: '',
+      hero: ''
     }
   },
   computed: {
@@ -134,9 +129,35 @@ export default {
   },
   created () {
     // console.log(this.$store.state.seasons)
+    this.initPage()
     this.initStandings('')
+    this.initYear()
   },
   methods: {
+    initPage () {
+      pages.get('home').then(response => {
+        // console.log(response)
+        this.tagline_1 = response.tagline_line1
+        this.tagline_2 = response.tagline_line2
+        this.message = response.message
+        this.num_images = response.hero_image.length
+        this.hero = process.env.VUE_APP_IMAGE_API + response.hero_image[this.getRandomInt(this.num_images)].carousel_image.meta.download_url
+      }).catch(() => {
+        this.tagline_1 = ''
+        this.tagline_2 = ''
+        this.message = 'Page content API Page content API failed to load.  Please refresh page to try again.'
+        this.num_images = 1
+        this.hero = ''
+      })
+    },
+    getRandomInt (max) {
+      return Math.floor(Math.random() * max)
+    },
+    initYear () {
+      api.getActiveYear().then(response => {
+        this.activeYear = response.data
+      })
+    },
     initStandings (id) {
       id = id.length > 1 ? id : ''
       api.getStandings(id).then(response => {
@@ -201,23 +222,22 @@ export default {
 }
 .hero {
   background-color: #021A2B;
-  background: url('../../assets/img/MHAC_2-optimized.png');
   background-size: cover;
   background-position: center;
   width: 100%;
   height: 51vh;
   position: relative;
-  &:before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgb(26,26,26);
-    background: -moz-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
-    background: -webkit-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
-    background: linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1a1a1a",endColorstr="#f2f2f2",GradientType=1);
-  }
+  // &:before {
+  //   content: '';
+  //   position: absolute;
+  //   width: 100%;
+  //   height: 100%;
+  //   background: rgb(26,26,26);
+  //   background: -moz-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
+  //   background: -webkit-linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
+  //   background: linear-gradient(27deg, rgba(26,26,26,0.68) 1%, rgba(242,242,242,0.1) 100%);
+  //   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1a1a1a",endColorstr="#f2f2f2",GradientType=1);
+  // }
   @media @phone {
     order: 2;
   }
@@ -277,7 +297,7 @@ export default {
   &-content {
     padding-top: 1rem;
     padding-bottom: 1rem;
-    h1 {
+    h2 {
       font-family: @montse;
       font-weight: 300;
       font-size: 1.7rem;

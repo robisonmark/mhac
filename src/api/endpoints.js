@@ -1,10 +1,11 @@
 /***
  * This creates the api class that is called to create out http requests
+ * TODO: Update Pattern Used to be Class Based By Category
+ * TODO: Create a function for chaining params
+ * TODO: Better Parameter Chaining
 ***/
-// import axios from 'axios'
+
 import { robros } from './base'
-// import { Auth } from 'aws-amplify'
-// import { store } from '@/store/index'
 
 export class api {
   /***
@@ -14,15 +15,6 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async login (username, password) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
     return robros({
       url: '/login/',
       method: 'POST',
@@ -40,17 +32,21 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getCurrentSeasons () {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
     return robros({
       url: '/getCurrentSeasons',
+      method: 'GET'
+    })
+  }
+
+  /***
+     * Get Team Count (For Tournament Games)
+     * @param {string} method - Get
+     * @param {string} seasonId - Season Level ID
+     * @return - JSON Object of players by team
+    ***/
+  static async getTeamCount (seasonId) {
+    return robros({
+      url: '/getTeamCount/' + seasonId,
       method: 'GET'
     })
   }
@@ -62,15 +58,6 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getStandings (seasonId) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }'
     const queryParms = seasonId ? '/' + seasonId : ''
     return robros({
       url: '/getStandings' + queryParms,
@@ -85,15 +72,6 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getSeasonStats (data) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }'
     // let queryParms = '?'
     // Object.keys(data).forEach(string => {
     //   // console.log(string)
@@ -114,60 +92,12 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getGameResults (gameId, teamId) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }'
-
-    let addedParams = ''
-    if (gameId !== undefined && teamId === undefined) {
-      addedParams = '/' + gameId
-    } else if (gameId !== undefined && teamId !== undefined) {
-      addedParams = '/' + gameId + '/' + teamId
-    } else {
-      addedParams = ''
-    }
+    gameId = gameId ? gameId + '/' : ''
+    teamId = teamId ? teamId + '/' : ''
 
     return robros({
-      url: '/getGameResults' + addedParams,
+      url: `/getGameResults/${gameId}${teamId}`,
       method: 'GET'
-    })
-  }
-
-  /***
-     * Get Game Results
-     * This call returns the game stats, it takes optional parameters of game_id and team_id
-     * @param {string} method - GET
-     * @param {object} body - Player JSON Body
-     * @return - JSON Object of players by team
-    ***/
-  static async addGameResults (gameId, stats) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }'
-
-    let addedParams = ''
-    if (gameId !== undefined) {
-      addedParams = '/' + gameId
-    } else {
-      return 'Error'
-    }
-
-    return robros({
-      url: '/addGameResults' + addedParams,
-      method: 'POST',
-      data: stats
     })
   }
 
@@ -177,24 +107,10 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getTeams (id) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
-    let addedParams = ''
-    if (id !== undefined) {
-      addedParams = '/' + id
-    } else {
-      addedParams = ''
-    }
+    id = id ? '/' + id : ''
 
     return robros({
-      url: '/getTeams' + addedParams,
+      url: `/getTeams${id}`,
       method: 'GET'
     })
   }
@@ -205,17 +121,8 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getPlayers (team) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
     return robros({
-      url: '/getPlayers/' + team,
+      url: `/getPlayers/${team}`,
       method: 'GET'
     })
   }
@@ -226,70 +133,9 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getRoster (level) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
     return robros({
-      url: '/getRoster/' + level,
+      url: `/getRoster/${level}`,
       method: 'GET'
-    })
-  }
-
-  /***
-     * Adds New Player to Roster
-     * @param {object} body - Player JSON Body
-     * @return - JSON Object of players by team
-    ***/
-  static async addPlayer (body) {
-    // let id = ''
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
-    // if (body.id) {
-    //   id = body.id
-
-    //   delete body.id
-    // }
-    return robros({
-      url: '/addPlayer',
-      method: 'POST',
-      data: body
-    })
-  }
-
-  /***
-     * Get a List of Players
-     * @param {string} method - Put or Post. Method sent to the api
-     * @param {object} body - Player JSON Body
-     * @return - JSON Object of players by team
-    ***/
-  static async updatePlayer (id, body) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
-
-    return robros({
-      url: '/updatePlayer/' + id,
-      method: 'POST',
-      data: body
     })
   }
 
@@ -299,28 +145,28 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getSchedule (season, team) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
-
+  static async getSchedule (season, team, year) {
+    let urlString = '/getSchedule'
     let addedParams = ''
+
     if (season !== undefined && team === undefined) {
       addedParams = '/' + season
+    } else if (year !== undefined) {
+      addedParams = '/' + year
     } else if (season !== undefined && team !== undefined) {
       addedParams = '/' + season + '/' + team
+    } else if (season === undefined && team !== undefined) {
+      addedParams = '/' + team
+      urlString = '/getProgramSchedule'
     } else {
+      /*
+       * @todo: Remove this call
+      **/
       addedParams = ''
     }
 
     return robros({
-      url: '/getSchedule' + addedParams,
+      url: urlString + addedParams,
       method: 'GET'
     })
   }
@@ -332,15 +178,6 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getLevels (season, team) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
     return robros({
       url: '/getLevels',
       method: 'GET'
@@ -354,42 +191,16 @@ export class api {
      * @param {string} slug - Team Slug
      * @return - JSON Object of players by team
     ***/
-  static async getSeasonTeams (slug) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
+  static async getSeasonTeams (slug = '', seasonid = null) {
+    if (slug !== '' && seasonid !== null) {
+      slug = slug + '/' + seasonid
+    } else if (slug === '' && seasonid !== null) {
+      slug = seasonid
+    }
+
     return robros({
       url: '/getSeasonTeams/' + slug,
       method: 'GET'
-    })
-  }
-
-  /***
-     * Add Game
-     * @param {string} method - Put or Post. Method sent to the api
-     * @param {object} body - Player JSON Body
-     * @return - JSON Object of players by team
-    ***/
-  static async addGame (body) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
-    return robros({
-      url: '/addGame',
-      method: 'POST',
-      data: body
     })
   }
 
@@ -400,18 +211,113 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getTournamentInformation (body) {
-    // if (store.state.user.signInUserSession.idToken.jwtToken) {
-    //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
-    // } else {
-    //   await Auth.currentAuthenticatedUser().then(response => {
-    //     // console.log('current:', response)
-    //     promo.defaults.headers.common['Authorization'] = response.signInUserSession.idToken.jwtToken
-    //     // console.log(user)
-    //   })
-    // }
     return robros({
-      url: '/getTournamentInformation',
+      url: '/getTournamentInformation/',
       method: 'GET'
+    })
+  }
+
+  static async getActiveTournaments (body) {
+    return robros({
+      url: '/getActiveTournaments',
+      method: 'GET'
+    })
+  }
+
+  static async sendStats (body, gameId, teamId) {
+    return robros({
+      url: '/addFileGameStats/' + gameId + '/' + teamId,
+      method: 'POST',
+      data: body
+    })
+  }
+
+  static async getActiveYear () {
+    return robros({
+      url: '/getActiveYear',
+      method: 'GET'
+    })
+  }
+
+  static async getTeamByStandings (seasonId, rank) {
+    return robros({
+      url: '/lookupTeamByStandings/' + seasonId + '/' + rank,
+      method: 'GET'
+    })
+  }
+
+  /***
+   * Get a List of Players
+   * @param {string} method - Put or Post. Method sent to the api
+   * @param {object} body - Player JSON Body
+   * @return - JSON Object of players by team
+  ***/
+  static async updateTournamentGame (body) {
+    return robros({
+      url: '/updateTournamentGame/',
+      method: 'POST',
+      data: body
+    })
+  }
+
+  /***
+     *
+     *
+     *
+     *
+    ***/
+  static async addTournamentGame (body) {
+    return robros({
+      url: '/addTournamentGame/',
+      method: 'POST',
+      data: body
+    })
+  }
+
+  static async getYear (active) {
+    const returnUrl = active ? '/getActiveYear' : '/getYears/'
+
+    return robros({
+      url: returnUrl,
+      method: 'GET'
+    })
+  }
+
+  static async getAdminSeasons () {
+    return robros({
+      url: '/getAdminSeasons',
+      method: 'GET'
+    })
+  }
+
+  static async updateSeason (body) {
+    return robros({
+      url: '/updateSeason',
+      method: 'PUT',
+      data: body
+    })
+  }
+
+  static async addSeason (body) {
+    return robros({
+      url: '/addSeason',
+      method: 'POST',
+      data: body
+    })
+  }
+
+  static async getWebSocketUrl () {
+    return robros({
+      url: '/websocketUrl',
+      method: 'GET'
+    })
+  }
+
+  static async updateWebSocketUrl (body) {
+    return robros({
+      url: '/websocketUrl',
+      method: 'POST',
+      data: body
     })
   }
 }

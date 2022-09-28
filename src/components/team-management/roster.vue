@@ -2,15 +2,13 @@
   <div class="hello">
     <header class="contentPad">
       <h2>Current Roster</h2>
-      <selectbox id="levels" :options="teamAssocLvl" :trackby="'level_name'" placeholder="Select Level" v-model="rosterLvl"></selectbox>
-
       <div class="buttonCon">
-        <div class="switch" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
           <span class="focused">Edit</span>
         </div>
 
-        <div class="switch" v-if="edit" @click="updatePlayers()">
+        <div class="switch" v-if="edit" @click="save()">
           <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
           <span class="focused" v-if="!saving">Save</span>
           <span v-else>saving...</span>
@@ -19,39 +17,89 @@
       </div>
     </header>
     <div class="contentPad">
+      <p v-if="errors.length">
+        <b>Please correct the following error(s):</b>
+        <ul>
+          <li v-for="(error, index) in errors" :key=index>{{ error.player.first_name + ' ' + error.player.last_name + ': ' +  error.error }}</li>
+        </ul>
+      </p>
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
         <template slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
             <td class="stat first">
-              <input type="number" min="0" v-model.number="player.player_number" @input="addToUpdateList(index)" />
-              <!-- <template v-else>{{player.player_stats['2PM']}}</template> -->
+              <input type="number" min="0" v-model="player.player_number" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.first_name" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+              <input type="text" v-model="player.first_name" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.last_name" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+              <input type="text" v-model="player.last_name" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.position" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+              <input type="text" v-model="player.position" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <!-- <input type="number" v-model.number="player" /> -->
-              <template>{{age()}}</template>
+              <!-- <template>{{player.age}}</template> -->
+              <input type="number" v-model="player.age" @input="addToUpdateList(player)" />
+            </td>
+            <!-- <td class="stat">
+              <input type="date" v-model="player.birth_date"  @input="addToUpdateList(player)" />
+            </td> -->
+            <td class="stat">
+              <input type="number" v-model="player.height.feet" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="date" v-model="player.birth_date" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+              <input type="number" v-model="player.height.inches" @input="addToUpdateList(player)" />
             </td>
             <td class="stat">
-              <input type="text" v-model="player.height" />
-              <!-- <template v-else>{{player.player_stats['2PA']}}</template> -->
+              <multiselect
+                v-model="player.season_roster"
+                label="level_name"
+                track-by="team_id"
+                :options="$store.getters.teamLevels"
+                :closeOnSelect="false"
+                :optionHeight="10"
+                :multiple="true"
+                :taggable="true"
+                @input="addToUpdateList(player)">
+              </multiselect>
+            </td>
+          </tr>
+          <tr>
+            <td class="stat first">
+              <input type="number" min="0" v-model="newPlayer.player_number"  />
+            </td>
+            <td class="stat">
+              <input type="text" v-model="newPlayer.first_name" />
+            </td>
+            <td class="stat">
+              <input type="text" v-model="newPlayer.last_name" />
+            </td>
+            <td class="stat">
+              <input type="text" v-model="newPlayer.position" />
+            </td>
+            <td class="stat">
+              <!-- <template>{{newPlayer.age}}</template> -->
+              <input type="number" v-model="newPlayer.age" />
+            </td>
+            <!-- <td class="stat">
+              <input type="date" v-model="newPlayer.birth_date" />
+            </td> -->
+            <td class="stat">
+              <input type="number" v-model="newPlayer.height.feet" />
+            </td>
+            <td class="stat">
+              <input type="number" v-model="newPlayer.height.inches" />
+            </td>
+            <td class="stat">
+              <multiselect v-model="newPlayer.season_roster" label="level_name" track-by="team_id" :options="$store.getters.teamLevels" :closeOnSelect="false"  :optionHeight="10" :multiple="true" :taggable="true"></multiselect>
             </td>
           </tr>
         </template>
+
+        <!-- <template slot="tbody" v-else>
+          <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
+        </template> -->
       </editTable>
     </div>
   </div>
@@ -59,13 +107,16 @@
 
 <script>
 // api
-import { api } from '../../api/endpoints.js'
+import { api } from '@/api/endpoints'
+import Admin from '@/api/admin'
 import { mapState } from 'vuex'
 import _ from 'lodash'
 
 // components
 import editTable from '@/components/editTable'
-import selectbox from '../selectbox'
+
+// third party
+import Multiselect from 'vue-multiselect'
 
 export default {
   name: 'roster',
@@ -76,7 +127,7 @@ export default {
           name: 'Number',
           icon: '',
           field_name: 'player_number',
-          type: 'text'
+          type: 'number'
         },
         {
           name: 'First Name',
@@ -106,25 +157,33 @@ export default {
           name: 'Age',
           icon: '',
           field_name: 'age',
-          type: 'text'
+          type: 'int'
+        },
+        // {
+        //   name: 'Birthdate',
+        //   icon: '',
+        //   field_name: 'birth_date',
+        //   type: 'date'
+        // },
+        {
+          name: 'Feet',
+          icon: '',
+          field_name: 'feet',
+          type: 'int'
         },
         {
-          name: 'Birthdate',
+          name: 'Inches',
           icon: '',
-          field_name: 'birth_date',
-          type: 'text'
+          field_name: 'inches',
+          type: 'int'
         },
         {
-          name: 'Height',
+          name: 'Levels',
           icon: '',
-          field_name: 'height',
-          type: 'text'
-        },
-        {
-          name: 'Team',
-          icon: '',
-          field_name: 'team_id',
-          type: 'text'
+          field_name: 'season_roster',
+          type: 'multiselect',
+          track_by: 'level_name',
+          model: 'season_roster'
         }
       ],
       config: {
@@ -139,23 +198,57 @@ export default {
       rosterLvl: '',
       saved: false,
       saving: false,
-      updated: []
+      updated: [],
+      added: [],
+      errors: []
     }
   },
   components: {
     editTable: editTable,
-    selectbox: selectbox
+    Multiselect
+  },
+  computed: {
+    seasons () {
+      return this.$store.state.seasons
+    },
+    teamAssocLvl () {
+      return this.$store.state.teamAssocLvl.season_team_ids
+    },
+    user: {
+      get: function () {
+        return this.$store.getters.user
+      },
+
+      set: function (newValue) {
+        this.initRoster()
+      }
+    },
+    ...mapState(['slug'])
   },
   watch: {
-    user (newValue, oldValue) {
-      this.initRoster()
+    newPlayer: {
+      deep: true,
+      handler (newValue) {
+        const idx = this.added.indexOf(newValue)
+        if (idx >= 0) {
+          this.added[idx] = newValue
+        } else {
+          this.added.push(newValue)
+        }
+      }
     },
     rosterLvl: {
       deep: true,
       handler (newValue, oldValue) {
         this.initLeveledRoster(newValue.season_team_id)
       }
-    }
+    },
+    '$route.params.slug': {
+      handler (id) {
+        this.initRoster()
+      }
+    },
+    slug: 'initRoster'
     // 'roster.height': {
     //   deep: true,
     //   handler (newValue, oldValue) {
@@ -163,12 +256,6 @@ export default {
     //     this.updated.push(newValue)
     //   }
     // }
-  },
-  computed: {
-    teamAssocLvl () {
-      return this.$store.state.teamAssocLvl.season_team_ids
-    },
-    ...mapState(['user'])
   },
   created () {
     this.initRoster()
@@ -178,16 +265,18 @@ export default {
     this.$root.$on('save', payload => {
       this.save()
     })
+
+    this.$root.$on('changeEdit', () => { this.edit = !this.edit })
   },
   methods: {
     initRoster () {
-      api.getPlayers(this.$store.state.user.team_id).then(response => {
-        // response.data.forEach(player => {
-        //   player.number = player.number
-        // })
-        this.roster = response.data
-        this.fullRoster = _.cloneDeep(this.roster)
-      })
+      if (this.$route.params.slug) {
+        Admin.getAdminPlayers(this.$route.params.slug).then(response => {
+          this.roster = response.data
+          this.fullRoster = _.cloneDeep(this.roster)
+          console.log(JSON.stringify(this.roster))
+        })
+      }
     },
     initLeveledRoster (lvlId) {
       api.getRoster(lvlId).then(response => {
@@ -205,27 +294,47 @@ export default {
     },
     initNewPlayer () {
       this.newPlayer = {
-        number: '',
+        player_number: NaN,
         first_name: '',
         last_name: '',
-        id: '',
+        id: null,
         position: '',
         age: '',
-        birth_date: '',
-        height: '',
-        team_id: ''
+        height: {
+          feet: 0,
+          inches: 0
+        },
+        team: this.$store.state.user.team_id,
+        season_roster: [],
+        person_type: 1
+      }
+      return this.newPlayer
+    },
+    // age (Birthday) {
+    //   Birthday = new Date(Birthday + 'T00:00:00')
+    //   var ageDifMs = Date.now() - Birthday.getTime()
+    //   var ageDate = new Date(ageDifMs) // miliseconds from epoch
+    //   return Math.abs(ageDate.getUTCFullYear() - 1970)
+    // },
+    addToUpdateList (id) {
+      // console.log('addtolist')
+      let add = true
+      let i = 0
+      for (i = 0; i < this.updated.length; i++) {
+        if (this.updated[i] === id) {
+          add = false
+        }
+      }
+      if (add) {
+        this.updated.push(id)
       }
     },
-    age () {
-      return 'Fix'
-    },
-    addToUpdateList (id) {
-      this.updated.push(id)
-    },
     updatePlayers () {
+      // console.log('updatePlayers')
       this.updated.forEach(index => {
-        const playerId = this.roster[index].id
-        console.log(playerId)
+        // console.log(index)
+        // const playerId = this.roster[index].id
+        // console.log(playerId)
         // api.updatePlayer(playerId, this.roster[index])
         //   .then(response => {
         //     console.log(response)
@@ -233,22 +342,43 @@ export default {
       })
     },
     save () {
-      // console.log(this.newPlayer)
-      this.newPlayer.team_id = this.$store.state.user.team_id
-      const playerJson = this.newPlayer
-
-      api.addPlayer(playerJson)
-        .then(response => {
-          console.log(response)
+      if (this.updated.length > 0) {
+        this.updated.forEach(player => {
+          player.team_id = this.$store.state.user.team_id
+          const playerJson = player
+          Admin.updatePlayer(player.id, playerJson)
+            .then(response => {
+              console.log(response)
+            })
+            .catch(err => {
+              console.log(err)
+              this.errors.push({ player: player, error: 'Age is a required field' })
+            })
         })
-        .catch(err => {
-          console.log(err)
-        })
+      }
 
-      this.roster.push(this.newPlayer)
-      this.initNewPlayer()
-      this.$root.$emit('saved')
-      this.$root.$off('save')
+      if (this.added.length >= 1) {
+        this.added.forEach(player => {
+          if (isNaN(player.age) || player.age === '') {
+            this.errors.push({ player: player, error: 'Age is a required field' })
+          }
+          player.team_id = this.$store.state.user.team_id
+          const playerJson = player
+          console.log(JSON.stringify(playerJson))
+          // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
+
+          Admin.addPlayer(playerJson)
+            .then(response => {
+              console.log(response)
+            })
+            .catch(err => {
+              console.log(err)
+              this.errors.push(playerJson)
+            })
+        })
+        this.roster.push(this.newPlayer)
+        this.initNewPlayer()
+      }
     }
   }
 }

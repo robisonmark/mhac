@@ -1,9 +1,12 @@
+// TODO: Separate into components and views
 <template>
+<div>
   <div class="container">
     <div class="row">
       <div class="logo-color col">
         <!-- <div class="image-con"> -->
           <img v-if="program.logo_color" :src="'/static/color-team-logos/' + program.logo_color" :alt="program.team_name + ' ' + program.team_mascot"/>
+
         <!-- </div> -->
       </div>
       <div class="col-8 top-layer">
@@ -22,15 +25,8 @@
                   </div>
                 </div>
 
-                <div class="custom-select" @click.stop="showSections = !showSections, showSeasons = false">
+                <div class="roster-label-outer" @click.stop="showSeasons = false">
                   <div disabled>{{selectedSection}}</div>
-                  <div class="options-menu">
-                    <template>
-                      <div class="option" v-for="(section, index) in sections" :key="index" v-show="showSections" @click="selectedSection = section">
-                        {{section}}
-                      </div>
-                    </template>
-                  </div>
                 </div>
 
               </div>
@@ -38,9 +34,9 @@
           </div>
 
           <div class="content-divider">
-            <div class="button ghost print" @click="print()">
+            <!-- <div class="button ghost print" @click="print()">
               <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
-            </div>
+            </div> -->
           </div>
 
           <div v-if="selectedSection === 'Schedule'">
@@ -57,10 +53,10 @@
                   <td>
                     <div class="game--date">{{game.game_date}}  / <span class="font-weight-light">{{game.game_time}}</span></div>
                     <div class="game--opponent">
-                      <span v-if="game.host">vs</span>
-                      <span v-else>@</span>
+                      <span v-if="game.host">vs </span>
+                      <span v-else>@ </span>
 
-                      <b v-html="game.opponent.name"></b>
+                      <b v-html="game.opponent.team_name"></b>
                     </div>
                   </td>
                   <td class="game--location">
@@ -97,11 +93,15 @@
               </thead>
               <tbody>
                 <tr v-for="player in roster" :key="player.id">
-                  <td v-html="player.number"></td>
+                  <td v-html="player.player_number"></td>
                   <td>{{player.first_name}} {{player.last_name}}</td>
                   <td v-html="player.position"></td>
                   <td v-html="player.age"></td>
-                  <td v-html="player.height"></td>
+                  <td>
+                    <template v-if="player.height.feet != 0">
+                      {{player.height.feet}}  ' {{player.height.inches}} "
+                    </template>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -122,15 +122,20 @@
         </div>
       </div> -->
     </div>
-    <div class="bottom-logo" ref="bottomLogo">
-      <img v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey" :alt="program.team_name + ' ' + program.team_mascot"/>
-    </div>
   </div>
+  <div class="bottom-logo_con" ref="bottomLogo">
+    <img class="bottom-logo" v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey" :alt="program.team_name + ' ' + program.team_mascot"/>
+  </div>
+</div>
 </template>
 
 <script>
 // api
 import { api } from '../../api/endpoints.js'
+
+// mixins
+import { root } from '../../mixins/root'
+
 import _ from 'lodash'
 
 export default {
@@ -156,17 +161,17 @@ export default {
       roster: [],
       schedule: [],
       sections: [
-        'Schedule',
         'Roster'
         // 'Staff'
       ],
-      selectedSection: 'Schedule',
+      selectedSection: 'Roster',
       showDatePicker: false,
       showSeasons: false,
       showSections: false,
       teamAssocLvl: []
     }
   },
+  mixins: [root],
   computed: {
     footerLoc: {
       get: function () {
@@ -217,7 +222,7 @@ export default {
 
           this.initLeveledSchedule(season[0].season_id, this.$route.params.slug)
         } else if (this.selectedSection === 'Roster') {
-          this.initLeveledRoster(newValue.season_team_id)
+          this.initLeveledRoster(newValue.team_id)
         }
       }
     },
@@ -227,7 +232,7 @@ export default {
         if (newValue === 'Schedule') {
           this.initLeveledSchedule(this.filterBy.team.season_team_id, this.$route.params.slug)
         } else if (newValue === 'Roster') {
-          this.initLeveledRoster(this.filterBy.team.season_team_id)
+          this.initLeveledRoster(this.filterBy.team.team_id)
         }
       }
     }
@@ -245,9 +250,10 @@ export default {
 
       await api.getTeams(slug)
         .then(response => {
-          this.program = response.data.team[0]
-          this.initRoster(this.program.id)
+          this.program = response.data[0]
           this.getSeasonTeams(this.$route.params.slug)
+          // console.log(this.teamAssocLvl)
+          this.initRoster(this.teamAssocLvl.team_id)
         })
 
       // window.addEventListener('scroll', this.watchLogoPos)
@@ -256,11 +262,11 @@ export default {
       const footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
       const bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
 
-      console.log('top: ', document.getElementById('publicMainFooter').scrollTop)
-      console.log('y: ', footerTop.y)
-      console.log('bottom: ', bottomLogoPos.y)
-      console.log('bool: ', footerTop.top <= (bottomLogoPos.bottom))
-      console.log('pos: ', (bottomLogoPos.y - footerTop.y) + 'px')
+      // console.log('top: ', document.getElementById('publicMainFooter').scrollTop)
+      // console.log('y: ', footerTop.y)
+      // console.log('bottom: ', bottomLogoPos.y)
+      // console.log('bool: ', footerTop.top <= (bottomLogoPos.bottom))
+      // console.log('pos: ', (bottomLogoPos.y - footerTop.y) + 'px')
 
       if (footerTop.top <= bottomLogoPos.bottom) {
         this.$refs.bottomLogo.style.bottom = (bottomLogoPos.bottom - footerTop.top) + 'px'
@@ -270,6 +276,7 @@ export default {
     },
     initRoster (id) {
       api.getPlayers(id).then(response => {
+        // console.log(id, response)
         // response.data.forEach(player => {
         //   player.number = player.number
         // })
@@ -277,12 +284,12 @@ export default {
         this.fullRoster = _.cloneDeep(this.roster)
       })
     },
-    getSeasonTeams (slug) {
-      api.getSeasonTeams(slug)
+    async getSeasonTeams (slug) {
+      await api.getSeasonTeams(slug)
         .then(response => {
-          this.teamAssocLvl = response.data.season_team_ids
+          this.teamAssocLvl = response.data
 
-          this.filterBy.team = response.data.season_team_ids[0]
+          this.filterBy.team = response.data[0]
 
           // this.initLeveledSchedule(response.data.season_team_ids[0])
           // this.$store.dispatch('setTeamAssocLvl', response.data)
@@ -291,13 +298,12 @@ export default {
     initLeveledRoster (lvlId) {
       api.getRoster(lvlId).then(response => {
         const rosterArr = []
-        this.fullRoster.forEach(player => {
-          response.data.forEach(lvlPlayer => {
-            if (player.id === lvlPlayer.player_id) {
-              rosterArr.push(player)
-            }
-          })
+        // console.log(response)
+        // this.fullRoster.forEach(player => {
+        response.data.forEach(lvlPlayer => {
+          rosterArr.push(lvlPlayer)
         })
+        // })
 
         this.roster = rosterArr
       })
@@ -309,8 +315,8 @@ export default {
           const gameObj = {
             host: '',
             opponent: '',
-            game_time: game.game_time,
-            game_date: game.game_date,
+            game_time: this.$config.formatTime(game.game_time),
+            game_date: this.$config.formatDate(game.game_date),
             location: {},
             results: {},
             id: game.game_id
@@ -319,12 +325,12 @@ export default {
           if (game.home_team.slug === this.$route.params.slug) {
             gameObj.host = true
             gameObj.opponent = game.away_team
-            if (game.final_score.home !== null) {
-              if (game.final_score.home > game.final_score.away) {
+            if (game.final_scores.home_score !== null) {
+              if (game.final_scores.home_score > game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'W'
                 }
-              } else if (game.final_score.home < game.final_score.away) {
+              } else if (game.final_scores.home_score < game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'L'
                 }
@@ -333,12 +339,12 @@ export default {
           } else if (game.away_team.slug === this.$route.params.slug) {
             gameObj.host = false
             gameObj.opponent = game.home_team
-            if (game.final_score.home !== null) {
-              if (game.final_score.home < game.final_score.away) {
+            if (game.final_scores.home_score !== null) {
+              if (game.final_scores.home_score < game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'W'
                 }
-              } else if (game.final_score.home > game.final_score.away) {
+              } else if (game.final_scores.home_score > game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'L'
                 }
@@ -352,8 +358,8 @@ export default {
             name: game.home_team.address_name
           }
 
-          if (game.final_score.home !== null) {
-            gameObj.results = { ...gameObj.results, ...game.final_score }
+          if (game.final_scores.home_score !== null) {
+            gameObj.results = { ...gameObj.results, ...game.final_scores }
           }
 
           gameArr.push(gameObj)
@@ -400,6 +406,8 @@ export default {
   top: 130px;
   z-index: 2;
   box-shadow: 9px 6px 9px rgba(0, 0, 0, 0.16);
+  max-width: 300px;
+  max-height: 300px;
   // margin-top: 1rem;
   img {
     max-width: 98%;
@@ -461,14 +469,17 @@ export default {
 .top-layer {
   z-index: 1;
 }
-.bottom-logo {
-  // position: fixed;
+.bottom-logo_con {
+  height: 125px;
   position: sticky;
-  right: 0;
-  left: 100%;
   bottom: 0;
-  max-height: 30rem;
-  max-width: 24rem;
+}
+.bottom-logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  max-height: 300px;
+  max-width: 250px;
   z-index: 0;
   opacity: .6;
   img {
@@ -490,6 +501,25 @@ export default {
 }
 .content {
   padding: 2rem 1rem;
+}
+.roster-label-outer {
+  display: inline-block;
+  position: relative;
+  font-size: 1rem;
+  width: 45%;
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    transform: skewX(-45deg);
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+    width: 100%;
+    height: 1.8rem;
+    top: 0;
+    left: .5rem;
+  }
 }
 .custom-select {
   display: inline-block;
@@ -541,6 +571,28 @@ export default {
     &.noHover:hover {
       background-color: #fff;
     }
+  }
+}
+
+.roster-label {
+  position: absolute;
+  width: 250px;
+  background: #0C4B75;
+  // padding: .5rem;
+  top: calc(1.5rem);
+  left: -3px;
+  z-index: 2;
+  box-shadow: 1px 2px 4px #0C4B75;
+  .option {
+    padding: .2rem .5rem;
+    width: 100%;
+    cursor: pointer;
+    // &:hover {
+    //   background-color: lighten(#0C4B75, 10%);
+    // }
+    // &.noHover:hover {
+    //   background-color: #fff;
+    // }
   }
 }
 table {

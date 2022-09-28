@@ -1,192 +1,102 @@
 <template>
    <div class="container">
      <div class="page-styles">
-      <h2>MHAC Conference Tournament Information - 2020</h2>
-      <h5><a href="/static/docs/MHAC Conference 2020 Tournament.pdf" class="download" download>Download Tournament Packet</a></h5>
-      <p>The 2019-2020 MHAC Conference Tournament will be beginning Thursday Feburary 6th at <a href="https://welch.edu/">Welch College</a> in Gallatin, Tennessee. Games begin at 8:00am CST at the <a href="https://goo.gl/maps/tBuQfnHmC19ZZste9">Welch College Gym</a>.  Please <a href="/static/docs/MHAC Conference 2020 Tournament.pdf" class="download" download>download the tournament packet</a> for more information.</p>
-      <p>Because of our initial growth we are using a second gym the first day where the initial 14u games will be played.  It is First Baptist Church Hendersonville.  <a href="https://goo.gl/maps/jkkQnVX1KjcR7VpH9">106 Bluegrass Commons Blvd, Hendersonville, TN 37075</a>.  The 14u families will report to that gym directly Thursday morning.</p>
+       <h2>{{ tournament.title }}</h2>
+       <template v-for="section in tournament.section">
+          <div :key="section.id">
+            <span v-html="section.content"></span>
+          </div>
+       </template>
+      <!-- <h2>MHAC Conference Tournament Information - 2021</h2>
+      <h5><a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">Download Tournament Packet</a></h5>
+      <p>There will be four tournaments. All games will be played at <a href='https://www.google.com/maps/place/106+Gallatin+Pike+N,+Madison,+TN+37115/@36.264061,-86.7130334,17z/data=!3m1!4b1!4m5!3m4!1s0x88644302d8537e4d:0x747b45d0cbfa0f87!8m2!3d36.264061!4d-86.7108447'> Madison Church of Christ, 106 Gallatin Pike N, Madison, TN 37115</a>. The first round games of the tournament will be played on Thursday.  The semi-finals on Friday, and tiger consolation and championship games on Saturday.  Madison CoC will be hosting a concession stand there for those wanting a meal, snack or drink.
+      </p>
+
+      <p>
+        The tournament schedule is based on 8 teams for 18U(HSV) boys, 6 teams for 16u(HSJV) boys, 7 teams for 14U(MSV) boys and 4 teams for 18U(HSV) girls.
+      </p>
+      <p>
+        <b>Gate and Concession money</b>
+        <br />The MHAC Conference is covering all costs for the tournament(refs and gym floor).  Because of this we will be collecting the gate money and money from attendees.  We really need to make sure and support the tournament to help cover all the costs.
+      </p>
+      <p>
+        <b>Gate fees</b>
+        <ul>
+          <li>Daily Adult - $10</li>
+          <li>Daily Student - $7</li>
+          <li>Families with 4 or more - $34</li>
+          <li>Tournament Adult - $24 (On Friday the price drops to $17)</li>
+          <li>Tournament Student - $15 (On Friday the price drops to $11)</li>
+          <li>Tournament Family 4 or more - $70 (On Friday the price drops to $50) </li>
+          <li>6 years old and under will get in free</li>
+        </ul>
+
+        There will be a total of 21 games in the tournament, Feb 11th, 12th & 13th.
+      </p>
+      <p>
+        <b>Payment Methods</b>
+         <ul>
+           <li> We will be setting up the Square app to be able to pay at the gate using a debit or credit card</li>
+           <li> We will also take checks made out to “Hendersonville Royals” with “Tournament Gate” in the memo line</li>
+         </ul>
+
+      </p>
+      <p>
+        <b>We need your help!</b>
+        <br />
+          As the tournament approaches we are making plans to provide the best experience for your students. We have volunteer positions available for running the camera or operating the gate. Below you will find a link to the signup page where you can select to fill a time slot.
+        <br />
+        Click the link to sign-up below.
+        <br />
+        <a href="https://www.signupgenius.com/go/20F0E4AAEAD2FA2FE3-2021" target="_blank"><img src="https://www.signupgenius.com/images/sign-up-now1.gif" width="150" height="90" border="0" alt="Sign Up!"></a>
+      </p>
+      <p>
+        Please <a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">download the tournament packet</a> for more information.
+      </p>
 
       <br />
 
-      <p>The concession stand will be open at 7:45 each morning and will remain open until we leave each night. All proceeds help to offset the cost of using the gym at Welch College. <a href="/static/docs/MHAC Concessions.pdf" class="download" download>Click here to download the concession menu.</a></p>
-      <div class="tournamentSchedule">
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">14U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th class="final">Final Score</th>
-              <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in fourteenUBoys" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-              </td>
-              <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template>
-              </td>
-              <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-            </tr>
-          </tbody>
-        </table>
+      <p>
+         Don't forget to order merchandise for the 2020-2021 tournament. This year we are offering T-Shirts, Crewneck Sweatshirts, and Hoodies. To order, visit <a href="https://mhac-merch.square.site/">https://mhac-merch.square.site</a>.
+      </p>
+      <div class="filterBar">
+        <label for="list" class="toggle-buttons toggle-buttons-left" :class="[bracketFormat === 'list' ? 'active' : '']">
+          <input type="radio" v-model="bracketFormat" value="list" id="list">
+          <font-awesome-icon :icon="['fas', 'list-ol']" class="icon"></font-awesome-icon>
+        </label>
+        <label for="bracket" class="toggle-buttons toggle-buttons-right" :class="[bracketFormat === 'bracket' ? 'active' : '']">
+          <input type="radio" v-model="bracketFormat" value="bracket" id="bracket">
+          <font-awesome-icon :icon="['fas', 'stream']" class="icon"></font-awesome-icon>
+        </label>
+      </div> -->
 
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">16U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th class="final">Final Score</th>
-              <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in sixteenUBoys" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-              </td>
-              <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template>
-              </td>
-              <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-            </tr>
-          </tbody>
-        </table>
+      <TournamentBracket v-if="Object.keys(games).length >= 1 && bracketFormat === 'bracket'" :games="games"></TournamentBracket>
+      <!-- <TournamentList :games="games" v-else></TournamentList> -->
 
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">18U Boys</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th class="final">Final Score</th>
-              <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in eighteenUBoys" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-              </td>
-              <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template>
-              </td>
-              <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table>
-          <thead>
-            <tr class="levelHead">
-              <td colspan="6">18U Girls</td>
-            <tr>
-            <tr>
-              <th>Game #</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Matchup</th>
-              <th class="final">Final Score</th>
-              <th class="text-right"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(game, index) in eighteenUGirls" :key="index">
-              <td>{{game.game}}</td>
-              <td>{{game.date}}</td>
-              <td>{{game.time}}</td>
-              <td>
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team1 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team1"></span>
-                vs.
-                <span :class="[game.matchup.scoreTeam1 && game.matchup.team2 === results(game.matchup) ? 'winner' : '']" v-html="game.matchup.team2"></span>
-              </td>
-              <td class="final">
-                <template v-if="game.matchup.scoreTeam1">
-                  {{game.matchup.scoreTeam1}} - {{game.matchup.scoreTeam2}}
-                  <div>{{results(game.matchup)}}</div>
-                </template>
-                <template v-else>
-                  --
-                </template>
-              </td>
-              <td class="text-right"><a :href="'https://maps.google.com/?q=' + game.location.address">{{game.location.name}}</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
       <div class="sponsors">
-      </div>
-    </div>
-    <div class="bracketModal" v-if="showBracket">
-      <div class="custom-select"  @click="showLevels = !showLevels">
-        <div disabled>{{filterBy.level.level}}</div>
-        <div class="options-menu">
-          <template>
-            <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
-              {{lvl.level}}
-            </div>
-          </template>
-        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+// Api
 import { api } from '../../api/endpoints.js'
+import pages from '@/api/pages'
+
+// components
+import TournamentBracket from '@/components/tournament/bracket'
+// import TournamentList from '@/components/tournament/list'
+
+// Third Party Helpers
+import { groupBy } from 'lodash'
 
 export default {
-  name: 'tournament2020',
+  name: 'tournament',
   data () {
     return {
+      tournament: [],
+      bracketFormat: 'bracket',
       filterBy: {
         team: {
           slug: '',
@@ -201,545 +111,43 @@ export default {
           end_date: ''
         }
       },
-      // games: [
-      //   {
-      //     game: '1',
-      //     date: 'Feburary 6th',
-      //     time: '10:00 am',
-      //     matchup: {
-      //       team1: 'Chattanooga Patriots',
-      //       scoreTeam1: '17',
-      //       team2: 'Tennessee Heat',
-      //       scoreTeam2: '36'
-      //     },
-      //     location: {
-      //       address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
-      //       name: 'First Baptist Church'
-      //     },
-      //     level: '14U Boys'
-      //   },
-      //   {
-      //     game: '2',
-      //     date: 'Feburary 6th',
-      //     time: '11:00 am',
-      //     matchup: {
-      //       team1: 'Covenant Christian Academy',
-      //       scoreTeam1: '23',
-      //       team2: 'Nashville Warriors',
-      //       scoreTeam2: '49'
-      //     },
-      //     location: {
-      //       address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
-      //       name: 'First Baptist Church'
-      //     },
-      //     level: '14U Boys'
-      //   },
-      //   {
-      //     game: '3',
-      //     date: 'Feburary 6th',
-      //     time: '12:00 pm',
-      //     matchup: {
-      //       team1: 'Hendersonville Royals',
-      //       scoreTeam1: '35',
-      //       team2: 'Daniel 1 Academy',
-      //       scoreTeam2: '52'
-      //     },
-      //     location: {
-      //       address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
-      //       name: 'First Baptist Church'
-      //     },
-      //     level: '14U Boys'
-      //   },
-      //   {
-      //     game: '4',
-      //     date: 'Feburary 6th',
-      //     time: '1:00 pm',
-      //     matchup: {
-      //       team1: 'Life Christian Academy',
-      //       scoreTeam1: '24',
-      //       team2: 'Western Kentucky Trailblazers',
-      //       scoreTeam2: '68'
-      //     },
-      //     location: {
-      //       address: '106 Bluegrass Commons Blvd, Hendersonville, TN 37075',
-      //       name: 'First Baptist Church'
-      //     },
-      //     level: '14U Boys'
-      //   },
-      //   {
-      //     game: '5',
-      //     date: 'Feburary 6th',
-      //     time: '8:00 am',
-      //     matchup: {
-      //       team1: 'Nashville Warriors',
-      //       scoreTeam1: '33',
-      //       team2: 'Chattanooga Patriots',
-      //       scoreTeam2: '53'
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Boys'
-      //   },
-      //   {
-      //     game: '6',
-      //     date: 'Feburary 6th',
-      //     time: '9:30 am',
-      //     matchup: {
-      //       team1: 'Tennessee Heat',
-      //       scoreTeam1: '53',
-      //       team2: 'Hendersonville Royals',
-      //       scoreTeam2: '55'
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Boys'
-      //   },
-      //   {
-      //     game: '7',
-      //     date: 'Feburary 6th',
-      //     time: '11:00 am',
-      //     matchup: {
-      //       team1: 'Covenant Christian Academy',
-      //       scoreTeam1: '40',
-      //       team2: 'Western Kentucky Trailblazers',
-      //       scoreTeam2: '50'
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Boys'
-      //   },
-      //   {
-      //     game: '8',
-      //     date: 'Feburary 6th',
-      //     time: '12:30 pm',
-      //     matchup: {
-      //       team1: 'Daniel 1 Academy',
-      //       scoreTeam1: '29',
-      //       team2: 'Life Christian Academy',
-      //       scoreTeam2: '60'
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Boys'
-      //   },
-      //   {
-      //     game: '9',
-      //     date: 'Feburary 6th',
-      //     time: '2:00 pm',
-      //     matchup: {
-      //       team1: 'Daniel 1 Academy',
-      //       scoreTeam1: '55',
-      //       team2: 'Hendersonville Royals',
-      //       scoreTeam2: '47'
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '16U Boys'
-      //   },
-      //   {
-      //     game: '10',
-      //     date: 'Feburary 6th',
-      //     time: '3:00 pm',
-      //     matchup: {
-      //       team1: 'Covenant Christian Academy',
-      //       scoreTeam1: '41',
-      //       team2: 'Tennessee Heat',
-      //       scoreTeam2: '43'
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '16U Boys'
-      //   },
-      //   {
-      //     game: '11',
-      //     date: 'Feburary 6th',
-      //     time: '4:00 pm',
-      //     matchup: {
-      //       team1: 'Life Christian Academy',
-      //       scoreTeam1: '',
-      //       team2: 'Chattanooga Patriots',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '16U Boys'
-      //   },
-      //   {
-      //     game: '12',
-      //     date: 'Feburary 6th',
-      //     time: '12:30 pm',
-      //     matchup: {
-      //       team1: 'Western Kentucky Trailblazers',
-      //       scoreTeam1: '',
-      //       team2: 'Bye',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '16U Boys'
-      //   },
-      //   {
-      //     game: '13',
-      //     date: 'Feburary 7th',
-      //     time: '8:00 am',
-      //     matchup: {
-      //       team1: 'Covenant Christian Academy',
-      //       scoreTeam1: '',
-      //       team2: 'Hendersonville Royals',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '14U Boys'
-      //   },
-      //   {
-      //     game: '14',
-      //     date: 'Feburary 7th',
-      //     time: '9:00 am',
-      //     matchup: {
-      //       team1: 'Chattanooga Patriots',
-      //       scoreTeam1: '',
-      //       team2: 'Life Christian Academy',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '14U Boys'
-      //   },
-      //   {
-      //     game: '15',
-      //     date: 'Feburary 7th',
-      //     time: '10:00 am',
-      //     matchup: {
-      //       team1: 'Nashville Warriors',
-      //       scoreTeam1: '',
-      //       team2: 'Daniel 1 Academy',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '14U Boys'
-      //   },
-      //   {
-      //     game: '16',
-      //     date: 'Feburary 7th',
-      //     time: '11:00 am',
-      //     matchup: {
-      //       team1: 'Tennessee Heat',
-      //       scoreTeam1: '',
-      //       team2: 'Western Kentucky Trailblazers',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '14U Boys'
-      //   },
-      //   {
-      //     game: '17',
-      //     date: 'Feburary 7th',
-      //     time: '12:00 pm',
-      //     matchup: {
-      //       team1: 'Winner Game 10',
-      //       scoreTeam1: '',
-      //       team2: 'Winner Game 11',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '16U Boys'
-      //   },
-      //   {
-      //     game: '18',
-      //     date: 'Feburary 7th',
-      //     time: '1:00 pm',
-      //     matchup: {
-      //       team1: 'Winner Game 9',
-      //       scoreTeam1: '',
-      //       team2: '#1 Seed',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '16U Boys'
-      //   },
-      //   {
-      //     game: '19',
-      //     date: 'Feburary 7th',
-      //     time: '2:00 pm',
-      //     matchup: {
-      //       team1: 'Covenant Christian Academy',
-      //       scoreTeam1: '',
-      //       team2: ' Nashville Warriors',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Girls'
-      //   },
-      //   {
-      //     game: '20',
-      //     date: 'Feburary 7th',
-      //     time: '3:30 pm',
-      //     matchup: {
-      //       team1: 'Daniel 1 Academy',
-      //       scoreTeam1: '',
-      //       team2: 'Chatanooga Patriots',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Girls'
-      //   },
-      //   {
-      //     game: '21',
-      //     date: 'Feburary 7th',
-      //     time: '5:00 pm',
-      //     matchup: {
-      //       team1: 'Tennessee Heat',
-      //       scoreTeam1: '',
-      //       team2: 'Covenant Christian Academy',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Boys'
-      //   },
-      //   {
-      //     game: '22',
-      //     date: 'Feburary 7th',
-      //     time: '6:30 pm',
-      //     matchup: {
-      //       team1: 'Nashville Warriors',
-      //       scoreTeam1: '',
-      //       team2: 'Daniel 1 Academy',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Boys'
-      //   },
-      //   {
-      //     game: '23',
-      //     date: 'Feburary 7th',
-      //     time: '8:00 pm',
-      //     matchup: {
-      //       team1: 'Hendersonville Royals',
-      //       scoreTeam1: '',
-      //       team2: 'Western Kentucky Trailblazers',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Boys'
-      //   },
-      //   {
-      //     game: '24',
-      //     date: 'Feburary 7th',
-      //     time: '9:30 pm',
-      //     matchup: {
-      //       team1: 'Chattanooga Patriots',
-      //       scoreTeam1: '',
-      //       team2: 'Life Christian Academy',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Boys'
-      //   },
-      //   {
-      //     game: '25',
-      //     date: 'Feburary 8th',
-      //     time: '8:00 am',
-      //     matchup: {
-      //       team1: 'Loser Game 10',
-      //       scoreTeam1: '',
-      //       team2: 'Loser Game 11',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '16U Boys'
-      //   },
-      //   {
-      //     game: '26',
-      //     date: 'Feburary 8th',
-      //     time: '9:00 am',
-      //     matchup: {
-      //       team1: 'Loser Game 19',
-      //       scoreTeam1: '',
-      //       team2: 'Loser Game 20',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Girls'
-      //   },
-      //   {
-      //     game: '27',
-      //     date: 'Feburary 8th',
-      //     time: '10:00 am',
-      //     matchup: {
-      //       team1: 'Loser Game 9',
-      //       scoreTeam1: '',
-      //       team2: 'Winner Game 25',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '16U Boys'
-      //   },
-      //   {
-      //     game: '28',
-      //     date: 'Feburary 8th',
-      //     time: '12:00 pm',
-      //     matchup: {
-      //       team1: 'Winner Game 15',
-      //       scoreTeam1: '',
-      //       team2: 'Winner Game 16',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '14U Boys'
-      //   },
-      //   {
-      //     game: '29',
-      //     date: 'Feburary 8th',
-      //     time: '2:00 pm',
-      //     matchup: {
-      //       team1: 'Winner Game 17',
-      //       scoreTeam1: '',
-      //       team2: 'Winner Game 18',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '16U Boys'
-      //   },
-      //   {
-      //     game: '30',
-      //     date: 'Feburary 8th',
-      //     time: '4:00 pm',
-      //     matchup: {
-      //       team1: 'Winner Game 19',
-      //       scoreTeam1: '',
-      //       team2: 'Winner Game 20',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Girls'
-      //   },
-      //   {
-      //     game: '31',
-      //     date: 'Feburary 8th',
-      //     time: '6:00 pm',
-      //     matchup: {
-      //       team1: 'Winner Game 23',
-      //       scoreTeam1: '',
-      //       team2: 'Winner Game 24',
-      //       scoreTeam2: ''
-      //     },
-      //     location: {
-      //       address: '1045 Bison Trail, Gallatin, TN 37066',
-      //       name: 'Welch College Gym'
-      //     },
-      //     level: '18U Boys'
-      //   }
-      // ],
-      games: [],
-      showBracket: false
+      games: {}
     }
   },
+
+  components: {
+    TournamentBracket: TournamentBracket
+  //   TournamentList: TournamentList
+  },
+
   computed: {
     levels () {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
-    },
-    fourteenUBoys () {
-      return this.games.filter(game => { return game.level === '14U Boys' })
-    },
-    sixteenUBoys () {
-      return this.games.filter(game => { return game.level === '16U Boys' })
-    },
-    eighteenUBoys () {
-      return this.games.filter(game => { return game.level === '18U Boys' })
-    },
-    eighteenUGirls () {
-      return this.games.filter(game => { return game.level === '18U Girls' })
     }
   },
   created () {
     this.initTourney()
+    this.initTournament()
   },
   methods: {
-    results (matchup) {
-      if (parseInt(matchup.scoreTeam1) > parseInt(matchup.scoreTeam2)) {
-        return matchup.team1
-      } else {
-        return matchup.team2
-      }
-    },
     initTourney () {
-      // this.thinking = true
-      // this.$router.push('/manage/chattanooga_patriots')
       api.getTournamentInformation().then(response => {
-        this.games = response.data.games
+        response.data.games.forEach((game) => {
+          game.date = this.$config.formatDate(game.date)
+          game.time = this.$config.formatTime(game.time)
+        })
+        this.games = groupBy(response.data.games, 'seasons.level')
       })
         .catch(err => {
           console.log(err)
+        })
+    },
+    initTournament () {
+      pages.get('tournament')
+        .then(response => {
+          console.log(response)
+          this.tournament = response
         })
     }
   }
@@ -760,35 +168,59 @@ h5 {
   padding-bottom: 1rem;
 }
 
-.tournamentSchedule {
-  margin-top: 4rem;
+.filterBar {
+  line-height: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
-table {
-  width: 100%;
-  margin-bottom: 2rem;
-  td, th {
-    padding: .3rem .5rem;
+
+.toggle-buttons {
+  border: 1px solid #0C4B75;
+  color: #0C4B75;
+  display: inline-flex;
+  padding: 5px;
+  margin-bottom: 0;
+
+  // &-left {
+  //   border-radius: 5px 0 0 5px;
+  // }
+
+  // &-right {
+  //   border-radius: 0 5px 5px 0;
+  // }
+
+  &.active {
+    background: #0C4B75;
+    color: #fff;
+    border: 1px solid #0C4B75;
   }
-  th {
-    font-weight: 200;
+
+  input {
+    display: none;
   }
-  tbody tr {
-    border-bottom: 1px solid #CFCDCD;
-    // padding:.75rem;
+
+  .icon {
+    font-size: 1.2rem;
   }
 }
-.winner {
-  font-weight: 600;
-}
-.final {
-  text-align: right;
-  div{
-    font-style: italic;
-  }
-}
-.levelHead {
+
+::v-deep .levelHead {
   padding:.75rem;
   background-color: rgba(39,132,195,1);
   color: #fff;
+
+  &-div {
+    box-sizing: border-box;
+    line-height: 1;
+  }
+
+  td {
+    line-height: 2;
+  }
 }
+
+// @media @phone {
+
+// }
 </style>
