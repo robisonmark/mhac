@@ -19,12 +19,12 @@
                 <li><div class="flex-spacer"></div></li>
                 <li>
                   <a href="http://www.wkytrailblazers.com/">
-                    <img src="/static/color-team-logos/blazers.png" alt="Link to Team Site" />
+                    <img src="/static/color-team-logos/blazersLogo.png" alt="Link to Team Site" />
                   </a>
                 </li>
                 <li>
-                  <a href="https://d1academy.org/">
-                    <img src="/static/color-team-logos/d1a.png" alt="Link to Team Site" />
+                  <a href="https://fasebook.com/uppercumberlandrams/">
+                    <img src="/static/color-team-logos/rams.png" alt="Link to Team Site" />
                   </a>
                 </li>
                 <li>
@@ -43,8 +43,8 @@
                   </a>
                 </li>
                 <li>
-                  <a href="http://hendersonvilleroyals.com/">
-                    <img src="/static/color-team-logos/royals.png" alt="Link to Team Site" />
+                  <a href="https://www.bradleyknights.org/">
+                    <img src="/static/color-team-logos/KnightsLogo.png" alt="Link to Team Site" />
                   </a>
                 </li>
                 <li>

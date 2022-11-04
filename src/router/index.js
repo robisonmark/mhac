@@ -36,7 +36,8 @@ import profile from '@/components/team-management/profile'
 import admin from '@/components/admin'
 // import login from '@/components/admin/login'
 import adminTournament from '@/components/admin/adminTournament'
-// import adminSeason from '@/components/admin/adminSeason'
+import teamManager from '@/components/admin/teamAdmin'
+import adminSeason from '@/components/admin/adminSeason'
 import editHomepage from '@/components/admin/editHomepage'
 import manageStandings from '@/components/admin/manageStandings'
 import adminObs from '@/components/admin/adminObs'
@@ -374,15 +375,24 @@ export const router = new Router({
             section: 'admin'
           }
         },
-        // {
-        //   path: 'seasons',
-        //   name: 'adminSeason',
-        //   component: adminSeason,
-        //   meta: {
-        //     requiresAuth: true,
-        //     section: 'admin'
-        //   }
-        // },
+        {
+          path: 'team-manager',
+          name: 'admineam',
+          component: teamManager,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          }
+        },
+        {
+          path: 'seasons',
+          name: 'adminSeason',
+          component: adminSeason,
+          meta: {
+            requiresAuth: true,
+            section: 'admin'
+          }
+        },
         {
           path: 'manage_standings',
           name: 'manageStandings',

@@ -132,7 +132,7 @@ import editTable from '@/components/editTable'
 
 // third party
 import Multiselect from 'vue-multiselect'
-// import selectbox from '../selectbox.vue'
+import selectbox from '../selectbox.vue'
 
 export default {
   name: 'adminSeasons',
