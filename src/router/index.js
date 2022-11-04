@@ -377,7 +377,7 @@ export const router = new Router({
         },
         {
           path: 'team-manager',
-          name: 'admineam',
+          name: 'teamManager',
           component: teamManager,
           meta: {
             requiresAuth: true,
