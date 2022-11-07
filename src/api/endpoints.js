@@ -320,4 +320,12 @@ export class api {
       data: body
     })
   }
+
+  static async addTeam (body) {
+    return robros({
+      url: '/createTeam',
+      method: 'POST',
+      data: body
+    })
+  }
 }

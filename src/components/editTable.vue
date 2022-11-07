@@ -39,7 +39,7 @@
               <template v-else-if="column.field_name==='archive'">
                   <input type='checkbox' v-model="data[column.field_name]" id="index" disabled>
               </template>
-              <template v-else-if="column.field_name === 'team_name'">
+              <template v-else-if="column.field_name === 'team_name' && 'season_teams' in data">
                   <template v-for="(c) in data['season_teams']">
                     {{c.team_name }}
                   </template>

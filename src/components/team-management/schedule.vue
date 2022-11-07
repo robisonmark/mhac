@@ -288,18 +288,18 @@ export default {
       })
     },
     // Check for Use Value then set if not available
-    // async getSeasonTeamId (slug, gameSeason) {
-    //   if (gameSeason === undefined) {
-    //     gameSeason = this.newGame.season.season_id
-    //   }
-    //   // move this to vuex ?
-    //   let teamId = ''
-    //   await api.getSeasonTeams(slug, gameSeason)
-    //     .then(response => {
-    //       teamId = response.data.team_id
-    //     })
-    //   return teamId
-    // },
+    async getSeasonTeamId (slug, gameSeason) {
+      if (gameSeason === undefined) {
+        gameSeason = this.newGame.season.season_id
+      }
+      // move this to vuex ?
+      let teamId = ''
+      await api.getSeasonTeams(slug, gameSeason)
+        .then(response => {
+          teamId = response.data.team_id
+        })
+      return teamId
+    },
 
     homeAwayDisplay (game) {
       game.host = !game.host
