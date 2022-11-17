@@ -92,11 +92,19 @@ export class api {
      * @return - JSON Object of players by team
     ***/
   static async getGameResults (gameId, teamId) {
-    gameId = gameId ? gameId + '/' : ''
-    teamId = teamId ? teamId + '/' : ''
+    // gameId = gameId ? gameId + '/' : ''
+    // teamId = teamId ? teamId + '/' : ''
+    let path = ''
+    if (gameId && teamId) {
+      path = gameId + '/' + teamId
+    } else if (gameId && !teamId) {
+      path = gameId
+    } else {
+      path = teamId
+    }
 
     return robros({
-      url: `/getGameResults/${gameId}${teamId}`,
+      url: `/getGameResults/${path}`,
       method: 'GET'
     })
   }
