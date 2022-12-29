@@ -141,7 +141,6 @@ export class api {
     })
   }
 
-
   /***
      * Get a List of Teams
      * @param {object} id - ID
