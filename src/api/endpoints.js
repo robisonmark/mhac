@@ -317,7 +317,6 @@ export class api {
 
   static async getYear (active) {
     const returnUrl = active ? '/getActiveYear' : '/getYears/'
-
     return robros({
       url: returnUrl,
       method: 'GET'

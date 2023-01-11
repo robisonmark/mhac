@@ -361,6 +361,7 @@ export default {
         this.added.forEach(player => {
           if (isNaN(player.age) || player.age === '') {
             this.errors.push({ player: player, error: 'Age is a required field' })
+
           }
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
