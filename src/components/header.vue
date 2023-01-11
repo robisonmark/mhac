@@ -23,7 +23,7 @@
                   </a>
                 </li>
                 <li>
-                  <a href="https://fasebook.com/uppercumberlandrams/">
+                  <a href="https://facebook.com/uppercumberlandrams/">
                     <img src="/static/color-team-logos/rams.png" alt="Link to Team Site" />
                   </a>
                 </li>
