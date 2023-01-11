@@ -103,10 +103,6 @@ export default {
 
       levels.forEach(level => {
         this.getTeamCount(level.season_id).then(async (teamCount) => {
-          if (level.level === '14U Boys') {
-            teamCount -= 1
-          }
-
           this.round = 1
           this.seeds = [1, 2]
           this.bracketMatchups = []

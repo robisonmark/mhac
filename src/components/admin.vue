@@ -2,7 +2,8 @@
   <div class="con-admin">
     <nav class="sidebar">
       <ul>
-        <router-link :to="{ name: 'teamDashboard', params: { slug: slug }}" tag="li" class="nav-item">Manage Teams</router-link>
+        <router-link :to="{ name: 'teamDashboard', params: { slug: slug }}" tag="li" class="nav-item">Team Dashboard</router-link>
+        <router-link :to="{ path: '/admin/team-manager'}" tag="li" class="nav-item">Add/Create Team</router-link>
         <router-link :to="{ path: '/admin/tournament'}" tag="li" class="nav-item">Manage Tournament</router-link>
         <router-link :to="{ path: '/admin/seasons'}" tag="li" class="nav-item">Manage Seasons</router-link>
         <!-- <router-link :to="{ path: '/admin/seasonsTeams'}" tag="li" class="nav-item">Manage SeasonsTeams</router-link> -->
@@ -16,11 +17,12 @@
 
 <script>
 // api
-import { api } from '../api/endpoints.js'
+import { api } from '@/api/endpoints'
+
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'admin',
+  name: 'teamManager',
   data () {
     return {
       collapse: true,

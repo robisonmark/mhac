@@ -85,7 +85,7 @@
                 :optionHeight="10"
                 :multiple="false"
                 :taggable="false"
-                
+
                 >
               </multiselect>
             </td>
@@ -134,7 +134,8 @@
 
 <script>
 // api
-import { api } from '../../api/endpoints.js'
+import { api } from '@/api/endpoints'
+import Admin from '@/api/admin'
 
 // components
 import editTable from '@/components/editTable'
@@ -229,23 +230,23 @@ export default {
 
     selectOptions () {
       // update to getter and setter
-      let teamList = []
+      const teamList = []
       if (!this.newGame.season) {
-         this.$store.getters.seasonTeams.filter(team => {
-          if (team.slug !=  this.$store.state.user.slug && 
+        this.$store.getters.seasonTeams.filter(team => {
+          if (team.slug !== this.$store.state.user.slug &&
           !teamList.some(e => e.slug === team.slug)) {
-             teamList.push(team)
+            teamList.push(team)
           }
         })
       } else {
         this.$store.getters.seasonTeams.filter(team => {
-        if (team.slug !== this.$store.state.user.slug && 
-            team.level_name === this.newGame.season.level && 
+          if (team.slug !== this.$store.state.user.slug &&
+            team.level_name === this.newGame.season.level &&
             !teamList.some(e => e.slug === team.slug)
-        ) {
-          teamList.push(team)
-        }
-      })
+          ) {
+            teamList.push(team)
+          }
+        })
       }
       return teamList
     },
@@ -275,17 +276,18 @@ export default {
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
-    teamInList(teamListObject, newTeam ) { 
-      return teamListObject.slug === newTeam.slug;
+    teamInList (teamListObject, newTeam) {
+      return teamListObject.slug === newTeam.slug
     },
     addNewGame () {
       this.schedule.push(this.newGame)
     },
     deleteGame (data, id) {
-      api.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
+      Admin.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
         this.schedule.splice(id, 1)
       })
     },
+    // Check for Use Value then set if not available
     async getSeasonTeamId (slug, gameSeason) {
       if (gameSeason === undefined) {
         gameSeason = this.newGame.season.season_id
@@ -370,7 +372,7 @@ export default {
       // console.log('gameJson', gameJson, game.opponent.slug, this.$store.state.user.slug)
       if (this.edit && game.game_id) {
         gameJson.game_id = game.game_id
-        api.updateGame(gameJson)
+        Admin.updateGame(gameJson)
           .then(response => {
             // this.initNewGame(this.newGame.season.season_id)
           })
@@ -381,7 +383,7 @@ export default {
 
         // this.schedule.push(this.newGame)
       } else {
-        api.addGame(gameJson)
+        Admin.addGame(gameJson)
           .then(response => {
             this.initNewGame(this.newGame.season.season_id)
           })

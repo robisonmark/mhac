@@ -48,7 +48,6 @@
       </td>
       <td>
         <font-awesome-icon :icon="['fas', 'save']" class="icon" @click="edit ? save(game): addGame(game)"></font-awesome-icon>
-        <!-- <font-awesome-icon :icon="['fas', 'redo']" class="icon" @click="undo(game)"></font-awesome-icon> -->
       </td>
     </template>
     <template v-if="!edit && !new_game">
@@ -129,11 +128,22 @@ export default {
       this.edit = !this.edit
     },
     addGame (game) {
-      console.log('AddGame')
       this.$emit('add-game', game)
       this.$root.$emit('newGame')
+      api.addTournamentGame(game).then(response => {
+        console.log(game)
+      })
     },
     save (game) {
+      if (game.matchup.winners_from) {
+        delete game.matchup.winners_from
+      }
+      for (const matchupKey in game.matchup) {
+        console.log(matchupKey)
+        if (!game.matchup[matchupKey]) {
+          delete game.matchup[matchupKey]
+        }
+      }
       api.updateTournamentGame(game).then(response => {
         if (response.status === 200) {
           console.log(response)

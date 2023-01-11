@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { api } from '../../api/endpoints.js'
+import { api } from '@/api/endpoints'
 import { sortBy } from 'lodash'
 
 export default {

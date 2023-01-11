@@ -1,7 +1,13 @@
 <template>
    <div class="container">
      <div class="page-styles">
-      <h2>MHAC Conference Tournament Information - 2021</h2>
+       <h2>{{ tournament.title }}</h2>
+       <template v-for="section in tournament.section">
+          <div :key="section.id">
+            <span v-html="section.content"></span>
+          </div>
+       </template>
+      <!-- <h2>MHAC Conference Tournament Information - 2021</h2>
       <h5><a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">Download Tournament Packet</a></h5>
       <p>There will be four tournaments. All games will be played at <a href='https://www.google.com/maps/place/106+Gallatin+Pike+N,+Madison,+TN+37115/@36.264061,-86.7130334,17z/data=!3m1!4b1!4m5!3m4!1s0x88644302d8537e4d:0x747b45d0cbfa0f87!8m2!3d36.264061!4d-86.7108447'> Madison Church of Christ, 106 Gallatin Pike N, Madison, TN 37115</a>. The first round games of the tournament will be played on Thursday.  The semi-finals on Friday, and tiger consolation and championship games on Saturday.  Madison CoC will be hosting a concession stand there for those wanting a meal, snack or drink.
       </p>
@@ -53,7 +59,7 @@
       <p>
          Don't forget to order merchandise for the 2020-2021 tournament. This year we are offering T-Shirts, Crewneck Sweatshirts, and Hoodies. To order, visit <a href="https://mhac-merch.square.site/">https://mhac-merch.square.site</a>.
       </p>
-      <!-- <div class="filterBar">
+      <div class="filterBar">
         <label for="list" class="toggle-buttons toggle-buttons-left" :class="[bracketFormat === 'list' ? 'active' : '']">
           <input type="radio" v-model="bracketFormat" value="list" id="list">
           <font-awesome-icon :icon="['fas', 'list-ol']" class="icon"></font-awesome-icon>
@@ -65,7 +71,7 @@
       </div> -->
 
       <TournamentBracket v-if="Object.keys(games).length >= 1 && bracketFormat === 'bracket'" :games="games"></TournamentBracket>
-      <TournamentList :games="games" v-else></TournamentList>
+      <!-- <TournamentList :games="games" v-else></TournamentList> -->
 
       <div class="sponsors">
       </div>
@@ -76,19 +82,21 @@
 <script>
 // Api
 import { api } from '../../api/endpoints.js'
+import pages from '@/api/pages'
 
 // components
 import TournamentBracket from '@/components/tournament/bracket'
-import TournamentList from '@/components/tournament/list'
+// import TournamentList from '@/components/tournament/list'
 
 // Third Party Helpers
 import { groupBy } from 'lodash'
 
 export default {
-  name: 'tournament2020',
+  name: 'tournament',
   data () {
     return {
-      bracketFormat: 'list',
+      tournament: [],
+      bracketFormat: 'bracket',
       filterBy: {
         team: {
           slug: '',
@@ -108,8 +116,8 @@ export default {
   },
 
   components: {
-    TournamentBracket: TournamentBracket,
-    TournamentList: TournamentList
+    TournamentBracket: TournamentBracket
+  //   TournamentList: TournamentList
   },
 
   computed: {
@@ -120,6 +128,7 @@ export default {
   },
   created () {
     this.initTourney()
+    this.initTournament()
   },
   methods: {
     initTourney () {
@@ -132,6 +141,13 @@ export default {
       })
         .catch(err => {
           console.log(err)
+        })
+    },
+    initTournament () {
+      pages.get('tournament')
+        .then(response => {
+          console.log(response)
+          this.tournament = response
         })
     }
   }
