@@ -498,4 +498,3 @@ games: [
         }
       ],
       showBracket: false
-=======
