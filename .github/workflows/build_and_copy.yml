@@ -33,4 +33,5 @@ jobs:
           port: ${{ secrets.PORT }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "./dist/*"
-          target: "/var/www/hcn"
+          target: "/var/www/mhacsports"
+          strip_components: 1
