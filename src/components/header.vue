@@ -18,7 +18,7 @@
               <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
                 <li><div class="flex-spacer"></div></li>
                 <li>
-                  <a href="http://www.wkytrailblazers.com/">
+                  <a href="https://www.facebook.com/people/Bluegrass-Blazers-Homeschool-Basketball/100084579375555/?mibextid=LQQJ4d">
                     <img src="/static/color-team-logos/blazersLogo.png" alt="Link to Team Site" />
                   </a>
                 </li>
@@ -76,27 +76,26 @@
             <div class="flex-spacer"></div>
             <router-link :to="{ path: '/' }">Home</router-link>
             <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
-              Tournament Central <font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
+              Tournament Central<font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
                 <ul v-show="showTournament" class="tourn_nav_dropdown">
                   <li><router-link :to="{ path: '/tournament'}">General Information</router-link> </li>
                   <li><router-link :to="{ path: '/tournament-brackets'}">Brackets</router-link></li>
                   <li><a href='https://www.dropbox.com/sh/dmk75k6rt0fu990/AABI6z3OksFGHMDbBG58A_tna?dl=0&fbclid=IwAR2CUwGfeTMck0UdXvsHrKeX1imbhk8DIdV_iPHCaQMpcpoKGnY94nXzqjM' target='_blank'>Tournament Photos 2022<font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon></a></li>
                 </ul>
             </span>
-            <span class="about_dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
+            <span class="about_dropdown" @click="aboutDrop" ref="aboutDropdown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
               About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
-              <font-awesome-icon class="dropIcon" v-if="showAbout === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
               <ul v-show="showAbout" class="about_nav_dropdown">
                   <li><router-link :to="{ path: '/about' }">Who We Are</router-link></li>
-                  <li><a href="https://mhac-media-docs.s3.us-east-2.amazonaws.com/MHAC+Bylaws+March+2021.pdf" target="_blank">Bylaws  <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
+                  <li><a href="https://mhac-media-docs.s3.us-east-2.amazonaws.com/MHAC+Bylaws+March+2021.pdf" target="_blank">Bylaws  <font-awesome-icon v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
                   <li><router-link :to="{ path: '/hall-of-fame' }">Past Champions</router-link></li>
-                  <li><a href="https://nchclive.com" target="_blank">NCHBC <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
+                  <li><a href="https://nchclive.com" target="_blank">NCHBC <font-awesome-icon v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
               </ul>
             </span>
             <router-link :to="{ path: '/schedules' }">Schedules</router-link>
             <span class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
               Rosters <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
-              <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
+              <!-- <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon> -->
               <ul v-show="showSchools" class="nav_dropdown">
                 <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">
                   {{team.team_name}}
@@ -174,6 +173,9 @@ export default {
     },
     tournamentDrop () {
       this.showTournament = !this.showTournament
+    },
+    aboutDrop () {
+      this.showAbout = !this.showAbout
     },
     goToLogin () {
       if (!this.loggedIn) {
@@ -711,7 +713,20 @@ export default {
                 max-height: 35px;
               }
             }
-          }
+          };
+
+          .about_dropdown {
+            position: relative;
+            ul {
+              position: absolute;
+              left: 0;
+              top: 35px;
+              font-size: 14px;
+              li {
+                max-height: 35px;
+              }
+            }
+          };
         }
         nav a,
         nav span {
