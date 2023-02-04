@@ -1,6 +1,14 @@
 <template>
   <div class="scoreboard" @keydown.space="timer">
-    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts" :bonus="away_fouls >=  gameRules.fouls_bonus" :bonusPlus="home_fouls >= gameRules.fouls_double_bonus" :possession="nextPossession === 'home'"></teamBlock>
+    <teamBlock
+      location="home"
+      v-model="home_team_slug"
+      :score="home_score"
+      :timeouts="home_timeouts"
+      :bonus="away_fouls >= gameRules.fouls_bonus"
+      :bonusPlus="home_fouls >= gameRules.fouls_double_bonus"
+      :possession="nextPossession === 'home'"
+    ></teamBlock>
 
     <div class="gameStats">
       <!-- <div class="score">
@@ -9,17 +17,34 @@
       </div> -->
       <div class="timeBlock">
         <div class="timeRemaining">
-          <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{displaySeconds(time_remaining.seconds) }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.tenth_seconds}}</template>
+          <template v-if="time_remaining.minutes !== 0"
+            >{{ time_remaining.minutes }}:</template
+          >{{ displaySeconds(time_remaining.seconds)
+          }}<template v-if="time_remaining.minutes === 0"
+            >.{{ time_remaining.tenth_seconds }}</template
+          >
         </div>
-        <div class="period" v-if="!final && !half">{{period}}</div>
+        <div class="period" v-if="!final && !half">{{ period }}</div>
         <div class="period" v-if="!final && half">Half</div>
         <div class="period" v-if="final">Final</div>
 
-        <img class="logo_mhac" src="/static/color-team-logos/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
+        <img
+          class="logo_mhac"
+          src="/static/color-team-logos/mhaclogo.png"
+          alt="Midsouth Home School Athletic Conference Logo"
+        />
       </div>
     </div>
 
-    <teamBlock location="away" v-model="away_team_slug" :score="away_score" :timeouts="away_timeouts" :bonus="away_fouls >= gameRules.fouls_bonus" :bonusPlus="away_fouls >= gameRules.fouls_double_bonus" :possession="nextPossession === 'away'"></teamBlock>
+    <teamBlock
+      location="away"
+      v-model="away_team_slug"
+      :score="away_score"
+      :timeouts="away_timeouts"
+      :bonus="away_fouls >= gameRules.fouls_bonus"
+      :bonusPlus="away_fouls >= gameRules.fouls_double_bonus"
+      :possession="nextPossession === 'away'"
+    ></teamBlock>
   </div>
 </template>
 
@@ -114,7 +139,9 @@ export default {
     },
     period: {
       get: function () {
-        return this.getNumberWithOrdinal(this.$store.state.scoreController.period)
+        return this.getNumberWithOrdinal(
+          this.$store.state.scoreController.period
+        )
       }
     },
     nextPossession: {
@@ -171,7 +198,11 @@ export default {
           seconds: 0,
           hundreds_seconds: 100
         }
-        if (this.getNumberWithOrdinal(this.$store.state.scoreController.period).contains('OT')) {
+        if (
+          this.getNumberWithOrdinal(
+            this.$store.state.scoreController.period
+          ).contains('OT')
+        ) {
           this.time_remaining = this.gameRules.overtime
         } else {
           this.time_remaining = this.gameRules.time
@@ -180,7 +211,11 @@ export default {
           action: 'setTime',
           value: this.time_remaining
         })
-        if (this.getNumberWithOrdinal(this.$store.state.scoreController.period) === 'OT 1') {
+        if (
+          this.getNumberWithOrdinal(
+            this.$store.state.scoreController.period
+          ) === 'OT 1'
+        ) {
           const data = {
             action: 'resetFouls',
             value: this.game_rules.bonus_fouls
@@ -233,11 +268,11 @@ export default {
       if (event.code === 'Space') {
         self.timer()
       }
-      if (['Numpad1', 'NumpadAdd'].every(v => self.keys.includes(v))) {
-        console.log(self.keys.filter(key => key === 'Numpad1').length)
-        self.home_score += self.keys.filter(key => key === 'Numpad1').length
+      if (['Numpad1', 'NumpadAdd'].every((v) => self.keys.includes(v))) {
+        console.log(self.keys.filter((key) => key === 'Numpad1').length)
+        self.home_score += self.keys.filter((key) => key === 'Numpad1').length
       }
-      if (['Numpad1', 'NumpadSubtract'].every(v => self.keys.includes(v))) {
+      if (['Numpad1', 'NumpadSubtract'].every((v) => self.keys.includes(v))) {
         if (self.home_score > 0) {
           self.home_score -= 1
         }
@@ -252,7 +287,10 @@ export default {
 
   methods: {
     connectWebSocket () {
-      console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
+      console.log(
+        'Starting connection to WebSocket Server',
+        this.$store.getters.getWebsocket
+      )
       this.connection = new WebSocket(this.$store.getters.getWebsocket)
       this.connection.onmessage = (event) => this.messageReceived(event)
     },
@@ -288,7 +326,10 @@ export default {
     runTimer () {
       const self = this
       Window.timerFunc = setInterval(function () {
-        const timerRemaining = (self.time_remaining.tenth_seconds / 10) + (self.time_remaining.seconds / 60) + self.time_remaining.minutes
+        const timerRemaining =
+          self.time_remaining.tenth_seconds / 10 +
+          self.time_remaining.seconds / 60 +
+          self.time_remaining.minutes
 
         if (Object.entries(timerRemaining) === 0) {
           const data = {
@@ -299,18 +340,49 @@ export default {
         }
 
         if (timerRemaining > 0) {
-          if (self.time_remaining.seconds === 0 && self.time_remaining.minutes > 0) {
-            self.time_remaining.minutes -= 1
-            self.time_remaining.seconds = 59
-          }
-
-          if (self.time_remaining.tenth_seconds === 0 && self.time_remaining.seconds > 0) {
-            self.time_remaining.seconds -= 1
-            self.time_remaining.tenth_seconds = 10
-          }
-
           self.time_remaining.tenth_seconds -= 1
         }
+
+        if (self.time_remaining.tenth_seconds < 0) {
+          self.time_remaining.tenth_seconds = 9
+          self.time_remaining.seconds -= 1
+        }
+
+        if (
+          self.time_remaining.seconds < 0 &&
+          self.time_remaining.minutes >= 0
+        ) {
+          self.time_remaining.seconds = 59
+          self.time_remaining.minutes -= 1
+        }
+
+        if (
+          self.time_remaining.minutes >= 1 &&
+          self.time_remaining.seconds === 0 &&
+          self.time_remaining.tenth_seconds === 0
+        ) {
+          self.time_remaining.minutes -= 0
+        }
+
+        // if (timerRemaining > 0) {
+        //   if (
+        //     self.time_remaining.seconds === 0 &&
+        //     self.time_remaining.minutes > 0
+        //   ) {
+        //     self.time_remaining.minutes -= 1
+        //     self.time_remaining.seconds = 59
+        //   }
+
+        //   if (
+        //     self.time_remaining.tenth_seconds === 0 &&
+        //     self.time_remaining.seconds > 0
+        //   ) {
+        //     self.time_remaining.seconds -= 1
+        //     self.time_remaining.tenth_seconds = 10
+        //   }
+
+        //   self.time_remaining.tenth_seconds -= 1
+        // }
       }, 100)
     },
     stopTimer () {
@@ -330,49 +402,49 @@ export default {
 </script>
 
 <style lang="less">
-  @import (css) url('https://fonts.googleapis.com/css2?family=Teko&display=swap');
-  ::v-deep html,
-  ::v-deep body {
-    overflow: hidden;
-  }
-  .scoreboard {
+@import (css) url("https://fonts.googleapis.com/css2?family=Teko&display=swap");
+::v-deep html,
+::v-deep body {
+  overflow: hidden;
+}
+.scoreboard {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  overflow: hidden;
+}
+.gameStats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 65px;
+  background-color: #fff;
+  .score {
     display: flex;
-    width: 100%;
     justify-content: center;
-    overflow: hidden;
   }
-  .gameStats {
-    display: flex;
-    flex-direction: column;
+  .timeBlock {
+    font-family: "Teko", sans-serif;
+
     justify-content: center;
     align-items: center;
-    width: 65px;
-    background-color: #fff;
-    .score {
-      display: flex;
-      justify-content: center;
-    }
-    .timeBlock {
-      font-family: 'Teko', sans-serif;
+    flex-flow: column;
+    font-size: 1.7rem;
+    margin: 0.5rem 1rem;
+    line-height: 0.7;
+    text-align: center;
+    letter-spacing: 1px;
+  }
 
-      justify-content: center;
-      align-items: center;
-      flex-flow: column;
-      font-size: 1.7rem;
-      margin: 0.5rem 1rem;
-      line-height: .7;
-      text-align: center;
-      letter-spacing: 1px;
-    }
-
-    .timeRemaining {
-      font-size: 2.2rem;
-    }
+  .timeRemaining {
+    font-size: 2.2rem;
   }
-  .period {
-    white-space: nowrap;
-  }
-  .logo_mhac {
-    width: 50px;
-  }
+}
+.period {
+  white-space: nowrap;
+}
+.logo_mhac {
+  width: 50px;
+}
 </style>
