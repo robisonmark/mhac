@@ -309,6 +309,7 @@ const actions = {
     context.commit('resetFouls', payload)
   },
   setTime (context, payload) {
+    console.log(payload)
     context.commit('setTime', payload)
   },
   setGameConfig (context, payload) {
