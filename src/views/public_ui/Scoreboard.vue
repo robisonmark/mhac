@@ -137,8 +137,9 @@ export default {
     },
     period: {
       get: function () {
-        // console.log(this.$store.state.scoreController.period)
-        return this.getNumberWithOrdinal(this.$store.state.scoreController.period)
+        return this.getNumberWithOrdinal(
+          this.$store.state.scoreController.period
+        )
       }
     },
     nextPossession: {
@@ -209,7 +210,11 @@ export default {
           action: 'setTime',
           value: this.time_remaining
         })
-        if (this.getNumberWithOrdinal(this.$store.state.scoreController.period) === 'OT 1') {
+        if (
+          this.getNumberWithOrdinal(
+            this.$store.state.scoreController.period
+          ) === 'OT 1'
+        ) {
           const data = {
             action: 'resetFouls',
             value: this.game_rules.bonus_fouls
