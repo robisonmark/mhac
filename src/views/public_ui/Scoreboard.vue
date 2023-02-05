@@ -341,19 +341,19 @@ export default {
 
         if (timerRemaining > 0) {
           self.time_remaining.tenth_seconds -= 1
-        }
 
-        if (self.time_remaining.tenth_seconds < 0) {
-          self.time_remaining.tenth_seconds = 9
-          self.time_remaining.seconds -= 1
-        }
+          if (self.time_remaining.tenth_seconds < 0) {
+            self.time_remaining.tenth_seconds = 9
+            self.time_remaining.seconds -= 1
+          }
 
-        if (
-          self.time_remaining.seconds < 0 &&
+          if (
+            self.time_remaining.seconds < 0 &&
           self.time_remaining.minutes >= 0
-        ) {
-          self.time_remaining.seconds = 59
-          self.time_remaining.minutes -= 1
+          ) {
+            self.time_remaining.seconds = 59
+            self.time_remaining.minutes -= 1
+          }
         }
       }, 100)
     },
