@@ -11,10 +11,7 @@
     ></teamBlock>
 
     <div class="gameStats">
-      <!-- <div class="score">
-        <scoreBlock location="home" v-model="home_score"></scoreBlock> |
-        <scoreBlock location="away" v-model="away_score"></scoreBlock>
-      </div> -->
+
       <div class="timeBlock">
         <div class="timeRemaining">
           <template v-if="time_remaining.minutes !== 0"
@@ -56,27 +53,6 @@ export default {
   name: 'scoreboard',
   data () {
     return {
-      // away_fouls: 4,
-      // away_score: 0,
-      // away_team_slug: 'daniel_1',
-      // away_timeouts: 4,
-
-      // home_fouls: 0,
-      // home_score: 0,
-      // home_team_slug: 'western_kentucky',
-      // home_timeouts: 5,
-      // game_rules: {
-      //   periods: 4,
-      //   timeouts_allowed: 5,
-      //   penalties_allowed: 7,
-      //   time_remaining: {
-      //     minutes: 8,
-      //     seconds: 0,
-      //     tenth_seconds: 10
-      //   },
-      //   fouls_bonus: 7,
-      //   fouls_double_bonus: 10
-      // },
 
       isKeyDown: false,
 
@@ -130,18 +106,23 @@ export default {
     home_timeouts: {
       get: function () {
         return this.$store.state.scoreController.timeouts.home
+      },
+      set: function (newValue) {
+        console.log(newValue)
       }
     },
     away_timeouts: {
       get: function () {
         return this.$store.state.scoreController.timeouts.away
+      },
+      set: function (newValue) {
+        console.log(newValue)
       }
     },
     period: {
       get: function () {
-        return this.getNumberWithOrdinal(
-          this.$store.state.scoreController.period
-        )
+        // console.log(this.$store.state.scoreController.period)
+        return this.getNumberWithOrdinal(this.$store.state.scoreController.period)
       }
     },
     nextPossession: {
@@ -158,6 +139,14 @@ export default {
         console.log(newValue)
       }
     },
+    // time_remaining: {
+    //   get: function () {
+    //     return this.$store.state.scoreController.time_remaining
+    //   },
+    //   set: function (newValue) {
+    //     console.log (newValue.time)
+    //   }
+    // },
     webSocketURL () {
       return this.$store.getters.getWebsocket
     },
@@ -192,17 +181,9 @@ export default {
     },
     period: {
       handler: function () {
-        console.log(this.period)
-        this.time_remaining = {
-          minutes: 0,
-          seconds: 0,
-          hundreds_seconds: 100
-        }
-        if (
-          this.getNumberWithOrdinal(
-            this.$store.state.scoreController.period
-          ).contains('OT')
-        ) {
+        const displayPeriod = this.getNumberWithOrdinal(this.$store.state.scoreController.period)
+
+        if (displayPeriod.includes('OT')) {
           this.time_remaining = this.gameRules.overtime
         } else {
           this.time_remaining = this.gameRules.time
@@ -211,11 +192,7 @@ export default {
           action: 'setTime',
           value: this.time_remaining
         })
-        if (
-          this.getNumberWithOrdinal(
-            this.$store.state.scoreController.period
-          ) === 'OT 1'
-        ) {
+        if (this.getNumberWithOrdinal(this.$store.state.scoreController.period) === 'OT 1') {
           const data = {
             action: 'resetFouls',
             value: this.game_rules.bonus_fouls
