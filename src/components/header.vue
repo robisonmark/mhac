@@ -76,15 +76,15 @@
             <div class="flex-spacer"></div>
             <router-link :to="{ path: '/' }">Home</router-link>
             <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
-              Tournament Central<font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
+              Tournament Central<font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showTournament" :icon="['fas', 'angle-up']"></font-awesome-icon>
                 <ul v-show="showTournament" class="tourn_nav_dropdown">
                   <li><router-link :to="{ path: '/tournament'}">General Information</router-link> </li>
                   <li><router-link :to="{ path: '/tournament-brackets'}">Brackets</router-link></li>
                   <li><a href='https://www.dropbox.com/sh/dmk75k6rt0fu990/AABI6z3OksFGHMDbBG58A_tna?dl=0&fbclid=IwAR2CUwGfeTMck0UdXvsHrKeX1imbhk8DIdV_iPHCaQMpcpoKGnY94nXzqjM' target='_blank'>Tournament Photos 2022<font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon></a></li>
                 </ul>
             </span>
-            <span class="about_dropdown" @click="aboutDrop" ref="aboutDropdown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
-              About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
+            <span class="dropdown" @click="aboutDrop" ref="aboutDropdown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
+              About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showAbout" :icon="['fas', 'angle-up']"></font-awesome-icon>
               <ul v-show="showAbout" class="about_nav_dropdown">
                   <li><router-link :to="{ path: '/about' }">Who We Are</router-link></li>
                   <li><a href="https://mhac-media-docs.s3.us-east-2.amazonaws.com/MHAC+Bylaws+March+2021.pdf" target="_blank">Bylaws  <font-awesome-icon v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
@@ -94,8 +94,7 @@
             </span>
             <router-link :to="{ path: '/schedules' }">Schedules</router-link>
             <span class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
-              Rosters <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
-              <!-- <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon> -->
+              Rosters <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showSchools" :icon="['fas', 'angle-up']"></font-awesome-icon>
               <ul v-show="showSchools" class="nav_dropdown">
                 <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">
                   {{team.team_name}}
@@ -249,10 +248,6 @@ export default {
     width: 100%;
     z-index: 5;
     background: var(--bg-color);
-
-    @media @phone {
-
-    }
 
     .container {
       padding: 0rem !important; // vuetify overide
@@ -509,11 +504,13 @@ export default {
           align-items: center;
           height: 100%;
           flex-grow: 1;
-          max-width: 200px;
           &:hover{
             background-color: #fff;
             color: var(--bg-color);
             font-weight: 600;
+          }
+          @media @desktop-min {
+            max-width: 200px;
           }
         }
 
@@ -696,7 +693,8 @@ export default {
           top: 7rem;
           background-color: var(--bg-color);
           flex-flow: column;
-          height: 200px;
+          min-height: 100%;
+          line-height: 3;
           transform: rotate(0) translate3d(0px, 0px, 0px);
           transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
           .icon {
@@ -705,13 +703,11 @@ export default {
           .dropdown {
             position: relative;
             ul {
-              position: absolute;
-              left: 0;
-              top: 35px;
+              position: relative;
+              top: 0;
               font-size: 14px;
-              li {
-                max-height: 35px;
-              }
+              width: calc(100vw + 2rem);
+              margin-left: -1rem;
             }
           };
 
@@ -722,6 +718,12 @@ export default {
               left: 0;
               top: 35px;
               font-size: 14px;
+              position: relative;
+              /* left: -1rem; */
+              top: 0;
+              font-size: 14px;
+              width: calc(100vw + 2rem);
+              margin-left: -1rem;
               li {
                 max-height: 35px;
               }
