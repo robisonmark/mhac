@@ -63,7 +63,7 @@ export default {
         seconds: 0,
         tenth_seconds: 0
       },
-      time_remaining_new: 8 * 60 * 10,
+      time_remaining_new: 1 * 60 * 10,
       counter: 0,
       connection: false
     }
@@ -189,7 +189,8 @@ export default {
           this.time_remaining = this.gameRules.overtime
         } else {
           let gameConfig = this.$store.getters.getGameConfig
-          this.time_remaining = this.gameConfig.time
+          console.log(gameConfig)
+          this.time_remaining = gameConfig.time
         }
         this.callStore({
           action: 'setTime',
@@ -307,9 +308,9 @@ export default {
       self.time_remaining.minutes = Math.floor(self.time_remaining_new / 600)
       self.time_remaining.seconds = Math.floor((self.time_remaining_new % 600)/10)
       self.time_remaining.tenth_seconds = (self.time_remaining_new % 600) % 10
-      console.log("minutes", Math.floor(self.time_remaining_new / 600))
-      console.log("seconds", Math.floor((self.time_remaining_new % 600)/10))
-      console.log("tenth_seconds", (self.time_remaining_new % 600) % 10)
+      // console.log("minutes", Math.floor(self.time_remaining_new / 600))
+      // console.log("seconds", Math.floor((self.time_remaining_new % 600)/10))
+      // console.log("tenth_seconds", (self.time_remaining_new % 600) % 10)
       if (self.time_remaining_new <= 0) {
           const data = {
             action: 'toggleClock',
