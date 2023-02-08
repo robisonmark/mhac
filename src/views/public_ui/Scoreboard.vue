@@ -6,7 +6,7 @@
       :score="home_score"
       :timeouts="home_timeouts"
       :bonus="away_fouls >= gameRules.fouls_bonus"
-      :bonusPlus="home_fouls >= gameRules.fouls_double_bonus"
+      :bonusPlus="away_fouls >= gameRules.fouls_double_bonus"
       :possession="nextPossession === 'home'"
     ></teamBlock>
 
@@ -41,8 +41,8 @@
       v-model="away_team_slug"
       :score="away_score"
       :timeouts="away_timeouts"
-      :bonus="away_fouls >= gameRules.fouls_bonus"
-      :bonusPlus="away_fouls >= gameRules.fouls_double_bonus"
+      :bonus="home_fouls >= gameRules.fouls_bonus"
+      :bonusPlus="home_fouls >= gameRules.fouls_double_bonus"
       :possession="nextPossession === 'away'"
     ></teamBlock>
   </div>
