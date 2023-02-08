@@ -58,7 +58,7 @@
               <v-btn elevation="2" @click="submitWebsocket('incrementHome', 3)" :style='{ backgroundColor: home_color}'>Score +3</v-btn>
             </v-col>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementHomeTimeouts', 0)" :style='{ backgroundColor: home_color}'>Timeout</v-btn>
+              <v-btn elevation="2" @click="timeout('Home')" :style='{ backgroundColor: home_color}'>Timeout</v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -126,7 +126,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementAwayTimeouts', 0)" :style='{ backgroundColor: away_color}'>Timeout</v-btn>
+              <v-btn elevation="2" @click="timeout('Away')" :style='{ backgroundColor: away_color}'>Timeout</v-btn>
             </v-col>
             <v-col>
               <v-btn elevation="2" @click="submitWebsocket('incrementAway', 3)" :style='{ backgroundColor: away_color}'>Score +3</v-btn>
@@ -350,6 +350,11 @@ export default {
       console.log(JSON.stringify(data))
       // console.log("Successfully connected to the echo websocket server...")
       this.connection.send(JSON.stringify(data))
+    },
+
+    commitTimeout (calledBy) {
+      this.stopTimer()
+      this.submitWebsocket(`decrement${calledBy}Timeouts`, 0)
     },
 
     setHome (data) {
