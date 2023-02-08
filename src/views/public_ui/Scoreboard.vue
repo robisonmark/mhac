@@ -63,6 +63,8 @@ export default {
         seconds: 0,
         tenth_seconds: 0
       },
+      time_remaining_new: 8 * 60 * 10,
+      counter: 0,
       connection: false
     }
   },
@@ -186,7 +188,8 @@ export default {
         if (displayPeriod.includes('OT')) {
           this.time_remaining = this.gameRules.overtime
         } else {
-          this.time_remaining = this.gameRules.time
+          let gameConfig = this.$store.getters.getGameConfig
+          this.time_remaining = this.gameConfig.time
         }
         this.callStore({
           action: 'setTime',
@@ -205,7 +208,6 @@ export default {
     half: {
       handler: function (newValue) {
         if (this.half === true) {
-          // this.timeouts = this.game_rules.timeouts_allowed
           const data = {
             action: 'resetFouls',
             value: this.game_rules.bonus_fouls
@@ -232,9 +234,6 @@ export default {
   },
 
   created () {
-    // this.$store.dispatch('setWebSocket')
-    // console.log("here")
-    // this.connection.onopen = (event) => this.messageSend(event)
   },
 
   mounted () {
@@ -303,37 +302,24 @@ export default {
     runTimer () {
       const self = this
       Window.timerFunc = setInterval(function () {
-        const timerRemaining =
-          self.time_remaining.tenth_seconds / 10 +
-          self.time_remaining.seconds / 60 +
-          self.time_remaining.minutes
-
-        if (Object.entries(timerRemaining) === 0) {
+      // self.counter++
+      self.time_remaining_new --
+      self.time_remaining.minutes = Math.floor(self.time_remaining_new / 600)
+      self.time_remaining.seconds = Math.floor((self.time_remaining_new % 600)/10)
+      self.time_remaining.tenth_seconds = (self.time_remaining_new % 600) % 10
+      console.log("minutes", Math.floor(self.time_remaining_new / 600))
+      console.log("seconds", Math.floor((self.time_remaining_new % 600)/10))
+      console.log("tenth_seconds", (self.time_remaining_new % 600) % 10)
+      if (self.time_remaining_new <= 0) {
           const data = {
             action: 'toggleClock',
             value: false
           }
           self.callStore(data)
         }
-
-        if (timerRemaining > 0) {
-          self.time_remaining.tenth_seconds -= 1
-
-          if (self.time_remaining.tenth_seconds < 0) {
-            self.time_remaining.tenth_seconds = 9
-            self.time_remaining.seconds -= 1
-          }
-
-          if (
-            self.time_remaining.seconds < 0 &&
-          self.time_remaining.minutes >= 0
-          ) {
-            self.time_remaining.seconds = 59
-            self.time_remaining.minutes -= 1
-          }
-        }
-      }, 100)
+    }, 100)
     },
+
     stopTimer () {
       clearInterval(Window.timerFunc)
     },
