@@ -288,10 +288,12 @@ const actions = {
     context.commit('setPossession', payload)
   },
   async setWebSocket (context) {
-    context.commit('setWebSocket', await api.getWebSocketUrl()
-      .then(response => {
-        return response.data.webSocketUrl
-      }))
+    context.commit('setWebSocket', 'wss://870c-104-56-142-211.ngrok.io')
+
+    // await api.getWebSocketUrl()
+    //   .then(response => {
+    //     return response.data.webSocketUrl
+    //   }))
   },
   setHalf (context, payload) {
     context.commit('setHalf', payload)
