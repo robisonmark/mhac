@@ -47,7 +47,7 @@
 
 <script>
 import team from '@/components/front-pages/live_video/scoreboard/team'
-import {cloneDeep} from 'lodash'
+import { cloneDeep } from 'lodash'
 // import { clear } from 'console'
 // import score from '@/components/front-pages/live_video/scoreboard/score'
 
@@ -80,11 +80,11 @@ export default {
     // time_remaining_new: {
     //   get: function () {
     //     console.log("getter", this.time_remaining)
-      
+
     //   },
     //   set: function (newValue) {
     //     console.log("setter", newValue)
-    //     // return ((newValue.minutes * 60) + 
+    //     // return ((newValue.minutes * 60) +
     //     // newValue.seconds * 10) +
     //     // newValue.tenth_seconds
     //   }
@@ -160,7 +160,7 @@ export default {
         return this.$store.state.scoreController.time_remaining
       },
       set: function (newValue) {
-       this.$store.commit('setTime', newValue)
+        this.$store.commit('setTime', newValue)
       }
     },
     webSocketURL () {
@@ -201,8 +201,8 @@ export default {
         if (displayPeriod.includes('OT')) {
           this.time_remaining = this.gameRules.overtime
         } else {
-          let gameConfig = this.$store.getters.getGameConfig
-          console.log("gameConfig", gameConfig)
+          const gameConfig = this.$store.getters.getGameConfig
+          console.log('gameConfig', gameConfig)
           this.time_remaining = gameConfig.time
         }
         this.callStore({
@@ -279,15 +279,16 @@ export default {
 
     // computeTimeRmainingAsDecaSeconds(){
     //   return (
-    //               (this.time_remaining.minutes * 60) + 
+    //               (this.time_remaining.minutes * 60) +
     //               this.time_remaining.seconds) * 10 +
     //     this.time_remaining.tenth_seconds
     // },
     connectWebSocket () {
       console.log(
-        'Starting connection to WebSocket Server',
+        'Starting connection to WebSocket Server Scoreboard',
         this.$store.getters.getWebsocket
       )
+      console.log('Im here')
       this.connection = new WebSocket(this.$store.getters.getWebsocket)
       this.connection.onmessage = (event) => this.messageReceived(event)
     },
@@ -325,18 +326,17 @@ export default {
       return currentTime - startTime
     },
     timeRemainingMilliseconds (timeRemainingObject) {
-      const minInMilli = timeRemainingObject.minutes * 60 * 1000 
+      const minInMilli = timeRemainingObject.minutes * 60 * 1000
       const secInMilli = timeRemainingObject.seconds * 1000
       const tenthsInMilli = timeRemainingObject.tenth_seconds * 100
       return minInMilli + secInMilli + tenthsInMilli
-
     },
     convertMillisecondsToTimeObject (elapsedTime) {
       const milliToMinutes = Math.floor(elapsedTime / 60000)
       const milliToSec = (elapsedTime % 60000) / 1000
-      const milliToDeca = (elapsedTime % 60000) % 10 
+      const milliToDeca = (elapsedTime % 60000) % 10
 
-      return {minutes: milliToMinutes, seconds:  Math.floor(milliToSec), tenth_seconds: milliToDeca}
+      return { minutes: milliToMinutes, seconds: Math.floor(milliToSec), tenth_seconds: milliToDeca }
     },
     runTimer () {
       const self = this
@@ -344,18 +344,17 @@ export default {
       const startTime = Date.now()
 
       Window.timerFunc = setInterval(function () {
-        const timeRemainingInMilliseconds = self.timeRemainingMilliseconds(self.time_remaining);
+        const timeRemainingInMilliseconds = self.timeRemainingMilliseconds(self.time_remaining)
         if (timeRemainingInMilliseconds <= 0) {
           clearInterval(Window.timerFunc)
-          self.time_remaining = {minutes: 0, seconds: 0, tenth_seconds: 0}
+          self.time_remaining = { minutes: 0, seconds: 0, tenth_seconds: 0 }
           return
         }
-        const currentTime = Date.now() 
+        const currentTime = Date.now()
         const elapsedTime = currentTime - startTime
 
         const timeLeft = originalTimeMilli - elapsedTime
-        self.time_remaining = self.convertMillisecondsToTimeObject(timeLeft);
-
+        self.time_remaining = self.convertMillisecondsToTimeObject(timeLeft)
 
         if (timeRemainingInMilliseconds <= 0) {
           const data = {
@@ -364,7 +363,7 @@ export default {
           }
           self.callStore(data)
         }
-    }, 100)
+      }, 100)
     },
 
     stopTimer () {

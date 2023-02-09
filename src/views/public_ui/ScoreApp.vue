@@ -91,16 +91,16 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)" :style="{backgroundColor: 'grey'}">Period +</v-btn>
+              <v-btn elevation="2" @click="resetTimer(); submitWebsocket('incrementPeriod', 1)" :style="{backgroundColor: 'grey'}">Period +</v-btn>
             </v-col>
             <v-spacer></v-spacer>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementPeriod', -1)" :style="{backgroundColor: 'grey'}">Period -</v-btn>
+              <v-btn elevation="2" @click="resetTimer(); submitWebsocket('decrementPeriod', -1)" :style="{backgroundColor: 'grey'}">Period -</v-btn>
             </v-col>
           </v-row>
           <v-row>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('setHalf', !half)" :style='{ backgroundColor: "grey"}'>Half</v-btn>
+              <v-btn elevation="2" @click="resetTimer(); submitWebsocket('setHalf', !half)" :style='{ backgroundColor: "grey"}'>Half</v-btn>
             </v-col>
             <v-spacer></v-spacer>
             <v-col align-self='center'>
@@ -164,7 +164,7 @@
         <v-col>
           <v-text-field v-model.number="time_remaining.tenth_seconds" label="Tenths"></v-text-field>
         </v-col>
-        <v-btn @click="submitWebsocket('setTime', time_remaining)" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
+        <v-btn @click="submitWebsocket('setTime', reset_time_remaining)" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
       <v-row>
         <v-col>
@@ -213,6 +213,11 @@ export default {
         minutes: 7,
         seconds: 0,
         tenth_seconds: 0
+      },
+      reset_time_remaining: {
+        minutes: 7,
+        seconds: 0,
+        tenths_seconds: 0
       },
       timer_running: false,
       connection: false
@@ -322,8 +327,9 @@ export default {
 
   methods: {
     connectWebSocket () {
-      console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
+      console.log('Starting connection to WebSocket Server Score Keeper', this.$store.getters.getWebsocket)
       this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      console.log(this.connection)
       this.connection.onopen = (event) => this.messageSend(event)
     },
     submitWebsocket (action, value) {
