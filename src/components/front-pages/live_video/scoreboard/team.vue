@@ -159,6 +159,8 @@ export default {
     padding-left: 5px;
     padding-right: 5px;
 
+    -webkit-text-stroke:1px #121212;
+
     &_home {
       justify-content: flex-end;
       text-align: right;

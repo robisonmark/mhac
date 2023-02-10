@@ -58,7 +58,7 @@
               <v-btn elevation="2" @click="submitWebsocket('incrementHome', 3)" :style='{ backgroundColor: home_color}'>Score +3</v-btn>
             </v-col>
             <v-col>
-              <v-btn elevation="2" @click="timeout('Home')" :style='{ backgroundColor: home_color}'>Timeout</v-btn>
+              <v-btn elevation="2" @click="commitTimeout('Home')" :style='{ backgroundColor: home_color}'>Timeout</v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -126,7 +126,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="timeout('Away')" :style='{ backgroundColor: away_color}'>Timeout</v-btn>
+              <v-btn elevation="2" @click="commitTimeout('Away')" :style='{ backgroundColor: away_color}'>Timeout</v-btn>
             </v-col>
             <v-col>
               <v-btn elevation="2" @click="submitWebsocket('incrementAway', 3)" :style='{ backgroundColor: away_color}'>Score +3</v-btn>
@@ -168,10 +168,10 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-text-field type="number" v-model="home_score_override" label="Home Score"></v-text-field>
+          <v-text-field type="number" v-model.number="home_score_override" label="Home Score"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field type="number" v-model="away_score_override" label="Away Score"></v-text-field>
+          <v-text-field type="number" v-model.number="away_score_override" label="Away Score"></v-text-field>
         </v-col>
         <v-btn @click="resetScore" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
@@ -258,7 +258,7 @@ export default {
         return this.$store.getters.away_score
       },
       set (newValue) {
-        this.away_score_override = Number(newValue)
+        this.away_score_override = newValue
       }
     },
     home_score: {
@@ -279,12 +279,12 @@ export default {
     },
     away_score: {
       handler: function (newValue) {
-        this.away_score_override = Number(newValue)
+        this.away_score_override = newValue
       }
     },
     home_score: {
       handler: function (newValue) {
-        this.home_score_override = Number(newValue)
+        this.home_score_override = newValue
       }
     }
 
