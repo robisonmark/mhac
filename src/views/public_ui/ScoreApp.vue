@@ -156,13 +156,13 @@
       <v-row>
         <v-subheader>Reset Time</v-subheader>
         <v-col>
-          <v-text-field v-model="time_remaining.minutes" label="Minutes"></v-text-field>
+          <v-text-field v-model.number="time_remaining.minutes" label="Minutes"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field v-model="time_remaining.seconds" label="Seconds"></v-text-field>
+          <v-text-field v-model.number="time_remaining.seconds" label="Seconds"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field v-model="time_remaining.tenth_seconds" label="Tenths"></v-text-field>
+          <v-text-field v-model.number="time_remaining.tenth_seconds" label="Tenths"></v-text-field>
         </v-col>
         <v-btn @click="submitWebsocket('setTime', time_remaining)" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
@@ -318,12 +318,6 @@ export default {
       self.isKeyDown = false
       self.keys.length = 0
     })
-
-    // window.addEventListener('keyup', function (event) {
-    //   if (event.code === 'Numpad1') {
-    //     self.home_score += 1
-    //   }
-    // })
   },
 
   methods: {
@@ -348,7 +342,6 @@ export default {
 
     messageSend (data) {
       console.log(JSON.stringify(data))
-      // console.log("Successfully connected to the echo websocket server...")
       this.connection.send(JSON.stringify(data))
     },
 
@@ -385,7 +378,7 @@ export default {
     resetScore (team) {
       if (this.$store.getters.home_score !== this.home_score_override) {
         this.submitWebsocket('setHome', this.home_score_override)
-      } 
+      }
       if (this.$store.getters.away_score !== this.away_score_override) {
         this.submitWebsocket('setAway', this.away_score_override)
       }
@@ -403,27 +396,6 @@ export default {
       this.timer_running = !this.timer_running
     },
     runTimer () {
-      const self = this
-      Window.timerFunc = setInterval(function () {
-        const timerRemaining = (self.time_remaining.hundreds_seconds * 1000) + (self.time_remaining.seconds * 60) + self.time_remaining.minutes
-        if (timerRemaining > 0) {
-          self.time_remaining.hundreds_seconds -= 1
-        }
-
-        if (self.time_remaining.hundreds_seconds === 0) {
-          self.time_remaining.seconds -= 1
-          self.time_remaining.hundreds_seconds = 100
-        }
-
-        if (self.time_remaining.seconds === 0) {
-          self.time_remaining.minutes -= 1
-          self.time_remaining.seconds = 59
-        }
-
-        if (Object.entries(timerRemaining) === 0) {
-          clearInterval(Window.timerFunc)
-        }
-      }, 10)
     },
     stopTimer () {
       clearInterval(Window.timerFunc)

@@ -47,6 +47,8 @@
 
 <script>
 import team from '@/components/front-pages/live_video/scoreboard/team'
+import {cloneDeep} from 'lodash'
+// import { clear } from 'console'
 // import score from '@/components/front-pages/live_video/scoreboard/score'
 
 export default {
@@ -58,12 +60,12 @@ export default {
 
       keys: [],
 
-      time_remaining: {
-        minutes: 8,
-        seconds: 0,
-        tenth_seconds: 0
-      },
-      time_remaining_new: 1 * 60 * 10,
+      // time_remaining: {
+      //   minutes: 8,
+      //   seconds: 0,
+      //   tenth_seconds: 0
+      // },
+      // time_remaining_new: 8 * 60 * 10,
       counter: 0,
       connection: false
     }
@@ -75,6 +77,18 @@ export default {
   },
 
   computed: {
+    // time_remaining_new: {
+    //   get: function () {
+    //     console.log("getter", this.time_remaining)
+      
+    //   },
+    //   set: function (newValue) {
+    //     console.log("setter", newValue)
+    //     // return ((newValue.minutes * 60) + 
+    //     // newValue.seconds * 10) +
+    //     // newValue.tenth_seconds
+    //   }
+    // },
     away_team_slug: {
       get: function () {
         return this.$store.state.scoreController.away_team_slug
@@ -141,14 +155,14 @@ export default {
         console.log(newValue)
       }
     },
-    // time_remaining: {
-    //   get: function () {
-    //     return this.$store.state.scoreController.time_remaining
-    //   },
-    //   set: function (newValue) {
-    //     console.log (newValue.time)
-    //   }
-    // },
+    time_remaining: {
+      get: function () {
+        return this.$store.state.scoreController.time_remaining
+      },
+      set: function (newValue) {
+       this.$store.commit('setTime', newValue)
+      }
+    },
     webSocketURL () {
       return this.$store.getters.getWebsocket
     },
@@ -164,7 +178,6 @@ export default {
       },
 
       set: function (newValue) {
-        console.log(newValue)
         this.home_timeouts = newValue.timeouts
         this.away_timeouts = newValue.timeouts
         this.time_remaining = newValue.time
@@ -189,7 +202,7 @@ export default {
           this.time_remaining = this.gameRules.overtime
         } else {
           let gameConfig = this.$store.getters.getGameConfig
-          console.log(gameConfig)
+          console.log("gameConfig", gameConfig)
           this.time_remaining = gameConfig.time
         }
         this.callStore({
@@ -263,6 +276,13 @@ export default {
   },
 
   methods: {
+
+    // computeTimeRmainingAsDecaSeconds(){
+    //   return (
+    //               (this.time_remaining.minutes * 60) + 
+    //               this.time_remaining.seconds) * 10 +
+    //     this.time_remaining.tenth_seconds
+    // },
     connectWebSocket () {
       console.log(
         'Starting connection to WebSocket Server',
@@ -286,7 +306,7 @@ export default {
     messageReceived (data) {
       const message = JSON.parse(data.data)
       console.log('Message Recieved: ', message)
-      this.callStore(message.data)
+      message?.data && this.callStore(message.data)
     },
 
     resetTimer () {
@@ -300,18 +320,44 @@ export default {
       }
       // this.timer_running = !this.timer_running
     },
+    elapsedTime (startTime, currentTime) {
+      // gets the milleseconds difference in the startTime epoch vs the current (inverval based time)
+      return currentTime - startTime
+    },
+    timeRemainingMilliseconds (timeRemainingObject) {
+      const minInMilli = timeRemainingObject.minutes * 60 * 1000 
+      const secInMilli = timeRemainingObject.seconds * 1000
+      const tenthsInMilli = timeRemainingObject.tenth_seconds * 100
+      return minInMilli + secInMilli + tenthsInMilli
+
+    },
+    convertMillisecondsToTimeObject (elapsedTime) {
+      const milliToMinutes = Math.floor(elapsedTime / 60000)
+      const milliToSec = (elapsedTime % 60000) / 1000
+      const milliToDeca = (elapsedTime % 60000) % 10 
+
+      return {minutes: milliToMinutes, seconds:  Math.floor(milliToSec), tenth_seconds: milliToDeca}
+    },
     runTimer () {
       const self = this
+      const originalTimeMilli = self.timeRemainingMilliseconds(cloneDeep(this.time_remaining))
+      const startTime = Date.now()
+
       Window.timerFunc = setInterval(function () {
-      // self.counter++
-      self.time_remaining_new --
-      self.time_remaining.minutes = Math.floor(self.time_remaining_new / 600)
-      self.time_remaining.seconds = Math.floor((self.time_remaining_new % 600)/10)
-      self.time_remaining.tenth_seconds = (self.time_remaining_new % 600) % 10
-      // console.log("minutes", Math.floor(self.time_remaining_new / 600))
-      // console.log("seconds", Math.floor((self.time_remaining_new % 600)/10))
-      // console.log("tenth_seconds", (self.time_remaining_new % 600) % 10)
-      if (self.time_remaining_new <= 0) {
+        const timeRemainingInMilliseconds = self.timeRemainingMilliseconds(self.time_remaining);
+        if (timeRemainingInMilliseconds <= 0) {
+          clearInterval(Window.timerFunc)
+          self.time_remaining = {minutes: 0, seconds: 0, tenth_seconds: 0}
+          return
+        }
+        const currentTime = Date.now() 
+        const elapsedTime = currentTime - startTime
+
+        const timeLeft = originalTimeMilli - elapsedTime
+        self.time_remaining = self.convertMillisecondsToTimeObject(timeLeft);
+
+
+        if (timeRemainingInMilliseconds <= 0) {
           const data = {
             action: 'toggleClock',
             value: false
