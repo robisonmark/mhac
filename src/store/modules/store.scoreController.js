@@ -130,13 +130,6 @@ const state = {
 
 let intervalID
 
-// const vuexLocal = new VuexPersistence({
-//   storage: window.sessionStorage
-// })
-
-// load audio so it's ready when needed
-// const audio = new Audio('/buzzer.mp3');
-
 const mutations = {
   // away team
   setAwayTeam: (state, payload) => state.away_team_slug = payload,
@@ -164,6 +157,7 @@ const mutations = {
   setHalf: (state) => state.half = !state.half,
   setFinal: (state) => state.final = !state.final,
   setTime: (state, time) => {
+    console.log('Muttations', time)
     state.time_remaining.minutes = time.minutes
     state.time_remaining.seconds = time.seconds
     state.time_remaining.tenth_seconds = time.tenth_seconds
@@ -219,6 +213,11 @@ const actions = {
 
   startClock ({ commit, dispatch }) {
     commit('setClock', true)
+<<<<<<< HEAD
+=======
+
+    // intervalID = setInterval(() => dispatch('updateClock', -1), 1000)
+>>>>>>> 1357a5b (Fixing the timer)
   },
   stopClock ({ commit }) {
     commit('setClock', false)
@@ -304,6 +303,10 @@ const actions = {
     context.commit('resetFouls', payload)
   },
   setTime (context, payload) {
+<<<<<<< HEAD
+=======
+    console.log(context, payload, 'time')
+>>>>>>> 1357a5b (Fixing the timer)
     context.commit('setTime', payload)
   },
   setGameConfig (context, payload) {
