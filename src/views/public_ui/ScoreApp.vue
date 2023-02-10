@@ -80,15 +80,7 @@
               <v-btn elevation="2" block x-large @click="submitWebsocket('toggleClock', true)" :style="{backgroundColor: 'green'}">Toggle Clock</v-btn>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'home')" :style='{ backgroundColor: home_color}'><font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Poss</v-btn>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')" :style='{ backgroundColor: away_color}'>Poss <font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon></v-btn>
-            </v-col>
-          </v-row>
+
           <v-row>
             <v-col>
               <v-btn elevation="2" @click="resetTimer(); submitWebsocket('incrementPeriod', 1)" :style="{backgroundColor: 'grey'}">Period +</v-btn>
@@ -105,6 +97,12 @@
             <v-spacer></v-spacer>
             <v-col align-self='center'>
               <v-btn elevation="2" @click="submitWebsocket('setFinal', !final)" :style='{ backgroundColor: "grey"}'>Final</v-btn>
+            </v-col>
+          </v-row>
+          <v-row justify="center">
+            <v-col cols="8" align-self='center'>
+              <v-btn v-if="possession === 'away'" elevation="2" block large @click="submitWebsocket('setPossession', 'home')" :style='{ backgroundColor: home_color}'><font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Poss</v-btn>
+              <v-btn v-else elevation="2" block large @click="submitWebsocket('setPossession', 'away')" :style='{ backgroundColor: away_color}'>Poss <font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon></v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -268,6 +266,9 @@ export default {
       set (newValue) {
         this.home_score_override = newValue
       }
+    },
+    possession () {
+      return this.$store.getters.possession
     }
   },
 

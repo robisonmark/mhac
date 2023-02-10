@@ -130,6 +130,13 @@ const state = {
 
 let intervalID
 
+// const vuexLocal = new VuexPersistence({
+//   storage: window.sessionStorage
+// })
+
+// load audio so it's ready when needed
+// const audio = new Audio('/buzzer.mp3');
+
 const mutations = {
   // away team
   setAwayTeam: (state, payload) => state.away_team_slug = payload,
@@ -157,12 +164,17 @@ const mutations = {
   setHalf: (state) => state.half = !state.half,
   setFinal: (state) => state.final = !state.final,
   setTime: (state, time) => {
-    console.log('Muttations', time)
     state.time_remaining.minutes = time.minutes
     state.time_remaining.seconds = time.seconds
     state.time_remaining.tenth_seconds = time.tenth_seconds
   },
-  setPossession: (state, value) => state.possession = value,
+  setPossession: (state) => {
+    if (state.possession === 'home') {
+      state.possession = 'away'
+    } else {
+      state.possession = 'home'
+    }
+  },
   toggleClock: (state, payload) => state.clock.running = payload,
   incrementPeriod: (state) => state.period++,
   decrementPeriod: (state) => {
@@ -207,8 +219,6 @@ const actions = {
 
   startClock ({ commit, dispatch }) {
     commit('setClock', true)
-
-    // intervalID = setInterval(() => dispatch('updateClock', -1), 1000)
   },
   stopClock ({ commit }) {
     commit('setClock', false)
@@ -279,12 +289,10 @@ const actions = {
     context.commit('setPossession', payload)
   },
   async setWebSocket (context) {
-    context.commit('setWebSocket', 'wss://870c-104-56-142-211.ngrok.io')
-
-    // await api.getWebSocketUrl()
-    //   .then(response => {
-    //     return response.data.webSocketUrl
-    //   }))
+    context.commit('setWebSocket', await api.getWebSocketUrl()
+      .then(response => {
+        return response.data.webSocketUrl
+      }))
   },
   setHalf (context, payload) {
     context.commit('setHalf', payload)
@@ -296,7 +304,6 @@ const actions = {
     context.commit('resetFouls', payload)
   },
   setTime (context, payload) {
-    console.log(context, payload, 'time')
     context.commit('setTime', payload)
   },
   setGameConfig (context, payload) {
