@@ -14,6 +14,21 @@ const namespaced = false
 const strict = false
 
 const gameConfig = {
+  '12U': {
+    fouls_bonus: 7,
+    fouls_double_bonus: 10,
+    overtime: {
+      minutes: 3,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    time: {
+      minutes: 6,
+      seconds: 0,
+      tenth_seconds: 0
+    },
+    timeouts: 5
+  },
   '14U': {
     fouls_bonus: 7,
     fouls_double_bonus: 10,
@@ -60,30 +75,6 @@ const gameConfig = {
     timeouts: 5
   }
 }
-
-// export enum Possessions {
-//   None,
-//   Home = 'home',
-//   Away = 'away',
-// }
-
-// export type State = {
-//   score: {
-//     home: number;
-//     away: number;
-//   },
-//   fouls: {
-//     home: number;
-//     away: number;
-//   },
-//   period: number;
-//   possession: Possessions;
-//   clock: {
-//     time: number;
-//     running: boolean;
-//   },
-//   editable: boolean;
-// }
 
 // TODO ablity to configure time & max fouls
 const state = {
@@ -177,7 +168,13 @@ const mutations = {
     state.time_remaining.seconds = time.seconds
     state.time_remaining.tenth_seconds = time.tenth_seconds
   },
-  setPossession: (state, value) => state.possession = value,
+  setPossession: (state) => {
+    if (state.possession === 'home') {
+      state.possession = 'away'
+    } else {
+      state.possession = 'home'
+    }
+  },
   toggleClock: (state, payload) => state.clock.running = payload,
   incrementPeriod: (state) => state.period++,
   decrementPeriod: (state) => {
@@ -222,8 +219,6 @@ const actions = {
 
   startClock ({ commit, dispatch }) {
     commit('setClock', true)
-
-    intervalID = setInterval(() => dispatch('updateClock', -1), 1000)
   },
   stopClock ({ commit }) {
     commit('setClock', false)
@@ -309,7 +304,6 @@ const actions = {
     context.commit('resetFouls', payload)
   },
   setTime (context, payload) {
-    console.log(payload)
     context.commit('setTime', payload)
   },
   setGameConfig (context, payload) {
