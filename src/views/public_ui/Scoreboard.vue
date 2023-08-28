@@ -1,67 +1,72 @@
 <template>
   <div class="scoreboard" @keydown.space="timer">
-    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts" :bonus="away_fouls >=  gameRules.fouls_bonus" :bonusPlus="home_fouls >= gameRules.fouls_double_bonus" :possession="nextPossession === 'home'"></teamBlock>
+    <teamBlock
+      location="home"
+      v-model="home_team_slug"
+      :score="home_score"
+      :timeouts="home_timeouts"
+      :bonus="away_fouls >= gameRules.fouls_bonus"
+      :bonusPlus="away_fouls >= gameRules.fouls_double_bonus"
+      :possession="nextPossession === 'home'"
+    ></teamBlock>
 
     <div class="gameStats">
-      <!-- <div class="score">
-        <scoreBlock location="home" v-model="home_score"></scoreBlock> |
-        <scoreBlock location="away" v-model="away_score"></scoreBlock>
-      </div> -->
+
       <div class="timeBlock">
         <div class="timeRemaining">
-          <template v-if="time_remaining.minutes !== 0">{{time_remaining.minutes}}:</template>{{displaySeconds(time_remaining.seconds) }}<template v-if="time_remaining.minutes === 0">.{{time_remaining.tenth_seconds}}</template>
+          <template v-if="time_remaining.minutes !== 0"
+            >{{ time_remaining.minutes }}:</template
+          >{{ displaySeconds(time_remaining.seconds)
+          }}<template v-if="time_remaining.minutes === 0"
+            >.{{ time_remaining.tenth_seconds }}</template
+          >
         </div>
-        <div class="period" v-if="!final && !half">{{period}}</div>
+        <div class="period" v-if="!final && !half">{{ period }}</div>
         <div class="period" v-if="!final && half">Half</div>
         <div class="period" v-if="final">Final</div>
 
-        <img class="logo_mhac" src="/static/color-team-logos/mhaclogo.png" alt="Midsouth Home School Athletic Conference Logo" />
+        <img
+          class="logo_mhac"
+          src="/static/color-team-logos/mhaclogo.png"
+          alt="Midsouth Home School Athletic Conference Logo"
+        />
       </div>
     </div>
 
-    <teamBlock location="away" v-model="away_team_slug" :score="away_score" :timeouts="away_timeouts" :bonus="away_fouls >= gameRules.fouls_bonus" :bonusPlus="away_fouls >= gameRules.fouls_double_bonus" :possession="nextPossession === 'away'"></teamBlock>
+    <teamBlock
+      location="away"
+      v-model="away_team_slug"
+      :score="away_score"
+      :timeouts="away_timeouts"
+      :bonus="home_fouls >= gameRules.fouls_bonus"
+      :bonusPlus="home_fouls >= gameRules.fouls_double_bonus"
+      :possession="nextPossession === 'away'"
+    ></teamBlock>
   </div>
 </template>
 
 <script>
 import team from '@/components/front-pages/live_video/scoreboard/team'
+import { cloneDeep } from 'lodash'
+// import { clear } from 'console'
 // import score from '@/components/front-pages/live_video/scoreboard/score'
 
 export default {
   name: 'scoreboard',
   data () {
     return {
-      // away_fouls: 4,
-      // away_score: 0,
-      // away_team_slug: 'daniel_1',
-      // away_timeouts: 4,
-
-      // home_fouls: 0,
-      // home_score: 0,
-      // home_team_slug: 'western_kentucky',
-      // home_timeouts: 5,
-      // game_rules: {
-      //   periods: 4,
-      //   timeouts_allowed: 5,
-      //   penalties_allowed: 7,
-      //   time_remaining: {
-      //     minutes: 8,
-      //     seconds: 0,
-      //     tenth_seconds: 10
-      //   },
-      //   fouls_bonus: 7,
-      //   fouls_double_bonus: 10
-      // },
 
       isKeyDown: false,
 
       keys: [],
 
-      time_remaining: {
-        minutes: 8,
-        seconds: 0,
-        tenth_seconds: 0
-      },
+      // time_remaining: {
+      //   minutes: 8,
+      //   seconds: 0,
+      //   tenth_seconds: 0
+      // },
+      // time_remaining_new: 8 * 60 * 10,
+      counter: 0,
       connection: false
     }
   },
@@ -72,6 +77,18 @@ export default {
   },
 
   computed: {
+    // time_remaining_new: {
+    //   get: function () {
+    //     console.log("getter", this.time_remaining)
+
+    //   },
+    //   set: function (newValue) {
+    //     console.log("setter", newValue)
+    //     // return ((newValue.minutes * 60) +
+    //     // newValue.seconds * 10) +
+    //     // newValue.tenth_seconds
+    //   }
+    // },
     away_team_slug: {
       get: function () {
         return this.$store.state.scoreController.away_team_slug
@@ -105,15 +122,22 @@ export default {
     home_timeouts: {
       get: function () {
         return this.$store.state.scoreController.timeouts.home
+      },
+      set: function (newValue) {
+        console.log(newValue)
       }
     },
     away_timeouts: {
       get: function () {
         return this.$store.state.scoreController.timeouts.away
+      },
+      set: function (newValue) {
+        console.log(newValue)
       }
     },
     period: {
       get: function () {
+        // console.log(this.$store.state.scoreController.period)
         return this.getNumberWithOrdinal(this.$store.state.scoreController.period)
       }
     },
@@ -131,6 +155,14 @@ export default {
         console.log(newValue)
       }
     },
+    time_remaining: {
+      get: function () {
+        return this.$store.state.scoreController.time_remaining
+      },
+      set: function (newValue) {
+        this.$store.commit('setTime', newValue)
+      }
+    },
     webSocketURL () {
       return this.$store.getters.getWebsocket
     },
@@ -146,7 +178,6 @@ export default {
       },
 
       set: function (newValue) {
-        console.log(newValue)
         this.home_timeouts = newValue.timeouts
         this.away_timeouts = newValue.timeouts
         this.time_remaining = newValue.time
@@ -165,16 +196,14 @@ export default {
     },
     period: {
       handler: function () {
-        console.log(this.period)
-        this.time_remaining = {
-          minutes: 0,
-          seconds: 0,
-          hundreds_seconds: 100
-        }
-        if (this.getNumberWithOrdinal(this.$store.state.scoreController.period).contains('OT')) {
+        const displayPeriod = this.getNumberWithOrdinal(this.$store.state.scoreController.period)
+
+        if (displayPeriod.includes('OT')) {
           this.time_remaining = this.gameRules.overtime
         } else {
-          this.time_remaining = this.gameRules.time
+          const gameConfig = this.$store.getters.getGameConfig
+          console.log('gameConfig', gameConfig)
+          this.time_remaining = gameConfig.time
         }
         this.callStore({
           action: 'setTime',
@@ -193,7 +222,6 @@ export default {
     half: {
       handler: function (newValue) {
         if (this.half === true) {
-          // this.timeouts = this.game_rules.timeouts_allowed
           const data = {
             action: 'resetFouls',
             value: this.game_rules.bonus_fouls
@@ -220,9 +248,6 @@ export default {
   },
 
   created () {
-    // this.$store.dispatch('setWebSocket')
-    // console.log("here")
-    // this.connection.onopen = (event) => this.messageSend(event)
   },
 
   mounted () {
@@ -233,11 +258,11 @@ export default {
       if (event.code === 'Space') {
         self.timer()
       }
-      if (['Numpad1', 'NumpadAdd'].every(v => self.keys.includes(v))) {
-        console.log(self.keys.filter(key => key === 'Numpad1').length)
-        self.home_score += self.keys.filter(key => key === 'Numpad1').length
+      if (['Numpad1', 'NumpadAdd'].every((v) => self.keys.includes(v))) {
+        console.log(self.keys.filter((key) => key === 'Numpad1').length)
+        self.home_score += self.keys.filter((key) => key === 'Numpad1').length
       }
-      if (['Numpad1', 'NumpadSubtract'].every(v => self.keys.includes(v))) {
+      if (['Numpad1', 'NumpadSubtract'].every((v) => self.keys.includes(v))) {
         if (self.home_score > 0) {
           self.home_score -= 1
         }
@@ -251,8 +276,19 @@ export default {
   },
 
   methods: {
+
+    // computeTimeRmainingAsDecaSeconds(){
+    //   return (
+    //               (this.time_remaining.minutes * 60) +
+    //               this.time_remaining.seconds) * 10 +
+    //     this.time_remaining.tenth_seconds
+    // },
     connectWebSocket () {
-      console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
+      console.log(
+        'Starting connection to WebSocket Server Scoreboard',
+        this.$store.getters.getWebsocket
+      )
+      console.log('Im here')
       this.connection = new WebSocket(this.$store.getters.getWebsocket)
       this.connection.onmessage = (event) => this.messageReceived(event)
     },
@@ -271,7 +307,7 @@ export default {
     messageReceived (data) {
       const message = JSON.parse(data.data)
       console.log('Message Recieved: ', message)
-      this.callStore(message.data)
+      message?.data && this.callStore(message.data)
     },
 
     resetTimer () {
@@ -285,34 +321,51 @@ export default {
       }
       // this.timer_running = !this.timer_running
     },
+    elapsedTime (startTime, currentTime) {
+      // gets the milleseconds difference in the startTime epoch vs the current (inverval based time)
+      return currentTime - startTime
+    },
+    timeRemainingMilliseconds (timeRemainingObject) {
+      const minInMilli = timeRemainingObject.minutes * 60 * 1000
+      const secInMilli = timeRemainingObject.seconds * 1000
+      const tenthsInMilli = timeRemainingObject.tenth_seconds * 100
+      return minInMilli + secInMilli + tenthsInMilli
+    },
+    convertMillisecondsToTimeObject (elapsedTime) {
+      const milliToMinutes = Math.floor(elapsedTime / 60000)
+      const milliToSec = (elapsedTime % 60000) / 1000
+      const milliToDeca = (elapsedTime % 60000) % 10
+
+      return { minutes: milliToMinutes, seconds: Math.floor(milliToSec), tenth_seconds: milliToDeca }
+    },
     runTimer () {
       const self = this
-      Window.timerFunc = setInterval(function () {
-        const timerRemaining = (self.time_remaining.tenth_seconds / 10) + (self.time_remaining.seconds / 60) + self.time_remaining.minutes
+      const originalTimeMilli = self.timeRemainingMilliseconds(cloneDeep(this.time_remaining))
+      const startTime = Date.now()
 
-        if (Object.entries(timerRemaining) === 0) {
+      Window.timerFunc = setInterval(function () {
+        const timeRemainingInMilliseconds = self.timeRemainingMilliseconds(self.time_remaining)
+        if (timeRemainingInMilliseconds <= 0) {
+          clearInterval(Window.timerFunc)
+          self.time_remaining = { minutes: 0, seconds: 0, tenth_seconds: 0 }
+          return
+        }
+        const currentTime = Date.now()
+        const elapsedTime = currentTime - startTime
+
+        const timeLeft = originalTimeMilli - elapsedTime
+        self.time_remaining = self.convertMillisecondsToTimeObject(timeLeft)
+
+        if (timeRemainingInMilliseconds <= 0) {
           const data = {
             action: 'toggleClock',
             value: false
           }
           self.callStore(data)
         }
-
-        if (timerRemaining > 0) {
-          if (self.time_remaining.seconds === 0 && self.time_remaining.minutes > 0) {
-            self.time_remaining.minutes -= 1
-            self.time_remaining.seconds = 59
-          }
-
-          if (self.time_remaining.tenth_seconds === 0 && self.time_remaining.seconds > 0) {
-            self.time_remaining.seconds -= 1
-            self.time_remaining.tenth_seconds = 10
-          }
-
-          self.time_remaining.tenth_seconds -= 1
-        }
       }, 100)
     },
+
     stopTimer () {
       clearInterval(Window.timerFunc)
     },
@@ -330,49 +383,49 @@ export default {
 </script>
 
 <style lang="less">
-  @import (css) url('https://fonts.googleapis.com/css2?family=Teko&display=swap');
-  ::v-deep html,
-  ::v-deep body {
-    overflow: hidden;
-  }
-  .scoreboard {
+@import (css) url("https://fonts.googleapis.com/css2?family=Teko&display=swap");
+::v-deep html,
+::v-deep body {
+  overflow: hidden;
+}
+.scoreboard {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  overflow: hidden;
+}
+.gameStats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 65px;
+  background-color: #fff;
+  .score {
     display: flex;
-    width: 100%;
     justify-content: center;
-    overflow: hidden;
   }
-  .gameStats {
-    display: flex;
-    flex-direction: column;
+  .timeBlock {
+    font-family: "Teko", sans-serif;
+
     justify-content: center;
     align-items: center;
-    width: 65px;
-    background-color: #fff;
-    .score {
-      display: flex;
-      justify-content: center;
-    }
-    .timeBlock {
-      font-family: 'Teko', sans-serif;
+    flex-flow: column;
+    font-size: 1.7rem;
+    margin: 0.5rem 1rem;
+    line-height: 0.7;
+    text-align: center;
+    letter-spacing: 1px;
+  }
 
-      justify-content: center;
-      align-items: center;
-      flex-flow: column;
-      font-size: 1.7rem;
-      margin: 0.5rem 1rem;
-      line-height: .7;
-      text-align: center;
-      letter-spacing: 1px;
-    }
-
-    .timeRemaining {
-      font-size: 2.2rem;
-    }
+  .timeRemaining {
+    font-size: 2.2rem;
   }
-  .period {
-    white-space: nowrap;
-  }
-  .logo_mhac {
-    width: 50px;
-  }
+}
+.period {
+  white-space: nowrap;
+}
+.logo_mhac {
+  width: 50px;
+}
 </style>

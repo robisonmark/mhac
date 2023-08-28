@@ -89,8 +89,8 @@
                   <!-- https://www.dropbox.com/sh/dmk75k6rt0fu990/AABI6z3OksFGHMDbBG58A_tna?dl=0&fbclid=IwAR2CUwGfeTMck0UdXvsHrKeX1imbhk8DIdV_iPHCaQMpcpoKGnY94nXzqjMnpm  -->
                 </ul>
             </span>
-            <span class="about_dropdown" @click="aboutDrop" ref="aboutDropdown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
-              About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
+            <span class="dropdown" @click="aboutDrop" ref="aboutDropdown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
+              About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showAbout" :icon="['fas', 'angle-up']"></font-awesome-icon>
               <ul v-show="showAbout" class="about_nav_dropdown">
                   <li><router-link :to="{ path: '/about' }">Who We Are</router-link></li>
                   <li><a href="https://mhac-media-docs.s3.us-east-2.amazonaws.com/MHAC+Bylaws+March+2021.pdf" target="_blank">Bylaws  <font-awesome-icon v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
@@ -510,7 +510,6 @@ export default {
           align-items: center;
           height: 100%;
           flex-grow: 1;
-          max-width: 200px;
           &:hover{
             background-color: #fff;
             color: var(--bg-color);

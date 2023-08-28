@@ -58,7 +58,7 @@
               <v-btn elevation="2" @click="submitWebsocket('incrementHome', 3)" :style='{ backgroundColor: home_color}'>Score +3</v-btn>
             </v-col>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementHomeTimeouts', 0)" :style='{ backgroundColor: home_color}'>Timeout</v-btn>
+              <v-btn elevation="2" @click="commitTimeout('Home')" :style='{ backgroundColor: home_color}'>Timeout</v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -80,31 +80,29 @@
               <v-btn elevation="2" block x-large @click="submitWebsocket('toggleClock', true)" :style="{backgroundColor: 'green'}">Toggle Clock</v-btn>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'home')" :style='{ backgroundColor: home_color}'><font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Poss</v-btn>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('setPossession', 'away')" :style='{ backgroundColor: away_color}'>Poss <font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon></v-btn>
-            </v-col>
-          </v-row>
+
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('incrementPeriod', 1)" :style="{backgroundColor: 'grey'}">Period +</v-btn>
+              <v-btn elevation="2" @click="resetTimer(); submitWebsocket('incrementPeriod', 1)" :style="{backgroundColor: 'grey'}">Period +</v-btn>
             </v-col>
             <v-spacer></v-spacer>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementPeriod', -1)" :style="{backgroundColor: 'grey'}">Period -</v-btn>
+              <v-btn elevation="2" @click="resetTimer(); submitWebsocket('decrementPeriod', -1)" :style="{backgroundColor: 'grey'}">Period -</v-btn>
             </v-col>
           </v-row>
           <v-row>
             <v-col align-self='center'>
-              <v-btn elevation="2" @click="submitWebsocket('setHalf', !half)" :style='{ backgroundColor: "grey"}'>Half</v-btn>
+              <v-btn elevation="2" @click="resetTimer(); submitWebsocket('setHalf', !half)" :style='{ backgroundColor: "grey"}'>Half</v-btn>
             </v-col>
             <v-spacer></v-spacer>
             <v-col align-self='center'>
               <v-btn elevation="2" @click="submitWebsocket('setFinal', !final)" :style='{ backgroundColor: "grey"}'>Final</v-btn>
+            </v-col>
+          </v-row>
+          <v-row justify="center">
+            <v-col cols="8" align-self='center'>
+              <v-btn v-if="possession === 'away'" elevation="2" block large @click="submitWebsocket('setPossession', 'home')" :style='{ backgroundColor: home_color}'><font-awesome-icon :icon="['fas', 'arrow-left']" class="icon"></font-awesome-icon> Poss</v-btn>
+              <v-btn v-else elevation="2" block large @click="submitWebsocket('setPossession', 'away')" :style='{ backgroundColor: away_color}'>Poss <font-awesome-icon :icon="['fas', 'arrow-right']" class="icon"></font-awesome-icon></v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -126,7 +124,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click="submitWebsocket('decrementAwayTimeouts', 0)" :style='{ backgroundColor: away_color}'>Timeout</v-btn>
+              <v-btn elevation="2" @click="commitTimeout('Away')" :style='{ backgroundColor: away_color}'>Timeout</v-btn>
             </v-col>
             <v-col>
               <v-btn elevation="2" @click="submitWebsocket('incrementAway', 3)" :style='{ backgroundColor: away_color}'>Score +3</v-btn>
@@ -156,22 +154,22 @@
       <v-row>
         <v-subheader>Reset Time</v-subheader>
         <v-col>
-          <v-text-field v-model="time_remaining.minutes" label="Minutes"></v-text-field>
+          <v-text-field v-model.number="time_remaining.minutes" label="Minutes"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field v-model="time_remaining.seconds" label="Seconds"></v-text-field>
+          <v-text-field v-model.number="time_remaining.seconds" label="Seconds"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field v-model="time_remaining.tenth_seconds" label="Tenths"></v-text-field>
+          <v-text-field v-model.number="time_remaining.tenth_seconds" label="Tenths"></v-text-field>
         </v-col>
-        <v-btn @click="submitWebsocket('setTime', time_remaining)" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
+        <v-btn @click="submitWebsocket('setTime', reset_time_remaining)" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
       <v-row>
         <v-col>
-          <v-text-field type="number" v-model="home_score_override" label="Home Score"></v-text-field>
+          <v-text-field type="number" v-model.number="home_score_override" label="Home Score"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field type="number" v-model="away_score_override" label="Away Score"></v-text-field>
+          <v-text-field type="number" v-model.number="away_score_override" label="Away Score"></v-text-field>
         </v-col>
         <v-btn @click="resetScore" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
@@ -214,6 +212,11 @@ export default {
         seconds: 0,
         tenth_seconds: 0
       },
+      reset_time_remaining: {
+        minutes: 7,
+        seconds: 0,
+        tenths_seconds: 0
+      },
       timer_running: false,
       connection: false
     }
@@ -253,7 +256,7 @@ export default {
         return this.$store.getters.away_score
       },
       set (newValue) {
-        this.away_score_override = Number(newValue)
+        this.away_score_override = newValue
       }
     },
     home_score: {
@@ -263,6 +266,9 @@ export default {
       set (newValue) {
         this.home_score_override = newValue
       }
+    },
+    possession () {
+      return this.$store.getters.possession
     }
   },
 
@@ -274,12 +280,12 @@ export default {
     },
     away_score: {
       handler: function (newValue) {
-        this.away_score_override = Number(newValue)
+        this.away_score_override = newValue
       }
     },
     home_score: {
       handler: function (newValue) {
-        this.home_score_override = Number(newValue)
+        this.home_score_override = newValue
       }
     }
 
@@ -318,18 +324,13 @@ export default {
       self.isKeyDown = false
       self.keys.length = 0
     })
-
-    // window.addEventListener('keyup', function (event) {
-    //   if (event.code === 'Numpad1') {
-    //     self.home_score += 1
-    //   }
-    // })
   },
 
   methods: {
     connectWebSocket () {
-      console.log('Starting connection to WebSocket Server', this.$store.getters.getWebsocket)
+      console.log('Starting connection to WebSocket Server Score Keeper', this.$store.getters.getWebsocket)
       this.connection = new WebSocket(this.$store.getters.getWebsocket)
+      console.log(this.connection)
       this.connection.onopen = (event) => this.messageSend(event)
     },
     submitWebsocket (action, value) {
@@ -348,8 +349,12 @@ export default {
 
     messageSend (data) {
       console.log(JSON.stringify(data))
-      // console.log("Successfully connected to the echo websocket server...")
       this.connection.send(JSON.stringify(data))
+    },
+
+    commitTimeout (calledBy) {
+      this.stopTimer()
+      this.submitWebsocket(`decrement${calledBy}Timeouts`, 0)
     },
 
     setHome (data) {
@@ -380,7 +385,7 @@ export default {
     resetScore (team) {
       if (this.$store.getters.home_score !== this.home_score_override) {
         this.submitWebsocket('setHome', this.home_score_override)
-      } 
+      }
       if (this.$store.getters.away_score !== this.away_score_override) {
         this.submitWebsocket('setAway', this.away_score_override)
       }
@@ -398,27 +403,6 @@ export default {
       this.timer_running = !this.timer_running
     },
     runTimer () {
-      const self = this
-      Window.timerFunc = setInterval(function () {
-        const timerRemaining = (self.time_remaining.hundreds_seconds * 1000) + (self.time_remaining.seconds * 60) + self.time_remaining.minutes
-        if (timerRemaining > 0) {
-          self.time_remaining.hundreds_seconds -= 1
-        }
-
-        if (self.time_remaining.hundreds_seconds === 0) {
-          self.time_remaining.seconds -= 1
-          self.time_remaining.hundreds_seconds = 100
-        }
-
-        if (self.time_remaining.seconds === 0) {
-          self.time_remaining.minutes -= 1
-          self.time_remaining.seconds = 59
-        }
-
-        if (Object.entries(timerRemaining) === 0) {
-          clearInterval(Window.timerFunc)
-        }
-      }, 10)
     },
     stopTimer () {
       clearInterval(Window.timerFunc)
