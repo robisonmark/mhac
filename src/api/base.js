@@ -9,11 +9,11 @@ import axios from 'axios'
 
 // class Content extends Axios {
 //   robros () {
-//     super.baseURL = process.env.VUE_APP_API_ENDPOINT
+//     super.baseURL = import.meta.env.VITE_APP_API_ENDPOINT
 //   }
 
 //   content () {
-//     super.baseURL = process.env.VUE_APP_CONTENT_API
+//     super.baseURL = import.meta.env.VITE_APP_CONTENT_API
 //   }
 // }
 
@@ -25,7 +25,7 @@ import axios from 'axios'
 // export const content = Content
 
 export const robros = axios.create({
-  baseURL: process.env.VUE_APP_API_ENDPOINT
+  baseURL: import.meta.env.VITE_APP_API_ENDPOINT
   // withCredentials: false,
   // headers: {
   //   'Content-type': 'application/json',
@@ -40,7 +40,7 @@ export const robros = axios.create({
  * through wagtail.
  */
 export const content = axios.create({
-  baseURL: process.env.VUE_APP_CONTENT_API
+  baseURL: import.meta.env.VITE_APP_CONTENT_API
   // commented out because of CORS
   // withCredentials: false,
   // headers: {

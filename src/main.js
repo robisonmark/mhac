@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import Vue from 'vue'
-import App from './App'
+import "./init.js"
+import App from './App.vue'
 import { router } from './router'
 import { store } from './store/index'
 
@@ -33,7 +34,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 /* ********************************* *\
           Configuration
 \* ********************************* */
-function setLogoPosType (el) {
+function setLogoPosType(el) {
   const footer = document.getElementById('publicMainFooter')
   const footerOffset = footer.offsetTop
   const footerPos = footer.getBoundingClientRect().y
@@ -45,12 +46,12 @@ function setLogoPosType (el) {
   }
 }
 Vue.directive('stickBottom', {
-  bind (el) {
+  bind(el) {
     window.addEventListener('scroll', e => {
       setLogoPosType(el)
     })
   },
-  unbind (el) {
+  unbind(el) {
     window.removeEventListener('scroll', setLogoPosType)
   }
 })

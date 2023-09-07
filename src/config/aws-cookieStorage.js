@@ -2,7 +2,7 @@
 
 const awsCookieStorage = {
   cookieStorage: {
-    domain: process.env.VUE_APP_AWS_COOKIE_LOCATION,
+    domain: import.meta.env.VITE_APP_AWS_COOKIE_LOCATION,
     path: '/',
     expires: 30,
     secure: false
