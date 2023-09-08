@@ -224,7 +224,7 @@ export const router = new Router({
       component: livestream,
       props: true,
       meta: {
-        requiresAuth: (import.meta.env.NODE_ENV === 'production'),
+        requiresAuth: (import.meta.env.APP_ENV === 'production'),
         section: 'public',
         // TODO: String literal interpolation to add game
         title: 'Video Control | Midsouth Homeschool Athletics'
@@ -235,7 +235,7 @@ export const router = new Router({
         //   name: 'videofeed',
         //   component: videofeed,
         //   meta: {
-        //     requiresAuth: (import.meta.env.NODE_ENV === 'production'),
+        //     requiresAuth: (import.meta.env.APP_ENV === 'production'),
         //     section: 'scoreboard'
         //   }
         // },
@@ -244,7 +244,7 @@ export const router = new Router({
           name: 'scoreapp',
           component: scoreapp,
           meta: {
-            // requiresAuth: (import.meta.env.NODE_ENV === 'production'),
+            // requiresAuth: (import.meta.env.APP_ENV === 'production'),
             section: 'scoreboard'
           }
         },
@@ -253,7 +253,7 @@ export const router = new Router({
           name: 'scoreboard',
           component: scoreboard,
           meta: {
-            // requiresAuth: (import.meta.env.NODE_ENV === 'production'),
+            // requiresAuth: (import.meta.env.APP_ENV === 'production'),
             section: 'scoreboard'
           }
         },
@@ -262,7 +262,7 @@ export const router = new Router({
           name: 'awards',
           component: awards,
           meta: {
-            // requiresAuth: (import.meta.env.NODE_ENV === 'production'),
+            // requiresAuth: (import.meta.env.APP_ENV === 'production'),
             section: 'scoreboard'
           }
         }

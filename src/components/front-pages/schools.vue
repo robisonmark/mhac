@@ -17,11 +17,9 @@
                 <div class="custom-select"  @click.stop="showSeasons = !showSeasons, showSections = false">
                   <div disabled>{{filterBy.team.level_name}}</div>
                   <div class="options-menu">
-                    <template>
                       <div class="option" v-for="season in teamAssocLvl" :key="season.id" v-show="showSeasons" @click="filterBy.team = season">
                         {{season.level_name}}
                       </div>
-                    </template>
                   </div>
                 </div>
 

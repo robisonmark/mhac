@@ -1,8 +1,8 @@
 <template>
   <div class="brackets">
     <template v-for="(lvlRound, key, idx) in bracketByRound" >
-      <div class="levelHead levelHead-div" v-html="key" :key="key"></div>
-      <div class="container" :key="idx">
+      <div class="levelHead levelHead-div"></div>
+      <div class="container">
         <!-- add class split-one for left side bracket -->
         <!-- add class split-two for right side of bracket -->
         <div class="split split-one">

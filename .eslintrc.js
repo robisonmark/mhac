@@ -11,8 +11,8 @@ module.exports = {
   parserOptions: {
   },
   rules: {
-    // 'no-console': import.meta.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': import.meta.env.NODE_ENV === 'production' ? 'warn' : 'off'
+    // 'no-console': import.meta.env.APP_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': import.meta.env.APP_ENV === 'production' ? 'warn' : 'off'
   },
   overrides: [
     {

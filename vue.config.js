@@ -1,10 +1,10 @@
 const path = require('path')
 
 module.exports = {
-  lintOnSave: import.meta.env.NODE_ENV !== 'production',
+  lintOnSave: import.meta.env.APP_ENV !== 'production',
   filenameHashing: true,
   productionSourceMap: true,
-  outputDir: import.meta.env.NODE_ENV === 'production' ? path.resolve(__dirname, './dist') : path.resolve(__dirname, './staging-dist'),
+  outputDir: import.meta.env.APP_ENV === 'production' ? path.resolve(__dirname, './dist') : path.resolve(__dirname, './staging-dist'),
   configureWebpack: {
     devtool: 'source-map',
     output: {

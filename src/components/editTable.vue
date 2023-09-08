@@ -15,7 +15,7 @@
       <slot name="tbody">
         <tr v-for="(data, index) in tabledata" :key="index">
           <template v-for="(column, idx) in columns">
-            <td v-if="!column.field_name.includes('id')" :key="column.field_name + idx" :class="idx">
+            <td v-if="!column.field_name.includes('id')" :class="idx">
               <template v-if="column.field_name.includes('date')">
                 {{formatDates(data[column.field_name], false)}}
               </template>
@@ -63,7 +63,7 @@
           <tr class="split-fields">
             <!-- <td></td> -->
             <template v-for="(field, index) in columns">
-              <td v-if="!field.field_name.includes('id') && !field.field_name.includes('actions')" :key="index" class="input-con">
+              <td v-if="!field.field_name.includes('id') && !field.field_name.includes('actions')" class="input-con">
                 <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" v-model="value[field.field_name]"></selectbox>
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay(field.field_name)" @keyup.space="changeDisplay(field.field_name)" :class="{'vs': value[field.field_name]}" class="currentCustom">{{value[field.field_name] ? 'vs' : '@'}}</div>
@@ -100,7 +100,7 @@
 
                 <!-- <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span> -->
               </td>
-              <td v-else-if="field.field_name === 'actions'" align="right" width="1%" :key="index">
+              <td v-else-if="field.field_name === 'actions'" align="right" width="1%" >
                 <font-awesome-icon :icon="['fas', 'save']" class="icon" @click="savedata"></font-awesome-icon>
               </td>
               <!-- <td></td> -->

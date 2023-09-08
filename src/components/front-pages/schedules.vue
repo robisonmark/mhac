@@ -35,22 +35,18 @@
               <div class="custom-select"  @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
                 <div disabled>{{filterBy.level.level}}</div>
                 <div class="options-menu">
-                  <template>
                     <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
                       {{lvl.level}}
                     </div>
-                  </template>
                 </div>
               </div>
 
               <div class="custom-select" :disabled="filterBy.level.season_id === ''" @click="showTeams = !showTeams, showDatePicker = false, showLevels = false">
                 <div disabled>{{filterBy.team.name}}</div>
                 <div class="options-menu">
-                  <template>
                     <div class="option" v-for="team in teams" :key="team.id" v-show="showTeams" @click="setTeam(team)">
                       {{team.team_name}} {{team.team_mascot}}
                     </div>
-                  </template>
                 </div>
               </div>
 

@@ -2,11 +2,9 @@
    <div class="container">
      <div class="page-styles">
        <h2>{{ tournament.title }}</h2>
-       <template v-for="section in tournament.section">
-          <div :key="section.id">
+          <div v-for="section in tournament.section" :key="section.id">
             <span v-html="section.content"></span>
           </div>
-       </template>
       <!-- <h2>MHAC Conference Tournament Information - 2021</h2>
       <h5><a href="static/docs/MHAC Conference 2021 Tournament.pdf" class="download" download type="application/pdf">Download Tournament Packet</a></h5>
       <p>There will be four tournaments. All games will be played at <a href='https://www.google.com/maps/place/106+Gallatin+Pike+N,+Madison,+TN+37115/@36.264061,-86.7130334,17z/data=!3m1!4b1!4m5!3m4!1s0x88644302d8537e4d:0x747b45d0cbfa0f87!8m2!3d36.264061!4d-86.7108447'> Madison Church of Christ, 106 Gallatin Pike N, Madison, TN 37115</a>. The first round games of the tournament will be played on Thursday.  The semi-finals on Friday, and tiger consolation and championship games on Saturday.  Madison CoC will be hosting a concession stand there for those wanting a meal, snack or drink.
@@ -205,7 +203,7 @@ h5 {
   }
 }
 
-::v-deep .levelHead {
+:deep(.levelHead) {
   padding:.75rem;
   background-color: rgba(39,132,195,1);
   color: #fff;
