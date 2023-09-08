@@ -1,5 +1,5 @@
 export const tablemix = {
-  data () {
+  data() {
     return {
       currentSort: '',
       currentSortDir: 'asc',
@@ -7,7 +7,7 @@ export const tablemix = {
     }
   },
   computed: {
-    disabled () {
+    disabled() {
       // if (this.readWrite === 'write') {
       //   return false
       // } else {
@@ -16,7 +16,7 @@ export const tablemix = {
       return false
     }
   },
-  async created () {
+  async created() {
     this.$root.$on('saved', payload => {
       this.addNew = false
     })
@@ -54,14 +54,14 @@ export const tablemix = {
   //     scrollBody.addEventListener('scroll', this.setScrollPos)
   //   })
   // },
-  // destroyed () {
+  // unmounted () {
   //   window.removeEventListener('resize', this.setFixedTableHead)
   //   // window.removeEventListener('scroll', this.setScrollPos)
   //   let scrollBody = document.getElementById('scrollBody')
   //   scrollBody.removeEventListener('scroll', this.setScrollPos)
   // },
   methods: {
-    setFixedTableHead () {
+    setFixedTableHead() {
       const columnCount = 6
       const tableWidth = document.getElementById('table-body').rows[0].clientWidth
 
@@ -73,16 +73,16 @@ export const tablemix = {
         document.getElementById('table-head-fixed').rows[0].cells[i].width = columnWidth + 'px'
       }
     },
-    setScrollPos () {
+    setScrollPos() {
       const scrollPos = document.getElementById('table').getBoundingClientRect().left
       document.getElementById('table-head-fixed').style.left = scrollPos + 'px'
     },
-    setTableTopPos () {
+    setTableTopPos() {
       const tableYPos = document.getElementById('table').getBoundingClientRect().top
       document.getElementById('table-head-fixed').style.top = tableYPos + 'px'
       document.getElementById('table').style.marginTop = tableYPos + 'px'
     },
-    sortTable (s, nested) {
+    sortTable(s, nested) {
       // if s == current sort, reverse
       if (s === this.currentSort) {
         this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc'
@@ -106,7 +106,7 @@ export const tablemix = {
         }
       })
     },
-    changeDisplay () {
+    changeDisplay() {
       this.switchPosition = !this.switchPosition
 
       if (this.switchPosition && this.config.page === 'schedule') {
@@ -115,7 +115,7 @@ export const tablemix = {
         this.switchDisplay = 'vs'
       }
     },
-    addTo () {
+    addTo() {
       this.addNew = true
     }
   }

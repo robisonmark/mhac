@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 // import Vue from 'vue'
 
-import { createApp } from 'vue'
+import { createApp, h } from 'vue'
 import "./init.js"
 import App from './App.vue'
 import { router } from './router'
@@ -75,12 +75,15 @@ function setLogoPosType(el) {
 library.add(fas, far, faFacebookSquare, faInstagram)
 dom.watch()
 
-// Vue.config.productionTip = false
-
-// Vue.prototype.$config = config.CONSTANTS
-
 /* eslint-disable no-new */
-createApp({ App }).mount('#app')
+const app = createApp({ render: () => h(App) })
+
+app.use(router)
+app.use(vuetify)
+app.use(store)
+
+
+app.mount('#app')
 
 
 /* ********************************* *\

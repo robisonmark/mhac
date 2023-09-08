@@ -1,7 +1,7 @@
 // TODO: Page not found error/redirect inside before resolve
 import Vue from 'vue'
-import Router from 'vue-router'
-// import second from '@/components/second'
+// import Router from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 // Front Pages
 // import website from '@/components/website'
@@ -50,10 +50,10 @@ import { store } from '../store/index'
 
 const $config = config.CONSTANTS
 
-Vue.use(Router)
+// Vue.use(Router)
 
-export const router = new Router({
-  mode: 'history',
+export const router = createRouter({
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
