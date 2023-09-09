@@ -77,7 +77,7 @@ export default {
       scrollBody.addEventListener('scroll', this.setScrollPos)
     })
   },
-  destroyed () {
+  unmounted () {
     window.removeEventListener('resize', this.setFixedTableHead)
     // window.removeEventListener('scroll', this.setScrollPos)
     let scrollBody = document.getElementById('scrollBody')

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="page-styles">
       <template v-for="(component, key) in components">
-        <component :is="component" :key="key"></component>
+        <component :is="component"></component>
       </template>
     </div>
   </div>

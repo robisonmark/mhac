@@ -135,7 +135,7 @@
       <div v-if="selectedGame" :id="'playerStats'">
         <editTable :columns="columns" :config="config" :tabledata="stats" v-model="newGameStats">
 
-          <template slot="thead">
+          <slot:thead>
             <tr class="rowOne">
               <th colspan="4"></th>
               <th colspan="3" class="light">2PT</th>
@@ -247,9 +247,9 @@
                 <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
             </tr>
-          </template>
+          </slot:thead>
 
-          <template slot="tbody">
+          <slot:tbody>
             <tr v-for="(player, index) in newGameStats.player_stats" :key="index">
               <td class="text-center sticky" v-html="player.player_number"></td>
               <td class="align-no-pad sticky" v-html="player.player_first_name"></td>
@@ -334,9 +334,9 @@
               </td>
 
             </tr>
-          </template>
+          </slot:tbody>
 
-          <tfoot slot="tfoot">
+          <tfoot slot:tfoot>
             <tr>
               <td colspan="4"></td>
               <td>{{teamTotal('FGM')}}</td>
@@ -365,9 +365,9 @@
 
         </editTable>
         <modal :showModal="showModal" :modalTitle="modalTitle">
-           <template slot="modalBody">
+           <slot:modalBody>
              <fileUpload :game_id="selectedGame.game_id" :team_id="selectedGame.rosterId"> </fileUpload>
-            </template>
+           </slot:modalBody>
         </modal>
       </div>
     </div>

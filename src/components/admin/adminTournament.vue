@@ -11,7 +11,7 @@
     <div class="contentPad">
       <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit" @lookup="updateBracket">
 
-        <template slot="tbody">
+        <template v-slot:tbody>
             <tournamentGame v-for="(data, index) in games" :game="data" :key="index" />
             <template v-if="newGame">
               <tournamentGame :game=newTournamentGame :new_game=true @add-game="addGame" />

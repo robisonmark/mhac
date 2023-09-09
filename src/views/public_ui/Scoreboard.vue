@@ -331,8 +331,8 @@ export default {
 
 <style lang="less">
   @import (css) url('https://fonts.googleapis.com/css2?family=Teko&display=swap');
-  ::v-deep html,
-  ::v-deep body {
+  :deep(html),
+  :deep(body) {
     overflow: hidden;
   }
   .scoreboard {
