@@ -2,8 +2,9 @@
   <div class="content-left" id="content-block">
     <div class="content-left_container v-center">
       <div class="content-left_content">
-        <h2>Section Title</h2>
-        <p>Section Content</p>
+        <!-- <h2>Section Title</h2> -->
+        <h3><slot name="yearName">{{ yearName }}</slot></h3>
+        <h4><slot name="teamName"> {{ teamName }}</slot></h4>
       </div>
     </div>
     <div class="content-left_image-container">
@@ -21,7 +22,9 @@ export default {
     }
   },
   props: [
-    'data'
+    'data',
+    'yearName',
+    'teamName'
   ]
 }
 </script>

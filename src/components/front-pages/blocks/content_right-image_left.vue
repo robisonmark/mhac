@@ -1,14 +1,13 @@
 <template>
-  <div class="content-right">
+  <div class="content-right" id="content-block">
       <!-- <div class="content-right_image" :background-image="data.background_img"></div> -->
       <div class="content-right_image-container">
         <div class="content-right_image"></div>
       </div>
       <div class="content-right_container v-center">
         <div class="content-right_content">
-          <h3>2021 - 18u Girls</h3>
-          <h4>Chattanooga Patriots</h4>
-          <p><span class="weight-light">Record (W-L-T):</span> 15-1-1</p>
+          <h3><slot name="yearName">{{yearName}}</slot></h3>
+          <h4><slot name="teamName">{{teamName}}</slot></h4>
         </div>
       </div>
   </div>
@@ -23,7 +22,9 @@ export default {
     }
   },
   props: [
-    'data'
+    'data',
+    'yearName',
+    'teamName'
   ]
 
 }
