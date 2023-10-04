@@ -31,16 +31,21 @@ export default {
 
 <style lang="less">
   @import "../../../assets/less/elements/typography.less";
+  @import '../assets/less/utils/variables.less';
+  @import '../assets/less/utils/breakpoints.less';
 
   .content-left {
     display: flex;
-    min-height: 200px;
+    min-height: 350px;
+    @media @phone {
+      max-height: 350px;
+      min-height: auto;
+    }
 
     &_image {
       order: 2;
       background-size: cover;
-      background-position: center;
-      width: 125%;
+      background-position: 50% 15%;
       height: 100%;
     }
 
@@ -51,7 +56,7 @@ export default {
       padding: 1rem;
       transform-origin: right;
       position: relative;
-      &:after{
+      &--angled:after{
         content: '';
         display: block;
         position: absolute;
