@@ -38,8 +38,11 @@ export default {
   .content-right {
     display: flex;
     min-height: 350px;
-    @media @phone {
+    @media @tablet-max {
       max-height: 350px;
+      min-height: 250px;
+    }
+    @media @tablet-max {
       min-height: auto;
     }
 
