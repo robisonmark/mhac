@@ -2,7 +2,7 @@
   <div class="container">
     <div class="page-styles">
       <template v-for="(component, key) in champs">
-        <component :is="component.value.image_location" :yearName="component.value.year" :teamName="component.value.team" :key="key"></component>
+        <component :is="component.value.image_location" :yearName="component.value.year" :teamName="component.value.team" :image="component.value.image_url" :key="key"></component>
       </template>
     </div>
   </div>

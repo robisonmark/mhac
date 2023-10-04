@@ -1,9 +1,9 @@
 <template>
   <div class="content-right" id="content-block">
-      <!-- <div class="content-right_image" :background-image="data.background_img"></div> -->
       <div class="content-right_image-container">
-        <div class="content-right_image"></div>
+        <div class="content-right_image" :style="{ backgroundImage: 'url(' + base_api + image + ')' }">
       </div>
+    </div>
       <div class="content-right_container v-center">
         <div class="content-right_content">
           <h3><slot name="yearName">{{yearName}}</slot></h3>
@@ -18,13 +18,14 @@ export default {
   name: 'content_right',
   data () {
     return {
-
+      base_api: process.env.VUE_APP_IMAGE_API
     }
   },
   props: [
     'data',
     'yearName',
-    'teamName'
+    'teamName',
+    'image'
   ]
 
 }
@@ -61,7 +62,7 @@ export default {
         left: 0;
         background: #fff;
         width: 1250px;
-        max-height: 250px;
+        max-height: 500px;
         z-index: 0;
         transform: skew(45deg);
         transform-origin: bottom;
