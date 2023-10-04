@@ -28,8 +28,7 @@ export default {
   },
   methods: {
     getChamps() {
-      pages.get('champion2').then(response => {
-        console.log("Get ChampsList "+ response.champsList[0].content)
+      pages.get('champion').then(response => {
         this.champs = response.champsList[0].content
       })
     }
