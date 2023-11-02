@@ -3,6 +3,10 @@
     <header class="contentPad">
       <h2>Current Roster</h2>
       <div class="buttonCon">
+        <div class='switch' @click="toggleModal()">
+            <font-awesome-icon :icon="['fas', 'file-import'] " class="icon"></font-awesome-icon>
+            <span class="focused">Import Rosters</span>
+      </div>
         <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
           <span class="focused">Edit</span>
@@ -101,6 +105,11 @@
           <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
         </template> -->
       </editTable>
+      <modal :showModal="showModal" :modalTitle="modalTitle">
+           <template slot="modalBody">
+             <fileUpload :team_id="this.$route.params.slug"> </fileUpload>
+            </template>
+        </modal>
     </div>
   </div>
 </template>
@@ -114,6 +123,8 @@ import _ from 'lodash'
 
 // components
 import editTable from '@/components/editTable'
+import modal from '@/components/modal'
+import fileUpload from '@/components/roster_upload.vue'
 
 // third party
 import Multiselect from 'vue-multiselect'
@@ -122,6 +133,8 @@ export default {
   name: 'roster',
   data () {
     return {
+      modalTitle: 'Import Roster',
+      showModal: false,
       columns: [
         {
           name: 'Number',
@@ -159,19 +172,13 @@ export default {
           field_name: 'age',
           type: 'int'
         },
-        // {
-        //   name: 'Birthdate',
-        //   icon: '',
-        //   field_name: 'birth_date',
-        //   type: 'date'
-        // },
         {
           name: 'Feet',
           icon: '',
           field_name: 'feet',
           type: 'int'
         },
-        {
+        { 
           name: 'Inches',
           icon: '',
           field_name: 'inches',
@@ -205,7 +212,9 @@ export default {
   },
   components: {
     editTable: editTable,
-    Multiselect
+    modal: modal,
+    Multiselect,
+    fileUpload: fileUpload
   },
   computed: {
     seasons () {
@@ -267,6 +276,9 @@ export default {
     })
 
     this.$root.$on('changeEdit', () => { this.edit = !this.edit })
+
+    this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
+
   },
   methods: {
     initRoster () {
@@ -380,6 +392,9 @@ export default {
         this.roster.push(this.newPlayer)
         this.initNewPlayer()
       }
+    },
+    toggleModal () {
+      this.showModal = !this.showModal
     }
   }
 }

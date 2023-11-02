@@ -33,8 +33,8 @@ export default {
 
 <style lang="less">
   @import "../../../assets/less/elements/typography.less";
-  @import '../assets/less/utils/variables.less';
-  @import '../assets/less/utils/breakpoints.less';
+  @import '../../../assets/less/utils/variables.less';
+  @import '../../../assets/less/utils/breakpoints.less';
   .content-right {
     display: flex;
     min-height: 350px;

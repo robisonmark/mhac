@@ -23,7 +23,7 @@ import awsCookieStorage from '@/config/aws-cookieStorage'
 // local config
 import config from './config/helpers'
 
-Amplify.configure({ ...awsconfig, ...awsCookieStorage })
+Amplify.configure(awsconfig)
 
 /* ********************************* *\
      Global Component Registration

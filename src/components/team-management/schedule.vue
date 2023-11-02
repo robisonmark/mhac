@@ -27,8 +27,6 @@
             <td>{{data.game_time}}</td>
             <td>{{data.game_date}}</td>
             <td>{{data.opponent.level_name}}</td>
-            <!-- <td></td> -->
-            <!-- <td @click="toggleModal(data)"><font-awesome-icon  :icon="['far', 'edit']" class="icon" ></font-awesome-icon></td> -->
             <td @click="deleteGame(data, index)"><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td>
           </tr>
 
@@ -74,8 +72,6 @@
               <div tabindex="0" @click="homeAwayDisplay(data)" @keyup.space="homeAwayDisplay(data)" :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</div>
             </td>
             <td class="input-con">
-              <!-- <selectbox id="opponent" :options="" :trackby="'team_name'" placeholder="Choose a team" v-model="">
-              </selectbox> -->
               <multiselect
                 v-model="data.opponent"
                 label="team_name"

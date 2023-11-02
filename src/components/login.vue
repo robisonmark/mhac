@@ -3,10 +3,12 @@
 */
 <template>
   <div class="flex-con">
-    <amplify-authenticator v-if="authState !== 'signedin'" :styles="styles"></amplify-authenticator>
+    <amplify-authenticator :styles="styles">
     <div v-if="authState === 'signedin' && user">
-      <amplify-sign-out></amplify-sign-out>
       <div>Hello, {{user.username}}</div>
+      </div>
+      <amplify-sign-out></amplify-sign-out>
+    </amplify-authenticator>
     </div>
   </div>
 </template>
@@ -33,6 +35,7 @@ export default {
   watch: {
     authState: {
       handler (newValue) {
+        console.log(newValue, this.user)
         if (newValue === 'signedin') {
           this.$store.commit('set_valid', true)
           this.$store.dispatch('load', this.user)
@@ -42,8 +45,9 @@ export default {
     }
   },
   created () {
-    onAuthUIStateChange((authState, authData) => {
+    this.unsubscribeAuth = onAuthUIStateChange((authState, authData) => {
       this.authState = authState
+      console.log(authData)
       this.user = authData
     })
   },
@@ -58,7 +62,7 @@ export default {
     }
   },
   beforeDestroy () {
-    return onAuthUIStateChange
+    return this.unsubscribeAuth()
   }
 }
 </script>

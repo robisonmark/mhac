@@ -9,10 +9,6 @@
           <span class="focused">Edit</span>
         </div>
 
-        <!-- <div class="switch" v-if="edit" @click="edit = !edit">
-          <font-awesome-icon :icon="['fas', 'check']" class="icon"></font-awesome-icon>
-          <span class="focused">Done Editing</span>
-        </div> -->
         <div class="switch" v-if="edit" @click="save()">
           <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
           <span class="focused" v-if="!saving">Save</span>
@@ -65,7 +61,7 @@
               :multiple="true"
               :taggable="true"
               :hideSelected="true"
-              @input="addToUpdateList(season)"
+              @input="addToUpdateList(season.team_id)"
             >
             </multiselect>
         </tr>
@@ -165,8 +161,7 @@ export default {
         },
         {
           name: 'Season Name',
-          icon: '',
-          field_name: 'season_names',
+          field_name: 'season_name',
           type: 'text'
         },
         {
@@ -193,12 +188,12 @@ export default {
           field_name: 'year',
           type: 'text'
         },
-        // {
-        //   name: 'Slug',
-        //   icon: '',
-        //   field_name: 'slug',
-        //   type: 'text'
-        // },
+        {
+          name: 'Slug',
+          icon: '',
+          field_name: 'slug',
+          type: 'text'
+        },
         {
           name: 'Archive',
           icon: '',

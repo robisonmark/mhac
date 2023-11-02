@@ -367,4 +367,12 @@ export class api {
       data: body
     })
   }
+
+  static async sendRoster (body, teamId, year) {
+    return robros({
+      url: '/teamFile/' + teamId + "/"+ year,
+      method: 'POST',
+      data: body
+    })
+  }
 }
