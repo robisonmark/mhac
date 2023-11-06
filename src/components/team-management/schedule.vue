@@ -121,7 +121,6 @@
             </td>
           </tr>
         </template>
-        <!-- </template> -->
       </editTable>
     </div>
 
@@ -236,8 +235,9 @@ export default {
         })
       } else {
         this.$store.getters.seasonTeams.filter(team => {
+          console.log(this.newGame.season.level, team.level_name)
+          // console.log(this.newGame.season.level, team.level_name)
           if (team.slug !== this.$store.state.user.slug &&
-            team.level_name === this.newGame.season.level &&
             !teamList.some(e => e.slug === team.slug)
           ) {
             teamList.push(team)
