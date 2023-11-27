@@ -48,7 +48,11 @@ export default {
       uploadedFiles: [],
       uploadError: '',
       currentStatus: null,
-      uploadFieldName: 'file'
+      uploadFieldName: 'file',
+      activeYear: {
+        name: '',
+        year: ''
+      }
     }
   },
   props: [
@@ -69,6 +73,12 @@ export default {
     }
   },
   methods: {
+    getActiveYear () {
+      api.getYear(true).then(response => {
+        // console.log(response.data)
+        this.activeYear = response.data
+      })
+    },
     refresh_data () {
       this.$root.$emit('initNewGameStats', this.team_id)
     },
@@ -78,25 +88,35 @@ export default {
       this.uploadedFiles = []
       this.uploadError = ''
     },
-    save (formData) {
+    async save (formData) {
       // upload data to the server
       this.currentStatus = STATUS_SAVING
 
-      api.sendRoster(formData, this.team_id, 2023)
-        .then(x => {
-          this.uploadedFiles = [].concat(x)
-          this.currentStatus = STATUS_SUCCESS
-        })
-        .catch(err => {
-          this.uploadError = err.response
-          this.currentStatus = STATUS_FAILED
-        })
-      this.refresh_data()
-    },
+        await api.sendRoster(formData, this.team_id, this.activeYear.year)
+          .then(response => {
+            console.log(response, "here")
+            this.uploadedFiles = [].concat(response)
+            this.currentStatus = STATUS_SUCCESS
+          })
+          .catch(err => {
+            console.log("error handler", err, err.response)
+            this.uploadError = err.response
+            this.currentStatus = STATUS_FAILED
+            // this.$emit('uploadError', this.uploadError)
+            
+            // this.reset()
+          })
+          .finally(() => {
+            console.log("here too")
+            this.$emit('toggleModal')
+            this.refresh_data()
+            this.reset()
+          }
+        )
+      },
     filesChange (fieldName, fileList) {
       // handle file changes
       const formData = new FormData()
-      // console.log(fieldName, fileList)
 
       if (!fileList.length) return
 
@@ -113,6 +133,9 @@ export default {
   },
   mounted () {
     this.reset()
+  },
+  created () {
+    this.getActiveYear()
   }
 }
 

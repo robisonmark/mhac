@@ -61,7 +61,7 @@
               :multiple="true"
               :taggable="true"
               :hideSelected="true"
-              @input="addToUpdateList(season.team_id)"
+              @input="addToUpdateList(season)"
             >
             </multiselect>
         </tr>
@@ -122,8 +122,6 @@
 
 <script>
 import { api } from '@/api/endpoints'
-// import _ from 'lodash'
-// import selectbox from '../selectbox'
 import editTable from '@/components/editTable'
 
 // third party
@@ -250,7 +248,7 @@ export default {
   },
   methods: {
     addToUpdateList (id) {
-      // console.log('addtolist')
+      console.log("UpdateList", id)
       let add = true
       let i = 0
       for (i = 0; i < this.updated.length; i++) {
@@ -273,7 +271,6 @@ export default {
       })
     },
     save () {
-      // console.log(JSON.stringify(this.added))
       console.log(JSON.stringify(this.updated))
       if (this.updated.length > 0) {
         api.updateSeason(this.updated)

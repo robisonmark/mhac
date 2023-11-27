@@ -277,8 +277,8 @@ export default {
 
     this.$root.$on('changeEdit', () => { this.edit = !this.edit })
 
-    this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
-
+    this.$root.$on('toggleModal', this.toggleModal )
+    this.$root.$on('uploadError', this.handleUploadError)
   },
   methods: {
     initRoster () {
@@ -364,7 +364,7 @@ export default {
             })
             .catch(err => {
               console.log(err)
-              this.errors.push({ player: player, error: 'Age is a required field' })
+              this.errors.push({ player: player, error: err })
             })
         })
       }
@@ -372,14 +372,13 @@ export default {
       if (this.added.length >= 1) {
         this.added.forEach(player => {
           if (isNaN(player.age) || player.age === '') {
-            this.errors.push({ player: player, error: 'Age is a required field' })
+            this.errors.push({ player: player, error: err })
 
           }
           player.team_id = this.$store.state.user.team_id
           const playerJson = player
           console.log(JSON.stringify(playerJson))
-          // this.newPlayer.birth_date = new Date(this.newPlayer.birth_date)
-
+          
           Admin.addPlayer(playerJson)
             .then(response => {
               console.log(response)
@@ -394,8 +393,15 @@ export default {
       }
     },
     toggleModal () {
+      console.log("Modal Toggled")
       this.showModal = !this.showModal
-    }
+    },
+    handleUploadError(errors) {
+      this.errors.push(...errors)
+    },
+  },
+  beforeDestroy(){
+    this.$root.$off('uploadError', this.handleUploadError)
   }
 }
 </script>
