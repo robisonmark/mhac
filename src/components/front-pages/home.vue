@@ -95,7 +95,7 @@
 
 <script>
 // api
-import { api } from '../../api/endpoints.js'
+import api from '../../api/endpoints.js'
 import pages from '../../api/pages.js'
 
 import _ from 'lodash'

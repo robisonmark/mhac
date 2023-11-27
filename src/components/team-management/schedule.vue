@@ -129,7 +129,7 @@
 
 <script>
 // api
-import { api } from '@/api/endpoints'
+import api from '@/api/endpoints'
 import Admin from '@/api/admin'
 
 // components

@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import { api } from '@/api/endpoints'
+import api from '@/api/endpoints'
 import editTable from '@/components/editTable'
 
 // third party

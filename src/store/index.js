@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 // api
-import { api } from '@/api/endpoints.js'
+import api from '@/api/endpoints.js'
 
 // Modules
 import auth from './modules/store.auth'

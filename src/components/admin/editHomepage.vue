@@ -5,7 +5,7 @@
 <script>
 
 // api
-// import { api } from '../../api/endpoints.js'
+// import api from '../../api/endpoints.js'
 
 export default {
 

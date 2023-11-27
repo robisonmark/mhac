@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { api } from '@/api/endpoints'
+import api from '@/api/endpoints'
 import selectbox from '../selectbox'
 
 // mixins

@@ -52,7 +52,7 @@
 
 <script>
 // Api
-import { api } from '@/api/endpoints.js'
+import api from '@/api/endpoints.js'
 
 // Third Party
 import { groupBy } from 'lodash'

@@ -5,7 +5,7 @@ import Vuex from 'vuex'
 // TODO: Create a Persistent Source
 
 // api
-import { api } from '@/api/endpoints.js'
+import api  from '@/api/endpoints.js'
 
 Vue.use(Vuex)
 

@@ -214,7 +214,7 @@
 
 <script>
 // api
-import { api } from '../../api/endpoints.js'
+import api from '../../api/endpoints.js'
 import _ from 'lodash'
 // mixins
 import { root } from '../../mixins/root'

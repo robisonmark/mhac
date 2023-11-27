@@ -116,7 +116,7 @@
 
 <script>
 // api
-import { api } from '@/api/endpoints'
+import api from '@/api/endpoints'
 import Admin from '@/api/admin'
 import { mapState } from 'vuex'
 import _ from 'lodash'

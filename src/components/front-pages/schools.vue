@@ -131,7 +131,7 @@
 
 <script>
 // api
-import { api } from '../../api/endpoints.js'
+import api from '../../api/endpoints.js'
 
 // mixins
 import { root } from '../../mixins/root'

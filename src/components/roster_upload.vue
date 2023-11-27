@@ -34,7 +34,7 @@
 
 // import { upload } from './file-upload.service';
 
-import { api } from '../api/endpoints.js'
+import api from '../api/endpoints.js'
 
 const STATUS_INITIAL = 0
 const STATUS_SAVING = 1
@@ -98,7 +98,7 @@ export default {
             this.uploadedFiles = [].concat(response)
             this.currentStatus = STATUS_SUCCESS
           })
-          .catch(err => {
+          .catch((err) => {
             console.log("error handler", err, err.response)
             this.uploadError = err.response
             this.currentStatus = STATUS_FAILED
@@ -108,7 +108,7 @@ export default {
           })
           .finally(() => {
             console.log("here too")
-            this.$emit('toggleModal')
+            // this.$root.$emit('toggleModal')
             this.refresh_data()
             this.reset()
           }

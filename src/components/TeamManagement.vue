@@ -24,7 +24,7 @@
 
 <script>
 // api
-import { api } from '../api/endpoints.js'
+import api from '../api/endpoints.js'
 
 // components
 import selectbox from './selectbox'

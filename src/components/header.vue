@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { api } from '@/api/endpoints'
+import api from '@/api/endpoints'
 import _ from 'lodash'
 
 import { Auth } from 'aws-amplify'

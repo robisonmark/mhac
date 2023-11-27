@@ -34,7 +34,7 @@
 
 // import { upload } from './file-upload.service';
 
-import { api } from '../api/endpoints.js'
+import api from '../api/endpoints.js'
 
 const STATUS_INITIAL = 0
 const STATUS_SAVING = 1

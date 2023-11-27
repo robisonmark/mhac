@@ -81,7 +81,7 @@
 
 <script>
 // Api
-import { api } from '../../api/endpoints.js'
+import api from '../../api/endpoints.js'
 import pages from '@/api/pages'
 
 // components
