@@ -15,7 +15,7 @@ class api {
       // (response) => ({...response,}),
       // (error) => Promise.reject(error)
       this.handleSuccess,
-      this.handlerError
+      this.handleError
     )
   }
 
@@ -24,7 +24,7 @@ class api {
     return response
   }
 
-  handlerError (err) {
+  handleError (err) {
     console.error("In Error", err)
     return Promise.reject(err)
     // return err

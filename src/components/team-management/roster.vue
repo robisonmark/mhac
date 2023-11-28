@@ -24,7 +24,7 @@
       <p v-if="errors.length">
         <b>Please correct the following error(s):</b>
         <ul>
-          <li v-for="(error, index) in errors" :key=index>{{ error.player.first_name + ' ' + error.player.last_name + ': ' +  error.error }}</li>
+          <li v-for="(error, index) in errors" :key=index>{{ error.first_name + " " + error.last_name + ": " + error.detail  }}</li>
         </ul>
       </p>
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
@@ -397,6 +397,7 @@ export default {
       this.showModal = !this.showModal
     },
     handleUploadError(errors) {
+      this.errors = []
       this.errors.push(...errors)
     },
   },

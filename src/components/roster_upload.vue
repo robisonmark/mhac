@@ -17,15 +17,6 @@
                     </p>
                 </div>
             </form>
-            <div v-if="isFailed">
-              <p>
-                The following players were in the game, but don't exist in the roster:
-              </p>
-              <ul>
-                <li v-for="number in uploadError.data.detail" :key="number">{{ number }} </li>
-              </ul>
-              <p> Please update your roster, or game file. </p>
-            </div>
     </div>
 </template>
 
@@ -46,7 +37,7 @@ export default {
   data () {
     return {
       uploadedFiles: [],
-      uploadError: '',
+      uploadError: [],
       currentStatus: null,
       uploadFieldName: 'file',
       activeYear: {
@@ -80,39 +71,52 @@ export default {
       })
     },
     refresh_data () {
-      this.$root.$emit('initNewGameStats', this.team_id)
+      console.log("in Refresh")
+      // this.$root.$emit('initNewGameStats', this.team_id)
     },
     reset () {
+      console.log("In Reset")
       // reset form to initial state
       this.currentStatus = STATUS_INITIAL
       this.uploadedFiles = []
       this.uploadError = ''
     },
-    async save (formData) {
+    save (formData) {
       // upload data to the server
       this.currentStatus = STATUS_SAVING
-
-        await api.sendRoster(formData, this.team_id, this.activeYear.year)
-          .then(response => {
-            console.log(response, "here")
+      console.log("Saving Data")
+      api.sendRoster(formData, this.team_id, this.activeYear.year)
+        .then(response => {
+          console.log(response.response.status, "here")
+          if (response.status === 200) {
+            console.log("Success")
             this.uploadedFiles = [].concat(response)
             this.currentStatus = STATUS_SUCCESS
-          })
-          .catch((err) => {
-            console.log("error handler", err, err.response)
-            this.uploadError = err.response
+          } else {
+            console.log(response.response.data)
+            this.uploadError = response.response.data
             this.currentStatus = STATUS_FAILED
-            // this.$emit('uploadError', this.uploadError)
-            
-            // this.reset()
-          })
-          .finally(() => {
-            console.log("here too")
-            // this.$root.$emit('toggleModal')
-            this.refresh_data()
-            this.reset()
+            this.$root.$emit('uploadError', this.uploadError)
           }
-        )
+          // 
+        })
+        .catch((err) => {
+          console.log("error handler", err, err.response)
+          this.uploadError = err.response
+          this.currentStatus = STATUS_FAILED
+          // this.$emit('uploadError', this.uploadError)
+          
+          // this.reset()
+        })
+        .finally(() => {
+          console.log("here too")
+          this.$root.$emit('toggleModal')
+          this.refresh_data()
+          this.reset()
+        }
+      )
+      formData.preventDefault();
+      this.$refs.anyName.reset()
       },
     filesChange (fieldName, fileList) {
       // handle file changes
