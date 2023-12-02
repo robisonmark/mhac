@@ -1,5 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+// import Vue from 'vue'
+// import Vuex from 'vuex'
+// import * as Vue from 'vue';
+// import * as Vuex from 'vuex';
+import { createStore } from 'vuex'
 
 // api
 import { api } from '@/api/endpoints.js'
@@ -8,7 +11,7 @@ import { api } from '@/api/endpoints.js'
 import auth from './modules/store.auth'
 import scoreController from './modules/store.scoreController'
 
-Vue.use(Vuex)
+// Vue.use(Vuex)
 
 const namespaced = true
 const modules = { auth, scoreController }
@@ -246,7 +249,7 @@ const getters = {
   }
 }
 
-export const store = new Vuex.Store({
+export const store = createStore({
   state,
   strict,
   actions,

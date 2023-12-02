@@ -7,8 +7,9 @@ export default defineConfig({
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
-            find: './runtimeConfig', replacement: './runtimeConfig.browser',
-            vue: "@vue/compat"
+            find: './runtimeConfig', 
+            replacement: './runtimeConfig.browser',
+            // vue: "@vue/compat"
         },
         extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     },

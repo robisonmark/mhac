@@ -1,5 +1,9 @@
 import { store } from '@/store/index'
-import { Auth } from 'aws-amplify'
+// https://docs.amplify.aws/vue/build-a-backend/auth/manage-user-session/
+import { useAuthenticator } from '@aws-amplify/ui-vue';
+const Auth = useAuthenticator();
+
+import { getCurrentUser } from 'aws-amplify/auth';
 
 // Initial "state"
 const state = {
@@ -30,20 +34,49 @@ const actions = {
   async valid (context) {
     const user = store.state.userData
     if (Object.entries(user).length === 0 && user.constructor === Object) {
-      const valid = await Auth.currentAuthenticatedUser({ bypassCache: false })
-        .then(response => {
-          context.dispatch('load', response, { root: true })
+      async function currentAuthenticatedUser() {
+        try {
+          const { username, signInDetails } = await getCurrentUser();
+          context.dispatch('load', username, { root: true })
           context.commit('set_valid', true)
           context.commit('set_loggedIn', true)
           return true
-        })
-        .catch(() => {
+        } catch (err) {
+          console.log(err)
           context.commit('set_valid', false)
           context.commit('set_loggedIn', false)
           return false
-        })
+        }
+      }
 
-      return valid
+      return await currentAuthenticatedUser()
+    
+
+      // if (aws_user) {
+      //   context.dispatch('load', aws_user, { root: true })
+      //   context.commit('set_valid', true)
+      //   context.commit('set_loggedIn', true)
+      //   return true
+      // } else {
+      //   context.commit('set_valid', false)
+      //   context.commit('set_loggedIn', false)
+      //   return false
+      // }
+      // const vaild = await Auth
+      //   .then(response => {
+      //     console.log(response)
+      //     context.dispatch('load', response, { root: true })
+      //     context.commit('set_valid', true)
+      //     context.commit('set_loggedIn', true)
+      //     return true
+      //   })
+      //   .catch(() => {
+      //     context.commit('set_valid', false)
+      //     context.commit('set_loggedIn', false)
+      //     return false
+      //   })
+
+      // return valid
     } else {
       context.dispatch('load', user, { root: true })
       context.commit('set_valid', true)

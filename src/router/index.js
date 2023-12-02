@@ -1,5 +1,6 @@
 // TODO: Page not found error/redirect inside before resolve
-import Vue from 'vue'
+// import Vue from 'vue'
+import * as Vue from 'vue';
 // import Router from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 

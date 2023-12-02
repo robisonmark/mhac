@@ -439,7 +439,7 @@ export default {
 <style lang="less" scoped>
   @import (css) url('https://cdn.jsdelivr.net/npm/vuetify@1.x/dist/vuetify.min.css');
 
-  /deep/ .v-btn__content {
+  :deep(.v-btn__content) {
     color: #eee !important;
   }
 

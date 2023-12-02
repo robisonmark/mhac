@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-// import Vue from 'vue'
+// import { Vue } from 'vue'
 
-import { createApp, h } from 'vue'
+import { createApp } from 'vue'
 import "./init.js"
 import App from './App.vue'
 import { router } from './router'
@@ -26,23 +26,18 @@ const vuetify = createVuetify({
 import { dom, library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
-// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faFacebookSquare, faInstagram } from '@fortawesome/free-brands-svg-icons'
 
 import '@aws-amplify/ui-vue'
-import Amplify from 'aws-amplify'
+import { Amplify } from 'aws-amplify'
 import awsconfig from './aws-exports'
-import awsCookieStorage from '@/config/aws-cookieStorage'
 
 // local config
 import config from './config/helpers'
 
-Amplify.configure({ ...awsconfig, ...awsCookieStorage })
+Amplify.configure(awsconfig)
 
-/* ********************************* *\
-     Global Component Registration
-\* ********************************* */
-// Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 /* ********************************* *\
           Configuration
@@ -76,7 +71,12 @@ library.add(fas, far, faFacebookSquare, faInstagram)
 dom.watch()
 
 /* eslint-disable no-new */
-const app = createApp({ render: () => h(App) })
+const app = createApp(App)
+
+/* ********************************* *\
+     Global Component Registration
+\* ********************************* */
+app.component('font-awesome-icon', FontAwesomeIcon)
 
 app.use(router)
 app.use(vuetify)

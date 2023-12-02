@@ -23,9 +23,7 @@
 
   <div class="contentPad">
     <editTable  :columns="columns" :config="config" :tabledata="seasonArr" v-model="new_season" :edit="edit">
-      <slot:tbody>
-      </slot:tbody>
-      <slot:tbody v-if="edit">
+      <template slot="tbody" v-if="edit">
         <tr v-for="(season, index) in seasonArr" :key="index">
           <td class="input-con">
             <selectbox id='level'
@@ -117,7 +115,7 @@
             >
             </multiselect>
         </tr>
-      </slot:tbody>
+      </template>
     </editTable>
   </div>
 

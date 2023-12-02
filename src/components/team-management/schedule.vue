@@ -18,7 +18,7 @@
 
     <div class="contentPad">
       <editTable  :columns="columns" :config="config" :tabledata="schedule" v-model="newGame" :edit="edit">
-        <template slot="tbody" v-if="!edit">
+        <template v-slot="tbody" v-if="!edit">
 
           <!-- Current Scheduled Games -->
           <tr v-for="(data, index) in schedule" :key="index">
@@ -68,7 +68,7 @@
           </tr>
         </template>
 
-        <template slot="tbody" v-if="edit">
+        <template v-slot="tbody" v-if="edit">
           <tr v-for="(data, index) in schedule" :key="index">
             <td class="input-con">
               <div tabindex="0" @click="homeAwayDisplay(data)" @keyup.space="homeAwayDisplay(data)" :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</div>

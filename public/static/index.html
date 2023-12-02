@@ -40,6 +40,13 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script>
+        window.global = window;
+        window.process = {
+            env: {DEBUG: undefined},
+        }
+        var exports = {};
+    </script>
 </body>
 
 </html>
