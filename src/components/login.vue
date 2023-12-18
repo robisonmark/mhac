@@ -31,7 +31,7 @@
   
   import "@aws-amplify/ui-vue/styles.css";
   import { Authenticator, useAuthenticator } from '@aws-amplify/ui-vue';
-  import { signIn, fetchUserAttributes } from 'aws-amplify/auth';
+  import { signIn, fetchAuthSession } from 'aws-amplify/auth';
 
   const auth = useAuthenticator();
   const router = useRouter()
@@ -53,7 +53,13 @@
       password: user_creds.password
     });
     if (nextStep.signInStep === 'DONE') {
-      console.log(fetchUserAttributes())
+      // console.log(await user())
+      const { user, idToken } = (await fetchAuthSession()).tokens ?? {};
+      console.log('you in')
+      console.log(user)
+      // this.$store.commit('set_valid', true)
+      // this.$store.dispatch('load', user)
+      // this.goToTeamManagement()
         // router.push('/');
     } else {
       return nextStep.signInStep

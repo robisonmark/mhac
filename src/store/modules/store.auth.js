@@ -3,7 +3,7 @@ import { store } from '@/store/index'
 import { useAuthenticator } from '@aws-amplify/ui-vue';
 const Auth = useAuthenticator();
 
-import { getCurrentUser } from 'aws-amplify/auth';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 // Initial "state"
 const state = {
@@ -36,8 +36,10 @@ const actions = {
     if (Object.entries(user).length === 0 && user.constructor === Object) {
       async function currentAuthenticatedUser() {
         try {
-          const { username, signInDetails } = await getCurrentUser();
-          context.dispatch('load', username, { root: true })
+
+          const { user, idToken } = (await fetchAuthSession()).tokens ?? {};
+      
+          context.dispatch('load', user, { root: true })
           context.commit('set_valid', true)
           context.commit('set_loggedIn', true)
           return true
