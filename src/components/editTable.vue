@@ -1,21 +1,21 @@
 <template>
   <table id="table" name="edittable">
     <thead id="table-head-fixed">
-      <slot name="thead">
+      <!-- <template v-slot:thead>
         <tr>
           <template v-for="(column, key, index) in columns">
             <th v-if="!column.field_name.includes('id')" :key="index" :class="column.name.toLowerCase()">{{column.name}}</th>
           </template>
-          <!-- <th></th> -->
+          <th></th>
         </tr>
-      </slot>
+      </template> -->
     </thead>
 
     <tbody id="table-body" name="tbody">
-      <slot name="tbody">
+      <!-- <template v-slot:tbody>
         <tr v-for="(data, index) in tabledata" :key="index">
           <template v-for="(column, idx) in columns">
-            <td v-if="!column.field_name.includes('id')" :key="column.field_name + idx" :class="idx">
+            <td v-if="!column.field_name.includes('id')" :class="idx">
               <template v-if="column.field_name.includes('date')">
                 {{formatDates(data[column.field_name], false)}}
               </template>
@@ -56,14 +56,13 @@
             <template v-if="$route.name === 'roster'">Edit Roster</template>
             <template v-else>Add New Game to Schedule</template>
           </td>
-          <!-- <td></td> -->
+
         </tr>
 
-        <template v-else>
-          <tr class="split-fields">
+        <tr class="split-fields" v-else> -->
             <!-- <td></td> -->
-            <template v-for="(field, index) in columns">
-              <td v-if="!field.field_name.includes('id') && !field.field_name.includes('actions')" :key="index" class="input-con">
+            <!-- <template v-for="(field, index) in columns">
+              <td v-if="!field.field_name.includes('id') && !field.field_name.includes('actions')" class="input-con">
                 <selectbox v-if="field.type === 'select'" :id="'field.field_name'" :options="selectOptions(field.field_name)" :trackby="field.track_by" placeholder="" v-model="value[field.field_name]"></selectbox>
 
                 <div v-else-if="field.type === 'customSelect'" tabindex="0" @click="changeDisplay(field.field_name)" @keyup.space="changeDisplay(field.field_name)" :class="{'vs': value[field.field_name]}" class="currentCustom">{{value[field.field_name] ? 'vs' : '@'}}</div>
@@ -86,32 +85,20 @@
                   :multiple="true"
                   :taggable="true"
                   @tag="addTag"></multiselect>
-                <!-- <multiselect v-else-if="field.type === 'multiselect' && field.field_name==='team_name'"
-                  v-model="value[field.model]"
-                  label="team_name"
-                  :options="selectOptions(field.field_name)"
-                  track-by="team_id"
-                  :closeOnSelect="false"
-                  :multiple="true"
-                  :taggable="true"
-                  @tag="addTag"></multiselect> -->
 
                 <input v-else :type="field.type" v-model="value[field.field_name]" />
 
-                <!-- <span v-if="(index + 1) === colspan" @click="savedata" class="icons">SAVE</span> -->
               </td>
-              <td v-else-if="field.field_name === 'actions'" align="right" width="1%" :key="index">
+              <td v-else-if="field.field_name === 'actions'" align="right" width="1%" >
                 <font-awesome-icon :icon="['fas', 'save']" class="icon" @click="savedata"></font-awesome-icon>
               </td>
-              <!-- <td></td> -->
             </template>
-          </tr>
-        </template>
-      </slot>
+          </tr> -->
+      <!-- </template> -->
     </tbody>
 
-    <slot name="tfoot">
-    </slot>
+    <!-- <template v-slot:tfoot>
+    </template> -->
   </table>
 
 </template>
@@ -185,9 +172,9 @@ export default {
     }
   },
   async created () {
-    this.$root.$on('saved', payload => {
-      this.addNew = false
-    })
+    // this.$root.$on('saved', payload => {
+    //   this.addNew = false
+    // })
   },
   methods: {
     getNamesFromSeasonRoster (teamList) {

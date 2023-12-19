@@ -19,8 +19,6 @@
 
   <div class="contentPad">
     <editTable  :columns="columns" :config="config" :tabledata="seasonArr" v-model="new_season" :edit="edit">
-      <template slot="tbody">
-      </template>
       <template slot="tbody" v-if="edit">
         <tr v-for="(season, index) in seasonArr" :key="index">
           <td class="input-con">

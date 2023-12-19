@@ -7,7 +7,7 @@
       <div class="team_name team_name_wrapper">
         <div :class='`team_name team_name_${location}`' :style='{ color: secondary_color }'>{{team_name}}</div>
       </div>
-      <scoreBlock :location="location" v-model="score" :style='{ color: "#fff" }'></scoreBlock>
+      <scoreBlock :location="location" v-on="score" :style='{ color: "#fff" }'></scoreBlock>
     </div>
     <div :class='`team_stats team_stats_${location}`' :style='{ backgroundColor: team_color }'>
       <div>

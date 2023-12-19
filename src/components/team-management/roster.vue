@@ -28,7 +28,7 @@
         </ul>
       </p>
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
-        <template slot="tbody" v-if="edit">
+        <template v-slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
             <td class="stat first">
               <input type="number" min="0" v-model="player.player_number" @input="addToUpdateList(player)" />

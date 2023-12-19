@@ -162,7 +162,7 @@
           <v-text-field v-model="time_remaining.seconds" label="Seconds"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field v-model="time_remaining.tenths_seconds" label="Tenths"></v-text-field>
+          <v-text-field v-model="time_remaining.tenth_seconds" label="Tenths"></v-text-field>
         </v-col>
         <v-btn @click="submitWebsocket('setTime', time_remaining)" :style='{ backgroundColor: "crimson"}'>Submit</v-btn>
       </v-row>
@@ -212,7 +212,7 @@ export default {
       time_remaining: {
         minutes: 7,
         seconds: 0,
-        tenths_seconds: 0
+        tenth_seconds: 0
       },
       timer_running: false,
       connection: false
@@ -272,11 +272,6 @@ export default {
         this.connectWebSocket()
       }
     },
-    // time_remaining: {
-    //   handler: function () {
-    //     this.submitWebsocket('setTime', this.time_remaining)
-    //   }
-    // }
     away_score: {
       handler: function (newValue) {
         this.away_score_override = Number(newValue)
@@ -338,6 +333,7 @@ export default {
       this.connection.onopen = (event) => this.messageSend(event)
     },
     submitWebsocket (action, value) {
+      console.log(value)
       const socketData = {
         'request-type': 'BroadcastCustomMessage',
         'message-id': '1234',
@@ -384,7 +380,8 @@ export default {
     resetScore (team) {
       if (this.$store.getters.home_score !== this.home_score_override) {
         this.submitWebsocket('setHome', this.home_score_override)
-      } else if (this.$store.getters.away_score !== this.away_score_override) {
+      } 
+      if (this.$store.getters.away_score !== this.away_score_override) {
         this.submitWebsocket('setAway', this.away_score_override)
       }
     },
@@ -442,7 +439,7 @@ export default {
 <style lang="less" scoped>
   @import (css) url('https://cdn.jsdelivr.net/npm/vuetify@1.x/dist/vuetify.min.css');
 
-  /deep/ .v-btn__content {
+  :deep(.v-btn__content) {
     color: #eee !important;
   }
 

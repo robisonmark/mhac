@@ -17,7 +17,7 @@
     </header>
     <div class="contentPad">
       <editTable  :columns="columns" :config="config" :tabledata="teamArray" v-model="new_team" :edit="edit">
-        <template slot="tbody" v-if="edit">
+        <template v-slot="tbody" v-if="edit">
           <tr v-for="(team, index) in teamArray" :key="index">
             <td class="input-con">
                 <input type="text" v-model="team.team_name">

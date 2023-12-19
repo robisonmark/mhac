@@ -141,7 +141,7 @@ export default {
         this.tagline_2 = response.tagline_line2
         this.message = response.message
         this.num_images = response.hero_image.length
-        this.hero = process.env.VUE_APP_IMAGE_API + response.hero_image[this.getRandomInt(this.num_images)].carousel_image.meta.download_url
+        this.hero = import.meta.env.VUE_APP_IMAGE_API + response.hero_image[this.getRandomInt(this.num_images)].carousel_image.meta.download_url
       }).catch(() => {
         this.tagline_1 = ''
         this.tagline_2 = ''

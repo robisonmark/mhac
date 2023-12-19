@@ -1,13 +1,9 @@
 /* eslint-disable no-return-assign */
-import Vue from 'vue'
-import Vuex from 'vuex'
 // import VuexPersistence from 'vuex-persist'
 // TODO: Create a Persistent Source
 
 // api
 import api  from '@/api/endpoints.js'
-
-Vue.use(Vuex)
 
 const namespaced = false
 // const modules = { auth }
@@ -309,6 +305,7 @@ const actions = {
     context.commit('resetFouls', payload)
   },
   setTime (context, payload) {
+    console.log(payload)
     context.commit('setTime', payload)
   },
   setGameConfig (context, payload) {

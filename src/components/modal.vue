@@ -6,9 +6,9 @@
                     {{ modalTitle }}
                 </div>
                 <div class="modal-body">
-                    <slot name="modalBody">
-                     test
-                    </slot>
+                    <ModalBody v-slot="{modalBody}">
+                      {{modalBody}}
+                    </ModalBody>
                 </div>
                 <button class="mt-3 border-b border-teal font-semibold" @click="close()">Close</button>
             </div>

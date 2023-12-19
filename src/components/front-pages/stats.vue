@@ -21,33 +21,27 @@
               <div class="custom-select"  @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
                 <div class="selected" disabled>{{filterBy.level.level}}</div>
                 <div class="options-menu">
-                  <template>
                     <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
                       {{lvl.level}}
                     </div>
-                  </template>
                 </div>
               </div>
 
               <div class="custom-select" @click="showGames = !showGames">
                 <div class="selected" disabled>{{filterBy.game.teams}}</div>
                 <div class="options-menu">
-                  <template >
                     <div class="option" v-for="game in games" :key="game.game_id" v-show="showGames" @click="setGame(game)">
                       {{game.teams}} <!-- {{game.game_date}} -->
                     </div>
-                  </template>
                 </div>
               </div>
 
               <div class="custom-select"  :disabled="filterBy.game.game_id === ''" @click="showTeams = !showTeams">
                 <div class="selected" disabled>{{filterBy.team.name}}</div>
                 <div class="options-menu">
-                  <template >
                     <div class="option" v-for="team in teams" :key="team.id" v-show="showTeams" @click="setTeam(team)">
                       {{team.team_name}} {{team.team_mascot}}
                     </div>
-                  </template>
                 </div>
               </div>
 
@@ -60,11 +54,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="goBack">
-        <span @click="$router.back()">
-          Go Back
-        </span>
-      </div> -->
       <div class="col content" align="center" v-if="message">
         <h4><em>{{this.message}}</em></h4>
       </div>
