@@ -161,14 +161,6 @@ export default {
       return this.$route.meta.section === 'public'
     }
   },
-  filters: {
-  },
-  watch: {},
-  created () {
-    // this.$root.$on('close', payload => {
-    //   this.showLogin = false
-    // })
-  },
   methods: {
     checkMouse () {
     },
@@ -206,24 +198,6 @@ export default {
       value = value.replace(' ', '_')
       return value
     },
-    // toggleLogin () {
-    //   const isOpen = _.cloneDeep(this.showLogin)
-    //   window.setTimeout(() => {
-    //     this.showLogin = !isOpen
-    //   }, 1)
-    // },
-    // login () {
-    //   this.thinking = true
-    //   api.login(this.username, this.password).then(response => {
-    //     this.loggedIn = true
-    //     this.showLogin = false
-    //     this.$store.dispatch('setAuth', response.data.token)
-    //     this.$router.push('/manage/hendersonville_royals')
-    //   })
-    //     .catch(err => {
-    //       console.log(err)
-    //     })
-    // },
     async signout () {
       await Auth.signOut({ global: true })
         .then(() => {

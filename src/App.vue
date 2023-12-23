@@ -35,7 +35,7 @@
 // import { api } from './api/endpoints.js'
 
 // components
-import headerComponent from '@/components/header'
+import headerComponent from '@/components/header.vue'
 
 export default {
   name: 'App',

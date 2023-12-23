@@ -5,15 +5,6 @@
 <template>
   <div class="flex-con">
     <authenticator :hide-sign-up="true" :services="services" :login-mechanisms="['email']">
-      <!--  <template v-slot:header>
-        <div style="padding: var(--amplify-space-large); text-align: center">
-          <img
-            class="amplify-image"
-            alt="MHAC logo"
-            src="/static/color-team-logos/mhaclogo.png"
-          />
-        </div>
-      </template> -->
       <template v-slot="{ user, signOut }">
         <h1>Hello {{ user.username }}!</h1>
           <button @click="signOut">Sign Out</button>

@@ -53,16 +53,6 @@ function setLogoPosType(el) {
     el.style.position = 'fixed'
   }
 }
-// Vue.directive('stickBottom', {
-//   bind(el) {
-//     window.addEventListener('scroll', e => {
-//       setLogoPosType(el)
-//     })
-//   },
-//   unbind(el) {
-//     window.removeEventListener('scroll', setLogoPosType)
-//   }
-// })
 
 /* ********************************* *\
           Init Components
