@@ -87,26 +87,14 @@ export default {
       console.log("Saving Data")
       api.sendRoster(formData, this.team_id, this.activeYear.year)
         .then(response => {
-          console.log(response.response.status, "here")
           if (response.status === 200) {
-            console.log("Success")
             this.uploadedFiles = [].concat(response)
             this.currentStatus = STATUS_SUCCESS
           } else {
-            console.log(response.response.data)
             this.uploadError = response.response.data
             this.currentStatus = STATUS_FAILED
             this.$root.$emit('uploadError', this.uploadError)
-          }
-          // 
-        })
-        .catch((err) => {
-          console.log("error handler", err, err.response)
-          this.uploadError = err.response
-          this.currentStatus = STATUS_FAILED
-          // this.$emit('uploadError', this.uploadError)
-          
-          // this.reset()
+          } 
         })
         .finally(() => {
           console.log("here too")

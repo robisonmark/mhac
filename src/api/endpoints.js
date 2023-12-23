@@ -12,15 +12,12 @@ class api {
   constructor () {
     const base = robros
     base.interceptors.response.use(
-      // (response) => ({...response,}),
-      // (error) => Promise.reject(error)
       this.handleSuccess,
       this.handleError
     )
   }
 
   handleSuccess (response) {
-    // console.log("In Success", response)
     return response
   }
 

@@ -28,13 +28,15 @@
 <script lang="js" setup>
   import { toRefs } from 'vue';
   import { useRouter } from 'vue-router'
+  import { useStore } from'vuex';
   
   import "@aws-amplify/ui-vue/styles.css";
   import { Authenticator, useAuthenticator } from '@aws-amplify/ui-vue';
   import { signIn, fetchAuthSession } from 'aws-amplify/auth';
 
   const auth = useAuthenticator();
-  const router = useRouter()
+  const router = useRouter();
+  const store = useStore();
 
   const goToTeamManagement = (userGroups) => {
     if (userGroups[0] === 'Admin') {
@@ -45,27 +47,23 @@
     }
   }
 
-  
-  
   async function handleSignIn(user_creds) {
     const { nextStep } = await signIn({
       username: user_creds.username,
       password: user_creds.password
     });
     if (nextStep.signInStep === 'DONE') {
-      // console.log(await user())
       const { user, idToken } = (await fetchAuthSession()).tokens ?? {};
       console.log('you in')
-      console.log(user)
-      // this.$store.commit('set_valid', true)
-      // this.$store.dispatch('load', user)
-      // this.goToTeamManagement()
-        // router.push('/');
+      console.log(user, idToken)
+      console.log(store)
+      const usergroups = idToken?.payload?.['cognito:groups']
+      store.commit('set_valid', true)
+      store.dispatch('load', idToken)
+      goToTeamManagement(usergroups)
     } else {
       return nextStep.signInStep
     }
-    
-    
   }
 
   const services = {

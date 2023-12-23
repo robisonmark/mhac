@@ -39,7 +39,7 @@ const actions = {
 
           const { user, idToken } = (await fetchAuthSession()).tokens ?? {};
       
-          context.dispatch('load', user, { root: true })
+          context.dispatch('load', idToken, { root: true })
           context.commit('set_valid', true)
           context.commit('set_loggedIn', true)
           return true
@@ -88,7 +88,9 @@ const actions = {
   },
 
   load (context, user) {
-    const groups = user.signInUserSession?.accessToken?.payload['cognito:groups']
+    console.log(user.payload)
+    const groups = user.payload['cognito:groups']
+    console.log(groups)
     context.commit('set_userGroups', groups, { root: true })
   }
 }
