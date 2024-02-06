@@ -33,7 +33,7 @@
         </ul>
       </p>
       <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
-        <template slot="tbody" v-if="edit">
+        <template v-slot="tbody" v-if="edit">
           <tr v-for="(player, index) in roster" :key="index">
             <td class="stat first">
               <input type="number" min="0" v-model="player.player_number" @input="addToUpdateList(player)" />
@@ -86,9 +86,6 @@
             <td class="stat">
               <input type="number" v-model="newPlayer.age" />
             </td>
-            <!-- <td class="stat">
-              <input type="date" v-model="newPlayer.birth_date" />
-            </td> -->
             <td class="stat">
               <input type="number" v-model="newPlayer.height.feet" />
             </td>
@@ -100,13 +97,9 @@
             </td>
           </tr>
         </template>
-
-        <!-- <template slot="tbody" v-else>
-          <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
-        </template> -->
       </editTable>
       <modal :showModal="showModal" :modalTitle="modalTitle">
-           <template slot="modalBody" slot-scope="{modalBody}">
+           <template v-slot="modalBody">
              <fileUpload :team_id=slug> </fileUpload>
             </template>
         </modal>
@@ -116,29 +109,35 @@
 
 <script>
 // api
-import { ref, onMounted, watch } from 'vue';
-import api from '@/api/endpoints';
-import Admin from '@/api/admin';
-import _ from 'lodash';
-import { useRoute } from 'vue-router';
-
+import api from '@/api/endpoints.js'
+import Admin from '@/api/admin.js'
+import { mapState } from 'vuex'
+import _ from 'lodash'
+import { useRoute } from 'vue-router'
+import { onMounted } from 'vue'
 
 // components
-import editTable from '@/components/editTable';
-import modal from '@/components/modal';
-import fileUpload from '@/components/roster_upload.vue';
+import editTable from '@/components/editTable.vue'
+import modal from '@/components/modal.vue'
+import fileUpload from '@/components/roster_upload.vue'
 
 // third party
-import Multiselect from 'vue-multiselect';
+import Multiselect from 'vue-multiselect'
 
 export default {
   name: 'roster',
   setup() {
-    const route = useRoute();
-    const teamId = ref('');
-    const modalTitle = ref('Import Roster');
-    const showModal = ref(false);
-    const columns = [
+    const route = useRoute()
+
+    onMounted(() => {
+      const teamId = route.params.slug
+    })
+  },
+  data () {
+    return {
+      modalTitle: 'Import Roster',
+      showModal: false,
+      columns: [
         {
           name: 'Number',
           icon: '',
@@ -195,14 +194,13 @@ export default {
           track_by: 'level_name',
           model: 'season_roster'
         }
-    ]
-    
-    const config = {
-      page: 'roster',
-    }
-    const edit = ref(false);
-    const fullRoster = ref([]);
-    const newPlayer = ref({
+      ],
+      config: {
+        page: 'roster'
+      },
+      edit: false,
+      fullRoster: [],
+      newPlayer: {
         player_number: NaN,
         first_name: '',
         last_name: '',
@@ -216,185 +214,19 @@ export default {
         team: this.teamId,
         season_roster: [],
         person_type: 1
-      })
-    const roster = ref([]);
-    const rosterLvl = ref('');
-    const saved = ref(false);
-    const saving = ref(false);
-    const updated = ref([]);
-    const added = ref([]);
-    const errors = ref([]);
-    const teamId = ref('');
-    const successful_saves = ref([]);
+      },
+      roster: [
+      ],
+      rosterLvl: '',
+      saved: false,
+      saving: false,
+      updated: [],
+      added: [],
+      errors: [],
+      teamId: '',
+      successful_saves: []
 
-    onMounted(() => {
-      initRoster();
-      getTeamId();
-      teamId.value = route.params.slug;
-    });
-
-    watch(() => route.params.slug, (newSlug) => {
-      teamId.value = newSlug;
-      initRoster();
-    });
-
-    
-
-    const initRoster = () => {
-      if (teamId.value) {
-        Admin.getAdminPlayers(teamId.value).then((response) => {
-          roster.value = response.data;
-          fullRoster.value = _.cloneDeep(roster.value);
-        });
-      }
-    };
-
-    const initLeveledRoster = (lvlId) => {
-      api.getRoster(lvlId).then(response => {
-        const rosterArr = []
-        this.fullRoster.forEach(player => {
-          response.data.forEach(lvlPlayer => {
-            if (player.id === lvlPlayer.player_id) {
-              rosterArr.push(player)
-            }
-          })
-        })
-
-        this.roster = rosterArr
-      })
-    };
-
-    const initNewPlayer  = () => {
-      newPlayer.value = {
-        player_number: NaN,
-        first_name: '',
-        last_name: '',
-        id: null,
-        position: '',
-        age: '',
-        height: {
-          feet: 0,
-          inches: 0
-        },
-        team: this.teamId,
-        season_roster: [],
-        person_type: 1
-      }
-      return this.newPlayer
-    };
-    
-    const addToUpdateList = (id) => {
-      let add = true;
-      let i = 0;
-      for (i = 0; i < updated.value.length; i++) {
-        if (updated.value[i] === id) {
-          add = false;
-        }
-      }
-      if (add) {
-        updated.value.push(id);
-      }
-    };
-   
-    const save = () => {
-      if (this.updated.length >= 1) {
-        
-        this.updated.forEach(player => {
-          player.team_id = this.$store.state.user.team_id
-          const playerJson = player
-          Admin.updatePlayer(player.id, playerJson)
-            .then(response => {
-              
-            })
-            .catch(err => {
-              
-              this.errors.push({ player: player, error: err })
-            })
-        })
-      }
-
-      if (this.added.length >= 1) {
-        
-        this.added.forEach(player => {
-          if (isNaN(player.age) || player.age === '') {
-            this.errors.push({ player: player, error: "Age is Required" })
-
-          }
-          player.team_id = this.$store.state.user.team_id
-          const playerJson = player
-          
-          if ((!(isNaN(player.first_name) && player.first_name === '')) || (!(isNaN(player.last_name) && player.last_name === ''))) {
-            
-            Admin.addPlayer(playerJson)
-            .then(response => {
-              if (response.status === 201 || response.status == 200) {
-                
-                this.handleSuccess(playerJson, response)
-                this.roster.push(this.newPlayer)
-                this.initNewPlayer()
-              }
-            })
-            .catch(err => {
-              
-              this.errors.push(playerJson)
-            })
-          }
-        })
-      }
-    };
-
-    const toggleModal = () => {
-      showModal.value = !showModal.value;
-    };
-
-    const handleSuccess = (player, response) => {
-      this.successful_saves.push({
-        first_name: player.first_name,
-        last_name: player.last_name,
-        detail: response.data,
-      });
-
-      // Clear successful_saves after 10 seconds
-      setTimeout(() => {
-        this.successful_saves = [];
-      }, 10000);
-    };
-
-    const handleUploadError = (errors) => {
-      this.errors = []
-      this.errors.push(...errors)
-      setTimeout(() => {
-        this.errors = [];
-      }, 10000);
     }
-    };
-
-    return {
-      modalTitle,
-      showModal,
-      columns,
-      config,
-      edit,
-      fullRoster,
-      newPlayer,
-      roster,
-      rosterLvl,
-      saved,
-      saving,
-      updated,
-      added,
-      errors,
-      teamId,
-      successful_saves,
-      initRoster,
-      initLeveledRoster,
-      initNewPlayer,
-      addToUpdateList,
-      save,
-      toggleModal,
-      handleSuccess,
-      handleUploadError,
-    };
   },
   components: {
     editTable: editTable,
@@ -457,7 +289,158 @@ export default {
     this.$root.$on('changeEdit', () => { this.edit = !this.edit })
     this.$root.$on('toggleModal', this.toggleModal )
     this.$root.$on('uploadError', this.handleUploadError)
+  },
+  methods: {
+    getTeamId (){
+      
+      if (this.$route.params.slug) {
+        api.getTeams(this.$route.params.slug).then(response => {
+          
+          this.teamId = response.data[0].team_id
+        })
+      }
+    },
+    initRoster () {
+      if (this.$route.params.slug) {
+        
+        Admin.getAdminPlayers(this.$route.params.slug).then(response => {
+          
+          this.roster = response.data
+          this.fullRoster = _.cloneDeep(this.roster)
+          
+        })
+      }
+    },
+    initLeveledRoster (lvlId) {
+      api.getRoster(lvlId).then(response => {
+        const rosterArr = []
+        this.fullRoster.forEach(player => {
+          response.data.forEach(lvlPlayer => {
+            if (player.id === lvlPlayer.player_id) {
+              rosterArr.push(player)
+            }
+          })
+        })
+
+        this.roster = rosterArr
+      })
+    },
+    initNewPlayer () {
+      this.newPlayer = {
+        player_number: NaN,
+        first_name: '',
+        last_name: '',
+        id: null,
+        position: '',
+        age: '',
+        height: {
+          feet: 0,
+          inches: 0
+        },
+        team: this.teamId,
+        season_roster: [],
+        person_type: 1
+      }
+      return this.newPlayer
+    },
+    addToUpdateList (id) {
+      
+      let add = true
+      let i = 0
+      for (i = 0; i < this.updated.length; i++) {
+        if (this.updated[i] === id) {
+          add = false
+        }
+      }
+      if (add) {
+        this.updated.push(id)
+      }
+    },
+    updatePlayers () {
+      this.updated.forEach(index => {
+      
+      //   const playerId = this.roster[index].id
+      
+      //   api.updatePlayer(playerId, this.roster[index])
+      //     .then(response => {
+      
+      //     })
+      })
+    },
+    save () {
+      if (this.updated.length >= 1) {
+        
+        this.updated.forEach(player => {
+          player.team_id = this.$store.state.user.team_id
+          const playerJson = player
+          Admin.updatePlayer(player.id, playerJson)
+            .then(response => {
+              
+            })
+            .catch(err => {
+              
+              this.errors.push({ player: player, error: err })
+            })
+        })
+      }
+
+      if (this.added.length >= 1) {
+        
+        this.added.forEach(player => {
+          if (isNaN(player.age) || player.age === '') {
+            this.errors.push({ player: player, error: "Age is Required" })
+
+          }
+          player.team_id = this.$store.state.user.team_id
+          const playerJson = player
+          
+          if ((!(isNaN(player.first_name) && player.first_name === '')) || (!(isNaN(player.last_name) && player.last_name === ''))) {
+            
+            Admin.addPlayer(playerJson)
+            .then(response => {
+              if (response.status === 201 || response.status == 200) {
+                
+                this.handleSuccess(playerJson, response)
+                this.roster.push(this.newPlayer)
+                this.initNewPlayer()
+              }
+            })
+            .catch(err => {
+              
+              this.errors.push(playerJson)
+            })
+          }
+        })
+      }
+    },
+    toggleModal () {
+      this.showModal = !this.showModal
+    },
+    handleSuccess(player, response) {
+      this.successful_saves.push({
+        first_name: player.first_name,
+        last_name: player.last_name,
+        detail: response.data,
+      });
+
+      // Clear successful_saves after 10 seconds
+      setTimeout(() => {
+        this.successful_saves = [];
+      }, 10000);
+    },
+    
+    handleUploadError(errors) {
+      this.errors = []
+      this.errors.push(...errors)
+      setTimeout(() => {
+        this.errors = [];
+      }, 10000);
+    },
+  },
+  beforeDestroy(){
+    this.$root.$off('uploadError', this.handleUploadError)
   }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
