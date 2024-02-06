@@ -339,15 +339,6 @@ export const router = createRouter({
         section: 'admin'
       },
       children: [
-        // {
-        //   path: 'login',
-        //   name: 'login',
-        //   component: login,
-        //   meta: {
-        //     requiresAuth: false,
-        //     section: 'admin'
-        //   }
-        // },
         {
           path: 'edit',
           name: 'Edit',

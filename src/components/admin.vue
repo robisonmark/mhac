@@ -2,11 +2,10 @@
   <div class="con-admin">
     <nav class="sidebar">
       <ul>
-        <router-link :to="{ name: 'teamDashboard', params: { slug: slug }}" tag="li" class="nav-item">Team Dashboard</router-link>
+        <router-link :to="{ name: 'teamDashboard', params: { slug: 'tennessee_heat' }}" tag="li" class="nav-item">Team Dashboard</router-link>
         <router-link :to="{ path: '/admin/team-manager'}" tag="li" class="nav-item">Add/Create Team</router-link>
         <router-link :to="{ path: '/admin/tournament'}" tag="li" class="nav-item">Manage Tournament</router-link>
         <router-link :to="{ path: '/admin/seasons'}" tag="li" class="nav-item">Manage Seasons</router-link>
-        <!-- <router-link :to="{ path: '/admin/seasonsTeams'}" tag="li" class="nav-item">Manage SeasonsTeams</router-link> -->
       </ul>
     </nav>
     <router-view class="admin" />
@@ -28,75 +27,13 @@ export default {
       collapse: true,
       login: true,
       greyLogo: '',
-      // team: this.$route.params.slug,
-      // teamColor: '#B42625',
       teamLogo: '',
       fontSecondary: '#fff'
-      // selectedTeam: {}
     }
   },
   computed: {
-    slug: {
-      get: function () {
-        return this.$store.getters.teams[0].slug
-      },
-      set: function (newValue) {
-        console.log(newValue)
-      }
-    },
-    // cssVars () {
-    //   let teamMain = ''
-    //   let teamSecond = ''
-    //   this.$store.state.teams.forEach(team => {
-    //     if (team.id === this.$store.state.user.team_id) {
-    //       teamMain = '#' + team.main_color
-    //       teamSecond = '#' + team.secondary_color
-    //     }
-    //   })
-    //   // const darker = Color(teamMain).darken(0.5).hex()
-    //   // const lighter = Color(teamMain).lighten(0.5).hex()
-    //   return {
-    //     '--bg-color': teamMain,
-    //     '--team-second': teamSecond,
-    //     '--hover-color': this.darken(teamMain, 15),
-    //     '--active-color': this.lighten(teamMain, 10)
-    //   }
-    // },
-    // admin () {
-    //   if (this.$store.state.userGroups.includes('Admin')) {
-    //     return true
-    //   } else {
-    //     return false
-    //   }
-    // },
-    // teams () {
-    //   return this.$store.state.teams
-    // },
-    ...mapGetters(['teams', 'slug'])
-    // selectedTeam: {
-    //   get: function () {
-    //     return this.$store.state.teams.find(team => {
-    //       const user = {
-    //         team_id: team.id,
-    //         slug: team.slug
-    //       }
-    //       this.$store.dispatch('setUser', user)
-    //       return team.slug === this.$route.params.slug
-    //     })
-    //   },
-    //   set: function (newValue) {
-    //     const user = {
-    //       team_id: newValue.id,
-    //       slug: newValue.slug
-    //     }
-    //     this.team = newValue.slug
-    //     this.$store.dispatch('setUser', user)
-    //     const routeName = this.$route.name
 
-    //     this.$router.push({ name: routeName, params: { slug: newValue.slug } })
-    //     this.getSeasonTeams(newValue.slug)
-    //   }
-    // }
+    // ...mapGetters(['teams', 'slug'])
   },
   watch: {
     // selectedTeam (newValue, oldValue) {
@@ -108,12 +45,12 @@ export default {
     // this.getSeasonTeams(this.$route.params.slug)
   },
   methods: {
-    getSeasonTeams (slug) {
-      api.getSeasonTeams(slug)
-        .then(response => {
-          this.$store.dispatch('setTeamAssocLvl', response.data)
-        })
-    }
+    // getSeasonTeams (slug) {
+    //   api.getSeasonTeams(slug)
+    //     .then(response => {
+    //       this.$store.dispatch('setTeamAssocLvl', response.data)
+    //     })
+    // }
   }
 }
 </script>

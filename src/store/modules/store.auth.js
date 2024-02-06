@@ -13,32 +13,32 @@ const state = {
 }
 
 const getters = {
-  valid (getterState) {
+  valid(getterState) {
     return getterState.valid
   },
-  loggedIn (getterState) {
+  loggedIn(getterState) {
     return getterState.loggedIn
   }
 }
 
 const mutations = {
-  set_valid (mutationState, payload) {
+  set_valid(mutationState, payload) {
     mutationState.valid = payload
   },
-  set_loggedIn (mutationState, payload) {
+  set_loggedIn(mutationState, payload) {
     mutationState.loggedIn = payload
   }
 }
 
 const actions = {
-  async valid (context) {
+  async valid(context) {
     const user = store.state.userData
     if (Object.entries(user).length === 0 && user.constructor === Object) {
       async function currentAuthenticatedUser() {
         try {
 
           const { user, idToken } = (await fetchAuthSession()).tokens ?? {};
-      
+
           context.dispatch('load', idToken, { root: true })
           context.commit('set_valid', true)
           context.commit('set_loggedIn', true)
@@ -52,33 +52,7 @@ const actions = {
       }
 
       return await currentAuthenticatedUser()
-    
 
-      // if (aws_user) {
-      //   context.dispatch('load', aws_user, { root: true })
-      //   context.commit('set_valid', true)
-      //   context.commit('set_loggedIn', true)
-      //   return true
-      // } else {
-      //   context.commit('set_valid', false)
-      //   context.commit('set_loggedIn', false)
-      //   return false
-      // }
-      // const vaild = await Auth
-      //   .then(response => {
-      //     console.log(response)
-      //     context.dispatch('load', response, { root: true })
-      //     context.commit('set_valid', true)
-      //     context.commit('set_loggedIn', true)
-      //     return true
-      //   })
-      //   .catch(() => {
-      //     context.commit('set_valid', false)
-      //     context.commit('set_loggedIn', false)
-      //     return false
-      //   })
-
-      // return valid
     } else {
       context.dispatch('load', user, { root: true })
       context.commit('set_valid', true)
@@ -87,10 +61,10 @@ const actions = {
     }
   },
 
-  load (context, user) {
-    console.log(user.payload)
+  load(context, user) {
+    // console.log(user.payload)
     const groups = user.payload['cognito:groups']
-    console.log(groups)
+    // console.log(groups)
     context.commit('set_userGroups', groups, { root: true })
   }
 }

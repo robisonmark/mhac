@@ -30,7 +30,7 @@
   const store = useStore();
 
   const goToTeamManagement = (userGroups) => {
-    if (userGroups[0] === 'Admin') {
+    if (userGroups.includes('Admin')) {
       router.push({ name: 'admin' })
     } else {
       const team = this.team
@@ -39,18 +39,16 @@
   }
 
   async function handleSignIn(user_creds) {
-    const { nextStep } = await signIn({
+    const { isSignedIn, nextStep } = await signIn({
       username: user_creds.username,
       password: user_creds.password
     });
     if (nextStep.signInStep === 'DONE') {
       const { user, idToken } = (await fetchAuthSession()).tokens ?? {};
-      console.log('you in')
-      console.log(user, idToken)
-      console.log(store)
       const usergroups = idToken?.payload?.['cognito:groups']
       store.commit('set_valid', true)
       store.dispatch('load', idToken)
+      store.commit('set_loggedIn', true)
       goToTeamManagement(usergroups)
     } else {
       return nextStep.signInStep
@@ -61,48 +59,6 @@
     handleSignIn: handleSignIn,
   }
 
-// import { onAuthUIStateChange } from '@aws-amplify/ui-vue'
-
-// import { mapGetters } from 'vuex'
-
-
-// export default {
-//   name: 'AuthStateApp',
-//   data () {
-//     return {
-//       user: undefined,
-//       authState: undefined,
-//       styles: {
-//         border: '1px solid #121212;'
-//       }
-//     }
-//   },
-//   computed: {
-//     ...mapGetters(['userGroups', 'team'])
-//   },
-//   watch: {
-//     authState: {
-//       handler (newValue) {
-//         if (newValue === 'signedin') {
-//           this.$store.commit('set_valid', true)
-//           this.$store.dispatch('load', this.user)
-//           this.goToTeamManagement()
-//         }
-//       }
-//     }
-//   },
-//   created () {
-//     onAuthUIStateChange((authState, authData) => {
-//       this.authState = authState
-//       this.user = authData
-//     })
-//   },
-//   methods: {
-//     
-//   beforeDestroy () {
-//     return onAuthUIStateChange
-//   }
-// }
 </script>
 
 <style lang="less" scoped>
