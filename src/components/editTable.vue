@@ -19,7 +19,7 @@
                     <template v-for="(column, idx) in columns">
                         <td :key="idx" v-if="!column.field_name.includes('id')" :class="idx">
                             <template v-if="column.field_name.includes('date')">
-                                {{ root.formatDates(data[column.field_name], false) }}
+                                {{ formatDates(data[column.field_name], false) }}
                             </template>
                             <template v-else-if="column.field_name === 'season_roster'">
                                 <template v-for="(c) in  data[column.field_name]">
@@ -58,7 +58,7 @@
                 <tr v-if="!addNew" @click="addTo">
                     <td :colspan="colspan" align="center" class="add-button">
                         <template v-if="$route.name === 'roster'">Edit Roster</template>
-                        <template v-else>Add New Game to Schedule</template>
+                        <template v-else-if="$route.name === 'schedule'">Add New Game to Schedule</template>
                     </td>
 
                 </tr>
@@ -105,195 +105,148 @@
     </table>
 </template>
 
-<script>
+<script setup>
 import { ref, watch } from 'vue';
-
-// Components
 import Multiselect from 'vue-multiselect';
 import Selectbox from './selectbox.vue';
+import { useRootMixin } from '@/mixins/root.js';
 
-// Mixins
-// Import mixins if needed
-import { root } from '@/mixins/root'
+const currentSort = ref('');
+const currentSortDir = ref('asc');
+const addNew = ref(false);
+const switchPosition = ref(false);
+const switchDisplay = ref('@');
+const { formatDates } = useRootMixin();
 
-export default {
-    name: 'editTable',
-    props: {
-        columns: Array,
-        config: Object,
-        edit: Boolean,
-        tabledata: Array,
-        value: Array,
-    },
-    components: {
-        Multiselect,
-        Selectbox,
-    },
-    setup(props) {
-        const currentSort = ref('');
-        const currentSortDir = ref('asc');
-        const addNew = ref(false);
-        const switchPosition = ref(false);
-        const switchDisplay = ref('@');
+const props = defineProps({
+    edit: Boolean,
+    columns: Array,
+    config: Object,
+    tabledata: Array,
+    value: Array
+})
 
-        // Watch edit prop for changes
-        watch(() => props.edit, (newVal) => {
-            addNew.value = newVal;
-        });
 
-        // Computed property filteredData
-        // const filteredData = computed(() => {
-        //   Implement your filteredData computation here
-        // });
+watch(() => props.edit, (newVal) => {
+    addNew.value = newVal;
+});
 
-        // Computed property colspan
-        const colspan = ref(props.columns.length);
+const colspan = ref(props.columns.length);
 
-        // Methods
-        function getNamesFromSeasonRoster(teamList) {
-            const listNames = [];
-            for (let i = 0; i < teamList.length; i++) {
-                listNames.push(teamList[i]);
+function getNamesFromSeasonRoster(teamList) {
+    const listNames = [];
+    for (let i = 0; i < teamList.length; i++) {
+        listNames.push(teamList[i]);
+    }
+    return listNames;
+}
+
+function selectOptions(name) {
+    switch (name) {
+        case 'division':
+            return $store.state.seasons;
+        case 'opponent':
+            return $store.state.teams.filter(team => team.team_id !== $store.getters.user.team_id);
+        case 'season_roster':
+            return $store.getters.teamLevels;
+        case 'levels':
+            return tabledata;
+        case 'team_name':
+            return $store.state.teams;
+    }
+}
+
+function addTag(newTag) {
+    const tag = {
+        name: newTag,
+        code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
+    };
+    options.push(tag);
+    value.push(tag);
+}
+
+function trackBy(name) {
+    switch (name) {
+        case 'division':
+            return 'level';
+        case 'opponent':
+            return 'team_name';
+    }
+}
+
+function setFixedTableHead() {
+    const columnCount = 6;
+    const tableWidth = document.getElementById('table-body').rows[0].clientWidth;
+
+    document.getElementById('table-head-fixed').style.width = tableWidth + 'px';
+    document.getElementById('table-head-fixed').style.position = 'fixed';
+
+    for (let i = 0; i <= columnCount; ++i) {
+        const columnWidth = document.getElementById('table-body').rows[0].cells[i].offsetWidth;
+        document.getElementById('table-head-fixed').rows[0].cells[i].width = columnWidth + 'px';
+    }
+}
+
+function setScrollPos() {
+    const scrollPos = document.getElementById('table').getBoundingClientRect().left;
+    document.getElementById('table-head-fixed').style.left = scrollPos + 'px';
+}
+
+function setTableTopPos() {
+    const tableYPos = document.getElementById('table').getBoundingClientRect().top;
+    document.getElementById('table-head-fixed').style.top = tableYPos + 'px';
+    document.getElementById('table').style.marginTop = tableYPos + 'px';
+}
+
+function sortTable(s, nested) {
+    if (s === currentSort.value) {
+        currentSortDir.value = currentSortDir.value === 'asc' ? 'desc' : 'asc';
+    }
+    currentSort.value = s;
+
+    tabledata.sort((a, b) => {
+        let modifier = 1;
+        if (nested) {
+            if (currentSortDir.value === 'desc') modifier = -1;
+            if (a[currentSort.value][nested] !== '') {
+                if (a[currentSort.value][nested] < b[currentSort.value][nested]) return -1 * modifier;
+                if (a[currentSort.value][nested] > b[currentSort.value][nested]) return 1 * modifier;
             }
-            return listNames;
+            return 0;
+        } else {
+            if (currentSortDir.value === 'desc') modifier = -1;
+            if (a[currentSort.value] < b[currentSort.value]) return -1 * modifier;
+            if (a[currentSort.value] > b[currentSort.value]) return 1 * modifier;
+            return 0;
         }
+    });
+}
 
-        function selectOptions(name) {
-            switch (name) {
-                case 'division':
-                    return this.$store.state.seasons
-                case 'opponent':
-                    return this.$store.state.teams.filter(team => {
-                        if (team.team_id !== this.$store.getters.user.team_id) {
-                            return team
-                        }
-                    })
-                case 'season_roster':
-                    return this.$store.getters.teamLevels
-                case 'levels':
-                    return this.tabledata
-                case 'team_name':
-                    return this.$store.state.teams
-            }
-        }
+function changeDisplay(field) {
+    switchPosition.value = !switchPosition.value;
 
-        function addTag(newTag) {
-            const tag = {
-                name: newTag,
-                code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
-            }
-            this.options.push(tag)
-            this.value.push(tag)
-        }
+    if (props.config.page === 'schedule') {
+        value[field] = !value[field];
+    }
+}
 
-        function trackBy(name) {
-            switch (name) {
-                case 'division':
-                    return 'level'
-                case 'opponent':
-                    return 'team_name'
-            }
-        }
+function addTo() {
+    addNew.value = true;
+    $root.$emit('changeEdit');
+}
 
-        function setFixedTableHead() {
-            const columnCount = 6
-            const tableWidth = document.getElementById('table-body').rows[0].clientWidth
+function age(Birthday) {
+    Birthday = new Date(Birthday + 'T00:00:00');
+    var ageDifMs = Date.now() - Birthday.getTime();
+    var ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
 
-            document.getElementById('table-head-fixed').style.width = tableWidth + 'px'
-            document.getElementById('table-head-fixed').style.position = 'fixed'
+function savedata() {
+    $root.$emit('save');
+}
 
-            for (let i = 0; i <= columnCount; ++i) {
-                const columnWidth = document.getElementById('table-body').rows[0].cells[i].offsetWidth
-                document.getElementById('table-head-fixed').rows[0].cells[i].width = columnWidth + 'px'
-            }
-        }
-
-        function setScrollPos() {
-            const scrollPos = document.getElementById('table').getBoundingClientRect().left
-            document.getElementById('table-head-fixed').style.left = scrollPos + 'px'
-        }
-
-        function setTableTopPos() {
-            const tableYPos = document.getElementById('table').getBoundingClientRect().top
-            document.getElementById('table-head-fixed').style.top = tableYPos + 'px'
-            document.getElementById('table').style.marginTop = tableYPos + 'px'
-        }
-
-        function sortTable(s, nested) {
-            // if s == current sort, reverse
-            if (s === this.currentSort) {
-                this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc'
-            }
-            this.currentSort = s
-
-            this.tabledata.sort((a, b) => {
-                let modifier = 1
-                if (nested) {
-                    if (this.currentSortDir === 'desc') modifier = -1
-                    if (a[this.currentSort][nested] !== '') {
-                        if (a[this.currentSort][nested] < b[this.currentSort][nested]) return -1 * modifier
-                        if (a[this.currentSort][nested] > b[this.currentSort][nested]) return 1 * modifier
-                    }
-                    return 0
-                } else {
-                    if (this.currentSortDir === 'desc') modifier = -1
-                    if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier
-                    if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier
-                    return 0
-                }
-            })
-        }
-
-        function changeDisplay(field) {
-            switchPosition.value = !switchPosition.value;
-
-            if (props.config.page === 'schedule') {
-                this.value[field] = !this.value[field]
-            }
-        }
-
-        function addTo() {
-            addNew.value = true;
-            this.$root.$emit('changeEdit')
-        }
-
-        function age(Birthday) {
-            Birthday = new Date(Birthday + 'T00:00:00')
-            var ageDifMs = Date.now() - Birthday.getTime()
-            var ageDate = new Date(ageDifMs) // miliseconds from epoch
-            return Math.abs(ageDate.getUTCFullYear() - 1970)
-        }
-
-        function savedata() {
-            this.$root.$emit('save')
-        }
-
-        function deletedata() {
-            // Implement logic for deleting data
-        }
-
-        return {
-            currentSort,
-            currentSortDir,
-            addNew,
-            switchPosition,
-            switchDisplay,
-            colspan,
-            getNamesFromSeasonRoster,
-            selectOptions,
-            addTag,
-            trackBy,
-            setFixedTableHead,
-            setScrollPos,
-            setTableTopPos,
-            sortTable,
-            changeDisplay,
-            addTo,
-            age,
-            savedata,
-            deletedata,
-        };
-    },
-};
-
+function deletedata() {
+    // Implement logic for deleting data
+}
 </script>
