@@ -37,11 +37,6 @@
                     <img src="/static/color-team-logos/heat.png" alt="Link to Team Site" />
                   </a>
                 </li>
-                <!-- <li>
-                  <a href="https://lifechristianacademy.org/">
-                    <img src="/static/color-team-logos/lca.png" alt="Link to Team Site" />
-                  </a>
-                </li> -->
                 <li>
                   <a href="https://www.bradleyknights.org/">
                     <img src="/static/color-team-logos/KnightsLogo.png" alt="Link to Team Site" />
@@ -115,12 +110,12 @@
 </template>
 
 <script>
-import api from '@/api/endpoints'
 import _ from 'lodash'
 
 // import { Auth } from 'aws-amplify'
-import { useAuthenticator } from '@aws-amplify/ui-vue';
-const Auth = useAuthenticator();
+import { signOut } from 'aws-amplify/auth';
+// import { useAuthenticator } from '@aws-amplify/ui-vue';
+// const Auth = useAuthenticator();
 
 export default {
   name: 'headerComponent',
@@ -183,8 +178,18 @@ export default {
         }
       } else {
         if (this.isPublic) {
-          const team = this.$store.getters.team
-          this.$router.push({ name: 'teamDashboard', params: { slug: team } })
+          if (!this.userGroups || this.$store.getters.team) {
+            this.signout()
+            this.$router.push({name: 'login'})
+          }
+          if (this.userGroups?.includes('Admin')) {
+            this.$router.push({name: 'admin'})
+          } else {
+            const team = this.$store.getters.team
+            console.log(team)
+            this.$router.push({ name: 'teamDashboard', params: { slug: team } })
+          }
+          
         } else {
           this.signout()
         }
@@ -199,21 +204,32 @@ export default {
       return value
     },
     async signout () {
-      await Auth.signOut({ global: true })
-        .then(() => {
+      try {
+        await signOut().then(() => {
           this.$store.commit('set_valid', false)
           this.$store.commit('set_loggedIn', false)
           if (this.$route.meta.section !== 'public') {
             this.$router.push('/')
           }
         })
+      } catch (error) {
+        console.log('error signing out: ', error);
+      }
+      // await Auth.signOut({ global: true })
+        // .then(() => {
+        //   this.$store.commit('set_valid', false)
+        //   this.$store.commit('set_loggedIn', false)
+        //   if (this.$route.meta.section !== 'public') {
+        //     this.$router.push('/')
+        //   }
+        // })
     }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
+<style lang="less">
   @import '../assets/less/utils/variables.less';
   @import '../assets/less/utils/breakpoints.less';
   .team .con-logo {
