@@ -6,8 +6,8 @@
           <h2>2020 - 2021 Stats</h2>
         </div>
         <div class="col right">
-          <div>{{filterBy.game.teams}}</div>
-          <div>{{filterBy.team.name}}</div>
+          <div>{{ filterBy.game.teams }}</div>
+          <div>{{ filterBy.team.name }}</div>
         </div>
       </div>
       <div class="col-12">
@@ -18,30 +18,30 @@
           <div class="col-md-6">
             <div class="filters">
 
-              <div class="custom-select"  @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
-                <div class="selected" disabled>{{filterBy.level.level}}</div>
+              <div class="custom-select" @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
+                <div class="selected" disabled>{{ filterBy.level.level }}</div>
                 <div class="options-menu">
-                    <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
-                      {{lvl.level}}
-                    </div>
+                  <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
+                    {{ lvl.level }}
+                  </div>
                 </div>
               </div>
 
               <div class="custom-select" @click="showGames = !showGames">
-                <div class="selected" disabled>{{filterBy.game.teams}}</div>
+                <div class="selected" disabled>{{ filterBy.game.teams }}</div>
                 <div class="options-menu">
-                    <div class="option" v-for="game in games" :key="game.game_id" v-show="showGames" @click="setGame(game)">
-                      {{game.teams}} <!-- {{game.game_date}} -->
-                    </div>
+                  <div class="option" v-for="game in games" :key="game.game_id" v-show="showGames" @click="setGame(game)">
+                    {{ game.teams }} <!-- {{game.game_date}} -->
+                  </div>
                 </div>
               </div>
 
-              <div class="custom-select"  :disabled="filterBy.game.game_id === ''" @click="showTeams = !showTeams">
-                <div class="selected" disabled>{{filterBy.team.name}}</div>
+              <div class="custom-select" :disabled="filterBy.game.game_id === ''" @click="showTeams = !showTeams">
+                <div class="selected" disabled>{{ filterBy.team.name }}</div>
                 <div class="options-menu">
-                    <div class="option" v-for="team in teams" :key="team.id" v-show="showTeams" @click="setTeam(team)">
-                      {{team.team_name}} {{team.team_mascot}}
-                    </div>
+                  <div class="option" v-for="team in teams" :key="team.id" v-show="showTeams" @click="setTeam(team)">
+                    {{ team.team_name }} {{ team.team_mascot }}
+                  </div>
                 </div>
               </div>
 
@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="col content" align="center" v-if="message">
-        <h4><em>{{this.message}}</em></h4>
+        <h4><em>{{ this.message }}</em></h4>
       </div>
 
       <div class="col content" align="center" v-else>
@@ -71,17 +71,25 @@
               <th colspan="4"></th>
             </tr>
             <tr>
-              <th @click="sortTable('player_number')" class="nowrap" :class="[currentSort === 'player_number' ? 'sort' : '']">
-                # <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th @click="sortTable('player_number')" class="nowrap"
+                :class="[currentSort === 'player_number' ? 'sort' : '']">
+                # <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th @click="sortTable('player_first_name')" class="nowrap" :class="[currentSort === 'player_first_name' ? 'sort' : '']">
-                First Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th @click="sortTable('player_first_name')" class="nowrap"
+                :class="[currentSort === 'player_first_name' ? 'sort' : '']">
+                First Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th @click="sortTable('player_last_name')" class="nowrap" :class="[currentSort === 'player_last_name' ? 'sort' : '']">
-                Last Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th @click="sortTable('player_last_name')" class="nowrap"
+                :class="[currentSort === 'player_last_name' ? 'sort' : '']">
+                Last Name <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th v-if="compositStats" @click="sortTable('team_name')" class="nowrap" :class="[currentSort === 'team_name' ? 'sort' : '']">
-                Team <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th v-if="compositStats" @click="sortTable('team_name')" class="nowrap"
+                :class="[currentSort === 'team_name' ? 'sort' : '']">
+                Team <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
 
               <!-- <th class="stat" @click="sortTable('player_stats', 'game_played')" :class="[currentSort === 'player_stats' && currentNested === 'game_played' ? 'sort' : '']">A
@@ -89,68 +97,104 @@
               </th> -->
 
               <!-- 2PT -->
-              <th class="stat" @click="sortTable('player_stats', 'FGA')" :class="[currentSort === 'player_stats' && currentNested === 'FGA' ? 'sort' : '']">A
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'FGA')"
+                :class="[currentSort === 'player_stats' && currentNested === 'FGA' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats','FGM')" :class="[currentSort === 'player_stats' && currentNested === 'FGM' ? 'sort' : '']">M
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'FGM')"
+                :class="[currentSort === 'player_stats' && currentNested === 'FGM' ? 'sort' : '']">M
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats','2P%')" :class="[currentSort === 'player_stats' && currentNested === '2P%' ? 'sort' : '']">%
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', '2P%')"
+                :class="[currentSort === 'player_stats' && currentNested === '2P%' ? 'sort' : '']">%
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <!-- 3PT -->
-              <th class="stat" @click="sortTable('player_stats', 'ThreePA')" :class="[currentSort === 'player_stats' && currentNested === '3PA' ? 'sort' : '']">A
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'ThreePA')"
+                :class="[currentSort === 'player_stats' && currentNested === '3PA' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'ThreePM')" :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'ThreePM')"
+                :class="[currentSort === 'player_stats' && currentNested === '3PM' ? 'sort' : '']">M
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', '3P%')" :class="[currentSort === 'player_stats' && currentNested === '3P%' ? 'sort' : '']">%
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', '3P%')"
+                :class="[currentSort === 'player_stats' && currentNested === '3P%' ? 'sort' : '']">%
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <!-- FT -->
-              <th class="stat" @click="sortTable('player_stats', 'FTA')" :class="[currentSort === 'player_stats' && currentNested === 'FTA' ? 'sort' : '']">A
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'FTA')"
+                :class="[currentSort === 'player_stats' && currentNested === 'FTA' ? 'sort' : '']">A
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'FTM')" :class="[currentSort === 'player_stats' && currentNested === 'FTM' ? 'sort' : '']">M
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'FTM')"
+                :class="[currentSort === 'player_stats' && currentNested === 'FTM' ? 'sort' : '']">M
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'FT%')" :class="[currentSort === 'player_stats' && currentNested === 'FT%' ? 'sort' : '']" >%
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'FT%')"
+                :class="[currentSort === 'player_stats' && currentNested === 'FT%' ? 'sort' : '']">%
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
               <!-- Rebounds -->
-              <th class="stat" @click="sortTable('player_stats', 'offensive_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'offensive_rebounds' ? 'sort' : '']">O
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'offensive_rebounds')"
+                :class="[currentSort === 'player_stats' && currentNested === 'offensive_rebounds' ? 'sort' : '']">O
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'defensive_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'defensive_rebounds' ? 'sort' : '']">D
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'defensive_rebounds')"
+                :class="[currentSort === 'player_stats' && currentNested === 'defensive_rebounds' ? 'sort' : '']">D
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'total_rebounds')" :class="[currentSort === 'player_stats' && currentNested === 'total_rebounds' ? 'sort' : '']">Tot
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'total_rebounds')"
+                :class="[currentSort === 'player_stats' && currentNested === 'total_rebounds' ? 'sort' : '']">Tot
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
 
-              <th class="stat" @click="sortTable('player_stats', 'assists')" :class="[currentSort === 'player_stats' && currentNested === 'assists' ? 'sort' : '']">AST
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'assists')"
+                :class="[currentSort === 'player_stats' && currentNested === 'assists' ? 'sort' : '']">AST
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" @click="sortTable('player_stats', 'blocks')" :class="[currentSort === 'player_stats' && currentNested === 'blocks' ? 'sort' : '']">BLK
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'blocks')"
+                :class="[currentSort === 'player_stats' && currentNested === 'blocks' ? 'sort' : '']">BLK
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
 
-              <th class="stat" @click="sortTable('player_stats', 'steals')" :class="[currentSort === 'player_stats' && currentNested === 'steals' ? 'sort' : '']">
+              <th class="stat" @click="sortTable('player_stats', 'steals')"
+                :class="[currentSort === 'player_stats' && currentNested === 'steals' ? 'sort' : '']">
                 STL
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" v-if="compositStats" @click="sortTable('player_stats', 'turnovers')" :class="[currentSort === 'player_stats' && currentNested === 'turnovers' ? 'sort' : '']">
+              <th class="stat" v-if="compositStats" @click="sortTable('player_stats', 'turnovers')"
+                :class="[currentSort === 'player_stats' && currentNested === 'turnovers' ? 'sort' : '']">
                 TO
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
 
-              <th class="stat" @click="sortTable('player_stats', 'total_points')" :class="[currentSort === 'player_stats' && currentNested === 'total_points' ? 'sort' : '']">Total Pts
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+              <th class="stat" @click="sortTable('player_stats', 'total_points')"
+                :class="[currentSort === 'player_stats' && currentNested === 'total_points' ? 'sort' : '']">Total Pts
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
-              <th class="stat" v-if="compositStats" @click="sortTable('player_stats', 'points_per_game')" :class="[currentSort === 'player_stats' && currentNested === 'points_per_game' ? 'sort' : '']">
+              <th class="stat" v-if="compositStats" @click="sortTable('player_stats', 'points_per_game')"
+                :class="[currentSort === 'player_stats' && currentNested === 'points_per_game' ? 'sort' : '']">
                 PPG
-                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon" :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
+                <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']" class="icon"
+                  :class="[currentSortDir === 'asc' ? 'asc' : 'dsc']"></font-awesome-icon>
               </th>
             </tr>
           </thead>
@@ -164,26 +208,27 @@
               <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
                 {{stat}}
               </td> -->
-             <!-- <td class="stat light" v-html="player.player_stats['game_played']"></td> -->
+              <!-- <td class="stat light" v-html="player.player_stats['game_played']"></td> -->
               <!-- 2PT -->
               <td class="stat light" v-html="player.player_stats['FGA']"></td>
               <td class="stat light" v-html="player.player_stats['FGM']"></td>
-              <td class="stat light">{{percentage(player.player_stats['FGA'], player.player_stats['FGM'])}}</td>
+              <td class="stat light">{{ percentage(player.player_stats['FGA'], player.player_stats['FGM']) }}</td>
 
               <!-- 3PT -->
               <td class="stat dark" v-html="player.player_stats['ThreePA']"></td>
               <td class="stat dark" v-html="player.player_stats['ThreePM']"></td>
-              <td class="stat dark">{{percentage(player.player_stats['ThreePA'], player.player_stats['ThreePM'])}}</td>
+              <td class="stat dark">{{ percentage(player.player_stats['ThreePA'], player.player_stats['ThreePM']) }}</td>
 
               <!-- FT -->
               <td class="stat light" v-html="player.player_stats.FTA"></td>
               <td class="stat light" v-html="player.player_stats.FTM"></td>
-              <td class="stat light">{{percentage(player.player_stats.FTA, player.player_stats.FTM)}}</td>
+              <td class="stat light">{{ percentage(player.player_stats.FTA, player.player_stats.FTM) }}</td>
 
               <!-- Rebounds -->
               <td class="stat dark" v-html="player.player_stats.offensive_rebounds"></td>
               <td class="stat dark" v-html="player.player_stats.defensive_rebounds"></td>
-              <td class="stat dark">{{totalRebounds(player.player_stats.total_rebounds, player.player_stats.offensive_rebounds, player.player_stats.defensive_rebounds)}}</td>
+              <td class="stat dark">{{ totalRebounds(player.player_stats.total_rebounds,
+                player.player_stats.offensive_rebounds, player.player_stats.defensive_rebounds) }}</td>
 
               <td class="stat" v-html="player.player_stats.assists"></td>
               <td class="stat" v-html="player.player_stats.blocks"></td>
@@ -206,11 +251,11 @@
 import api from '../../api/endpoints.js'
 import _ from 'lodash'
 // mixins
-import { root } from '../../mixins/root'
+import { useRootMixin } from '../../mixins/root'
 
 export default {
   name: 'stats',
-  data () {
+  data() {
     return {
       columns: [
         {
@@ -367,9 +412,9 @@ export default {
       stats: []
     }
   },
-  mixins: [root],
+  mixins: [useRootMixin],
   computed: {
-    teams () {
+    teams() {
       // let teams = [{id: '', team_name: 'All Teams'}, ...this.$store.state.teams]
       const teams = [
         { id: this.filterBy.game.home_team.id, team_name: this.filterBy.game.home_team.name },
@@ -378,13 +423,13 @@ export default {
 
       return teams
     },
-    levels () {
+    levels() {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       // console.log("levels", this.$store.state.seasons)
       // const levels = [...this.$store.state.seasons]
       return levels
     },
-    games () {
+    games() {
       const gameFilter = [{ game_id: '', home_team: { team_name: '', level_name: 'All Levels' }, teams: 'All Games' }]
 
       this.$store.state.fullSchedule.forEach(game => {
@@ -400,8 +445,8 @@ export default {
       return gameFilter.filter((game) => {
         if (game.home_team.level_name.toLowerCase().match(this.filterBy.level.level.toLowerCase())) {
           return game.home_team.level_name.toLowerCase().match(this.filterBy.level.level.toLowerCase())
-        //   return game.home_team.team_level.toLowerCase().match(this.filterBy.level.level.toLowerCase())
-        // game
+          //   return game.home_team.team_level.toLowerCase().match(this.filterBy.level.level.toLowerCase())
+          // game
         } else if (this.filterBy.level.level === 'All Levels') {
           return game
         }
@@ -413,26 +458,26 @@ export default {
   watch: {
     'filterBy.team': {
       deep: true,
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         this.initStats(this.filterBy.game.game_id, newValue.team_id)
       }
     },
     'filterBy.level': {
       deep: true,
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         this.initSeasonStats()
         // this.filterList(newValue.season_id)
       }
     },
     'filterBy.game': {
       deep: true,
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         this.initStats(newValue.game_id)
       }
     },
     levels: {
       deep: true,
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         this.filterBy.level = {
           season_id: newValue[0].season_id,
           level: newValue[0].level
@@ -440,7 +485,7 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') && Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
       this.initStats(this.$route.query.game, this.$route.query.home_team)
     } else if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game')) {
@@ -452,7 +497,7 @@ export default {
       // this.showTeams = false
     })
   },
-  updated () {
+  updated() {
     const self = this
     if (Object.prototype.hasOwnProperty.call(this.$route.query, 'game') && Object.prototype.hasOwnProperty.call(this.$route.query, 'home_team')) {
       const game = self.games.find(game => {
@@ -471,7 +516,7 @@ export default {
     }
   },
   methods: {
-    initSeasonStats () {
+    initSeasonStats() {
       const data = {
         season_id: this.filterBy.level.season_id
       }
@@ -486,7 +531,7 @@ export default {
         })
       }
     },
-    async initStats (gameId, teamId) {
+    async initStats(gameId, teamId) {
       // TODO: Merge Conflict may have broken this. look into this call
       if (gameId !== undefined && teamId === undefined) {
         teamId = this.games.find(game => { return game.game_id === gameId })
@@ -505,39 +550,39 @@ export default {
         })
       }
     },
-    setLvl (lvl) {
+    setLvl(lvl) {
       console.log('setLevel', lvl)
       this.filterBy.level.season_id = lvl.season_id
       this.filterBy.level.level = lvl.level
       // this.showTeams = false
     },
-    setTeam (team) {
+    setTeam(team) {
       this.filterBy.team.id = team.id
       this.filterBy.team.name = team.team_name
       // this.showTeams = false
     },
-    setGame (game) {
+    setGame(game) {
       this.filterBy.game.game_id = game.game_id
       this.filterBy.game.teams = game.teams
       this.filterBy.game.home_team = { id: game.home_team.team_id, name: game.home_team.team_name }
       this.filterBy.game.away_team = { id: game.away_team.team_id, name: game.away_team.team_name }
       // this.showTeams = false
     },
-    percentage (attempted, made) {
+    percentage(attempted, made) {
       if (attempted >= 1) {
         return ((made / attempted) * 100).toFixed(1)
       } else {
         return 0
       }
     },
-    totalRebounds (rebounds, off, def) {
+    totalRebounds(rebounds, off, def) {
       if (rebounds === null) {
         return off + def
       } else {
         return rebounds
       }
     },
-    sortTable (s, nested) {
+    sortTable(s, nested) {
       // if s == current sort, reverse
       if (nested) {
         if (nested === this.currentNested) {
@@ -568,7 +613,7 @@ export default {
         }
       })
     },
-    goBack () {
+    goBack() {
       this.$router.back()
     }
   }
@@ -578,33 +623,39 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @import '../../assets/less/utils/variables.less';
-.page-styles{
+
+.page-styles {
   min-height: 100vh;
   background-color: #fff;
   // margin-right: 1rem;
   // margin-left: 1rem;
 }
+
 .filter-bar {
   background-color: @nav-blue;
   color: #fff;
   height: 3rem;
   align-items: center;
+
   .filters {
     display: flex;
     flex-flow: row;
     justify-content: space-evenly;
   }
 }
+
 .content {
   padding: 2rem 1rem;
   overflow: auto;
 }
+
 h2 {
   font-family: @open-sans;
   font-size: 1.1rem;
   font-weight: 600;
   font-style: italic;
 }
+
 .custom-select {
   display: inline-block;
   position: relative;
@@ -614,12 +665,15 @@ h2 {
   padding-right: 25px;
   white-space: nowrap;
   margin: 0 1rem;
+
   &[disabled='disabled'] {
     color: #bbb;
-     &:before {
-       border-color: #bbb transparent transparent transparent
-     }
+
+    &:before {
+      border-color: #bbb transparent transparent transparent
+    }
   }
+
   &:before {
     content: '';
     display: block;
@@ -633,6 +687,7 @@ h2 {
     right: 0;
     top: 8px;
   }
+
   &:after {
     content: '';
     display: block;
@@ -647,6 +702,7 @@ h2 {
     left: .5rem;
   }
 }
+
 .options-menu {
   position: absolute;
   width: 250px;
@@ -659,37 +715,45 @@ h2 {
   box-shadow: 1px 2px 4px #0C4B75;
   max-height: 45vh;
   overflow-y: auto;
+
   .option {
     padding: .2rem .5rem;
     width: 100%;
     overflow: hidden;
     cursor: pointer;
+
     &:hover {
       background-color: lighten(#0C4B75, 10%);
     }
   }
 }
+
 .selected {
   width: 100%;
   overflow: hidden;
 }
+
 .button.ghost.print {
   border: 1px solid #fff;
   max-width: 6rem;
   text-align: center;
+
   &:hover {
     background-color: #fff;
     color: #0C4B75;
   }
 }
-.public-stats-table  {
+
+.public-stats-table {
   // overflow-x: auto;
   width: 100%;
 }
+
 tbody {
   tr {
     border-bottom: 1px solid #707070;
   }
+
   td {
     padding-top: .5rem;
     padding-bottom: .5rem;
@@ -697,67 +761,80 @@ tbody {
     position: relative;
     z-index: 1;
     min-width: 2rem;
+
     &.nowrap {
       white-space: nowrap;
     }
+
     &.dark {
-      background-color: rgba(2,26,43, .4);
+      background-color: rgba(2, 26, 43, .4);
       color: #231F20;
       font-weight: 400;
       font-style: normal;
     }
+
     &.light {
-      background-color: rgba(39,132,195, .3);
+      background-color: rgba(39, 132, 195, .3);
       color: #231F20;
       font-weight: 400;
       font-style: normal;
     }
   }
 }
+
 .stat {
   text-align: center;
 }
+
 th {
   font-family: @lato;
   font-weight: 200;
   font-size: .8rem;
   cursor: pointer;
+
   .icon {
     display: none;
   }
+
   &.sort {
     font-weight: 600;
     color: #021A2B;
+
     .icon {
       display: inline-block;
     }
+
     .asc {
       transform: rotate(180deg);
       transition: ease-in-out .3s all;
     }
+
     .dsc {
       // transform: rotate(180deg);
       transition: ease-in-out .3s all;
     }
   }
 }
+
 .dark {
   background-color: #021A2B;
   color: white;
   text-align: center;
   font-style: italic;
 }
+
 .light {
   background-color: #2784C3;
   color: white;
   text-align: center;
   font-style: italic;
 }
+
 td {
   &:nth-child(even) {
     &:after {
       content: '';
-      background-color: rgba(205,203,203, .46);
+      background-color: rgba(205, 203, 203, .46);
       width: 100%;
       height: 100%;
       position: absolute;
@@ -767,13 +844,14 @@ td {
       mix-blend-mode: color-burn;
     }
   }
+
   &:nth-child(0),
   &:nth-child(1),
   &:nth-child(2) {
     background-color: #fff;
+
     &:after {
       display: none;
     }
   }
-}
-</style>
+}</style>

@@ -1,112 +1,118 @@
 // TODO: Separate into components and views
 <template>
-<div>
-  <div class="container">
-    <div class="row">
-      <div class="logo-color col">
-        <!-- <div class="image-con"> -->
-          <img v-if="program.logo_color" :src="'/static/color-team-logos/' + program.logo_color" :alt="program.team_name + ' ' + program.team_mascot"/>
+  <div>
+    <div class="container">
+      <div class="row">
+        <div class="logo-color col">
+          <!-- <div class="image-con"> -->
+          <img v-if="program.logo_color" :src="'/static/color-team-logos/' + program.logo_color"
+            :alt="program.team_name + ' ' + program.team_mascot" />
 
-        <!-- </div> -->
-      </div>
-      <div class="col-8 top-layer">
-        <div class="content-container">
-          <div class="row filter-bar">
-            <div class="col">
-              <div class="filters">
-                <div class="custom-select"  @click.stop="showSeasons = !showSeasons, showSections = false">
-                  <div disabled>{{filterBy.team.level_name}}</div>
-                  <div class="options-menu">
-                      <div class="option" v-for="season in teamAssocLvl" :key="season.id" v-show="showSeasons" @click="filterBy.team = season">
-                        {{season.level_name}}
+          <!-- </div> -->
+        </div>
+        <div class="col-8 top-layer">
+          <div class="content-container">
+            <div class="row filter-bar">
+              <div class="col">
+                <div class="filters">
+                  <div class="custom-select" @click.stop="showSeasons = !showSeasons, showSections = false">
+                    <div disabled>{{ filterBy.team.level_name }}</div>
+                    <div class="options-menu">
+                      <div class="option" v-for="season in teamAssocLvl" :key="season.id" v-show="showSeasons"
+                        @click="filterBy.team = season">
+                        {{ season.level_name }}
                       </div>
+                    </div>
                   </div>
-                </div>
 
-                <div class="roster-label-outer" @click.stop="showSeasons = false">
-                  <div disabled>{{selectedSection}}</div>
-                </div>
+                  <div class="roster-label-outer" @click.stop="showSeasons = false">
+                    <div disabled>{{ selectedSection }}</div>
+                  </div>
 
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="content-divider">
-            <!-- <div class="button ghost print" @click="print()">
+            <div class="content-divider">
+              <!-- <div class="button ghost print" @click="print()">
               <font-awesome-icon :icon="['fas', 'print']"></font-awesome-icon> Print
             </div> -->
-          </div>
+            </div>
 
-          <div v-if="selectedSection === 'Schedule'">
-            <table>
-              <thead>
-                <tr>
-                  <th>Game</th>
-                  <th>Location</th>
-                  <th>Results</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="game in schedule" :key="game.id">
-                  <td>
-                    <div class="game--date">{{game.game_date}}  / <span class="font-weight-light">{{game.game_time}}</span></div>
-                    <div class="game--opponent">
-                      <span v-if="game.host">vs </span>
-                      <span v-else>@ </span>
+            <div v-if="selectedSection === 'Schedule'">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Game</th>
+                    <th>Location</th>
+                    <th>Results</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="game in schedule" :key="game.id">
+                    <td>
+                      <div class="game--date">{{ game.game_date }} / <span
+                          class="font-weight-light">{{ game.game_time }}</span></div>
+                      <div class="game--opponent">
+                        <span v-if="game.host">vs </span>
+                        <span v-else>@ </span>
 
-                      <b v-html="game.opponent.team_name"></b>
-                    </div>
-                  </td>
-                  <td class="game--location">
-                    {{game.location.name}}
-                    <br />
+                        <b v-html="game.opponent.team_name"></b>
+                      </div>
+                    </td>
+                    <td class="game--location">
+                      {{ game.location.name }}
+                      <br />
 
-                    <a class="address" :href="'https://maps.google.com/?q=' + game.location.street + ' ' + game.location.city_state_zip" @click.stop="goToMap('https://maps.google.com/?q=' + game.location.street + ' ' + game.location.city_state_zip)">
-                      <div>{{game.location.street}}</div>
-                      <div>{{game.location.city_state_zip}}</div>
-                    </a>
+                      <a class="address"
+                        :href="'https://maps.google.com/?q=' + game.location.street + ' ' + game.location.city_state_zip"
+                        @click.stop="goToMap('https://maps.google.com/?q=' + game.location.street + ' ' + game.location.city_state_zip)">
+                        <div>{{ game.location.street }}</div>
+                        <div>{{ game.location.city_state_zip }}</div>
+                      </a>
 
-                  </td>
-                  <td>
-                    <span v-if="Object.keys(game.results).length >= 1">
-                      <span class="win_loss">{{game.results.win_loss}}</span> {{game.results.home}} - {{game.results.away}}
-                    </span>
-                    <div v-else class="text-center"> -- </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                    </td>
+                    <td>
+                      <span v-if="Object.keys(game.results).length >= 1">
+                        <span class="win_loss">{{ game.results.win_loss }}</span> {{ game.results.home }} -
+                        {{ game.results.away }}
+                      </span>
+                      <div v-else class="text-center"> -- </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-          <div v-else-if="selectedSection === 'Roster'">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Position</th>
-                  <th>Age</th>
-                  <th>Height</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="player in roster" :key="player.id">
-                  <td v-html="player.player_number"></td>
-                  <td>{{player.first_name}} {{player.last_name}}</td>
-                  <td v-html="player.position"></td>
-                  <td v-html="player.age"></td>
-                  <td>
-                    <template v-if="player.height.feet != 0">
-                      {{player.height.feet}}  ' {{player.height.inches}} "
-                    </template>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div v-else-if="selectedSection === 'Roster'">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Age</th>
+                    <th>Height</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="player in roster" :key="player.id">
+                    <td v-html="player.player_number"></td>
+                    <td>{{ player.first_name }} {{ player.last_name }}</td>
+                    <td v-html="player.position"></td>
+                    <td v-html="player.age"></td>
+                    <td>
+                      <template v-if="player.height.feet != 0">
+                        {{ player.height.feet }} ' {{ player.height.inches }} "
+                      </template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- <div class="team-info">
+        <!-- <div class="team-info">
         <div class="top">
           <a href="hendsonvilleroyals.com">hendsonvilleroyals.com</a>
           <span class="location">Hendersonville, Tn</span>
@@ -119,12 +125,13 @@
           </a>
         </div>
       </div> -->
+      </div>
+    </div>
+    <div class="bottom-logo_con" ref="bottomLogo">
+      <img class="bottom-logo" v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey"
+        :alt="program.team_name + ' ' + program.team_mascot" />
     </div>
   </div>
-  <div class="bottom-logo_con" ref="bottomLogo">
-    <img class="bottom-logo" v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey" :alt="program.team_name + ' ' + program.team_mascot"/>
-  </div>
-</div>
 </template>
 
 <script>
@@ -132,13 +139,13 @@
 import api from '../../api/endpoints.js'
 
 // mixins
-import { root } from '../../mixins/root'
+import { useRootMixin } from '../../mixins/root'
 
 import _ from 'lodash'
 
 export default {
   name: 'schools',
-  data () {
+  data() {
     return {
       filterBy: {
         team: {
@@ -169,7 +176,7 @@ export default {
       teamAssocLvl: []
     }
   },
-  mixins: [root],
+  mixins: [useRootMixin],
   computed: {
     footerLoc: {
       get: function () {
@@ -179,7 +186,7 @@ export default {
         return document.getElementById('publicMainFooter').getBoundingClientRect().top
       }
     },
-    seasons () {
+    seasons() {
       const seasons = [...this.$store.state.seasons]
       return seasons
     },
@@ -209,12 +216,12 @@ export default {
     }
   },
   watch: {
-    $route (to, from) {
+    $route(to, from) {
       this.initSchool()
     },
     'filterBy.team': {
       deep: true,
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         if (this.selectedSection === 'Schedule') {
           const season = this.seasons.filter(season => { return season.level === newValue.level_name })
 
@@ -226,7 +233,7 @@ export default {
     },
     selectedSection: {
       deep: true,
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         if (newValue === 'Schedule') {
           this.initLeveledSchedule(this.filterBy.team.season_team_id, this.$route.params.slug)
         } else if (newValue === 'Roster') {
@@ -235,7 +242,7 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.initSchool()
     this.$root.$on('close', payload => {
       this.showSeasons = false
@@ -243,7 +250,7 @@ export default {
     })
   },
   methods: {
-    async initSchool () {
+    async initSchool() {
       const slug = this.$route.params.slug
 
       await api.getTeams(slug)
@@ -256,7 +263,7 @@ export default {
 
       // window.addEventListener('scroll', this.watchLogoPos)
     },
-    watchLogoPos () {
+    watchLogoPos() {
       const footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
       const bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
 
@@ -272,7 +279,7 @@ export default {
         this.$refs.bottomLogo.style.removeProperty('bottom')
       }
     },
-    initRoster (id) {
+    initRoster(id) {
       api.getPlayers(id).then(response => {
         // console.log(id, response)
         // response.data.forEach(player => {
@@ -282,7 +289,7 @@ export default {
         this.fullRoster = _.cloneDeep(this.roster)
       })
     },
-    async getSeasonTeams (slug) {
+    async getSeasonTeams(slug) {
       await api.getSeasonTeams(slug)
         .then(response => {
           this.teamAssocLvl = response.data
@@ -293,7 +300,7 @@ export default {
           // this.$store.dispatch('setTeamAssocLvl', response.data)
         })
     },
-    initLeveledRoster (lvlId) {
+    initLeveledRoster(lvlId) {
       api.getRoster(lvlId).then(response => {
         const rosterArr = []
         // console.log(response)
@@ -306,7 +313,7 @@ export default {
         this.roster = rosterArr
       })
     },
-    initLeveledSchedule (season, slug) {
+    initLeveledSchedule(season, slug) {
       api.getSchedule(season, slug).then(response => {
         const gameArr = []
         response.data.forEach(game => {
@@ -365,7 +372,7 @@ export default {
         this.schedule = gameArr
       })
     },
-    createSeasonDisplay (season) {
+    createSeasonDisplay(season) {
       const nameSplit = season.level.split(' ')
       let gender = ''
       if (nameSplit[1] === 'Boys') {
@@ -377,7 +384,7 @@ export default {
       return gender + ' ' + nameSplit[0] + ' ' + season.sport
       // return season.season_name + ' ' + season.sport
     },
-    setSeason (season) {
+    setSeason(season) {
       this.filterBy.seasons.id = season.id
       this.filterBy.season.season = season.level_name
       // this.showTeams = false
@@ -390,6 +397,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @import '../../assets/less/elements/typography.less';
+
 .logo-color {
   height: 20rem;
   min-width: 20rem;
@@ -406,12 +414,14 @@ export default {
   box-shadow: 9px 6px 9px rgba(0, 0, 0, 0.16);
   max-width: 300px;
   max-height: 300px;
+
   // margin-top: 1rem;
   img {
     max-width: 98%;
     max-height: 72%;
   }
 }
+
 .content-container {
   width: calc(100% + 2rem);
   border-radius: 15px;
@@ -427,6 +437,7 @@ export default {
   font-family: @lato;
   min-height: 75vh;
 }
+
 .content-divider {
   width: 100%;
   // height: 2rem;
@@ -437,8 +448,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-   padding: 0 1rem;
+  padding: 0 1rem;
 }
+
 .button.ghost.print {
   border: 1px solid #021A2B;
   max-width: 6rem;
@@ -447,11 +459,13 @@ export default {
   margin-bottom: .5rem;
   display: inline-block;
   padding: 0 1rem;
+
   &:hover {
     background-color: #021A2B;
     color: #fff;
   }
 }
+
 .team-info {
   width: 16%;
   position: sticky;
@@ -460,18 +474,22 @@ export default {
   top: 180px;
   height: 290px;
   color: #fff;
-  a{
+
+  a {
     color: #fff;
   }
 }
+
 .top-layer {
   z-index: 1;
 }
+
 .bottom-logo_con {
   height: 125px;
   position: sticky;
   bottom: 0;
 }
+
 .bottom-logo {
   position: absolute;
   right: 0;
@@ -480,26 +498,31 @@ export default {
   max-width: 250px;
   z-index: 0;
   opacity: .6;
+
   img {
     max-width: 98%;
     max-height: 72%;
   }
 }
+
 .filter-bar {
   color: #fff;
   height: 3rem;
   align-items: center;
   padding-top: 1rem;
   width: 100%;
+
   .filters {
     display: flex;
     flex-flow: row;
     justify-content: space-between;
   }
 }
+
 .content {
   padding: 2rem 1rem;
 }
+
 .roster-label-outer {
   display: inline-block;
   position: relative;
@@ -519,11 +542,13 @@ export default {
     left: .5rem;
   }
 }
+
 .custom-select {
   display: inline-block;
   position: relative;
   font-size: 1rem;
   width: 45%;
+
   &:before {
     content: '';
     display: block;
@@ -550,6 +575,7 @@ export default {
     left: .5rem;
   }
 }
+
 .options-menu {
   position: absolute;
   width: 250px;
@@ -559,13 +585,16 @@ export default {
   left: -3px;
   z-index: 2;
   box-shadow: 1px 2px 4px #0C4B75;
+
   .option {
     padding: .2rem .5rem;
     width: 100%;
     cursor: pointer;
+
     &:hover {
       background-color: lighten(#0C4B75, 10%);
     }
+
     &.noHover:hover {
       background-color: #fff;
     }
@@ -581,6 +610,7 @@ export default {
   left: -3px;
   z-index: 2;
   box-shadow: 1px 2px 4px #0C4B75;
+
   .option {
     padding: .2rem .5rem;
     width: 100%;
@@ -593,34 +623,42 @@ export default {
     // }
   }
 }
+
 table {
   width: 100%;
-  thead th{
+
+  thead th {
     font-size: 1.1rem;
     font-weight: 100;
   }
-  tr{
+
+  tr {
     vertical-align: top;
     border-bottom: 1px solid #2784C3;
   }
+
   td {
     line-height: 1.5;
     padding: .5rem 0;
   }
 }
+
 .game {
   &--date {
     font-size: .85rem;
   }
-  &--opponent span{
+
+  &--opponent span {
     // font-size: .95rem;
     font-style: italic;
     font-weight: 100;
   }
+
   &--location {
     font-size: .90rem;
     font-style: italic;
     line-height: 1.3;
+
     .address {
       text-decoration: none;
       color: #fff;
@@ -630,7 +668,7 @@ table {
     }
   }
 }
+
 .win_loss {
   padding-right: .5rem;
-}
-</style>
+}</style>

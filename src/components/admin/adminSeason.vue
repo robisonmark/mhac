@@ -19,12 +19,13 @@
 
   <div class="contentPad">
     <editTable  :columns="columns" :config="config" :tabledata="seasonArr" v-model="new_season" :edit="edit">
-      <template slot="tbody" v-if="edit">
+      <template v-slot="tbody" v-if="edit">
+        
         <tr v-for="(season, index) in seasonArr" :key="index">
           <td class="input-con">
             <selectbox id='level'
-              :options="levels"
-              :trackby="'level_name'"
+              :options=levels
+              :trackby="level_name"
               v-model="season.level"
               ></selectbox>
           </td>
@@ -69,7 +70,7 @@
               v-model="new_season.level"
               label="level_name"
               track-by="level_id"
-              :options="levels"
+              :options=levels
               :closeOnSelect="false"
               :optionHeight="10"
               :multiple="true"
@@ -120,7 +121,8 @@
 
 <script>
 import api from '@/api/endpoints'
-import editTable from '@/components/editTable'
+import editTable from '@/components/editTable.vue'
+import { computed } from 'vue'
 
 // third party
 import Multiselect from 'vue-multiselect'
@@ -153,7 +155,7 @@ export default {
           field_name: 'level',
           type: 'multiselect',
           track_by: 'id',
-          model: 'level.level_name'
+          model: 'levels.level_name'
         },
         {
           name: 'Season Name',
@@ -246,7 +248,6 @@ export default {
   },
   methods: {
     addToUpdateList (id) {
-      console.log("UpdateList", id)
       let add = true
       let i = 0
       for (i = 0; i < this.updated.length; i++) {

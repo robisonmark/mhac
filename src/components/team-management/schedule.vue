@@ -1,9 +1,11 @@
 <template>
   <div class="hello">
     <header class="contentPad">
-      <h2>{{this.$config.seasonYear}} Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
+      <h2>{{ this.$config.seasonYear }} Schedule <selectbox id="levels" :options="seasons" :trackby="'level'"
+          placeholder="Select Level" v-model="newGame.season"></selectbox>
+      </h2>
       <div class="buttonCon">
-        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+        <div class="switch" v-if="edit === false" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
           <span class="focused">Edit</span>
         </div>
@@ -17,17 +19,18 @@
     </header>
 
     <div class="contentPad">
-      <editTable  :columns="columns" :config="config" :tabledata="schedule" v-model="newGame" :edit="edit">
+      <editTable :columns="columns" :config="config" :tabledata="schedule" v-model="newGame" :edit="edit">
         <template v-slot="tbody" v-if="!edit">
 
           <!-- Current Scheduled Games -->
           <tr v-for="(data, index) in schedule" :key="index">
-            <td><span :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</span></td>
-            <td>{{data.opponent.team_name}}</td>
-            <td>{{data.game_time}}</td>
-            <td>{{data.game_date}}</td>
-            <td>{{data.opponent.level_name}}</td>
-            <td @click="deleteGame(data, index)"><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td>
+            <td><span :class="{ 'vs': !data.host }" class="currentCustom">{{ data.host ? 'vs' : '@' }}</span></td>
+            <td>{{ data.opponent.team_name }}</td>
+            <td>{{ data.game_time }}</td>
+            <td>{{ data.game_date }}</td>
+            <td>{{ data.opponent.level_name }}</td>
+            <td @click="deleteGame(data, index)"><font-awesome-icon :icon="['far', 'trash-alt']"
+                class="icon"></font-awesome-icon></td>
           </tr>
 
           <!-- Note for when a level hasn't been chosen -->
@@ -45,23 +48,26 @@
 
           <tr v-else-if="addNew">
             <td class="input-con">
-              <div tabindex="0" @click="homeAwayDisplay(newGame)" @keyup.space="homeAwayDisplay(newGame)" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
+              <div tabindex="0" @click="homeAwayDisplay(newGame)" @keyup.space="homeAwayDisplay(newGame)"
+                :class="{ 'vs': !newGame.host }" class="currentCustom">{{ newGame.host ? 'vs' : '@' }}</div>
             </td>
             <td class="input-con">
-              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder=""
+                v-model="newGame.opponent">
               </selectbox>
             </td>
             <td class="input-con">
-                <input type="time" v-model="newGame.game_time" />
-              </td>
+              <input type="time" v-model="newGame.game_time" />
+            </td>
             <td class="input-con">
               <input type="date" v-model="newGame.game_date" />
             </td>
             <td class="input-con">
-              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox>
+              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level"
+                v-model="newGame.season"></selectbox>
             </td>
             <td @click="save(newGame)">
-                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+              <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
             </td>
           </tr>
         </template>
@@ -69,55 +75,51 @@
         <template v-slot="tbody" v-if="edit">
           <tr v-for="(data, index) in schedule" :key="index">
             <td class="input-con">
-              <div tabindex="0" @click="homeAwayDisplay(data)" @keyup.space="homeAwayDisplay(data)" :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</div>
+              <div tabindex="0" @click="homeAwayDisplay(data)" @keyup.space="homeAwayDisplay(data)"
+                :class="{ 'vs': !data.host }" class="currentCustom">{{ data.host ? 'vs' : '@' }}</div>
             </td>
             <td class="input-con">
-              <multiselect
-                v-model="data.opponent"
-                label="team_name"
-                track-by="team_name"
-                :options="selectOptions"
-                :closeOnSelect="false"
-                :optionHeight="10"
-                :multiple="false"
-                :taggable="false"
-
-                >
+              <multiselect v-model="data.opponent" label="team_name" track-by="team_name" :options="selectOptions"
+                :closeOnSelect="false" :optionHeight="10" :multiple="false" :taggable="false">
               </multiselect>
             </td>
             <td class="input-con">
-                <input type="time" v-model="data.game_time" />
-              </td>
+              <input type="time" v-model="data.game_time" />
+            </td>
             <td class="input-con">
               <input type="date" v-model="data.game_date" />
             </td>
             <td class="input-con">
-              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="data.season" data="data.season.opponent"></selectbox>
+              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level"
+                v-model="data.season" data="data.season.opponent"></selectbox>
             </td>
             <td @click="save(data)">
-                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+              <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
             </td>
           </tr>
 
-          <tr >
+          <tr>
             <td class="input-con">
-              <div tabindex="0" @click="homeAwayDisplay(newGame)" @keyup.space="homeAwayDisplay(newGame)" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
+              <div tabindex="0" @click="homeAwayDisplay(newGame)" @keyup.space="homeAwayDisplay(newGame)"
+                :class="{ 'vs': !newGame.host }" class="currentCustom">{{ newGame.host ? 'vs' : '@' }}</div>
             </td>
             <td class="input-con">
-              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder=""
+                v-model="newGame.opponent">
               </selectbox>
             </td>
             <td class="input-con">
-                <input type="time" v-model="newGame.game_time" />
-              </td>
+              <input type="time" v-model="newGame.game_time" />
+            </td>
             <td class="input-con">
               <input type="date" v-model="newGame.game_date" />
             </td>
             <td class="input-con">
-              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox>
+              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level"
+                v-model="newGame.season"></selectbox>
             </td>
             <td @click="save(newGame)">
-                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+              <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
             </td>
           </tr>
         </template>
@@ -141,7 +143,7 @@ import selectbox from '../selectbox'
 import { mapState } from 'vuex'
 
 // mixins
-import { root } from '@/mixins/root'
+import { useRootMixin } from '@/mixins/root'
 import { tablemix } from '@/mixins/table'
 
 // third party
@@ -149,7 +151,7 @@ import Multiselect from 'vue-multiselect'
 
 export default {
   name: 'schedule',
-  data () {
+  data() {
     return {
       modalTitle: 'Test',
       columns: [
@@ -210,7 +212,7 @@ export default {
     }
   },
   mixins: [
-    root,
+    useRootMixin,
     tablemix
   ],
   components: {
@@ -219,17 +221,17 @@ export default {
     Multiselect
   },
   computed: {
-    seasons () {
+    seasons() {
       return this.$store.state.seasons
     },
 
-    selectOptions () {
+    selectOptions() {
       // update to getter and setter
       const teamList = []
       if (!this.newGame.season) {
         this.$store.getters.seasonTeams.filter(team => {
           if (team.slug !== this.$store.state.user.slug &&
-          !teamList.some(e => e.slug === team.slug)) {
+            !teamList.some(e => e.slug === team.slug)) {
             teamList.push(team)
           }
         })
@@ -251,18 +253,18 @@ export default {
   watch: {
     'newGame.season': {
       deep: true,
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         this.initSchedule(newValue.season_id, this.$route.params.slug)
       }
     },
     '$route.params.slug': {
-      handler (newValue) {
+      handler(newValue) {
         this.initSchedule(undefined, newValue)
       }
     }
 
   },
-  created () {
+  created() {
     this.$root.$on('save', payload => {
       this.save()
     })
@@ -272,19 +274,19 @@ export default {
     this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
   },
   methods: {
-    teamInList (teamListObject, newTeam) {
+    teamInList(teamListObject, newTeam) {
       return teamListObject.slug === newTeam.slug
     },
-    addNewGame () {
+    addNewGame() {
       this.schedule.push(this.newGame)
     },
-    deleteGame (data, id) {
+    deleteGame(data, id) {
       Admin.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
         this.schedule.splice(id, 1)
       })
     },
     // Check for Use Value then set if not available
-    async getSeasonTeamId (slug, gameSeason) {
+    async getSeasonTeamId(slug, gameSeason) {
       if (gameSeason === undefined) {
         gameSeason = this.newGame.season.season_id
       }
@@ -297,11 +299,11 @@ export default {
       return teamId
     },
 
-    homeAwayDisplay (game) {
+    homeAwayDisplay(game) {
       game.host = !game.host
     },
 
-    initNewGame (currSeason = '') {
+    initNewGame(currSeason = '') {
       this.season = currSeason
       this.newGame = {
         host: true,
@@ -314,7 +316,7 @@ export default {
       }
     },
 
-    initSchedule (season, slug) {
+    initSchedule(season, slug) {
       api.getSchedule(season, slug).then(response => {
         const gameArr = []
         response.data.forEach(game => {
@@ -330,7 +332,7 @@ export default {
           if (game.home_team.slug === this.$store.getters.user.slug) {
             gameObj.host = true
             gameObj.opponent = game.away_team
-          // } else if (game.away_team.slug === this.$store.getters.user.slug) {
+            // } else if (game.away_team.slug === this.$store.getters.user.slug) {
           } else {
             gameObj.host = false
             gameObj.opponent = game.home_team
@@ -342,11 +344,11 @@ export default {
       })
     },
 
-    remove_game () {
+    remove_game() {
       console.log('delete pressed')
     },
 
-    async save (game = {}) {
+    async save(game = {}) {
       const gameJson = {
         home_team: '',
         away_team: '',
@@ -391,7 +393,7 @@ export default {
       }
     },
 
-    toggleModal (id) {
+    toggleModal(id) {
       console.log('toggleModal', id)
       this.showModal = !this.showModal
     }
@@ -402,6 +404,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @teamColor: var(--bg-color);
+
 header {
   display: flex;
   flex-flow: row wrap;
@@ -410,10 +413,11 @@ header {
   padding-top: 1rem;
   margin-bottom: .5rem;
   position: sticky;
-    top: 0;
-    z-index: 2;
-    left: 0;
-    background: #CFCDCD;
+  top: 0;
+  z-index: 2;
+  left: 0;
+  background: #CFCDCD;
+
   .buttonCon {
     flex-grow: 1;
     display: flex;
@@ -438,6 +442,7 @@ header {
 //   margin-top: .6rem;
 // }
 table {
+
   // margin-top: -40px;
   &:before {
     content: '';
@@ -463,5 +468,4 @@ table {
   width: 200px;
   vertical-align: middle;
   margin-left: 32px;
-}
-</style>
+}</style>

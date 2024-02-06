@@ -1,70 +1,64 @@
-import format from 'date-fns/format'
+import { format } from 'date-fns';
 
-// import { store } from '../store/index'
-// import _ from 'lodash'
+export const useRootMixin = () => {
+  const dateFormatDisplay = 'M/dd/yyyy';
+  const dateFormat = 'M/dd/yyyy';
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
 
-export const root = {
-  data () {
-    return {
-      dateFormatDisplay: 'M/dd/yyyy',
-      dateFormat: 'M/dd/yyyy',
-      months: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ]
-    }
-  },
-  components: {
-  },
-  computed: {
-    disabled () {
-      // if (this.readWrite === 'write') {
-      //   return false
-      // } else {
-      //   return true
-      // }
-      return false
-    }
-  },
-  methods: {
-    getUUID () {
-      var dt = new Date().getTime()
-      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (dt + Math.random() * 16) % 16 | 0
-        dt = Math.floor(dt / 16)
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
-      })
-      return uuid
-    },
-    formatDates (date, time) {
-      if (date !== '' && date !== 'None') {
-        let formattedDates = ''
-        if (time === false) {
-          if (date) {
-            date = new Date(date + 'T00:00:00')
-            formattedDates = format(date, this.dateFormat)
-            return formattedDates
-          }
-        } else {
-          formattedDates = format(date, 'M/dd/yyyy HH:mm')
-          return formattedDates
+  const disabled = false; // Computed property disabled
+
+  const getUUID = () => {
+    var dt = new Date().getTime()
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = (dt + Math.random() * 16) % 16 | 0
+      dt = Math.floor(dt / 16)
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+    })
+    return uuid
+  };
+
+  const formatDates = (date, time) => {
+    if (date !== '' && date !== 'None') {
+      let formattedDates = '';
+      if (time === false) {
+        if (date) {
+          date = new Date(date + 'T00:00:00');
+          formattedDates = format(date, dateFormat);
+          return formattedDates;
         }
       } else {
-        return ''
+        formattedDates = format(date, 'M/dd/yyyy HH:mm');
+        return formattedDates;
       }
-    },
-    print () {
-      window.print()
+    } else {
+      return '';
     }
-  }
-}
+  };
+
+  const print = () => {
+    window.print();
+  };
+
+  return {
+    dateFormatDisplay,
+    dateFormat,
+    months,
+    disabled,
+    getUUID,
+    formatDates,
+    print
+  };
+};

@@ -6,21 +6,21 @@
           <h2>2021 - 2022 Schedule</h2>
         </div>
         <div class="col right">
-          <div>{{filterBy.team.name}}</div>
-          <div>{{filterBy.level.level}}</div>
+          <div>{{ filterBy.team.name }}</div>
+          <div>{{ filterBy.level.level }}</div>
         </div>
       </div>
       <div class="col-12">
         <div class="row filter-bar">
           <div class="col-md-4">
-            <div v-if="edit === false" @click="edit= !edit">
-              <h2>{{activeYear.name}} Schedule</h2>
+            <div v-if="edit === false" @click="edit = !edit">
+              <h2>{{ activeYear.name }} Schedule</h2>
             </div>
             <div v-if="edit === true">
               <ul class="options-menu">
                 <li class="option" v-for="year in years" :key="year.year" @click="setYear(year)"> {{ year.name }} </li>
               </ul>
-              <h2>{{activeYear.name}} Schedule</h2>
+              <h2>{{ activeYear.name }} Schedule</h2>
             </div>
           </div>
           <div class="col-md-6">
@@ -32,21 +32,22 @@
                 </div>
               </div> -->
 
-              <div class="custom-select"  @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
-                <div disabled>{{filterBy.level.level}}</div>
+              <div class="custom-select" @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
+                <div disabled>{{ filterBy.level.level }}</div>
                 <div class="options-menu">
-                    <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
-                      {{lvl.level}}
-                    </div>
+                  <div class="option" v-for="lvl in levels" :key="lvl.season_id" v-show="showLevels" @click="setLvl(lvl)">
+                    {{ lvl.level }}
+                  </div>
                 </div>
               </div>
 
-              <div class="custom-select" :disabled="filterBy.level.season_id === ''" @click="showTeams = !showTeams, showDatePicker = false, showLevels = false">
-                <div disabled>{{filterBy.team.name}}</div>
+              <div class="custom-select" :disabled="filterBy.level.season_id === ''"
+                @click="showTeams = !showTeams, showDatePicker = false, showLevels = false">
+                <div disabled>{{ filterBy.team.name }}</div>
                 <div class="options-menu">
-                    <div class="option" v-for="team in teams" :key="team.id" v-show="showTeams" @click="setTeam(team)">
-                      {{team.team_name}} {{team.team_mascot}}
-                    </div>
+                  <div class="option" v-for="team in teams" :key="team.id" v-show="showTeams" @click="setTeam(team)">
+                    {{ team.team_name }} {{ team.team_mascot }}
+                  </div>
                 </div>
               </div>
 
@@ -70,40 +71,45 @@
               <td></td>
               <td class="text-center">Home</td>
               <td></td>
-              <td class="location text-right lastPadding"><font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</td>
+              <td class="location text-right lastPadding"><font-awesome-icon
+                  :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location</td>
             </tr>
           </tbody>
           <tbody>
             <template v-if="filteredGames.length >= 1">
               <!-- <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in filteredGames" :key="game.game_id"> -->
-                <tr class="game" v-for="game in filteredGames" :key="game.game_id">
+              <tr class="game" v-for="game in filteredGames" :key="game.game_id">
                 <td class="date">
-                  {{ $config.formatDate(game.game_date)  }}
-                  <div class="time">{{$config.formatTime(game.game_time)}}</div>
+                  {{ $config.formatDate(game.game_date) }}
+                  <div class="time">{{ $config.formatTime(game.game_time) }}</div>
                 </td>
 
                 <!-- AWAY TEAM -->
                 <td class="score" :class="checkResult(game.final_scores.away, game.final_scores.home)">
-                  {{game.final_scores.away}}
+                  {{ game.final_scores.away }}
                 </td>
                 <td class="team_info">
-                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.team_name).logo_color" />
-                  <div class="team_name" :class="checkResult(game.final_scores.away_score, game.final_scores.home_score)">{{game.away_team.team_name}}</div>
+                  <img class="team_img"
+                    :src="'/static/color-team-logos/' + programInfo(game.away_team.team_name).logo_color" />
+                  <div class="team_name" :class="checkResult(game.final_scores.away_score, game.final_scores.home_score)">
+                    {{ game.away_team.team_name }}</div>
                   <span class="level" v-if="game.away_team.level_name" v-html="game.away_team.level_name"></span>
                 </td>
-                  <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
-                  {{game.final_scores.away_score}}
+                <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
+                  {{ game.final_scores.away_score }}
                 </td>
                 <td><span class="at">@</span></td>
 
                 <!-- HOME TEAM -->
                 <td class="team_info">
-                  <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.team_name).logo_color" />
-                  <div class="team_name" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">{{game.home_team.team_name}}</div>
+                  <img class="team_img"
+                    :src="'/static/color-team-logos/' + programInfo(game.home_team.team_name).logo_color" />
+                  <div class="team_name" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
+                    {{ game.home_team.team_name }}</div>
                   <span class="level" v-if="game.home_team.level_name" v-html="game.home_team.level_name"></span>
                 </td>
                 <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
-                  {{game.final_scores.home_score}}
+                  {{ game.final_scores.home_score }}
                 </td>
 
                 <!-- <td class="location text-right">
@@ -114,20 +120,22 @@
                     <div>{{game.home_team.city_state_zip}}</div>
                   </span>
                 </td> -->
-                </tr>
+              </tr>
               <!-- </router-link> -->
             </template>
             <template v-else>
               <tr>
                 <td colspan="7" align="center">
-                  There are currently no games on the schedule <em v-if="filterBy.team.slug !== '' || filterBy.level.id !== ''">that match your criteria</em>, please keep checking back.
+                  There are currently no games on the schedule <em
+                    v-if="filterBy.team.slug !== '' || filterBy.level.id !== ''">that match your criteria</em>, please
+                  keep checking back.
                 </td>
               </tr>
             </template>
           </tbody>
         </table>
-      <!-- </div> -->
-      <!-- <div class="col content">
+        <!-- </div> -->
+        <!-- <div class="col content">
         <div class="row">
           <div class="col-2">
             Date/Time
@@ -155,15 +163,15 @@
               {{game.game_date}}
               <div class="time">{{game.game_time}}</div> -->
 
-              <!-- {{game.game_date}} {{game.game_time}} -->
-            <!-- </div> -->
+        <!-- {{game.game_date}} {{game.game_time}} -->
+        <!-- </div> -->
 
-            <!-- AWAY TEAM -->
-            <!-- <div class="col-1 score" :class="checkResult(game.final_score.away, game.final_score.home)"> -->
-              <!-- {{game.final_score.away}} -->
-            <!-- </div> -->
+        <!-- AWAY TEAM -->
+        <!-- <div class="col-1 score" :class="checkResult(game.final_score.away, game.final_score.home)"> -->
+        <!-- {{game.final_score.away}} -->
+        <!-- </div> -->
 
-            <!-- <div class="col-2 team_info" :class="checkResult(game.final_score.home, game.final_score.away)">
+        <!-- <div class="col-2 team_info" :class="checkResult(game.final_score.home, game.final_score.away)">
               <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.name).logo_color" />
               <div class="team_name">{{game.away_team.name}}</div>
               <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
@@ -173,8 +181,8 @@
               <span class="at">@</span>
             </div> -->
 
-            <!-- HOME TEAM -->
-            <!-- <div class="col-2 team_info">
+        <!-- HOME TEAM -->
+        <!-- <div class="col-2 team_info">
               <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.name).logo_color" />
               <div class="team_name" :class="checkResult(game.final_score.home, game.final_score.away)">{{game.home_team.name}}</div>
               <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
@@ -211,14 +219,14 @@
 import api from '../../api/endpoints.js'
 
 // mixins
-import { root } from '../../mixins/root'
+import { useRootMixin } from '../../mixins/root'
 
 // helpers
 // import {formatDate} from '@/config/helpers'
 
 export default {
   name: 'schedules',
-  data () {
+  data() {
     return {
       activeYear: {
         name: '',
@@ -250,17 +258,17 @@ export default {
       years: []
     }
   },
-  mixins: [root],
+  mixins: [useRootMixin],
   computed: {
-    teams () {
+    teams() {
       const teams = [{ slug: '', team_name: 'All Teams' }, ...this.$store.state.teams]
       return teams
     },
-    levels () {
+    levels() {
       const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
       return levels
     },
-    filteredGames () {
+    filteredGames() {
       if (this.level_filter === '') {
         return this.games
       }
@@ -270,19 +278,19 @@ export default {
   watch: {
     'filterBy.team': {
       deep: true,
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         this.initSchedule(this.filterBy.level.season_id, newValue.slug)
       }
     },
     'filterBy.level': {
       deep: true,
-      handler (newValue, oldValue) {
+      handler(newValue, oldValue) {
         // this.initSchedule(newValue.season_id)
         this.level_filter = newValue.season_id
       }
     }
   },
-  created () {
+  created() {
     this.getActiveYear()
     this.getYears()
     this.initSchedule()
@@ -293,23 +301,23 @@ export default {
     })
   },
   methods: {
-    getActiveYear () {
+    getActiveYear() {
       api.getYear(true).then(response => {
         // console.log(response.data)
         this.activeYear = response.data
       })
     },
-    getYears () {
+    getYears() {
       api.getYear(false).then(response => {
         // console.log(response.data)
         this.years = response.data
       })
     },
     // formatDate: this.$formatDate,
-    goToMap (url) {
+    goToMap(url) {
       window.location.replace(url)
     },
-    initSchedule (level, team, year) {
+    initSchedule(level, team, year) {
       // TODO: ADD YEAR
       api.getSchedule(level, team, year).then(response => {
         const fixedData = []
@@ -322,7 +330,7 @@ export default {
         this.games = fixedData
       })
     },
-    checkResult (me, opponent) {
+    checkResult(me, opponent) {
       if (me !== null && opponent !== null) {
         if (me > opponent) {
           return 'winner'
@@ -333,25 +341,25 @@ export default {
         return ''
       }
     },
-    setYear (year) {
+    setYear(year) {
       this.activeYear = year
       this.edit = false
       this.initSchedule(undefined, undefined, year.year)
     },
-    setTeam (team) {
+    setTeam(team) {
       this.filterBy.team.slug = team.slug
       this.filterBy.team.name = team.team_name
       // this.showTeams = false
       // console.log(this.showTeams)
     },
-    setLvl (lvl) {
+    setLvl(lvl) {
       console.log(lvl)
       this.filterBy.level.season_id = lvl.season_id
       this.filterBy.level.level = lvl.level
       // this.showTeams = false
       // console.log(this.showTeams)
     },
-    sortTable (s, nested) {
+    sortTable(s, nested) {
       // if s == current sort, reverse
       this.currentSort = s
 
@@ -391,7 +399,7 @@ export default {
         }
       })
     },
-    programInfo (teamName) {
+    programInfo(teamName) {
       const team = this.$store.state.teams.filter(team => {
         // console.log(team)
         if (team.team_name === teamName) {
@@ -410,30 +418,36 @@ export default {
 <style scoped lang="less">
 @import '../../assets/less/utils/variables.less';
 @import '../../assets/less/utils/breakpoints.less';
+
 .team_img {
   height: 2.5rem;
   // width: 6rem;
   margin-bottom: .5rem;
 }
-.page-styles{
+
+.page-styles {
   // min-height: 100vh;
   background-color: #fff;
   // margin-right: 1rem;
   // margin-left: 1rem;
 }
+
 .filter-bar {
   background-color: @nav-blue;
   color: #fff;
   height: 3rem;
   align-items: center;
+
   .filters {
     display: flex;
     flex-flow: row;
     justify-content: space-evenly;
   }
+
   @media @phone {
     height: auto;
     padding: 1rem 0;
+
     .filters {
       min-height: 4rem;
       display: flex;
@@ -442,10 +456,12 @@ export default {
     }
   }
 }
+
 .content {
   // padding: 2rem 1rem;
   height: calc(100vh - 13.5rem);
   overflow: auto;
+
   table {
     width: 100%;
   }
@@ -462,6 +478,7 @@ h2 {
   display: inline-block;
   position: relative;
   font-size: .8rem;
+
   &:before {
     content: '';
     display: block;
@@ -490,12 +507,14 @@ h2 {
 
   &[disabled='disabled'] {
     color: #bbb;
-     &:before {
-       border-color: #bbb transparent transparent transparent
-     }
+
+    &:before {
+      border-color: #bbb transparent transparent transparent
+    }
   }
 
 }
+
 .options-menu {
   position: absolute;
   width: 250px;
@@ -505,45 +524,52 @@ h2 {
   left: -3px;
   z-index: 2;
   box-shadow: 1px 2px 4px #0C4B75;
+
   .option {
     padding: .2rem .5rem;
     width: 100%;
     cursor: pointer;
+
     &:hover {
       background-color: lighten(#0C4B75, 10%);
     }
+
     &.noHover:hover {
       background-color: #fff;
     }
   }
 }
+
 .button.ghost.print {
   border: 1px solid #fff;
   max-width: 6rem;
   text-align: center;
+
   &:hover {
     background-color: #fff;
     color: #0C4B75;
   }
 }
+
 .game {
   td {
     padding-top: 1rem;
     padding-bottom: 1rem;
     // &:after {
-      content: '';
-      cursor: pointer;
-      // position: absolute;
-      // bottom: -1px;
-      border-bottom: 1px solid #707070;
-      // width: calc(100% - 2rem);
-      // margin: auto;
-      // padding-bottom: 1rem;
+    content: '';
+    cursor: pointer;
+    // position: absolute;
+    // bottom: -1px;
+    border-bottom: 1px solid #707070;
+    // width: calc(100% - 2rem);
+    // margin: auto;
+    // padding-bottom: 1rem;
     // }
 
     &.date {
       padding-left: 1rem;
     }
+
     &.location {
       padding-right: 1rem;
     }
@@ -578,11 +604,13 @@ h2 {
   font-size: 1.2rem;
   line-height: 1;
   white-space: nowrap;
+
   .time {
     padding-top: .8rem;
     font-weight: 200;
   }
 }
+
 .team_info {
   font-family: @lato;
   font-weight: 400;
@@ -590,18 +618,22 @@ h2 {
   font-style: italic;
   text-align: center;
   line-height: 1.1;
+
   .level {
     display: block;
     font-size: .9rem;
     font-weight: 200;
   }
+
   .winner {
     font-weight: 500;
   }
+
   .loser {
     font-weight: 200;
   }
 }
+
 .at {
   font-family: @lato;
   font-weight: 700;
@@ -609,26 +641,32 @@ h2 {
   font-size: 2.5rem;
   color: @conf-blue;
 }
+
 .score {
   font-size: 3rem;
   min-width: 75px;
   text-align: center;
+
   &.winner {
     font-weight: 900;
     color: #2784C3;
   }
+
   &.loser {
     font-weight: 100;
     color: #707070;
   }
 }
-.location{
+
+.location {
   font-family: @lato;
   font-weight: 200;
   line-height: 1.1;
   white-space: nowrap;
-  .address{
+
+  .address {
     color: #2784C3;
+
     &:hover {
       text-decoration: none;
       color: lighten(#2784C3, 20%)
@@ -636,8 +674,7 @@ h2 {
   }
 }
 
-ul{
+ul {
   background: #2784C3;
   z-index: 1;
-}
-</style>
+}</style>
