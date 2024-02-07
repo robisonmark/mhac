@@ -28,7 +28,7 @@
     "vue": "^3.3.4",
     "vue-csv-import": "^3.3.5",
     "vue-loader": "^16.8.3",
-    "vue-multiselect": "^2.1.6",
+    "vue-multiselect": "^3.0.0-beta.3",
     "vue-router": "^4.2.4",
     "vuetify": "^3.3.15",
     "vuex": "^4.1.0",
@@ -39,6 +39,6 @@
     "@vue/compiler-sfc": "^3.3.4",
     "eslint": "^8.48.0",
     "eslint-plugin-vue": "^8.7.1",
-    "less": "^3.13.1"
+    "less": "^4.2.0"
   }
 }
