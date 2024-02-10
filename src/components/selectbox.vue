@@ -1,68 +1,53 @@
 <template>
-  <select class="selectbox" v-model="selected">
+  <select class="selectbox" :value="selected" @change="handleChange">
     <option value="" disabled>{{ placeholder }}</option>
-    <option v-for="(option, index) in options" :key="index" :value="option">
-      <template v-if="$attrs.trackby !== ''">{{option[$attrs.trackby]}}</template>
-      <template v-else>{{option}}</template>
+    <option v-for="(option, index) in options" :key="index" :value=option[trackby]>
+      <template v-if="trackby !== ''">{{ option[label] }}</template>
+      <template v-else>{{ option }}</template>
     </option>
     <span class="selectbox--arrow"></span>
   </select>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, computed, watch } from 'vue';
 
-export default {
-  name: 'selectbox',
-  data () {
-    return {
-    }
-  },
-  mixins: [],
-  props: [
-    'options',
-    'value',
-    'placeholder'
-  ],
-  computed: {
-    selected: {
-      get () {
-        return this.value
-      },
-      set (selected) {
-        this.$emit('input', selected)
-      }
-    }
-  },
-  watch: {
-  },
-  created () {
-    this.$root.$on('close', payload => {
-      this.open = false
-    })
-  },
-  mounted () {
-  },
-  methods: {
-  }
-}
+
+const props = defineProps({
+  options: { type: Array, required: true },
+  trackby: { type: String, default: '', required: true },
+  placeholder: { type: String, default: '' },
+  label: { type: String, default: '' },
+})
+
+const emit = defineEmits(['update:modelValue']);
+const selected = ref(props.value);
+
+const handleChange = (event) => {
+  selected.value = event.target.value;
+  emit('update:modelValue', event.target.value);
+};
+
+watch(selected, (newValue, oldValue) => {
+  console.log('Selected value changed:', newValue);
+});
+
+
 </script>
-<style lang="less" scoped>
+
+<style scoped lang="less">
 .selectbox {
   position: relative;
-  // -webkit-appearance: none;
-  // figure this out later
 
- &--arrow{
+  &--arrow {
     position: absolute;
     width: 40px;
     height: 45px;
     right: 1px;
     top: 1px;
     text-align: center;
-    -webkit-transition: -webkit-transform 0.2s ease;
-    transition: -webkit-transform 0.2s ease;
     transition: transform 0.2s ease;
-    transition: transform 0.2s ease, -webkit-transform 0.2s ease;
+    transform: translate(0, 0);
 
     &:before {
       position: relative;
@@ -75,6 +60,6 @@ export default {
       border-color: #707070 transparent transparent;
       content: "";
     }
- }
+  }
 }
 </style>

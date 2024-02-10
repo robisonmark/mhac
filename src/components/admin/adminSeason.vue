@@ -20,11 +20,13 @@
 
     <div class="contentPad">
       <editTable :columns="columns" :config="config" :tabledata="seasonArr" :edit="edit" v-model="new_season">
+        <template #body v-if="edit">
 
-        <template slot="tbody" v-if="edit">
-          <tr v-for="(season, index) in seasonArr" :key="index">
+          <tr v-for="season in seasonArr" :key="season.id">
             <td class="input-con">
-              <selectbox id='level' :options=levels :trackby="level_name" v-model="season.level"></selectbox>
+              <multiselect v-model="season.level" label="level_name" track-by="level_id" :options=levels
+                :closeOnSelect="false" :optionHeight="10" :multiple="False" :taggable="true" :hideSelected="true">
+              </multiselect>
             </td>
             <td class="input-con">
               <input type='text' v-model="season.season_name" @input="addToUpdateList(season)">
@@ -90,395 +92,180 @@
   </div>
 </template>
 
-<script>
-import { ref, watch } from 'vue';
 
-import api from '@/api/endpoints'
+<script setup>
+import { ref, reactive, watch, computed } from 'vue';
+import api from '@/api/endpoints.js';
 import editTable from '@/components/editTable.vue'
-import { computed } from 'vue'
-
+// import selectbox from '@/components/selectbox.vue'
 import { useStore } from 'vuex';
 
-// third party
-import Multiselect from 'vue-multiselect'
-import selectbox from '../selectbox.vue'
+// Components
+import Multiselect from 'vue-multiselect';
 
-export default {
-  name: 'adminSeasons',
-  // data () {
-  //   return {
-  //     years: [],
-  //     currentSeason: [],
-  //     edit: false,
-  //     seasonArr: [],
-  //     new_season: {
-  //       level: [],
-  //       season_name: '',
-  //       season_start_date: '',
-  //       roster_submission_deadline: '',
-  //       tournament_start_date: '',
-  //       sport: 'Basketball',
-  //       year: '',
-  //       slug: '',
-  //       archive: false,
-  //       season_teams: []
-  //     },
-  //     columns: [
-  //       {
-  //         name: 'Levels',
-  //         icon: '',
-  //         field_name: 'level',
-  //         type: 'multiselect',
-  //         track_by: 'id',
-  //         model: 'level.level_name'
-  //       },
-  //       {
-  //         name: 'Season Name',
-  //         field_name: 'season_name',
-  //         type: 'text'
-  //       },
-  //       {
-  //         name: 'Season Start Date',
-  //         icon: '',
-  //         field_name: 'season_start_date',
-  //         type: 'date'
-  //       },
-  //       {
-  //         name: 'Roster Submission Deadline',
-  //         icon: '',
-  //         field_name: 'roster_submission_deadline',
-  //         type: 'date'
-  //       },
-  //       {
-  //         name: 'Tournament Start Date',
-  //         icon: '',
-  //         field_name: 'tournament_start_date',
-  //         type: 'date'
-  //       },
-  //       {
-  //         name: 'Year',
-  //         icon: '',
-  //         field_name: 'year',
-  //         type: 'text'
-  //       },
-  //       {
-  //         name: 'Slug',
-  //         icon: '',
-  //         field_name: 'slug',
-  //         type: 'text'
-  //       },
-  //       {
-  //         name: 'Archive',
-  //         icon: '',
-  //         field_name: 'archive',
-  //         type: 'checkbox'
-  //       },
-  //       {
-  //         name: 'SeasonTeams',
-  //         icon: '',
-  //         field_name: 'team_name',
-  //         type: 'multiselect',
-  //         track_by: 'team_id',
-  //         model: 'team_name'
-  //       }
-  //     ],
-  //     config: {
-  //       page: 'season'
-  //     },
-  //     saving: false,
-  //     saved: false,
-  //     updated: [],
-  //     added: []
-  //   }
-  // },
-  components: {
-    editTable: editTable,
-    Multiselect,
-    selectbox: selectbox
+// Get Vuex store
+const store = useStore();
+
+
+// Data
+const years = ref([]);
+const currentSeason = ref([]);
+const edit = ref(false);
+const seasonArr = ref([]);
+const new_season = reactive({
+  level: [],
+  season_name: '',
+  season_start_date: '',
+  roster_submission_deadline: '',
+  tournament_start_date: '',
+  sport: 'Basketball',
+  year: '',
+  slug: '',
+  archive: false,
+  season_teams: []
+});
+const columns = [
+  {
+    name: 'Levels',
+    icon: '',
+    field_name: 'level',
+    type: 'multiselect',
+    track_by: 'id',
+    model: 'level_name'
   },
-  setup(props) {
-    const store = useStore();
-
-    const years = ref([]);
-    const edit = ref(false);
-    const currentSeason = ref([]);
-    const seasonArr = ref([]);
-    const new_season = ref({
-      level: [],
-      season_name: '',
-      season_start_date: '',
-      roster_submission_deadline: '',
-      tournament_start_date: '',
-      sport: 'Basketball',
-      year: '',
-      slug: '',
-      archive: false,
-      season_teams: []
-    });
-
-    const columns = ref([
-      {
-        name: 'Levels',
-        icon: '',
-        field_name: 'level',
-        type: 'multiselect',
-        track_by: 'id',
-        model: 'level_name'
-      },
-      {
-        name: 'Season Name',
-        field_name: 'season_name',
-        type: 'text'
-      },
-      {
-        name: 'Season Start Date',
-        icon: '',
-        field_name: 'season_start_date',
-        type: 'date'
-      },
-      {
-        name: 'Roster Submission Deadline',
-        icon: '',
-        field_name: 'roster_submission_deadline',
-        type: 'date'
-      },
-      {
-        name: 'Tournament Start Date',
-        icon: '',
-        field_name: 'tournament_start_date',
-        type: 'date'
-      },
-      {
-        name: 'Year',
-        icon: '',
-        field_name: 'year',
-        type: 'text'
-      },
-      {
-        name: 'Slug',
-        icon: '',
-        field_name: 'slug',
-        type: 'text'
-      },
-      {
-        name: 'Archive',
-        icon: '',
-        field_name: 'archive',
-        type: 'checkbox'
-      },
-      {
-        name: 'SeasonTeams',
-        icon: '',
-        field_name: 'team_name',
-        type: 'multiselect',
-        track_by: 'team_id',
-        model: 'team_name'
-      }
-    ]);
-
-    const config = ref({
-      page: 'season'
-    });
-
-    const saving = ref(false);
-    const saved = ref(false);
-    const updated = ref([]);
-    const added = ref([]);
-
-    // watch(() => props.new_season, (newValue) => {
-    //   const idx = added.indexOf(newValue)
-    //   if (idx >= 0) {
-    //     added[idx] = newValue
-    //   } else {
-    //     added.push(newValue)
-    //   }
-    // });
-    // console.log(this.$store)
-    const levels = ref(store.state.levels);
-    const teams = ref(store.state.teams);
-
-
-    const seasons = () => {
-      api.getAdminSeasons().then(response => {
-        seasonArr.value = response.data;
-      });
-    };
-
-    const getCurrentSeason = () => {
-      api.getCurrentSeasons().then(response => {
-        currentSeason.value = response.data;
-      });
-    };
-
-    const save = () => {
-      if (updated.value.length > 0) {
-        api.updateSeason(updated.value)
-          .then(response => {
-            updated.value = [];
-          })
-          .catch(err => {
-            console.error(err);
-          });
-      }
-
-      if (added.value.length > 0) {
-        added.value.forEach(season => {
-          api.addSeason(season)
-            .then(response => {
-              initNewSeason();
-            })
-            .catch(err => {
-              console.error(err);
-            });
-        });
-      }
-
-      edit.value = !edit.value;
-    };
-
-    const initNewSeason = () => {
-      new_season.value = {
-        level: [],
-        season_name: '',
-        season_start_date: '',
-        roster_submission_deadline: '',
-        tournament_start_date: '',
-        sport: '',
-        year: '',
-        slug: '',
-        archive: false
-      };
-    };
-    // computed: {
-    //   levels () {
-    //     return this.$store.state.levels
-    //   },
-    //   teams () {
-    //     return this.$store.state.teams
-    //   }
-    // },
-    // created () {
-    //   this.seasons()
-    //   this.getCurrentSeason()
-    // },
-    // watch: {
-    //   new_season: {
-    //     deep: true,
-    //     handler (newValue) {
-    //       const idx = this.added.indexOf(newValue)
-    //       if (idx >= 0) {
-    //         this.added[idx] = newValue
-    //       } else {
-    //         this.added.push(newValue)
-    //       }
-    //     }
-    //   }
-    // },
-    // methods: {
-    //   addToUpdateList (id) {
-    //     console.log("UpdateList", id)
-    //     let add = true
-    //     let i = 0
-    //     for (i = 0; i < this.updated.length; i++) {
-    //       if (this.updated[i] === id) {
-    //         add = false
-    //       }
-    //     }
-    //     if (add) {
-    //       this.updated.push(id)
-    //     }
-    //   },
-    //   seasons () {
-    //     api.getAdminSeasons().then(response => {
-    //       this.seasonArr = response.data
-    //     })
-    //   },
-    //   getCurrentSeason () {
-    //     api.getCurrentSeasons().then(response => {
-    //       this.currentSeason = response.data
-    //     })
-    //   },
-    //   save () {
-    //     console.log(JSON.stringify(this.updated))
-    //     if (this.updated.length > 0) {
-    //       api.updateSeason(this.updated)
-    //         .then(response => {
-    //           this.updated = []
-    //         })
-    //         .catch(err => {
-    //           console.log(err)
-    //         })
-    //     }
-    //     // console.log(this.added.length)
-    //     if (this.added.length > 0) {
-    //       this.added.forEach(season => {
-    //         api.addSeason(season)
-    //           .then(response => {
-    //             // console.log(response)
-    //             this.initNewSeason()
-    //           })
-    //           .catch(err => {
-    //             console.log(err)
-    //           })
-    //       })
-    //     }
-    //     // this.seasons()
-    //     this.edit = !this.edit
-    //   },
-    //   initNewSeason () {
-    //     this.new_season = {
-    //       level: [],
-    //       season_name: '',
-    //       season_start_date: '',
-    //       roster_submission_deadline: '',
-    //       tournament_start_date: '',
-    //       sport: '',
-    //       year: '',
-    //       slug: '',
-    //       archive: false
-    //     }
-    //   }
-    // }
-    return {
-      years,
-      currentSeason,
-      edit,
-      seasonArr,
-      new_season,
-      columns,
-      config,
-      saving,
-      saved,
-      updated,
-      added,
-      levels,
-      teams,
-      seasons,
-      getCurrentSeason,
-      save,
-      initNewSeason
-    };
-
+  {
+    name: 'Season Name',
+    field_name: 'season_name',
+    type: 'text'
   },
-  created() {
-    this.seasons();
-    this.getCurrentSeason();
+  {
+    name: 'Season Start Date',
+    icon: '',
+    field_name: 'season_start_date',
+    type: 'date'
   },
-  watch: {
-    new_season: {
-      deep: true,
-      handler(newValue) {
-        const idx = this.added.indexOf(newValue);
-        if (idx >= 0) {
-          this.added[idx] = newValue;
-        } else {
-          this.added.push(newValue);
-        }
-      }
+  {
+    name: 'Roster Submission Deadline',
+    icon: '',
+    field_name: 'roster_submission_deadline',
+    type: 'date'
+  },
+  {
+    name: 'Tournament Start Date',
+    icon: '',
+    field_name: 'tournament_start_date',
+    type: 'date'
+  },
+  {
+    name: 'Year',
+    icon: '',
+    field_name: 'year',
+    type: 'text'
+  },
+  {
+    name: 'Slug',
+    icon: '',
+    field_name: 'slug',
+    type: 'text'
+  },
+  {
+    name: 'Archive',
+    icon: '',
+    field_name: 'archive',
+    type: 'checkbox'
+  },
+  {
+    name: 'SeasonTeams',
+    icon: '',
+    field_name: 'team_name',
+    type: 'multiselect',
+    track_by: 'team_id',
+    model: 'team_name'
+  }
+];
+const config = {
+  page: 'season'
+};
+const saving = ref(false);
+const saved = ref(false);
+const updated = ref([]);
+const added = ref([]);
+
+const levels = computed(() => store.state.levels);
+const teams = computed(() => store.state.teams);
+
+
+// Methods
+const addToUpdateList = (id) => {
+  let add = true;
+  for (let i = 0; i < updated.value.length; i++) {
+    if (updated.value[i] === id) {
+      add = false;
     }
   }
-}
+  if (add) {
+    updated.value.push(id);
+  }
+};
+
+const seasons = () => {
+  api.getAdminSeasons().then(response => {
+    seasonArr.value = response.data;
+  });
+};
+
+const getCurrentSeason = () => {
+  api.getCurrentSeasons().then(response => {
+    currentSeason.value = response.data;
+  });
+};
+
+const save = () => {
+  if (updated.value.length > 0) {
+    api.updateSeason(updated.value)
+      .then(response => {
+        updated.value = [];
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  if (added.value.length > 0) {
+    added.value.forEach(season => {
+      api.addSeason(season)
+        .then(response => {
+          initNewSeason();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+  }
+  edit.value = !edit.value;
+};
+
+const initNewSeason = () => {
+  new_season.level = [];
+  new_season.season_name = '';
+  // Initialize other fields
+};
+
+// Lifecycle hooks
+seasons();
+getCurrentSeason();
+
+// Watchers
+watch(new_season, (newValue) => {
+  const idx = added.value.indexOf(newValue);
+  if (idx >= 0) {
+    added.value[idx] = newValue;
+  } else {
+    added.value.push(newValue);
+  }
+}, { deep: true });
+
 </script>
+
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 <style scoped lang="less">
