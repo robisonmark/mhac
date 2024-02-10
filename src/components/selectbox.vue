@@ -1,5 +1,5 @@
 <template>
-  <select class="selectbox" :value="selected" @change="handleChange">
+  <select class="selectbox" :value="selected[trackby]" @change="handleChange">
     <option value="" disabled>{{ placeholder }}</option>
     <option v-for="(option, index) in options" :key="index" :value=option[trackby]>
       <template v-if="trackby !== ''">{{ option[label] }}</template>
@@ -18,11 +18,11 @@ const props = defineProps({
   trackby: { type: String, default: '', required: true },
   placeholder: { type: String, default: '' },
   label: { type: String, default: '' },
-  value: { type: Object } // Change the type to Object
+  modelValue: Object
 })
 
 const emit = defineEmits(['update:modelValue']);
-const selected = ref(props.value);
+const selected = ref(props.modelValue);
 
 const handleChange = (event) => {
   const selectedIndex = event.target.selectedIndex - 1;
