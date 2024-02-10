@@ -2,18 +2,21 @@
   <div class="con-management">
     <nav class="sidebar">
       <div v-if="admin" class="admin">
-        <selectbox id="teams" :options="teams" :trackby="'team_name'" placeholder="" v-model="selectedTeam"></selectbox>
+        <!-- {{ teams }} -->
+        <selectbox id="teams" :options="teams" :trackby="'slug'" :label="'team_name'" :placeholder="''"
+          v-model=selectedTeam>
+        </selectbox>
       </div>
       <div class="team-logo">
         <img :src="teamLogo" />
       </div>
       <ul :style="cssVars">
-        <router-link :to="{ path: '/manage/' + team + '/roster'}" tag="li">Roster</router-link>
-        <router-link :to="{ path: '/manage/' + team + '/stats'}" tag="li">Stats</router-link>
-        <router-link :to="{ path: '/manage/' + team + '/schedule'}" tag="li">Schedule</router-link>
-        <router-link :to="{ path: '/manage/' + team + '/profile'}" tag="li">Team Profile</router-link>
+        <router-link :to="{ path: '/manage/' + team + '/roster' }" tag="li" class="nav-item">Roster</router-link>
+        <router-link :to="{ path: '/manage/' + team + '/stats' }" tag="li" class="nav-item">Stats</router-link>
+        <router-link :to="{ path: '/manage/' + team + '/schedule' }" tag="li" class="nav-item">Schedule</router-link>
+        <router-link :to="{ path: '/manage/' + team + '/profile' }" tag="li" class="nav-item">Team Profile</router-link>
         <template v-if="admin">
-          <router-link :to="{ name: 'admin'}" tag="li">Admin</router-link>
+          <router-link :to="{ name: 'admin' }" tag="li">Admin</router-link>
         </template>
       </ul>
     </nav>
@@ -22,183 +25,176 @@
   </div>
 </template>
 
-<script>
-// api
-import api from '../api/endpoints.js'
+<script setup>
+import { ref, reactive, computed, watch, onBeforeMount, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+import api from '../api/endpoints.js';
+import selectbox from './selectbox.vue';
 
-// components
-import selectbox from './selectbox'
+const route = useRoute();
+const router = useRouter();
+const store = useStore();
 
-export default {
-  name: 'TeamManagement',
-  data () {
-    return {
-      greyLogo: '',
-      team: this.$route.params.slug,
-      // teamColor: '#B42625',
-      teamLogo: '',
-      fontSecondary: '#fff'
-      // selectedTeam: {}
+let team = reactive(route.params.slug);
+const greyLogo = ref('');
+const teamLogo = ref('');
+
+const teams = computed(() => store.getters.teams);
+
+const selectedTeam = computed({
+  get() {
+    // console.log(team.slug, store)
+    return store.getters.teams.find(t => t.slug === route.params.slug)
+    // if (store.getters.userGroups.includes('Admin')) {
+    //   return store.getters.teams.find(team => team.slug === store.getters.userGroups[0])
+    // } else {
+    //   return store.getters.teams.find(team => team.slug === route.params.slug)
+    // }
+  },
+  set(newValue) {
+    // const new_team = store.getters.teams.filter(team => newValue.slug === team)[0]
+    const new_user = {
+      team_id: newValue.team_id,
+      slug: newValue.slug
     }
-  },
-  components: {
-    selectbox: selectbox
-  },
-  computed: {
-    user () {
-      return this.$store.getters.user
-    },
-    cssVars () {
-      let teamMain = ''
-      let teamSecond = ''
-      this.$store.getters.teams.filter(team => {
-        if (team.slug === this.$store.getters.user?.slug) {
-          teamMain = '#' + team.main_color
-          teamSecond = '#' + team.secondary_color
-        }
-      })
-      return {
-        '--bg-color': teamMain,
-        '--team-second': teamSecond,
-        '--hover-color': this.darken(teamMain, 15),
-        '--active-color': this.lighten(teamMain, 10)
-      }
-    },
-    admin () {
-      if (this.$store.getters.userGroups.includes('Admin')) {
-        return true
-      } else {
-        return false
-      }
-    },
-    teams () {
-      return this.$store.getters.teams
-    },
-    selectedTeam: {
-      get: function () {
-        if (this.$store.getters.userGroups[0] !== 'Admin') {
-          return this.$store.getters.teams.find(team => team.slug === this.$store.getters.userGroups[0])
-        } else {
-          return this.$store.getters.teams.find(team => team.slug === this.$route.params.slug)
-        }
-      },
-      set: function (newValue) {
-        const user = {
-          team_id: newValue.id,
-          slug: newValue.slug
-        }
-        this.team = newValue.slug
-        this.$store.dispatch('setUser', user)
-        const routeName = this.$route.name
+    console.log("setter", new_user)
 
-        this.$router.push({ name: routeName, params: { slug: newValue.slug } })
-        this.getSeasonTeams(newValue.slug)
 
-        console.log('here')
-        const team = this.getNewTeam(newValue.slug)
+    store.dispatch('setUser', new_user)
+    const routeName = route.name
 
-        this.teamLogo = '/static/color-team-logos/' + team.logo_color
-        this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
-      }
-    }
-  },
-  watch: {
-    async selectedTeam (newValue, oldValue) {
-      const team = await this.getNewTeam(newValue.slug)
+    router.push({ name: routeName, params: { slug: newValue.slug } })
+    getSeasonTeams(newValue.slug)
+    team = newValue.slug
 
-      this.teamLogo = '/static/color-team-logos/' + team.logo_color
-      this.greyLogo = '/static/washedout-team-logo/' + team.logo_grey
-    }
-  },
-  beforeCreate () {
-    const slug = this.$route.params.slug
-    this.$store.dispatch('setTeam', slug)
-
-    this.$store.dispatch('setSeasonTeams')
-  },
-  created () {
-    this.getSeasonTeams(this.$route.params.slug)
-  },
-  methods: {
-    // Credit to Jose Reyes @ https://codepen.io/jreyesgs/pens/
-    /* Suma el porcentaje indicado a un color (RR, GG o BB) hexadecimal para aclararlo */
-    addLight (color, amount) {
-      const cc = parseInt(color, 16) + amount
-      let c = (cc > 255) ? 255 : (cc)
-      c = (c.toString(16).length > 1) ? c.toString(16) : `0${c.toString(16)}`
-      return c
-    },
-
-    /* Aclara un color hexadecimal de 6 caracteres #RRGGBB segun el porcentaje indicado */
-    lighten (color, amount) {
-      color = (color.indexOf('#') >= 0) ? color.substring(1, color.length) : color
-      amount = parseInt((255 * amount) / 100)
-      color = `#${this.addLight(color.substring(0, 2), amount)}${this.addLight(color.substring(2, 4), amount)}${this.addLight(color.substring(4, 6), amount)}`
-      return color
-    },
-
-    /* Resta el porcentaje indicado a un color (RR, GG o BB) hexadecimal para oscurecerlo */
-    subtractLight (color, amount) {
-      const cc = parseInt(color, 16) - amount
-      let c = (cc < 0) ? 0 : (cc)
-      c = (c.toString(16).length > 1) ? c.toString(16) : `0${c.toString(16)}`
-      return c
-    },
-
-    /* Oscurece un color hexadecimal de 6 caracteres #RRGGBB segun el porcentaje indicado */
-    darken (color, amount) {
-      color = (color.indexOf('#') >= 0) ? color.substring(1, color.length) : color
-      amount = parseInt((255 * amount) / 100)
-      color = `#${this.subtractLight(color.substring(0, 2), amount)}${this.subtractLight(color.substring(2, 4), amount)}${this.subtractLight(color.substring(4, 6), amount)}`
-      return color
-    },
-
-    getSeasonTeams (slug) {
-      api.getSeasonTeams(slug)
-        .then(response => {
-          this.$store.dispatch('setTeamAssocLvl', response.data)
-        })
-    },
-
-    async getNewTeam (slug) {
-      return await api.getTeams(slug).then(response => {
-        return response.data[0]
-      })
-    }
+    teamLogo.value = '/static/color-team-logos/' + newValue.logo_color
+    greyLogo.value = '/static/washedout-team-logo/' + newValue.logo_grey
   }
-}
+});
+
+const cssVars = computed(() => {
+  let teamMain = '';
+  let teamSecond = '';
+  // console.log("cssVar", selectedTeam.slug)
+  store.getters.teams.filter(t => {
+    if (t.slug === route.params.slug) {
+      console.log("t", t)
+      teamMain = '#' + t.main_color;
+      teamSecond = '#' + t.secondary_color;
+    }
+  });
+  console.log("teamMain", teamMain)
+  return {
+    '--bg-color': teamMain,
+    '--team-second': teamSecond,
+    '--hover-color': darken(teamMain, 15),
+    '--active-color': lighten(teamMain, 10)
+  };
+});
+
+const admin = computed(() => {
+  return store.getters.userGroups.includes('Admin');
+});
+
+onMounted(() => {
+  getSeasonTeams(team);
+});
+
+watch(selectedTeam, (newValue, oldValue) => {
+  teamLogo.value = '/static/color-team-logos/' + newValue.logo_color;
+  greyLogo.value = '/static/washedout-team-logo/' + newValue.logo_grey;
+});
+
+watch(team, (newValue, oldValue) => {
+  console.log("team Watcher", newValue)
+})
+
+onBeforeMount(() => {
+  const slug = route.params.slug;
+  store.dispatch('setTeam', slug);
+  store.dispatch('setSeasonTeams');
+});
+
+const getSeasonTeams = (slug) => {
+  api.getSeasonTeams(slug)
+    .then(response => {
+      store.dispatch('setTeamAssocLvl', response.data);
+    });
+};
+
+const getNewTeam = async (slug) => {
+  return await api.getTeams(slug).then(response => {
+    return response.data[0];
+  });
+};
+
+// Credit to Jose Reyes @ https://codepen.io/jreyesgs/
+const addLight = (color, amount) => {
+  const cc = parseInt(color, 16) + amount;
+  let c = (cc > 255) ? 255 : cc;
+  c = (c.toString(16).length > 1) ? c.toString(16) : `0${c.toString(16)}`;
+  return c;
+};
+
+const lighten = (color, amount) => {
+  color = (color.indexOf('#') >= 0) ? color.substring(1, color.length) : color;
+  amount = parseInt((255 * amount) / 100);
+  color = `#${addLight(color.substring(0, 2), amount)}${addLight(color.substring(2, 4), amount)}${addLight(color.substring(4, 6), amount)}`;
+  return color;
+};
+
+const subtractLight = (color, amount) => {
+  const cc = parseInt(color, 16) - amount;
+  let c = (cc < 0) ? 0 : cc;
+  c = (c.toString(16).length > 1) ? c.toString(16) : `0${c.toString(16)}`;
+  return c;
+};
+
+const darken = (color, amount) => {
+  color = (color.indexOf('#') >= 0) ? color.substring(1, color.length) : color;
+  amount = parseInt((255 * amount) / 100);
+  color = `#${subtractLight(color.substring(0, 2), amount)}${subtractLight(color.substring(2, 4), amount)}${subtractLight(color.substring(4, 6), amount)}`;
+  return color;
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @teamColor: var(--bg-color);
 @hoverColor: var(--hover-color);
 @activeColor: var(--active-color);
+
 .admin {
   display: block;
   padding: 1rem;
 }
+
 h2 {
   font-size: 1.5rem !important;
 }
+
 .con-management {
   // min-height: calc(100vh - 7rem);
   min-height: 100vh;
   display: grid;
   grid-template-columns: 15rem auto;
+
   // grid-auto-rows: minmax(35px, auto);
   .sidebar {
     background-color: #fff;
+
     .team-logo {
       width: 100%;
       min-height: 10rem;
       display: flex;
+
       img {
         width: 75%;
         display: block;
         margin: auto;
       }
     }
+
     // Override Chrome Browser Defaults
     ul {
       margin-block-start: 0px;
@@ -207,7 +203,8 @@ h2 {
       margin-inline-end: 0px;
       padding-inline-start: 0px;
     }
-    li {
+
+    a[tag="li"] {
       text-decoration: none;
       list-style: none;
       text-align: left;
@@ -220,16 +217,19 @@ h2 {
         background-color: @teamColor;
         color: #fff;
       }
+
       &:hover {
         background-color: @hoverColor;
         // filter: brightness(90%);
         color: #fff;
       }
     }
+
     .router-link-active {
       // background-color: @activeColor;
     }
   }
+
   .bottom-logo {
     // position: absolute;
     position: fixed;
@@ -238,6 +238,7 @@ h2 {
     max-height: 15rem;
     z-index: 0;
   }
+
   .team-management {
     overflow: auto;
     z-index: 1;
@@ -245,5 +246,4 @@ h2 {
     padding-bottom: 5rem;
   }
 }
-
 </style>

@@ -18,18 +18,23 @@ const props = defineProps({
   trackby: { type: String, default: '', required: true },
   placeholder: { type: String, default: '' },
   label: { type: String, default: '' },
+  value: { type: Object } // Change the type to Object
 })
 
 const emit = defineEmits(['update:modelValue']);
 const selected = ref(props.value);
 
 const handleChange = (event) => {
-  selected.value = event.target.value;
-  emit('update:modelValue', event.target.value);
+  const selectedIndex = event.target.selectedIndex - 1;
+  const selectedOption = props.options[selectedIndex];
+  selected.value = selectedOption;
+  console.log("selected", selected)
+  emit('update:modelValue', selectedOption); // Emit the entire object
 };
 
+
 watch(selected, (newValue, oldValue) => {
-  console.log('Selected value changed:', newValue);
+  console.log('Selected value changed:', newValue.slug);
 });
 
 
