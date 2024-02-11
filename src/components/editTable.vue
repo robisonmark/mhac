@@ -112,6 +112,10 @@ import Multiselect from 'vue-multiselect';
 import Selectbox from './selectbox.vue';
 import { useRootMixin } from '@/mixins/root.js';
 
+import { useStore } from 'vuex';
+
+const store = useStore();
+
 const currentSort = ref('');
 const currentSortDir = ref('asc');
 const addNew = ref(false);
@@ -126,6 +130,8 @@ const props = defineProps({
     tabledata: Array,
     modelValue: Object
 })
+
+const emit = defineEmits(['saved', 'changeEdit'])
 
 
 watch(() => props.edit, (newVal) => {
@@ -145,15 +151,15 @@ function getNamesFromSeasonRoster(teamList) {
 function selectOptions(name) {
     switch (name) {
         case 'division':
-            return $store.state.seasons;
+            return store.state.seasons;
         case 'opponent':
-            return $store.state.teams.filter(team => team.team_id !== $store.getters.user.team_id);
+            return store.state.teams.filter(team => team.team_id !== store.getters.user.team_id);
         case 'season_roster':
-            return $store.getters.teamLevels;
+            return store.getters.teamLevels;
         case 'level':
             return this.props.tabledata;
         case 'team_name':
-            return $store.state.teams;
+            return store.state.teams;
     }
 }
 
@@ -233,7 +239,7 @@ function changeDisplay(field) {
 
 function addTo() {
     addNew.value = true;
-    $root.$emit('changeEdit');
+    emit('changeEdit');
 }
 
 function age(Birthday) {
@@ -244,7 +250,7 @@ function age(Birthday) {
 }
 
 function savedata() {
-    $root.$emit('save');
+    emit('save');
 }
 
 function deletedata() {

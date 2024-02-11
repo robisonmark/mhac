@@ -36,9 +36,9 @@
           player.detail }}</li>
       </ul>
       </p>
-      <editTable :columns="columns" :config="config" :tabledata="roster" v-model="newPlayer" :edit="edit">
-        <template slot="body" v-if="edit">
-          <tr v-for="(player, index) in roster" :key="index">
+      <editTable :columns="columns" :config="config" :tabledata="fullRoster" v-model="newPlayer" :edit="edit">
+        <template #body v-if="edit">
+          <tr v-for="(player, index) in fullRoster" :key="index">
             <td class="stat first">
               <input type="number" min="0" v-model="player.player_number" @input="addToUpdateList(player)" />
             </td>
@@ -108,8 +108,8 @@
 
 <script setup>
 
-import { ref, reactive, computed, watch, onBeforeMount, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, reactive, computed, watch, onBeforeMount } from 'vue';
+import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
 
@@ -128,7 +128,6 @@ import fileUpload from '@/components/roster_upload.vue'
 import Multiselect from 'vue-multiselect'
 
 const route = useRoute();
-const router = useRouter();
 const store = useStore();
 const emit = defineEmits(['save', 'changeEdit', 'toggleModal', 'uploadError'])
 
@@ -234,11 +233,11 @@ const user = computed({
 //     ...mapState(['slug']), 
 
 watch(newPlayer, (newValue, oldValue) => {
-  const idx = added.indexOf(newValue)
+  const idx = added.value.indexOf(newValue)
   if (idx >= 0) {
-    added[idx] = newValue
+    added.value[idx] = newValue
   } else {
-    added.push(newValue)
+    added.value.push(newValue)
   }
 
 });
@@ -252,7 +251,7 @@ watch(route.params.slug, () => {
 });
 
 onBeforeMount(() => {
-  // initRoster();
+  initRoster();
   getTeamId();
   emit('save', payload => {
     save()
@@ -270,27 +269,33 @@ const getTeamId = () => {
     })
   }
 };
-// const initRoster = () => {
-//   if (route.params.slug) {
-//     Admin.getAdminPlayers(route.params.slug).then(response => {
-//       roster = response.data
-//       fullRoster = _.cloneDeep(roster)
-//     })
-//   }
-// };
-// const initLeveledRoster = (lvlId) => {
-//   api.getRoster(lvlId).then(response => {
-//     const rosterArr = []
-//     fullRoster.forEach(player => {
-//       response.data.forEach(lvlPlayer => {
-//         if (player.id === lvlPlayer.player_id) {
-//           rosterArr.push(player)
-//         }
-//       })
-//     })
-//     roster = rosterArr
-//   })
-// };
+const initRoster = () => {
+  console.log("initRoster")
+  if (route.params.slug) {
+    console.log("Init Roster2")
+    Admin.getAdminPlayers(route.params.slug).then(response => {
+      console.log(JSON.stringify(response.data))
+      roster.value = response.data
+      fullRoster.value = _.cloneDeep(roster.value)
+      console.log("initRoster3", JSON.stringify(fullRoster))
+    })
+  }
+};
+
+const initLeveledRoster = (lvlId) => {
+  api.getRoster(lvlId).then(response => {
+    const rosterArr = []
+    fullRoster.value.forEach(player => {
+      response.data.forEach(lvlPlayer => {
+        if (player.id === lvlPlayer.player_id) {
+          rosterArr.value.push(player)
+        }
+      })
+    })
+    roster = rosterArr
+    console.log("initLeveledRoster", roster)
+  })
+};
 const initNewPlayer = () => {
   const newPlayer = {
     player_number: NaN,
@@ -322,6 +327,7 @@ const addToUpdateList = (id) => {
     updated.push(id)
   }
 };
+
 const updatePlayers = () => {
   updated.forEach(index => {
     const playerId = roster[index].id
@@ -332,9 +338,10 @@ const updatePlayers = () => {
 };
 
 const save = () => {
-  if (updated.length >= 1) {
-
-    updated.forEach(player => {
+  console.log("Called Save")
+  if (updated.value.length >= 1) {
+    console.log("Updated Records")
+    updated.value.forEach(player => {
       player.team_id = store.state.user.team_id
       const playerJson = player
       Admin.updatePlayer(player.id, playerJson)
@@ -348,30 +355,28 @@ const save = () => {
     })
   }
 
-  if (added.length >= 1) {
-
-    added.forEach(player => {
+  if (added.value.length >= 1) {
+    console.log("Added Records")
+    added.value.forEach(player => {
+      console.log("Players", player.age)
       if (isNaN(player.age) || player.age === '') {
         errors.push({ player: player, error: "Age is Required" })
-
       }
       player.team_id = store.state.user.team_id
       const playerJson = player
 
       if ((!(isNaN(player.first_name) && player.first_name === '')) || (!(isNaN(player.last_name) && player.last_name === ''))) {
-
+        console.log("Player Add Player", playerJson)
         Admin.addPlayer(playerJson)
           .then(response => {
             if (response.status === 201 || response.status == 200) {
-
               handleSuccess(playerJson, response)
-              roster.push(newPlayer)
+              roster.value.push(newPlayer)
               initNewPlayer()
             }
           })
           .catch(err => {
-
-            errors.push(playerJson)
+            errors.value.push(playerJson)
           })
       }
     })
@@ -382,7 +387,7 @@ const toggleModal = () => {
 };
 
 const handleSuccess = (player, response) => {
-  successful_saves.push({
+  successful_saves.value.push({
     first_name: player.first_name,
     last_name: player.last_name,
     detail: response.data,
@@ -390,15 +395,15 @@ const handleSuccess = (player, response) => {
 
   // Clear successful_saves after 10 seconds
   setTimeout(() => {
-    successful_saves = [];
+    successful_saves.value = [];
   }, 10000);
 };
 
 const handleUploadError = (errors) => {
   errors = []
-  errors.push(...errors)
+  errors.value.push(...errors)
   setTimeout(() => {
-    errors = [];
+    errors.value = [];
   }, 10000);
 };
 //   beforeDestroy(){

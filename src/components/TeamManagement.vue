@@ -16,7 +16,7 @@
         <router-link :to="{ path: '/manage/' + team + '/schedule' }" tag="li" class="nav-item">Schedule</router-link>
         <router-link :to="{ path: '/manage/' + team + '/profile' }" tag="li" class="nav-item">Team Profile</router-link>
         <template v-if="admin">
-          <router-link :to="{ name: 'admin' }" tag="li">Admin</router-link>
+          <router-link :to="{ name: 'admin' }" tag="li" class="nav-item">Admin</router-link>
         </template>
       </ul>
     </nav>
