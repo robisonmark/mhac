@@ -46,19 +46,22 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import api from '@/api/endpoints.js';
+
+const route = useRoute();
 
 const team = ref({});
 
 const getTeam = () => {
-  api.getTeams($route.params.slug).then(response => {
+  api.getTeams(route.params.slug).then(response => {
     team.value = response.data[0];
   });
 };
 
 getTeam();
 
-watch(() => $route.params.slug, (newValue) => {
+watch(() => route.params.slug, (newValue) => {
   getTeam();
 });
 </script>

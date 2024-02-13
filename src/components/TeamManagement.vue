@@ -2,7 +2,7 @@
   <div class="con-management">
     <nav class="sidebar">
       <div v-if="admin" class="admin">
-        <selectbox id="teams" :options="teams" :trackby="'slug'" :label="'team_name'" :placeholder="''"
+        <selectbox id="teams" :options="teams.value" :trackby="'slug'" :label="'team_name'" :placeholder="''"
           v-model=selectedTeam>
         </selectbox>
       </div>
@@ -39,25 +39,20 @@ let team = reactive(route.params.slug);
 const greyLogo = ref('');
 const teamLogo = ref('');
 
-const teams = computed(() => {
-  if (store.getters.teams.length < 1) {
-    store.dispatch('setTeams')
-  };
-  return store.getters.teams
-});
+const teams = reactive({});
+// const teams = computed(() => {
+//   if (store.getters.teams.length < 1) {
+//     store.dispatch('setTeams')
+//   };
+//   return store.getters.teams
+// });
 
 const selectedTeam = computed({
   get() {
-    console.log("computedSelectedTeam", route.params.slug)
-    // return store.getters.teams.find(t => t.slug === route.params.slug)
-    if (store.getters.userGroups.includes('Admin')) {
-      return store.getters.teams.find(team => team.slug === store.getters.userGroups[0])
-    } else {
-      return store.getters.teams.find(team => team.slug === route.params.slug)
-    }
+    return store.getters.teams.find(t => t.slug === route.params.slug)
   },
   set(newValue) {
-    // const new_team = store.getters.teams.filter(team => newValue.slug === team)[0]
+    console.log(newValue)
     console.log("Setter", newValue)
     const new_user = {
       team_id: newValue.team_id,
@@ -81,15 +76,15 @@ const selectedTeam = computed({
 const cssVars = computed(() => {
   let teamMain = '';
   let teamSecond = '';
+
   store.getters.teams.filter(t => {
-    console.log(t)
     if (t.slug === route.params.slug) {
       console.log("t", t)
       teamMain = '#' + t.main_color;
       teamSecond = '#' + t.secondary_color;
     }
-  });
-  // console.log("teamMain", teamMain)
+  }
+  );
   return {
     '--bg-color': teamMain,
     '--team-second': teamSecond,
@@ -107,6 +102,7 @@ onMounted(() => {
 });
 
 watch(selectedTeam, (newValue, oldValue) => {
+  console.log(newValue)
   teamLogo.value = '/static/color-team-logos/' + newValue.logo_color;
   greyLogo.value = '/static/washedout-team-logo/' + newValue.logo_grey;
 });
@@ -119,6 +115,11 @@ onBeforeMount(() => {
   const slug = route.params.slug;
   store.dispatch('setTeam', slug);
   store.dispatch('setSeasonTeams');
+  if (store.getters.teams.length < 1) {
+    store.dispatch('setTeams')
+  };
+  teams.value = store.getters.teams
+
 });
 
 const getSeasonTeams = (slug) => {
