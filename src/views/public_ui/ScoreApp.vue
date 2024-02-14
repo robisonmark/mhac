@@ -159,7 +159,7 @@
     <!-- Scoreboard component -->
     <v-container>
       <v-row>
-        <scoreboard></scoreboard>
+        <!-- <scoreboard></scoreboard> -->
       </v-row>
     </v-container>
     <v-container>
@@ -198,6 +198,9 @@ import scoreboard from '@/views/public_ui/Scoreboard';
 import { useStore } from 'vuex';
 import Selectbox from '@/components/selectbox.vue';
 
+import OBSWebSocket from 'obs-websocket-js';
+
+
 const store = useStore();
 const router = useRouter();
 
@@ -210,7 +213,9 @@ const keys = ref([]);
 const period = ref(1);
 const time_remaining = ref({ minutes: 7, seconds: 0, tenth_seconds: 0 });
 const timer_running = ref(false);
-const connection = ref(0);
+
+const obs = new OBSWebSocket();
+obs.connect('ws://localhost:4455');
 
 
 const levels = ref(store.getters.levels);
@@ -233,28 +238,23 @@ const home_score = computed({
 
 const connectWebSocket = () => {
   console.log('Starting connection to WebSocket Server', store.getters.getWebsocket);
-  connection.value = new WebSocket(store.getters.getWebsocket);
-  connection.value.onopen = (event) => messageSend(event);
+  obs.connect(url = store.getters.getWebsocket);
+
 };
 
 const submitWebsocket = (action, value) => {
-  console.log(value);
-  const socketData = {
-    'request-type': 'BroadcastCustomMessage',
-    'message-id': '1234',
-    realm: action,
-    data: {
-      action: action,
-      value: value,
-    },
-  };
-  connection.value.send(JSON.stringify(socketData));
+
+  obs.call('BroadcastCustomMessage', {
+    "action": "incrementAway", "value": 10
+  }).then((data) => {
+    console.log('Scenes:', data);
+  });
 };
 
-const messageSend = (data) => {
-  console.log(JSON.stringify(data));
-  connection.value.send(JSON.stringify(data));
-};
+// const messageSend = (data) => {
+//   console.log(JSON.stringify(data));
+//   connection.send(JSON.stringify(data));
+// };
 
 const setHome = (data) => {
   console.log(data.slug);
