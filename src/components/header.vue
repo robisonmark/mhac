@@ -96,7 +96,8 @@
             <span class="about_dropdown" @click="aboutDrop" ref="aboutDropdown" @mouseover="showAbout = true"
               @mouseleave="showAbout = false">
               About<font-awesome-icon class="dropIcon" v-if="showAbout === false"
-                :icon="['fas', 'angle-down']"></font-awesome-icon>
+                :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showAbout"
+                :icon="['fas', 'angle-up']"></font-awesome-icon>
               <ul v-show="showAbout" class="about_nav_dropdown">
                 <li><router-link :to="{ path: '/about' }">Who We Are</router-link></li>
                 <li><a href="https://mhac-media-docs.s3.us-east-2.amazonaws.com/MHAC+Bylaws+March+2021.pdf"
@@ -111,7 +112,8 @@
             <span class="dropdown" @click="displayDrop" ref="schoolDropDown" @mouseover="showSchools = true"
               @mouseleave="showSchools = false">
               Rosters <font-awesome-icon class="dropIcon" v-if="showSchools === false"
-                :icon="['fas', 'angle-down']"></font-awesome-icon>
+                :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showSchools"
+                :icon="['fas', 'angle-up']"></font-awesome-icon>
               <!-- <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon> -->
               <ul v-show="showSchools" class="nav_dropdown">
                 <router-link v-for="team in teams" :key="team.id"
