@@ -166,7 +166,17 @@
       <!-- Reset/Correct section -->
       <h3>Reset/Correct</h3>
       <v-row>
-        <v-subheader>Reset Time</v-subheader>
+        <v-col>
+          <v-subheader>Reset Time</v-subheader>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-btn @click="submitWebsocket('toggleClockDisplay', time_remaining)"
+            :style='{ backgroundColor: "crimson", color: "white" }'>Toggle Clock Display</v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col>
           <v-text-field v-model="time_remaining.minutes" label="Minutes"></v-text-field>
         </v-col>
@@ -177,6 +187,11 @@
           <v-text-field v-model="time_remaining.tenth_seconds" label="Tenths"></v-text-field>
         </v-col>
         <v-btn @click="submitWebsocket('setTime', time_remaining)" :style='{ backgroundColor: "crimson" }'>Submit</v-btn>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-subheader>Reset Score</v-subheader>
+        </v-col>
       </v-row>
       <v-row>
         <v-col>
