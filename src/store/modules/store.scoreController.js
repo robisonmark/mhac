@@ -3,7 +3,7 @@
 // TODO: Create a Persistent Source
 
 // api
-import api  from '@/api/endpoints.js'
+import api from '@/api/endpoints.js'
 
 const namespaced = false
 // const modules = { auth }
@@ -100,6 +100,7 @@ const state = {
   period: 1,
   possession: '',
   period_time: 6,
+  clock_display: true,
   clock: {
     time: 8 * 60,
     running: false
@@ -175,6 +176,7 @@ const mutations = {
   },
   setPossession: (state, value) => state.possession = value,
   toggleClock: (state, payload) => state.clock.running = payload,
+  toggleClockDisplay: (state, payload) => state.clock_display = payload,
   incrementPeriod: (state) => state.period++,
   decrementPeriod: (state) => {
     if (state.period > 1) {
@@ -197,43 +199,46 @@ const mutations = {
 }
 
 const actions = {
-  decrementHomeFouls (context, payload) {
+  decrementHomeFouls(context, payload) {
     context.commit('decrementHomeFouls', payload)
   },
-  decrementAwayFouls (context, payload) {
+  decrementAwayFouls(context, payload) {
     context.commit('decrementAwayFouls', payload)
   },
-  decrementHomeTimeouts (context, payload) {
+  decrementHomeTimeouts(context, payload) {
     context.commit('decrementHomeTimeouts', payload)
   },
-  decrementAwayTimeouts (context, payload) {
+  decrementAwayTimeouts(context, payload) {
     context.commit('decrementAwayTimeouts', payload)
   },
-  setAwayTeam (context, payload) {
+  setAwayTeam(context, payload) {
     context.commit('setAwayTeam', payload)
   },
-  setHomeTeam (context, payload) {
+  setHomeTeam(context, payload) {
     context.commit('setHomeTeam', payload)
   },
 
-  startClock ({ commit, dispatch }) {
+  startClock({ commit, dispatch }) {
     commit('setClock', true)
 
     intervalID = setInterval(() => dispatch('updateClock', -1), 1000)
   },
-  stopClock ({ commit }) {
+  stopClock({ commit }) {
     commit('setClock', false)
 
     clearInterval(intervalID)
   },
-  toggleClock ({ state, dispatch }) {
+  toggleClock({ state, dispatch }) {
     if (state.clock.running) {
       dispatch('stopClock')
     } else {
       dispatch('startClock')
     }
   },
-  updateClock ({ state, commit, dispatch }, amount) {
+  toggleClockDisplay({ state, dispatch }) {
+    commit(state.clock_display = !state.clock_display)
+  },
+  updateClock({ state, commit, dispatch }, amount) {
     const time = state.clock.time + amount
 
     if (time < 0) {
@@ -244,82 +249,82 @@ const actions = {
 
     commit('setTime', time)
   },
-  incrementClock ({ getters, commit }) {
+  incrementClock({ getters, commit }) {
     const time = getters.minutes + 1
     commit('setTime', time * 60)
   },
-  decrementClock ({ getters, commit }) {
+  decrementClock({ getters, commit }) {
     const time = getters.minutes - 1
     commit('setTime', time * 60)
   },
-  incrementAway (context, payload) {
+  incrementAway(context, payload) {
     // console.log("Payload ", payload)
     context.commit('incrementAway', payload)
   },
-  setAway (context, payload) {
+  setAway(context, payload) {
     context.commit('setAway', payload)
   },
-  incrementHome (context, payload) {
+  incrementHome(context, payload) {
     context.commit('incrementHome', payload)
   },
-  incrementPeriod (context, payload) {
+  incrementPeriod(context, payload) {
     context.commit('incrementPeriod', payload)
   },
-  decrementPeriod (context, payload) {
+  decrementPeriod(context, payload) {
     context.commit('decrementPeriod', payload)
   },
-  setHome (context, payload) {
+  setHome(context, payload) {
     context.commit('setHome', payload)
   },
-  incrementHomeFouls (context, payload) {
+  incrementHomeFouls(context, payload) {
     context.commit('incrementHomeFouls', payload)
   },
-  setHomeFouls (context, payload) {
+  setHomeFouls(context, payload) {
     context.commit('setHomeFouls', payload)
   },
-  incrementAwayFouls (context, payload) {
+  incrementAwayFouls(context, payload) {
     context.commit('incrementAwayFouls', payload)
   },
-  setAwayFouls (context, payload) {
+  setAwayFouls(context, payload) {
     context.commit('setAwayFouls', payload)
   },
-  setPeriod (context, payload) {
+  setPeriod(context, payload) {
     context.commit('setPeriod', payload)
   },
-  setPossession (context, payload) {
+  setPossession(context, payload) {
     context.commit('setPossession', payload)
   },
-  async setWebSocket (context) {
+  async setWebSocket(context) {
     context.commit('setWebSocket', await api.getWebSocketUrl()
       .then(response => {
         return response.data.webSocketUrl
       }))
   },
-  setHalf (context, payload) {
+  setHalf(context, payload) {
     context.commit('setHalf', payload)
   },
-  setFinal (context, payload) {
+  setFinal(context, payload) {
     context.commit('setFinal', payload)
   },
-  resetFouls (context, payload) {
+  resetFouls(context, payload) {
     context.commit('resetFouls', payload)
   },
-  setTime (context, payload) {
+  setTime(context, payload) {
     console.log(payload)
     context.commit('setTime', payload)
   },
-  setGameConfig (context, payload) {
+  setGameConfig(context, payload) {
     const ageconfig = gameConfig[payload]
     context.commit('setGameConfig', ageconfig)
   }
 }
 const getters = {
-  minutes (state) { return Math.floor(state.clock.time / 60) },
-  seconds (state) { return state.clock.time % 60 },
-  getWebsocket (state) { return state.websocket },
-  getGameConfig (state) { return state.gameConfig },
-  homeFouls (state) { return state.fouls.home },
-  awayFouls (state) { return state.fouls.away }
+  minutes(state) { return Math.floor(state.clock.time / 60) },
+  seconds(state) { return state.clock.time % 60 },
+  getWebsocket(state) { return state.websocket },
+  getGameConfig(state) { return state.gameConfig },
+  homeFouls(state) { return state.fouls.home },
+  awayFouls(state) { return state.fouls.away }
 }
 
 // const vuexLocal = new VuexPersistence({

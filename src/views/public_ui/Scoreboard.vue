@@ -7,7 +7,7 @@
 
     <div class="gameStats">
       <div class="timeBlock">
-        <div class="timeRemaining">
+        <div class="timeRemaining" :class="{ hidden: isHidden }">
           <template v-if="time_remaining.minutes !== 0">{{ time_remaining.minutes }}:</template>{{
             displaySeconds(time_remaining.seconds)
           }}<template v-if="time_remaining.minutes === 0">.{{ time_remaining.tenth_seconds }}</template>
@@ -82,6 +82,10 @@ const half = computed(() => {
 const final = computed(() => {
   return store.state.scoreController.final;
 });
+const isHidden = ref(true)
+const clockDisplay = ref(() => {
+  return store.state.scoreController.clock_display;
+});
 
 watch(gameRules, (newValue) => {
   home_timeouts.value = newValue.timeouts;
@@ -115,6 +119,14 @@ watch(half, () => {
 watch(timer_running, () => {
   timer();
 }, { deep: true });
+
+watch(clockDisplay, () => {
+  if (!clockDisplay.value) {
+    isHidden.value = true
+  } else {
+    isHidden.value = false
+  }
+});
 
 watch(webSocketURL, () => {
   connectWebSocket();
@@ -243,5 +255,9 @@ body {
 
 .logo_mhac {
   width: 50px;
+}
+
+.hidden {
+  visibility: hidden;
 }
 </style>
