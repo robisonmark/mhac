@@ -95,7 +95,7 @@
                 <!-- https://www.dropbox.com/sh/dmk75k6rt0fu990/AABI6z3OksFGHMDbBG58A_tna?dl=0&fbclid=IwAR2CUwGfeTMck0UdXvsHrKeX1imbhk8DIdV_iPHCaQMpcpoKGnY94nXzqjMnpm  -->
               </ul>
             </span>
-            <span class="about_dropdown" @click="aboutDrop" ref="aboutDropdown" @mouseover="showAbout = true"
+            <span class="dropdown about_dropdown" @click="aboutDrop" ref="aboutDropdown" @mouseover="showAbout = true"
               @mouseleave="showAbout = false">
               About<font-awesome-icon class="dropIcon" v-if="showAbout === false"
                 :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showAbout"
@@ -119,8 +119,7 @@
               <!-- <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon> -->
               <ul v-show="showSchools" class="nav_dropdown">
                 <router-link v-for="team in teams" :key="team.id"
-                  :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id } }"
-                  tag="li">
+                  :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), id: team.id } }" tag="li">
                   {{ team.team_name }}
                 </router-link>
               </ul>
@@ -161,7 +160,7 @@ export default {
     const showAbout = ref(false);
 
     const teams = computed(() => {
-      return store.state.teams;
+      return store.getters.teams;
     });
 
     const loggedIn = computed(() => {
@@ -578,7 +577,6 @@ header {
         color: #2A2A2A;
         top: 4.5rem;
         box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
-        right: 0;
         position: absolute;
         width: auto;
         font-weight: 400;
@@ -589,7 +587,6 @@ header {
         letter-spacing: -.2px;
 
         li {
-          padding: .2rem 1rem;
           cursor: pointer;
           font-family: 'Lato';
 
@@ -614,6 +611,18 @@ header {
           &:hover {
             color: @conf-blue;
           }
+
+          a {
+            padding: .2rem 1rem;
+          }
+        }
+
+        a[tag="li"] {
+          color: #2A2A2A !important;
+          // width: calc(100% + .80rem);
+          padding: 0.2rem 1rem;
+          white-space: normal;
+          text-align: center;
         }
       }
 
@@ -621,7 +630,6 @@ header {
         color: #2A2A2A;
         top: 4.5rem;
         box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
-        right: 200;
         position: absolute;
         width: auto;
         font-weight: 400;
@@ -632,8 +640,6 @@ header {
         letter-spacing: -.2px;
 
         li {
-          padding: .2rem 1rem;
-
           cursor: pointer;
           font-family: 'Lato';
 
@@ -661,7 +667,8 @@ header {
 
           a {
             color: #2A2A2A;
-            width: calc(100% + .80rem);
+            // width: calc(100% + .80rem);
+            padding: .2rem 1rem;
           }
         }
       }
@@ -670,7 +677,6 @@ header {
         color: #2A2A2A;
         top: 4.5rem;
         box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
-        right: 200;
         position: absolute;
         width: auto;
         font-weight: 400;
@@ -681,8 +687,6 @@ header {
         letter-spacing: -.2px;
 
         li {
-          padding: .2rem 1rem;
-
           cursor: pointer;
           font-family: 'Lato';
 
@@ -710,7 +714,8 @@ header {
 
           a {
             color: #2A2A2A;
-            width: calc(100% + .80rem);
+            // width: calc(100% + .80rem);
+            padding: .2rem 1rem;
           }
         }
       }
