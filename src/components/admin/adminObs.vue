@@ -3,7 +3,8 @@
     <h2>Manage WebSocketUrl</h2>
     <input type="text" v-model="websocketUrl" />
     <button @click="save">
-      Save
+      <template v-if="saving"> Saving</template>
+      <template v-else>Save</template>
     </button>
   </div>
 </template>
@@ -13,24 +14,38 @@ import { ref } from 'vue';
 import api from '@/api/endpoints';
 
 const websocketUrl = ref('');
+const saving = ref(false);
 
 const getCurrentWebsocketInfo = () => {
   api.getWebSocketUrl().then(response => {
-    console.log(response.data.webSocketUrl);
     websocketUrl.value = response.data.webSocketUrl;
   });
 };
 
+const handleSuccess = () => {
+  // Clear successful_saves after 10 seconds
+  console.log("handleSuccess")
+  setTimeout(() => {
+    saving.value = false;
+  }, 5000);
+};
+
 const save = () => {
+  console.log(websocketUrl)
+  saving.value = true;
   api.updateWebSocketUrl({ webSocketUrl: websocketUrl.value }).then(response => {
     websocketUrl.value = response.data.webSocketUrl;
+    handleSuccess()
   });
 };
 
 getCurrentWebsocketInfo();
 </script>
 
-<style scoped>
+<style lang="less">
+@import '../../assets/less/utils/variables.less';
+@import '../../assets/less/utils/breakpoints.less';
+
 h2::after {
   content: '';
   display: block;
@@ -42,6 +57,10 @@ h2::after {
   top: 0;
   right: -20px;
   z-index: 5;
+}
+
+button {
+  background-color: var(--bg-color);
 }
 
 /* Add your other styles here */
