@@ -28,13 +28,13 @@ const handleChange = (event) => {
   const selectedIndex = event.target.selectedIndex - 1;
   const selectedOption = props.options[selectedIndex];
   selected.value = selectedOption;
-  console.log("selected", selected)
+  console.log("selected", selectedOption)
   emit('update:modelValue', selectedOption); // Emit the entire object
 };
 
 
 watch(selected, (newValue, oldValue) => {
-  console.log('Selected value changed:', newValue.slug);
+  console.log('Selected value changed:', newValue);
 });
 
 

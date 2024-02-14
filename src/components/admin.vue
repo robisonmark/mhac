@@ -25,6 +25,16 @@
         }" tag="li" class="nav-item">
           Manage Seasons
         </router-link>
+        <router-link :to="{
+          path: '/admin/admin_obs'
+        }" tag="li" class="nav-item">
+          Update OBS Url
+        </router-link>
+        <router-link :to="{
+          path: '/obs/scoreapp'
+        }" tag="li" class="nav-item">
+          Run Clock
+        </router-link>
       </ul>
     </nav>
     <router-view class="admin" />
