@@ -5,8 +5,8 @@
       <div class="row">
         <div class="logo-color col">
           <!-- <div class="image-con"> -->
-          <img v-if="program.logo_color" :src="'/static/color-team-logos/' + program.logo_color"
-            :alt="program.team_name + ' ' + program.team_mascot" />
+          <img v-if="program.value.logo_color" :src="'/static/color-team-logos/' + program.value.logo_color"
+            :alt="program.value.team_name + ' ' + program.value.team_mascot" />
 
           <!-- </div> -->
         </div>
@@ -16,10 +16,10 @@
               <div class="col">
                 <div class="filters">
                   <div class="custom-select" @click.stop="showSeasons = !showSeasons, showSections = false">
-                    <div disabled>{{ filterBy.team.level_name }}</div>
+                    <div disabled>{{ filterBy.value.team.level_name }}</div>
                     <div class="options-menu">
                       <div class="option" v-for="season in teamAssocLvl" :key="season.id" v-show="showSeasons"
-                        @click="filterBy.team = season">
+                        @click="setFilterByTeam(season)">
                         {{ season.level_name }}
                       </div>
                     </div>
@@ -51,8 +51,8 @@
                 <tbody>
                   <tr v-for="game in schedule" :key="game.id">
                     <td>
-                      <div class="game--date">{{ game.game_date }} / <span
-                          class="font-weight-light">{{ game.game_time }}</span></div>
+                      <div class="game--date">{{ game.game_date }} / <span class="font-weight-light">{{ game.game_time
+                      }}</span></div>
                       <div class="game--opponent">
                         <span v-if="game.host">vs </span>
                         <span v-else>@ </span>
@@ -128,26 +128,26 @@
       </div>
     </div>
     <div class="bottom-logo_con" ref="bottomLogo">
-      <img class="bottom-logo" v-if="program.logo_grey" :src="'/static/washedout-team-logo/' + program.logo_grey"
-        :alt="program.team_name + ' ' + program.team_mascot" />
+      <img class="bottom-logo" v-if="program.value.logo_grey"
+        :src="'/static/washedout-team-logo/' + program.value.logo_grey"
+        :alt="program.value.team_name + ' ' + program.value.team_mascot" />
     </div>
   </div>
 </template>
 
 <script>
-// api
-import api from '../../api/endpoints.js'
+import { ref, watch, onMounted, reactive } from 'vue';
+import { useRoute } from 'vue-router';
 
-// mixins
-import { useRootMixin } from '../../mixins/root'
-
-import _ from 'lodash'
+import api from '../../api/endpoints.js';
+import _ from 'lodash';
 
 export default {
   name: 'schools',
-  data() {
-    return {
-      filterBy: {
+  emits: ['close'],
+  setup(props, context) {
+    const filterBy = reactive({
+      value: {
         team: {
           season_team_id: '',
           level_name: ''
@@ -160,110 +160,77 @@ export default {
           start_date: '',
           end_date: ''
         }
-      },
-      fullRoster: [],
-      program: {},
-      roster: [],
-      schedule: [],
-      sections: [
-        'Roster'
-        // 'Staff'
-      ],
-      selectedSection: 'Roster',
-      showDatePicker: false,
-      showSeasons: false,
-      showSections: false,
-      teamAssocLvl: []
-    }
-  },
-  mixins: [useRootMixin],
-  computed: {
-    footerLoc: {
-      get: function () {
-        return document.getElementById('publicMainFooter').getBoundingClientRect().top
-      },
-      set: function () {
-        return document.getElementById('publicMainFooter').getBoundingClientRect().top
       }
-    },
-    seasons() {
-      const seasons = [...this.$store.state.seasons]
-      return seasons
-    },
-    selectedTeam: {
-      get: function () {
-        return this.$store.state.teams.find(team => {
-          const user = {
-            team_id: team.id,
-            slug: team.slug
+    });
+
+
+    const route = useRoute();
+
+    const fullRoster = ref([]);
+    const roster = ref([]);
+    const schedule = ref([]);
+    const sections = ref(['Roster']);
+    const selectedSection = ref('Roster');
+    const showDatePicker = ref(false);
+    const showSeasons = ref(false);
+    const showSections = ref(false);
+    const teamAssocLvl = ref([]);
+
+    const program = reactive({ value: {} });
+
+    // const state = reactive({ count: 0 })
+    watch(route, () => initSchool())
+
+    const toggleSeasons = () => {
+      showSeasons.value = !showSeasons.value;
+      showSections.value = false;
+    };
+
+    const hideSeasons = () => {
+      showSeasons.value = false;
+    };
+
+    const setFilterByTeam = (season) => {
+      filterBy.value.team = season;
+    };
+
+    const formattedDate = (date, time) => {
+      if (date !== '' && date !== 'None') {
+        let formattedDates = '';
+        if (time === false) {
+          if (date) {
+            date = new Date(date + 'T00:00:00');
+            formattedDates = format(date, dateFormat);
+            return formattedDates;
           }
-          this.$store.dispatch('setUser', user)
-          return team.slug === this.$route.params.slug
-        })
-      },
-      set: function (newValue) {
-        const user = {
-          team_id: newValue.id,
-          slug: newValue.slug
+        } else {
+          formattedDates = format(date, 'M/dd/yyyy HH:mm');
+          return formattedDates;
         }
-        this.team = newValue.slug
-        this.$store.dispatch('setUser', user)
-        const routeName = this.$route.name
+      } else {
+        return '';
+      }
+    };
 
-        this.$router.push({ name: routeName, params: { slug: newValue.slug } })
-        this.getSeasonTeams(newValue.slug)
-      }
-    }
-  },
-  watch: {
-    $route(to, from) {
-      this.initSchool()
-    },
-    'filterBy.team': {
-      deep: true,
-      handler(newValue, oldValue) {
-        if (this.selectedSection === 'Schedule') {
-          const season = this.seasons.filter(season => { return season.level === newValue.level_name })
+    const goToMap = (url) => {
+      window.location.replace(url)
+    };
 
-          this.initLeveledSchedule(season[0].season_id, this.$route.params.slug)
-        } else if (this.selectedSection === 'Roster') {
-          this.initLeveledRoster(newValue.team_id)
-        }
-      }
-    },
-    selectedSection: {
-      deep: true,
-      handler(newValue, oldValue) {
-        if (newValue === 'Schedule') {
-          this.initLeveledSchedule(this.filterBy.team.season_team_id, this.$route.params.slug)
-        } else if (newValue === 'Roster') {
-          this.initLeveledRoster(this.filterBy.team.team_id)
-        }
-      }
-    }
-  },
-  created() {
-    this.initSchool()
-    this.$root.$on('close', payload => {
-      this.showSeasons = false
-      this.showSections = false
-    })
-  },
-  methods: {
-    async initSchool() {
-      const slug = this.$route.params.slug
+
+    const initSchool = async () => {
+      const slug = route.params.slug;
 
       await api.getTeams(slug)
         .then(response => {
-          this.program = response.data[0]
-          this.getSeasonTeams(this.$route.params.slug)
-          // console.log(this.teamAssocLvl)
-          this.initRoster(this.teamAssocLvl.team_id)
-        })
+          program.value = response.data[0];
+          getSeasonTeams(route.params.slug);
+          initRoster(teamAssocLvl.value.team_id);
+        });
 
-      // window.addEventListener('scroll', this.watchLogoPos)
-    },
-    watchLogoPos() {
+      // window.addEventListener('scroll', watchLogoPos);
+    };
+
+    const watchLogoPos = () => {
       const footerTop = document.getElementById('publicMainFooter').getBoundingClientRect()
       const bottomLogoPos = this.$refs.bottomLogo.getBoundingClientRect()
 
@@ -278,81 +245,74 @@ export default {
       } else {
         this.$refs.bottomLogo.style.removeProperty('bottom')
       }
-    },
-    initRoster(id) {
+    };
+
+    const initRoster = (id) => {
       api.getPlayers(id).then(response => {
-        // console.log(id, response)
-        // response.data.forEach(player => {
-        //   player.number = player.number
-        // })
-        this.roster = response.data
-        this.fullRoster = _.cloneDeep(this.roster)
-      })
-    },
-    async getSeasonTeams(slug) {
+        roster.value = response.data;
+        fullRoster.value = _.cloneDeep(roster.value);
+      });
+    };
+
+    const getSeasonTeams = async (slug) => {
       await api.getSeasonTeams(slug)
         .then(response => {
-          this.teamAssocLvl = response.data
+          teamAssocLvl.value = response.data;
+          filterBy.value.team = response.data[0];
+        });
+    };
 
-          this.filterBy.team = response.data[0]
-
-          // this.initLeveledSchedule(response.data.season_team_ids[0])
-          // this.$store.dispatch('setTeamAssocLvl', response.data)
-        })
-    },
-    initLeveledRoster(lvlId) {
+    const initLeveledRoster = (lvlId) => {
       api.getRoster(lvlId).then(response => {
-        const rosterArr = []
-        // console.log(response)
-        // this.fullRoster.forEach(player => {
+        const rosterArr = [];
         response.data.forEach(lvlPlayer => {
-          rosterArr.push(lvlPlayer)
-        })
-        // })
+          rosterArr.push(lvlPlayer);
+        });
 
-        this.roster = rosterArr
-      })
-    },
-    initLeveledSchedule(season, slug) {
+        roster.value = rosterArr;
+      });
+    };
+
+    const initLeveledSchedule = (season, slug) => {
       api.getSchedule(season, slug).then(response => {
-        const gameArr = []
+        const gameArr = [];
         response.data.forEach(game => {
           const gameObj = {
             host: '',
             opponent: '',
-            game_time: this.$config.formatTime(game.game_time),
-            game_date: this.$config.formatDate(game.game_date),
+            game_time: $config.formatTime(game.game_time),
+            game_date: formattedDate(game.game_date),
             location: {},
             results: {},
             id: game.game_id
-          }
+          };
 
-          if (game.home_team.slug === this.$route.params.slug) {
-            gameObj.host = true
-            gameObj.opponent = game.away_team
+          if (game.home_team.slug === route.params.slug) {
+            gameObj.host = true;
+            gameObj.opponent = game.away_team;
             if (game.final_scores.home_score !== null) {
               if (game.final_scores.home_score > game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'W'
-                }
+                };
               } else if (game.final_scores.home_score < game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'L'
-                }
+                };
               }
             }
-          } else if (game.away_team.slug === this.$route.params.slug) {
-            gameObj.host = false
-            gameObj.opponent = game.home_team
+          } else if (game.away_team.slug === route.params.slug) {
+            gameObj.host = false;
+            gameObj.opponent = game.home_team;
             if (game.final_scores.home_score !== null) {
               if (game.final_scores.home_score < game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'W'
-                }
+                };
               } else if (game.final_scores.home_score > game.final_scores.away_score) {
                 gameObj.results = {
                   win_loss: 'L'
-                }
+                };
               }
             }
           }
@@ -361,36 +321,305 @@ export default {
             street: game.home_team.address_lines,
             city_state_zip: game.home_team.city_state_zip,
             name: game.home_team.address_name
-          }
+          };
 
           if (game.final_scores.home_score !== null) {
-            gameObj.results = { ...gameObj.results, ...game.final_scores }
+            gameObj.results = { ...gameObj.results, ...game.final_scores };
           }
 
-          gameArr.push(gameObj)
-        })
-        this.schedule = gameArr
-      })
-    },
-    createSeasonDisplay(season) {
-      const nameSplit = season.level.split(' ')
-      let gender = ''
+          gameArr.push(gameObj);
+        });
+        schedule.value = gameArr;
+      });
+    };
+
+    const createSeasonDisplay = (season) => {
+      const nameSplit = season.level.split(' ');
+      let gender = '';
       if (nameSplit[1] === 'Boys') {
-        gender = 'Boys'
+        gender = 'Boys';
       } else {
-        gender = 'Girls'
+        gender = 'Girls';
       }
 
-      return gender + ' ' + nameSplit[0] + ' ' + season.sport
-      // return season.season_name + ' ' + season.sport
-    },
-    setSeason(season) {
-      this.filterBy.seasons.id = season.id
-      this.filterBy.season.season = season.level_name
-      // this.showTeams = false
-      // console.log(this.showTeams)
-    }
-  }
+      return gender + ' ' + nameSplit[0] + ' ' + season.sport;
+    };
+
+    const setSeason = (season) => {
+      filterBy.value.seasons.id = season.id;
+      filterBy.value.season.season = season.level_name;
+    };
+
+    onMounted(() => {
+      initSchool();
+      context.emit('close', payload => {
+        showSeasons.value = false;
+        showSections.value = false;
+      });
+    });
+
+    return {
+      filterBy,
+      fullRoster,
+      program,
+      roster,
+      schedule,
+      sections,
+      selectedSection,
+      showDatePicker,
+      showSeasons,
+      showSections,
+      teamAssocLvl,
+      toggleSeasons,
+      hideSeasons,
+      setFilterByTeam,
+      formattedDate,
+      // getMapLink,
+      goToMap,
+      watchLogoPos,
+      initSchool,
+      initRoster,
+      getSeasonTeams,
+      initLeveledRoster,
+      initLeveledSchedule,
+      createSeasonDisplay,
+      setSeason
+    };
+
+  },
+  // data() {
+  //   return {
+  //     filterBy: {
+  //       team: {
+  //         season_team_id: '',
+  //         level_name: ''
+  //       },
+  //       seasons: {
+  //         id: '3323edf0-d806-4e32-9fd2-cb698a27b3a9',
+  //         season: 'Boys 18U Basketball'
+  //       },
+  //       dateRange: {
+  //         start_date: '',
+  //         end_date: ''
+  //       }
+  //     },
+  //     fullRoster: [],
+  //     program: {},
+  //     roster: [],
+  //     schedule: [],
+  //     sections: [
+  //       'Roster'
+  //       // 'Staff'
+  //     ],
+  //     selectedSection: 'Roster',
+  //     showDatePicker: false,
+  //     showSeasons: false,
+  //     showSections: false,
+  //     teamAssocLvl: []
+  //   }
+  // },
+  // mixins: [useRootMixin],
+  // computed: {
+  //   footerLoc: {
+  //     get: function () {
+  //       return document.getElementById('publicMainFooter').getBoundingClientRect().top
+  //     },
+  //     set: function () {
+  //       return document.getElementById('publicMainFooter').getBoundingClientRect().top
+  //     }
+  //   },
+  //   seasons() {
+  //     const seasons = [...this.$store.state.seasons]
+  //     return seasons
+  //   },
+  //   selectedTeam: {
+  //     get: function () {
+  //       return this.$store.state.teams.find(team => {
+  //         const user = {
+  //           team_id: team.id,
+  //           slug: team.slug
+  //         }
+  //         this.$store.dispatch('setUser', user)
+  //         return team.slug === this.route.params.slug
+  //       })
+  //     },
+  //     set: function (newValue) {
+  //       const user = {
+  //         team_id: newValue.id,
+  //         slug: newValue.slug
+  //       }
+  //       this.team = newValue.slug
+  //       this.$store.dispatch('setUser', user)
+  //       const routeName = this.route.name
+
+  //       this.$router.push({ name: routeName, params: { slug: newValue.slug } })
+  //       this.getSeasonTeams(newValue.slug)
+  //     }
+  //   }
+  // },
+  // watch: {
+  //   $route(to, from) {
+  //     this.initSchool()
+  //   },
+  //   'filterBy.team': {
+  //     deep: true,
+  //     handler(newValue, oldValue) {
+  //       if (this.selectedSection === 'Schedule') {
+  //         const season = this.seasons.filter(season => { return season.level === newValue.level_name })
+
+  //         this.initLeveledSchedule(season[0].season_id, this.route.params.slug)
+  //       } else if (this.selectedSection === 'Roster') {
+  //         this.initLeveledRoster(newValue.team_id)
+  //       }
+  //     }
+  //   },
+  //   selectedSection: {
+  //     deep: true,
+  //     handler(newValue, oldValue) {
+  //       if (newValue === 'Schedule') {
+  //         this.initLeveledSchedule(this.filterBy.team.season_team_id, this.route.params.slug)
+  //       } else if (newValue === 'Roster') {
+  //         this.initLeveledRoster(this.filterBy.team.team_id)
+  //       }
+  //     }
+  //   }
+  // },
+  // created() {
+  //   this.initSchool()
+  //   emit('close', payload => {
+  //     this.showSeasons = false
+  //     this.showSections = false
+  //   })
+  // },
+  // methods: {
+  //   async initSchool() {
+  //     const slug = this.route.params.slug
+
+  //     await api.getTeams(slug)
+  //       .then(response => {
+  //         this.program = response.data[0]
+  //         this.getSeasonTeams(this.route.params.slug)
+  //         // console.log(this.teamAssocLvl)
+  //         this.initRoster(this.teamAssocLvl.team_id)
+  //       })
+
+  //     // window.addEventListener('scroll', this.watchLogoPos)
+  //   },
+  //   watchLogoPos() {
+
+  //   },
+  //   initRoster(id) {
+  //     api.getPlayers(id).then(response => {
+  //       // console.log(id, response)
+  //       // response.data.forEach(player => {
+  //       //   player.number = player.number
+  //       // })
+  //       this.roster = response.data
+  //       this.fullRoster = _.cloneDeep(this.roster)
+  //     })
+  //   },
+  //   async getSeasonTeams(slug) {
+  //     await api.getSeasonTeams(slug)
+  //       .then(response => {
+  //         this.teamAssocLvl = response.data
+
+  //         this.filterBy.team = response.data[0]
+
+  //         // this.initLeveledSchedule(response.data.season_team_ids[0])
+  //         // this.$store.dispatch('setTeamAssocLvl', response.data)
+  //       })
+  //   },
+  //   initLeveledRoster(lvlId) {
+  //     api.getRoster(lvlId).then(response => {
+  //       const rosterArr = []
+  //       // console.log(response)
+  //       // this.fullRoster.forEach(player => {
+  //       response.data.forEach(lvlPlayer => {
+  //         rosterArr.push(lvlPlayer)
+  //       })
+  //       // })
+
+  //       this.roster = rosterArr
+  //     })
+  //   },
+  //   initLeveledSchedule(season, slug) {
+  //     api.getSchedule(season, slug).then(response => {
+  //       const gameArr = []
+  //       response.data.forEach(game => {
+  //         const gameObj = {
+  //           host: '',
+  //           opponent: '',
+  //           game_time: this.$config.formatTime(game.game_time),
+  //           game_date: this.$config.formatDate(game.game_date),
+  //           location: {},
+  //           results: {},
+  //           id: game.game_id
+  //         }
+
+  //         if (game.home_team.slug === this.route.params.slug) {
+  //           gameObj.host = true
+  //           gameObj.opponent = game.away_team
+  //           if (game.final_scores.home_score !== null) {
+  //             if (game.final_scores.home_score > game.final_scores.away_score) {
+  //               gameObj.results = {
+  //                 win_loss: 'W'
+  //               }
+  //             } else if (game.final_scores.home_score < game.final_scores.away_score) {
+  //               gameObj.results = {
+  //                 win_loss: 'L'
+  //               }
+  //             }
+  //           }
+  //         } else if (game.away_team.slug === this.route.params.slug) {
+  //           gameObj.host = false
+  //           gameObj.opponent = game.home_team
+  //           if (game.final_scores.home_score !== null) {
+  //             if (game.final_scores.home_score < game.final_scores.away_score) {
+  //               gameObj.results = {
+  //                 win_loss: 'W'
+  //               }
+  //             } else if (game.final_scores.home_score > game.final_scores.away_score) {
+  //               gameObj.results = {
+  //                 win_loss: 'L'
+  //               }
+  //             }
+  //           }
+  //         }
+
+  //         gameObj.location = {
+  //           street: game.home_team.address_lines,
+  //           city_state_zip: game.home_team.city_state_zip,
+  //           name: game.home_team.address_name
+  //         }
+
+  //         if (game.final_scores.home_score !== null) {
+  //           gameObj.results = { ...gameObj.results, ...game.final_scores }
+  //         }
+
+  //         gameArr.push(gameObj)
+  //       })
+  //       this.schedule = gameArr
+  //     })
+  //   },
+  //   createSeasonDisplay(season) {
+  //     const nameSplit = season.level.split(' ')
+  //     let gender = ''
+  //     if (nameSplit[1] === 'Boys') {
+  //       gender = 'Boys'
+  //     } else {
+  //       gender = 'Girls'
+  //     }
+
+  //     return gender + ' ' + nameSplit[0] + ' ' + season.sport
+  //     // return season.season_name + ' ' + season.sport
+  //   },
+  //   setSeason(season) {
+  //     this.filterBy.seasons.id = season.id
+  //     this.filterBy.season.season = season.level_name
+  //     // this.showTeams = false
+  //     // console.log(this.showTeams)
+  //   }
+  // }
 }
 </script>
 
@@ -671,4 +900,5 @@ table {
 
 .win_loss {
   padding-right: .5rem;
-}</style>
+}
+</style>

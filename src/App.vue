@@ -119,6 +119,7 @@ body {
 
 main {
   position: relative;
+  z-index: 1;
 }
 
 .body {
