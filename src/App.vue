@@ -60,11 +60,13 @@ const cssVars = computed(() => {
       }
     });
     return {
-      '--bg-color': teamMain
+      '--bg-color': teamMain,
+      '--logo-color': teamMain
     };
   } else {
     return {
-      '--bg-color': '#0C4B75'
+      '--bg-color': '#0C4B75',
+      '--logo-color': '#2683c3'
     };
   }
 });

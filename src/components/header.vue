@@ -4,8 +4,9 @@
     <div class="container container--header">
       <div class="con-logo">
         <router-link :to="{ path: '/' }" class="">
-          <img class="logo" src="/static/color-team-logos/mhaclogo.png"
-            alt="Midsouth Home School Athletic Conference Logo" />
+          <!-- <img class="logo" src="/static/color-team-logos/mhaclogo.svg"
+            alt="Midsouth Home School Athletic Conference Logo" /> -->
+          <Logo :styles="styles"></Logo>
         </router-link>
       </div>
       <div class="flex-spacer"></div>
@@ -15,8 +16,9 @@
             <div class="mobile-drop" @click="collapse = !collapse">
               <div>Members <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon></div>
             </div>
-            <div class="schoolMenuCon" :class="[collapse === true ? 'collapse' : 'open']">
-              <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
+            <div class="schoolMenuCon" :class="[collapse ? 'collapse' : 'open']">
+              <ul class="top-hat__list" :class="[collapse ? 'collapse' : 'open']">
+
                 <li>
                   <div class="flex-spacer"></div>
                 </li>
@@ -131,118 +133,127 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import { ref, computed } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter, useRoute } from 'vue-router'
 
-// import { Auth } from 'aws-amplify'
 import { signOut } from 'aws-amplify/auth';
-// import { useAuthenticator } from '@aws-amplify/ui-vue';
-// const Auth = useAuthenticator();
+
+import Logo from '@/components/header/logo.vue'
 
 export default {
   name: 'headerComponent',
-  data() {
-    return {
-      collapse: true,
-      openMenu: false,
-      showLogin: false,
-      showSchools: false,
-      showTournament: false,
-      showAbout: false,
-      thinking: false,
-      username: '',
-      password: ''
-    }
+  components: {
+    Logo,
   },
-  mixins: [],
-  props: [
-    'styles'
-  ],
-  components: {},
-  computed: {
-    routes() {
-      return false
-    },
-    teams() {
-      return this.$store.state.teams
-    },
-    loggedIn: {
-      get: function () {
-        return this.$store.getters.loggedIn
-      },
-      set: function () {
+  props: {
+    styles: Object, // Assuming styles is an object prop
+  },
+  setup(props) {
+    const store = useStore();
+    const route = useRoute();
+    const router = useRouter();
 
-      }
-    },
-    isPublic() {
-      return this.$route.meta.section === 'public'
-    }
-  },
-  methods: {
-    checkMouse() {
-    },
-    closeOpenOption(open) {
-      this[open] = false
-    },
-    displayDrop() {
-      this.showSchools = !this.showSchools
-    },
-    tournamentDrop() {
-      this.showTournament = !this.showTournament
-    },
-    aboutDrop() {
-      this.showAbout = !this.showAbout
-    },
-    goToLogin() {
-      if (!this.loggedIn) {
-        if (this.$route.name !== 'login') {
-          this.$router.push({ name: 'login' })
+    const collapse = ref(true);
+    const openMenu = ref(false);
+    const showSchools = ref(false);
+    const showTournament = ref(false);
+    const showAbout = ref(false);
+
+    const teams = computed(() => {
+      return store.state.teams;
+    });
+
+    const loggedIn = computed(() => {
+      return store.getters.loggedIn;
+    });
+
+    const isPublic = computed(() => {
+      return route.meta.section === 'public';
+    });
+
+    // const checkMouse = () => {
+    //   // Add your logic for checkMouse method
+    // };
+
+    const closeOpenOption = (open) => {
+      this[open] = false;
+    };
+
+    const displayDrop = () => {
+      showSchools.value = !showSchools.value;
+    };
+
+    const tournamentDrop = () => {
+      showTournament.value = !showTournament.value;
+    };
+
+    const aboutDrop = () => {
+      showAbout.value = !showAbout.value;
+    };
+
+    const goToLogin = () => {
+      if (!loggedIn.value) {
+        if (route.name !== 'login') {
+          router.push({ name: 'login' });
         }
       } else {
-        if (this.isPublic) {
-          if (this.$store.getters.userGroups.includes('Admin')) {
-            this.$router.push({ name: 'admin' })
+        if (isPublic.value) {
+          if (store.getters.userGroups.includes('Admin')) {
+            router.push({ name: 'admin' });
           } else {
-            const team = this.$store.getters.team
-
-            this.$router.push({ name: 'teamDashboard', params: { slug: team } })
+            const team = store.getters.team;
+            router.push({ name: 'teamDashboard', params: { slug: team } });
           }
-
         } else {
-          this.signout()
+          signout();
         }
       }
-      this.collapse = true
-    },
-    slugCase(value) {
-      if (!value) return ''
-      value.toLowerCase()
-      value = value.replace(' ', '_')
-      value = value.replace(' ', '_')
-      return value
-    },
-    async signout() {
+      collapse.value = true;
+    };
+
+    const slugCase = (value) => {
+      if (!value) return '';
+      value = value.toLowerCase();
+      value = value.replace(' ', '_');
+      value = value.replace(' ', '_');
+      return value;
+    };
+
+    const signout = async () => {
       try {
         await signOut().then(() => {
-          this.$store.commit('set_valid', false)
-          this.$store.commit('set_loggedIn', false)
-          if (this.$route.meta.section !== 'public') {
-            this.$router.push('/')
+          store.commit('set_valid', false);
+          store.commit('set_loggedIn', false);
+          if (route.meta.section !== 'public') {
+            router.push('/');
           }
-        })
+        });
       } catch (error) {
         console.log('error signing out: ', error);
       }
-      // await Auth.signOut({ global: true })
-      // .then(() => {
-      //   this.$store.commit('set_valid', false)
-      //   this.$store.commit('set_loggedIn', false)
-      //   if (this.$route.meta.section !== 'public') {
-      //     this.$router.push('/')
-      //   }
-      // })
-    }
-  }
-}
+    };
+
+    return {
+      collapse,
+      openMenu,
+      showSchools,
+      showTournament,
+      showAbout,
+      teams,
+      loggedIn,
+      isPublic,
+      // checkMouse,
+      closeOpenOption,
+      displayDrop,
+      tournamentDrop,
+      aboutDrop,
+      goToLogin,
+      slugCase,
+      signout,
+    };
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
