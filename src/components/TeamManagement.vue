@@ -166,7 +166,7 @@ const darken = (color, amount) => {
 };
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 @teamColor: var(--bg-color);
 @hoverColor: var(--hover-color);
 @activeColor: var(--active-color);
