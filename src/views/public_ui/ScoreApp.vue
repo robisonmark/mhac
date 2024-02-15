@@ -11,8 +11,8 @@
 
         </v-col>
         <v-col>
-          <!-- <v-select v-model="level" :items="levels" label="level_name" item-text="level_name" item-value="id"
-            @change="setConfig"></v-select> -->
+          <!-- <v-select v-model="level" :items="levels" label="level_name" item-text="level_name" item-value="id" -->
+          <!-- @change="setConfig"></v-select> -->
           <Selectbox :options="levels" :trackby="'id'" :placeholder="'Select Level'" :label="'level_name'" v-model=level>
           </Selectbox>
         </v-col>
@@ -219,8 +219,8 @@ import OBSWebSocket from 'obs-websocket-js';
 const store = useStore();
 const router = useRouter();
 
-const home = ref({});
-const away = ref({});
+const home = ref({ slug: '' });
+const away = ref({ slug: '' });
 const level = ref({});
 const away_score_override = ref(0);
 const home_score_override = ref(0);
@@ -230,7 +230,7 @@ const time_remaining = ref({ minutes: 7, seconds: 0, tenth_seconds: 0 });
 const timer_running = ref(false);
 
 const obs = new OBSWebSocket();
-obs.connect('ws://localhost:4455');
+obs.connect(store.getters.webSocketURL);
 
 
 const levels = ref(store.getters.levels);
@@ -254,11 +254,10 @@ const home_score = computed({
 const connectWebSocket = () => {
   console.log('Starting connection to WebSocket Server', store.getters.getWebsocket);
   obs.connect(url = store.getters.getWebsocket);
-
 };
 
 const submitWebsocket = (action, value) => {
-
+  console.log('action: ', action)
   obs.call('BroadcastCustomEvent', {
     "eventData": {
       "action": action, "value": value
@@ -274,13 +273,12 @@ const submitWebsocket = (action, value) => {
 // };
 
 const setHome = (data) => {
-  console.log(data.slug);
-  submitWebsocket('setHomeTeam', data.slug);
+  console.log(data);
+  submitWebsocket('setHomeTeam', data.value?.slug);
 };
 
 const setAway = (data) => {
-  console.log(data.slug);
-  submitWebsocket('setAwayTeam', data.slug);
+  submitWebsocket('setAwayTeam', data.value?.slug);
 };
 
 const setConfig = (levelName) => {
@@ -342,21 +340,30 @@ const fetchData = async () => {
 
 fetchData();
 
-const teams = ref(store.getters.seasonTeams);
-// const teams = computed(() => {
-//   let teamList = [];
-//   console.log(level)
-//   if (!level.level_name) {
-//     teamList = store.getters.seasonTeams;
-//   } else {
-//     teamList = store.getters.seasonTeams.filter(team => team.level_name === level.level_name)
-//   }
-//   return teamList
-// });
+// const teams = ref(store.getters.seasonTeams);
+const teams = computed(() => {
+  let teamList = [];
+  console.log('level: ', level.value.level_name)
+  if (!level.value.level_name) {
+    teamList = store.getters.seasonTeams;
+  } else {
+    teamList = store.getters.seasonTeams.filter(team => team.level_name === level.value.level_name)
+  }
+  return teamList
+});
 
 watch(level, (newValue, oldValue) => {
-  console.log("Level Watcher", newValue)
-  teams.value = store.getters.seasonTeams.filter(team => team.level_name === newValue.level_name)
+  // teams.value = store.getters.seasonTeams.filter(team => team.level_name === newValue.level_name)
+  const shortLevelName = newValue.level_name.split(' ')[0];
+  submitWebsocket('setGameConfig', shortLevelName);
+});
+
+watch(home, (newValue, oldValue) => {
+  submitWebsocket('setHomeTeam', newValue)
+});
+
+watch(away, (newValue, oldValue) => {
+  submitWebsocket('setAwayTeam', newValue)
 });
 
 
@@ -365,6 +372,41 @@ router.beforeEach(() => {
 });
 </script>
 
+<style>
+.v-btn__content {
+  color: #eee !important;
+}
+</style>
 <style lang="less" scoped>
-/* Your scoped LESS styles here */
+@import (css) url('https://cdn.jsdelivr.net/npm/vuetify@1.x/dist/vuetify.min.css');
+
+:deep(.v-btn__content) {
+  color: #eee !important;
+}
+
+.container {
+  padding: 24px !important; // vuetify overide
+}
+
+.scoreboard {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.gameStats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .score {
+    display: flex;
+    justify-content: center;
+  }
+
+  .timeBlock {
+    display: flex;
+    justify-content: center;
+  }
+}
 </style>

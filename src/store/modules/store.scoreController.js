@@ -95,7 +95,7 @@ const state = {
     home: 5,
     away: 5
   },
-  away_team_slug: 'life_christian',
+  away_team_slug: 'tennessee_heat',
   home_team_slug: 'covenant_christian',
   period: 1,
   possession: '',

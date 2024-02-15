@@ -7,10 +7,9 @@
     <div class="gameStats">
       <div class="timeBlock">
         <div class="timeRemaining" :class="{ hidden: isHidden }">
-          {{ time_remaining }}
-          <!-- <template v-if="time_remaining.minutes !== 0">{{ time_remaining.minutes }}:</template>{{
+          <template v-if="time_remaining.minutes !== 0">{{ time_remaining.minutes }}:</template>{{
             displaySeconds(time_remaining.seconds)
-          }}<template v-if="time_remaining.minutes === 0">.{{ time_remaining.tenth_seconds }}</template> -->
+          }}<template v-if="time_remaining.minutes === 0">.{{ time_remaining.tenth_seconds }}</template>
         </div>
         <div class="period" v-if="!final && !half">{{ period }}</div>
         <div class="period" v-if="!final && half">Half</div>
@@ -27,7 +26,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useStore } from 'vuex';
 import team from '@/components/front-pages/live_video/scoreboard/team';
 const teamBlock = team;
@@ -43,6 +42,28 @@ const time_remaining = ref({
 });
 let connection = null;
 
+// const period = computed(() => {
+//   return getNumberWithOrdinal(store.state.scoreController.period);
+// });
+// const nextPossession = computed(() => {
+//   return store.state.scoreController.possession;
+// });
+// const timer_running = computed(() => {
+//   return store.state.scoreController.clock.running;
+// });
+// const webSocketURL = computed(() => {
+//   return store.getters.getWebsocket;
+// });
+// const half = computed(() => {
+//   return store.state.scoreController.half;
+// });
+// const final = computed(() => {
+//   return store.state.scoreController.final;
+// });
+// const isHidden = ref(false)
+// const clockDisplay = ref(() => {
+//   return store.state.scoreController.clock_display;
+// });
 
 const getNumberWithOrdinal = (n) => {
   if (n <= 4) {
@@ -55,22 +76,71 @@ const getNumberWithOrdinal = (n) => {
 };
 
 // Computed properties
-const away_team_slug = () => {
-  if (store.state.scoreController.away_team_slug) {
-    return store.state.scoreController.away_team_slug
+// const away_team_slug = computed({
+//   get() {
+//     if (store.state.scoreController.away_team_slug) {
+//       return store.state.scoreController.away_team_slug
+//     }
+//     return 'tennessee_heat'
+//   },
+//   set(newValue) {
+//     // Note: we are using destructuring assignment syntax here.
+//     return newValue
+//   }
+// });
+const home_team_slug = computed({
+  get() {
+    if (store.state.scoreController.home_team_slug) {
+      return store.state.scoreController.home_team_slug
+    }
+    return 'nasvhille_central_christian'
   }
-  return 'tennessee_heat'
-};
-const home_team_slug = () => {
-  if (store.state.scoreController.home_team_slug) {
-    return store.state.scoreController.home_team_slug
+});
+const away_team_slug = computed({
+  get() {
+    if (store.state.scoreController.away_team_slug) {
+      return store.state.scoreController.away_team_slug
+    }
+    return 'tennessee_heat'
   }
-  return 'nasvhille_central_christian'
-};
-const away_fouls = () => store.state.scoreController.fouls.away;
-const away_score = () => store.state.scoreController.score.away;
-const home_fouls = () => store.state.scoreController.fouls.home;
-const homeScore = () => store.state.scoreController.score.home;
+});
+const away_score = computed({
+  get() {
+    if (store.state.scoreController.score.away) {
+      return store.state.scoreController.score.away
+    }
+    return 0
+  }
+});
+const away_fouls = computed({
+  get() {
+    if (store.state.scoreController.fouls.away) {
+      return store.state.scoreController.fouls.away
+    }
+    return 0
+  }
+});
+const home_score = computed({
+  get() {
+    if (store.state.scoreController.score.home) {
+      return store.state.scoreController.score.home
+    }
+    return 0
+  }
+});
+const home_fouls = computed({
+  get() {
+    if (store.state.scoreController.fouls.home) {
+      return store.state.scoreController.fouls.home
+    }
+    return 0
+  }
+});
+
+// const away_fouls = () => store.state.scoreController.fouls.away;
+// const away_score = () => store.state.scoreController.score.away;
+// const home_fouls = () => store.state.scoreController.fouls.home;
+// const homeScore = () => store.state.scoreController.score.home;
 const homeTimeouts = () => store.state.scoreController.timeouts.home;
 const awayTimeouts = () => store.state.scoreController.timeouts.away;
 const period = () => getNumberWithOrdinal(store.state.scoreController.period);
@@ -130,27 +200,27 @@ watch(webSocketURL, () => {
   connectWebSocket();
 });
 
-// Event listeners
-window.addEventListener('keydown', (event) => {
-  isKeyDown.value = true;
-  keys.value.push(event.code);
-  if (event.code === 'Space') {
-    timer();
-  }
-  if (['Numpad1', 'NumpadAdd'].every(v => keys.value.includes(v))) {
-    homeScore.value += keys.value.filter(key => key === 'Numpad1').length;
-  }
-  if (['Numpad1', 'NumpadSubtract'].every(v => keys.value.includes(v))) {
-    if (homeScore.value > 0) {
-      homeScore.value -= 1;
-    }
-  }
-});
+// // Event listeners
+// window.addEventListener('keydown', (event) => {
+//   isKeyDown.value = true;
+//   keys.value.push(event.code);
+//   if (event.code === 'Space') {
+//     timer();
+//   }
+//   if (['Numpad1', 'NumpadAdd'].every(v => keys.value.includes(v))) {
+//     homeScore.value += keys.value.filter(key => key === 'Numpad1').length;
+//   }
+//   if (['Numpad1', 'NumpadSubtract'].every(v => keys.value.includes(v))) {
+//     if (homeScore.value > 0) {
+//       homeScore.value -= 1;
+//     }
+//   }
+// });
 
-window.addEventListener('keyup', () => {
-  isKeyDown.value = false;
-  keys.value.length = 0;
-});
+// window.addEventListener('keyup', () => {
+//   isKeyDown.value = false;
+//   keys.value.length = 0;
+// });
 
 // Methods
 const connectWebSocket = () => {
@@ -167,9 +237,9 @@ const callStore = (data) => {
 
 const messageReceived = (data) => {
   const message = JSON.parse(data.data);
-  console.log('Message Received: ', message);
-  callStore(message.data);
-};
+  // console.log('Message Recieved: ', message);
+  callStore(message.d);
+}
 
 const resetTimer = () => {
   // TODO: set to time or restart

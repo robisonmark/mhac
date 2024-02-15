@@ -1,5 +1,5 @@
 <template>
-  <div :class='`score_block score_block-${location.value}`'>{{ score.value }}</div>
+  <div :class='`score_block score_block-${props.location}`'>{{ props.score }}</div>
 </template>
 
 <script setup>

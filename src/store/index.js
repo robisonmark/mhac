@@ -128,7 +128,6 @@ const actions = {
 
   async setTeam(context, payload) {
     await context.dispatch('setTeams')
-    console.log("In SetTeam singular")
     const groups = store.getters.userGroups
     const teams = store.getters.teams
 
@@ -236,6 +235,7 @@ const getters = {
     return state.seasons
   },
   seasonTeams(state) {
+    console.log(state)
     return state.season_teams
   },
   slug(state) {
