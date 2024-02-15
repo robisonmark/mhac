@@ -159,7 +159,7 @@
     <!-- Scoreboard component -->
     <v-container>
       <v-row>
-        <!-- <scoreboard></scoreboard> -->
+        <scoreboard></scoreboard>
       </v-row>
     </v-container>
     <v-container>
@@ -259,8 +259,10 @@ const connectWebSocket = () => {
 
 const submitWebsocket = (action, value) => {
 
-  obs.call('BroadcastCustomMessage', {
-    "action": "incrementAway", "value": 10
+  obs.call('BroadcastCustomEvent', {
+    "eventData": {
+      "action": action, "value": value
+    }
   }).then((data) => {
     console.log('Scenes:', data);
   });

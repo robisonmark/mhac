@@ -742,9 +742,9 @@ const addOvertime = (homeScore, awayScore) => {
     period: 'OT' + overtimeCount,
     homeScore: homeScore !== undefined ? homeScore : '',
     awayScore: awayScore !== undefined ? awayScore : '',
-    game_order: overtimeCount + 4
+    game_order: overtimeCount.value + 4
   })
-  overtimeCount++
+  overtimeCount.value++
 };
 
 const backToGameStats = () => {
@@ -761,7 +761,7 @@ const backToGameStats = () => {
 };
 
 const goToPlayerStats = () => {
-  boxscore = false
+  boxscore.value = false
 };
 
 const initNewGameStats = (rosterId) => {
@@ -822,12 +822,12 @@ const initNewGameStats = (rosterId) => {
 };
 
 const resetStats = () => {
-  currentNested = '';
-  currentSort = '';
-  currentSortDir = 'asc';
-  selectedGame = false;
-  roster = [];
-  pastGames = [];
+  currentNested.value = '';
+  currentSort.value = '';
+  currentSortDir.value = 'asc';
+  selectedGame.value = false;
+  roster.value = [];
+  pastGames.value = [];
 };
 
 const saveStats = () => {
@@ -910,15 +910,15 @@ const sortTable = (s, nested) => {
   // if s == current sort, reverse
   if (nested) {
     if (nested === currentNested) {
-      currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc'
+      currentSortDir.value = currentSortDir === 'asc' ? 'desc' : 'asc'
     }
-    currentSort = s
-    currentNested = nested
+    currentSort.value = s
+    currentNested.value = nested
   } else {
     if (s === currentSort) {
-      currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc'
+      currentSortDir.value = currentSortDir === 'asc' ? 'desc' : 'asc'
     }
-    currentSort = s
+    currentSort.value = s
   }
 
   newGameStats.player_stats.sort((a, b) => {

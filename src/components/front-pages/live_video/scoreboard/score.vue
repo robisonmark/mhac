@@ -1,21 +1,12 @@
 <template>
-  <div :class='`score_block score_block-${location}`'>{{ value }}</div>
+  <div :class='`score_block score_block-${location.value}`'>{{ score.value }}</div>
 </template>
 
-<script>
-export default {
-  name: 'score',
-  data() {
-    return {
-
-    }
-  },
-
-  props: [
-    'location',
-    'value'
-  ]
-}
+<script setup>
+const props = defineProps({
+  location: String,
+  score: Number,
+})
 </script>
 
 <style lang="less">

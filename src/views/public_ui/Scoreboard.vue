@@ -1,9 +1,8 @@
 <template>
   <div class="scoreboard" @keydown.space="timer">
-    {{ home_team_slug }}
-    <!-- <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts"
+    <teamBlock location="home" v-model="home_team_slug" :score="home_score" :timeouts="home_timeouts"
       :bonus="away_fouls >= gameRules.fouls_bonus" :bonusPlus="home_fouls >= gameRules.fouls_double_bonus"
-      :possession="nextPossession === 'home'"></teamBlock> -->
+      :possession="nextPossession === 'home'"></teamBlock>
 
     <div class="gameStats">
       <div class="timeBlock">
@@ -20,10 +19,9 @@
           alt="Midsouth Home School Athletic Conference Logo" />
       </div>
     </div>
-    {{ away_team_slug }}
-    <!-- <teamBlock location="away" v-model="away_team_slug" :score="away_score" :timeouts="away_timeouts"
+    <teamBlock location="away" v-model="away_team_slug" :score="away_score" :timeouts="away_timeouts"
       :bonus="away_fouls >= gameRules.fouls_bonus" :bonusPlus="away_fouls >= gameRules.fouls_double_bonus"
-      :possession="nextPossession === 'away'"></teamBlock> -->
+      :possession="nextPossession === 'away'"></teamBlock>
   </div>
 </template>
 
@@ -35,8 +33,8 @@ import { useStore } from "vuex";
 const store = useStore();
 const teamBlock = team;
 
-const home_team_slug = ref('');
-const away_team_slug = ref('');
+const home_team_slug = ref('tennessee_heat');
+const away_team_slug = ref('nashville_central_christian');
 const home_fouls = ref(0);
 const away_fouls = ref(0);
 const home_score = ref(0);

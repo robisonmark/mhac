@@ -9,7 +9,7 @@ import { robros } from './base'
 
 class api {
 
-  constructor () {
+  constructor() {
     const base = robros
     base.interceptors.response.use(
       this.handleSuccess,
@@ -17,11 +17,11 @@ class api {
     )
   }
 
-  handleSuccess (response) {
+  handleSuccess(response) {
     return response
   }
 
-  handleError (err) {
+  handleError(err) {
     console.error("In Error", err)
     return Promise.reject(err)
     // return err
@@ -32,7 +32,7 @@ class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  async login (username, password) {
+  async login(username, password) {
     return robros({
       url: '/login/',
       method: 'POST',
@@ -49,7 +49,7 @@ class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  async getCurrentSeasons () {
+  async getCurrentSeasons() {
     return robros({
       url: '/getCurrentSeasons',
       method: 'GET'
@@ -62,7 +62,7 @@ class api {
      * @param {string} seasonId - Season Level ID
      * @return - JSON Object of players by team
     ***/
-  async getTeamCount (seasonId) {
+  async getTeamCount(seasonId) {
     return robros({
       url: '/getTeamCount/' + seasonId,
       method: 'GET'
@@ -75,7 +75,7 @@ class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  async getStandings (seasonId) {
+  async getStandings(seasonId) {
     const queryParms = seasonId ? '/' + seasonId : ''
     return robros({
       url: '/getStandings' + queryParms,
@@ -89,7 +89,7 @@ class api {
      * @param {object} data - Stat JSON Body
      * @return - JSON Object of players by team
     ***/
-  async getSeasonStats (data) {
+  async getSeasonStats(data) {
     // let queryParms = '?'
     // Object.keys(data).forEach(string => {
     //   // console.log(string)
@@ -109,7 +109,7 @@ class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  async getGameResults (gameId, teamId) {
+  async getGameResults(gameId, teamId) {
     // gameId = gameId ? gameId + '/' : ''
     // teamId = teamId ? teamId + '/' : ''
     let path = ''
@@ -134,7 +134,7 @@ class api {
    * @param {object} body - Player JSON Body
    * @return - JSON Object of players by team
   ***/
-  async addGameResults (gameId, stats) {
+  async addGameResults(gameId, stats) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -164,7 +164,7 @@ class api {
      * @param {object} id - ID
      * @return - JSON Object of players by team
     ***/
-  async getTeams (id) {
+  async getTeams(id) {
     id = id ? '/' + id : ''
 
     return robros({
@@ -178,7 +178,7 @@ class api {
      * @param {object} team - Team UUID
      * @return - JSON Object of players by team
     ***/
-  async getPlayers (team) {
+  async getPlayers(team) {
     return robros({
       url: `/getPlayers/${team}`,
       method: 'GET'
@@ -190,7 +190,7 @@ class api {
      * @param {object} team - Team UUID
      * @return - JSON Object of players by team
     ***/
-  async getRoster (level) {
+  async getRoster(level) {
     return robros({
       url: `/getRoster/${level}`,
       method: 'GET'
@@ -203,7 +203,7 @@ class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  async getSchedule (season, team, year) {
+  async getSchedule(season, team, year) {
     let urlString = '/getSchedule'
     let addedParams = ''
 
@@ -235,7 +235,7 @@ class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  async getLevels (season, team) {
+  async getLevels(season, team) {
     return robros({
       url: '/getLevels',
       method: 'GET'
@@ -249,7 +249,7 @@ class api {
      * @param {string} slug - Team Slug
      * @return - JSON Object of players by team
     ***/
-  async getSeasonTeams (slug = '', seasonid = null) {
+  async getSeasonTeams(slug = '', seasonid = null) {
     if (slug !== '' && seasonid !== null) {
       slug = slug + '/' + seasonid
     } else if (slug === '' && seasonid !== null) {
@@ -268,21 +268,21 @@ class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  async getTournamentInformation (body) {
+  async getTournamentInformation(body) {
     return robros({
       url: '/getTournamentInformation/',
       method: 'GET'
     })
   }
 
-  async getActiveTournaments (body) {
+  async getActiveTournaments(body) {
     return robros({
       url: '/getActiveTournaments',
       method: 'GET'
     })
   }
 
-  async sendStats (body, gameId, teamId) {
+  async sendStats(body, gameId, teamId) {
     return robros({
       url: '/addFileGameStats/' + gameId + '/' + teamId,
       method: 'POST',
@@ -290,14 +290,14 @@ class api {
     })
   }
 
-  async getActiveYear () {
+  async getActiveYear() {
     return robros({
       url: '/getActiveYear',
       method: 'GET'
     })
   }
 
-  async getTeamByStandings (seasonId, rank) {
+  async getTeamByStandings(seasonId, rank) {
     return robros({
       url: '/lookupTeamByStandings/' + seasonId + '/' + rank,
       method: 'GET'
@@ -310,7 +310,7 @@ class api {
    * @param {object} body - Player JSON Body
    * @return - JSON Object of players by team
   ***/
-  async updateTournamentGame (body) {
+  async updateTournamentGame(body) {
     return robros({
       url: '/updateTournamentGame/',
       method: 'POST',
@@ -324,7 +324,7 @@ class api {
      *
      *
     ***/
-  async addTournamentGame (body) {
+  async addTournamentGame(body) {
     return robros({
       url: '/addTournamentGame/',
       method: 'POST',
@@ -332,7 +332,7 @@ class api {
     })
   }
 
-  async getYear (active) {
+  async getYear(active) {
     const returnUrl = active ? '/getActiveYear' : '/getYears/'
     return robros({
       url: returnUrl,
@@ -340,14 +340,14 @@ class api {
     })
   }
 
-  async getAdminSeasons () {
+  async getAdminSeasons() {
     return robros({
       url: '/getAdminSeasons',
       method: 'GET'
     })
   }
 
-  async updateSeason (body) {
+  async updateSeason(body) {
     return robros({
       url: '/updateSeason',
       method: 'PUT',
@@ -355,7 +355,7 @@ class api {
     })
   }
 
-  async addSeason (body) {
+  async addSeason(body) {
     return robros({
       url: '/addSeason',
       method: 'POST',
@@ -363,14 +363,14 @@ class api {
     })
   }
 
-  async getWebSocketUrl () {
+  async getWebSocketUrl() {
     return robros({
       url: '/websocketUrl',
       method: 'GET'
     })
   }
 
-  async updateWebSocketUrl (body) {
+  async updateWebSocketUrl(body) {
     return robros({
       url: '/websocketUrl',
       method: 'POST',
@@ -378,7 +378,7 @@ class api {
     })
   }
 
-  async addTeam (body) {
+  async addTeam(body) {
     return robros({
       url: '/createTeam',
       method: 'POST',
@@ -386,9 +386,9 @@ class api {
     })
   }
 
-  async sendRoster (body, teamId, year) {
+  async sendRoster(body, teamId, year) {
     return robros({
-      url: '/teamFile/' + teamId + "/"+ year,
+      url: '/teamFile/' + teamId + "/" + year,
       method: 'POST',
       data: body
     })

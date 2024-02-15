@@ -8,12 +8,13 @@
           <span class="focused">{{ slug }}</span>
           &nbsp;
         </div>
-        <div class="switch" v-if="edit === false" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+        <div class="switch" v-if="edit === false" @click="edit.value = !edit.value"
+          :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
           <span class="focused">Edit</span>
         </div>
 
-        <div class="switch" v-if="edit" @click="save()">
+        <div class="switch" v-if="edit" @click="save">
           <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon"
             v-if="!saving"></font-awesome-icon>
           <span class="focused" v-if="!saving">Save</span>
@@ -256,7 +257,7 @@ onBeforeMount(() => {
   emit('save', payload => {
     save()
   })
-  emit('changeEdit', () => { edit = !edit });
+  emit('changeEdit', () => { edit.value = !edit.value });
   emit('toggleModal', toggleModal);
   emit('uploadError', handleUploadError);
 });
@@ -292,7 +293,7 @@ const initLeveledRoster = (lvlId) => {
         }
       })
     })
-    roster = rosterArr
+    roster.value = rosterArr
     console.log("initLeveledRoster", roster)
   })
 };
