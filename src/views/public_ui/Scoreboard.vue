@@ -7,13 +7,13 @@
     <div class="gameStats">
       <div class="timeBlock">
         <div class="timeRemaining" :class="{ hidden: isHidden }">
-          <template v-if="time_remaining.minutes !== 0">{{ time_remaining.minutes }}:</template>{{
+          <!-- <template v-if="time_remaining.minutes !== 0">{{ time_remaining.minutes }}:</template>{{
             displaySeconds(time_remaining.seconds)
-          }}<template v-if="time_remaining.minutes === 0">.{{ time_remaining.tenth_seconds }}</template>
+          }}<template v-if="time_remaining.minutes === 0">.{{ time_remaining.tenth_seconds }}</template> -->
         </div>
-        <div class="period" v-if="!final && !half">{{ period }}</div>
-        <div class="period" v-if="!final && half">Half</div>
-        <div class="period" v-if="final">Final</div>
+        <div class="period">{{ period }}</div>
+        <!-- <div class="period" v-if="!final && half">Half</div> -->
+        <!-- <div class="period" v-if="final">Final</div> -->
 
         <img class="logo_mhac" src="/static/color-team-logos/mhaclogo.png"
           alt="Midsouth Home School Athletic Conference Logo" />
@@ -29,8 +29,11 @@
 import { ref, watch, computed } from 'vue';
 import { useStore } from 'vuex';
 import team from '@/components/front-pages/live_video/scoreboard/team';
+import OBSWebSocket from 'obs-websocket-js';
+
 const teamBlock = team;
 const store = useStore();
+
 
 // Reactive data
 const isKeyDown = ref(false);
@@ -60,7 +63,7 @@ let connection = null;
 // const final = computed(() => {
 //   return store.state.scoreController.final;
 // });
-// const isHidden = ref(false)
+const isHidden = ref(true)
 // const clockDisplay = ref(() => {
 //   return store.state.scoreController.clock_display;
 // });
@@ -137,13 +140,24 @@ const home_fouls = computed({
   }
 });
 
+const period = computed({
+  get() {
+    if (store.state.scoreController.period) {
+      return getNumberWithOrdinal(store.state.scoreController.period);
+    }
+    return 0
+  }
+});
+
 // const away_fouls = () => store.state.scoreController.fouls.away;
 // const away_score = () => store.state.scoreController.score.away;
 // const home_fouls = () => store.state.scoreController.fouls.home;
 // const homeScore = () => store.state.scoreController.score.home;
 const homeTimeouts = () => store.state.scoreController.timeouts.home;
 const awayTimeouts = () => store.state.scoreController.timeouts.away;
-const period = () => getNumberWithOrdinal(store.state.scoreController.period);
+// const period = () => {
+//   return getNumberWithOrdinal(store.state.scoreController.period);
+// };
 const nextPossession = () => store.state.scoreController.possession;
 const timerRunning = () => store.state.scoreController.clock.running;
 const webSocketURL = () => store.getters.getWebsocket;
@@ -151,35 +165,43 @@ const half = () => store.state.scoreController.half;
 const final = () => store.state.scoreController.final;
 const gameRules = () => store.getters.getGameConfig;
 
+const obs = new OBSWebSocket();
+obs.connect('ws://localhost:4455');
+
 // Watchers
 watch(gameRules, (newValue) => {
+  console.log(newValue)
   homeTimeouts.value = newValue.timeouts;
   awayTimeouts.value = newValue.timeouts;
-  timeRemaining.value = newValue.time;
+  time_remaining.value = newValue.time;
 }, { deep: true });
 
 watch(period, () => {
-  timeRemaining.value = {
-    minutes: 0,
-    seconds: 0,
-    hundreds_seconds: 100
-  };
-  if (getNumberWithOrdinal(store.state.scoreController.period).includes('OT')) {
-    timeRemaining.value = gameRules.value.overtime;
-  } else {
-    timeRemaining.value = gameRules.value.time;
-  }
-  callStore({
-    action: 'setTime',
-    value: timeRemaining.value
-  });
-  if (getNumberWithOrdinal(store.state.scoreController.period) === 'OT 1') {
-    const data = {
-      action: 'resetFouls',
-      value: gameRules.value.bonus_fouls
-    };
-    callStore(data);
-  }
+  // console.log('tr: ', this.time_remaining.value)
+  // time_remaining.value = {
+  // minutes: 0,
+  // seconds: 0,
+  // hundreds_seconds: 100
+  // };
+  console.log(store.state.scoreController.period);
+  // if (getNumberWithOrdinal(store.state.scoreController.period).includes('OT')) {
+  //   console.log(gameRules.value);
+  //   // time_remaining.value = gameRules.overtime;
+  // } else {
+  //   console.log(gameRules)
+  //   // time_remaining.value = gameRules.time;
+  // }
+  // callStore({
+  //   action: 'setTime',
+  //   value: time_remaining.value
+  // });
+  // if (getNumberWithOrdinal(store.state.scoreController.period) === 'OT 1') {
+  //   const data = {
+  //     action: 'resetFouls',
+  //     value: gameRules.value.bonus_fouls
+  //   };
+  //   callStore(data);
+  // }
 }, { deep: true });
 
 watch(half, (newValue) => {
@@ -225,20 +247,23 @@ watch(webSocketURL, () => {
 // Methods
 const connectWebSocket = () => {
   console.log('Starting connection to WebSocket Server', store.getters.getWebsocket);
-  connection = new WebSocket(store.getters.getWebsocket);
-  connection.onmessage = (event) => messageReceived(event);
+
 };
 
-
+obs.on('CustomEvent', (data) => {
+  console.log("customEvent", data)
+  messageReceived(event);
+})
 
 const callStore = (data) => {
+  console.log("Call Store", data)
   store.dispatch(data.action, data.value);
 };
 
 const messageReceived = (data) => {
   const message = JSON.parse(data.data);
-  // console.log('Message Recieved: ', message);
-  callStore(message.d);
+  console.log('Message Recieved: ', message);
+  callStore(message.d.eventData);
 }
 
 const resetTimer = () => {
@@ -255,7 +280,7 @@ const timer = () => {
 
 const runTimer = () => {
   const timerFunc = setInterval(() => {
-    const timerRemaining = (timeRemaining.value.tenth_seconds / 10) + (timeRemaining.value.seconds / 60) + timeRemaining.value.minutes;
+    const timerRemaining = (time_remaining.value.tenth_seconds / 10) + (time_remaining.value.seconds / 60) + time_remaining.value.minutes;
 
     if (Object.entries(timerRemaining) === 0) {
       const data = {
@@ -266,17 +291,17 @@ const runTimer = () => {
     }
 
     if (timerRemaining > 0) {
-      if (timeRemaining.value.seconds === 0 && timeRemaining.value.minutes > 0) {
-        timeRemaining.value.minutes -= 1;
-        timeRemaining.value.seconds = 59;
+      if (time_remaining.value.seconds === 0 && time_remaining.value.minutes > 0) {
+        time_remaining.value.minutes -= 1;
+        time_remaining.value.seconds = 59;
       }
 
-      if (timeRemaining.value.tenth_seconds === 0 && timeRemaining.value.seconds > 0) {
-        timeRemaining.value.seconds -= 1;
-        timeRemaining.value.tenth_seconds = 10;
+      if (time_remaining.value.tenth_seconds === 0 && time_remaining.value.seconds > 0) {
+        time_remaining.value.seconds -= 1;
+        time_remaining.value.tenth_seconds = 10;
       }
 
-      timeRemaining.value.tenth_seconds -= 1;
+      time_remaining.value.tenth_seconds -= 1;
     }
   }, 100);
 };
