@@ -4,22 +4,12 @@
   </div>
 </template>
 
-<script>
-// import { api } from '../../api/endpoints.js'
+<script setup>
 
-export default {
-  name: 'stats',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
-  },
-  created () {
-  }
-}
+const msg = 'Welcome to Your Vue.js App';
+
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+/* Add your scoped styles here */
 </style>

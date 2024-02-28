@@ -29,14 +29,14 @@
         }
       ],
       "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-mhacsports-dev-161314-deployment/amplify-cfn-templates/auth/template.json",
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-mhacsports-dev-161314-deployment/amplify-cfn-templates/auth/userPoolGroups-cloudformation-template.json",
         "logicalId": "authuserPoolGroups"
       },
-      "lastPushTimeStamp": "2020-10-05T21:49:25.218Z",
+      "lastPushTimeStamp": "2023-01-23T04:02:46.442Z",
       "output": {
         "adminGroupRole": "arn:aws:iam::698535776159:role/us-east-2_CDJU8RER6-adminGroupRole"
       },
-      "lastPushDirHash": "UUZrhg6qhcUEL1IP0uGBDlW5pFo="
+      "lastPushDirHash": "MK3+axNPUppOm7oy43ZzkrxFRJA="
     },
     "mhacsports": {
       "service": "Cognito",
@@ -44,10 +44,10 @@
       "dependsOn": [],
       "customAuth": false,
       "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-mhacsports-dev-161314-deployment/amplify-cfn-templates/auth/mhacsports-cloudformation-template.yml",
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-mhacsports-dev-161314-deployment/amplify-cfn-templates/auth/mhacsports-cloudformation-template.json",
         "logicalId": "authmhacsports"
       },
-      "lastPushTimeStamp": "2020-10-05T21:49:25.218Z",
+      "lastPushTimeStamp": "2023-01-23T04:02:46.686Z",
       "output": {
         "AppClientSecret": "72cv6eiekpe1kklnohfqfqpe24i5r77dbq6n3bk93rk1557ou11",
         "UserPoolId": "us-east-2_CDJU8RER6",
@@ -55,9 +55,29 @@
         "AppClientID": "7u8vtgha3k25kmo52fqbp6tqij",
         "IdentityPoolId": "us-east-2:45d5f34a-f275-47c9-b5fe-8ad6e76fc743",
         "IdentityPoolName": "mhacsports__dev",
-        "UserPoolName": "mhacsports_users"
+        "UserPoolName": "mhacsports_users",
+        "CreatedSNSRole": "arn:aws:iam::698535776159:role/sns2f22b1d8161314-dev",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-2:698535776159:userpool/us-east-2_CDJU8RER6"
       },
-      "lastPushDirHash": "j9GkG0da8LvB0y7MKm+fMIBhEdI="
+      "lastPushDirHash": "TB9IE6BtgLLaC59OzCmC9gujNT8=",
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -23,18 +24,29 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157989243-1"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-      gtag('config', 'UA-157989243-1');
+        gtag('config', 'UA-157989243-1');
     </script>
-  </head>
-  <body>
+    <script type="module" src="/src/main.js"></script>
+</head>
+
+<body>
     <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+        <strong>We're sorry but this app doesn't work properly without JavaScript enabled. Please enable it to
+            continue.</strong>
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
-  </body>
+    <script>
+        window.global = window;
+        window.process = {
+            env: {DEBUG: undefined},
+        }
+        var exports = {};
+    </script>
+</body>
+
 </html>

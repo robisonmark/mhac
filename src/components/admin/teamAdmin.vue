@@ -3,24 +3,25 @@
     <h2>Create or Edit Teams</h2>
     <header class="contentPad">
       <div class="buttonCon">
-        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
+        <div class="switch" v-if="edit === false" @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
           <span class="focused">Edit</span>
         </div>
 
         <div class="switch" v-if="edit" @click="save()">
-          <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon" v-if="!saving"></font-awesome-icon>
+          <font-awesome-icon :icon="saved === false ? ['fas', 'save'] : ['fas', 'check']" class="icon"
+            v-if="!saving"></font-awesome-icon>
           <span class="focused" v-if="!saving">Save</span>
           <span v-else>saving...</span>
         </div>
       </div>
     </header>
     <div class="contentPad">
-      <editTable  :columns="columns" :config="config" :tabledata="teamArray" v-model="new_team" :edit="edit">
-        <template slot="tbody" v-if="edit">
+      <editTable :columns="columns" :config="config" :tabledata="teamArray" v-model="new_team" :edit="edit">
+        <template v-slot="body" v-if="edit">
           <tr v-for="(team, index) in teamArray" :key="index">
             <td class="input-con">
-                <input type="text" v-model="team.team_name">
+              <input type="text" v-model="team.team_name">
             </td>
             <td>
               <input type="text" v-model="team.team_mascot">
@@ -49,7 +50,7 @@
           </tr>
           <tr>
             <td class="input-con">
-                <input type="text" v-model="new_team.team_name">
+              <input type="text" v-model="new_team.team_name">
             </td>
             <td>
               <input type="text" v-model="new_team.team_mascot">
@@ -82,131 +83,123 @@
   </div>
 </template>
 
-<script>
-import { api } from '@/api/endpoints'
-import editTable from '@/components/editTable'
+<script setup>
+import { ref, reactive, watch, computed } from 'vue';
+import api from '@/api/endpoints.js';
+import editTable from '@/components/editTable.vue'
+// import selectbox from '@/components/selectbox.vue'
+import { useStore } from 'vuex';
 
-export default {
-  name: 'teamManager',
-  data () {
-    return {
-      teamArray: [],
-      new_team: {
-        team_name: '',
-        team_mascot: '',
-        main_color: '',
-        secondary_color: '',
-        website: '',
-        logo_color: '',
-        logo_grey: '',
-        slug: '',
-        active: true
-      },
-      columns: [
-        {
-          name: 'Team Name',
-          icon: '',
-          field_name: 'team_name',
-          type: 'text'
-        },
-        {
-          name: 'Team Mascot',
-          icon: '',
-          field_name: 'team_mascot',
-          type: 'text'
-        },
-        {
-          name: 'Main Color',
-          icon: '',
-          field_name: 'main_color',
-          type: 'text'
-        },
-        {
-          name: 'Secondary Color',
-          icon: '',
-          field_name: 'secondary_color',
-          type: 'text'
-        },
-        {
-          name: 'Website',
-          icon: '',
-          field_name: 'website',
-          type: 'text'
-        },
-        {
-          name: 'Logo Color',
-          icon: '',
-          field_name: 'logo_color',
-          type: 'text'
-        },
-        {
-          name: 'Logo Grey',
-          icon: '',
-          field_name: 'logo_grey',
-          type: 'text'
-        },
-        {
-          name: 'Slug',
-          icon: '',
-          field_name: 'slug',
-          type: 'text'
-        },
-        {
-          name: 'Active',
-          icon: '',
-          field_name: 'active',
-          type: 'boolean'
-        }
-      ],
-      config: {
-        page: 'teams'
-      },
-      edit: false,
-      saving: false
-    }
-  },
-  components: {
-    editTable: editTable
-  },
-  computed: {
+// Components
+import Multiselect from 'vue-multiselect';
 
+const teamArray = ref([]);
+const new_team = reactive({
+  team_name: '',
+  team_mascot: '',
+  main_color: '',
+  secondary_color: '',
+  website: '',
+  logo_color: '',
+  logo_grey: '',
+  slug: '',
+  active: true
+});
+const columns = [
+  {
+    name: 'Team Name',
+    icon: '',
+    field_name: 'team_name',
+    type: 'text'
   },
-  created () {
-    this.teams()
+  {
+    name: 'Team Mascot',
+    icon: '',
+    field_name: 'team_mascot',
+    type: 'text'
   },
-  methods: {
-    teams () {
-      api.getTeams().then(response => {
-        this.teamArray = response.data
-        console.log(this.teamArray)
-      })
-    },
-    save () {
-      api.addTeam(this.new_team)
-        .then(response => {
-          this.initNewTeam()
-        })
-        . catch(err => {
-          console.log(err)
-        })
-    },
-    initNewTeam () {
-      this.new_team = {
-        team_name: '',
-        team_mascot: '',
-        main_color: '',
-        secondary_color: '',
-        website: '',
-        logo_color: '',
-        logo_grey: '',
-        slug: '',
-        active: true
-      }
-    }
+  {
+    name: 'Main Color',
+    icon: '',
+    field_name: 'main_color',
+    type: 'text'
+  },
+  {
+    name: 'Secondary Color',
+    icon: '',
+    field_name: 'secondary_color',
+    type: 'text'
+  },
+  {
+    name: 'Website',
+    icon: '',
+    field_name: 'website',
+    type: 'text'
+  },
+  {
+    name: 'Logo Color',
+    icon: '',
+    field_name: 'logo_color',
+    type: 'text'
+  },
+  {
+    name: 'Logo Grey',
+    icon: '',
+    field_name: 'logo_grey',
+    type: 'text'
+  },
+  {
+    name: 'Slug',
+    icon: '',
+    field_name: 'slug',
+    type: 'text'
+  },
+  {
+    name: 'Active',
+    icon: '',
+    field_name: 'active',
+    type: 'boolean'
   }
+];
+const config = { page: 'teams' };
+const edit = ref(false);
+const saving = ref(false);
 
-}
+//Methods
+const teams = () => {
+  api.getTeams().then(response => {
+    console.error(response.data)
+    teamArray.value = response.data
+    console.log(teamArray.value)
+  })
+};
+const save = () => {
+  api.addTeam(new_team)
+    .then(response => {
+      initNewTeam()
+    })
+    .catch(err => {
+      console.log(err)
+    })
+};
+
+// const initNewTeam = () => {
+//   new_team = {
+//     team_name: '',
+//     team_mascot: '',
+//     main_color: '',
+//     secondary_color: '',
+//     website: '',
+//     logo_color: '',
+//     logo_grey: '',
+//     slug: '',
+//     active: true
+//   }
+// };
+
+teams();
+// initNewTeam();
+
 </script>
-<style scoped lang="less">
 
-</style>
+<style scoped lang="less"></style>
