@@ -1,66 +1,64 @@
 /**
   TODO: signout reset slug, team, usergroups, users, userattributes, auth, teamLevels
+  https://medium.com/simform-engineering/vue-js-and-aws-amplify-unleashing-the-full-potential-8ccdb6c87b2d
 */
 <template>
   <div class="flex-con">
-    <amplify-authenticator v-if="authState !== 'signedin'" :styles="styles"></amplify-authenticator>
-    <div v-if="authState === 'signedin' && user">
-      <amplify-sign-out></amplify-sign-out>
-      <div>Hello, {{user.username}}</div>
-    </div>
+    <authenticator :hide-sign-up="true" :services="services" :login-mechanisms="['email']">
+      <template v-slot="{ user, signOut }">
+        <h1>Hello {{ user.username }}!</h1>
+          <button @click="signOut">Sign Out</button>
+      </template>
+    </authenticator>
+    <template v-if="auth.route === 'authenticated'">
+      <button @click="auth.signOut">Sign out</button>
+    </template>
   </div>
 </template>
 
-<script lang="js">
-import { onAuthUIStateChange } from '@aws-amplify/ui-components'
+<script lang="js" setup>
+  import { toRefs } from 'vue';
+  import { useRouter } from 'vue-router'
+  import { useStore } from'vuex';
+  
+  import "@aws-amplify/ui-vue/styles.css";
+  import { Authenticator, useAuthenticator } from '@aws-amplify/ui-vue';
+  import { signIn, fetchAuthSession } from 'aws-amplify/auth';
 
-import { mapGetters } from 'vuex'
+  const auth = useAuthenticator();
+  const router = useRouter();
+  const store = useStore();
 
-export default {
-  name: 'AuthStateApp',
-  data () {
-    return {
-      user: undefined,
-      authState: undefined,
-      styles: {
-        border: '1px solid #121212;'
-      }
+  const goToTeamManagement = (userGroups) => {
+    if (userGroups.includes('Admin')) {
+      router.push({ name: 'admin' })
+    } else {
+      const team = this.team
+      router.push({ name: 'teamDashboard', params: { slug: team } })
     }
-  },
-  computed: {
-    ...mapGetters(['userGroups', 'team'])
-  },
-  watch: {
-    authState: {
-      handler (newValue) {
-        if (newValue === 'signedin') {
-          this.$store.commit('set_valid', true)
-          this.$store.dispatch('load', this.user)
-          this.goToTeamManagement()
-        }
-      }
-    }
-  },
-  created () {
-    onAuthUIStateChange((authState, authData) => {
-      this.authState = authState
-      this.user = authData
-    })
-  },
-  methods: {
-    goToTeamManagement () {
-      if (this.userGroups[0] === 'Admin') {
-        this.$router.push({ name: 'admin' })
-      } else {
-        const team = this.team
-        this.$router.push({ name: 'teamDashboard', params: { slug: team } })
-      }
-    }
-  },
-  beforeDestroy () {
-    return onAuthUIStateChange
   }
-}
+
+  async function handleSignIn(user_creds) {
+    const { isSignedIn, nextStep } = await signIn({
+      username: user_creds.username,
+      password: user_creds.password
+    });
+    if (nextStep.signInStep === 'DONE') {
+      const { user, idToken } = (await fetchAuthSession()).tokens ?? {};
+      const usergroups = idToken?.payload?.['cognito:groups']
+      store.commit('set_valid', true)
+      store.dispatch('load', idToken)
+      store.commit('set_loggedIn', true)
+      goToTeamManagement(usergroups)
+    } else {
+      return nextStep.signInStep
+    }
+  }
+
+  const services = {
+    handleSignIn: handleSignIn,
+  }
+
 </script>
 
 <style lang="less" scoped>
@@ -70,12 +68,14 @@ export default {
   align-items: center;
   justify-content: center;
 }
-amplify-authenticator {
+</style>
+
+<style>
+[data-amplify-authenticator] {
   display: flex;
   justify-content: center;
   align-items: center;
   flex: 1;
-  --container-height: auto;
-  --border: 1px solid #121212;
+  --amplify-components-authenticator-router-border-color: 1px solid #121212;
 }
 </style>

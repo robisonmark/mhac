@@ -1,14 +1,17 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+// import Vue from 'vue'
+// import Vuex from 'vuex'
+// import * as Vue from 'vue';
+// import * as Vuex from 'vuex';
+import { createStore } from 'vuex'
 
 // api
-import { api } from '@/api/endpoints.js'
+import api from '@/api/endpoints.js'
 
 // Modules
 import auth from './modules/store.auth'
 import scoreController from './modules/store.scoreController'
 
-Vue.use(Vuex)
+// Vue.use(Vuex)
 
 const namespaced = true
 const modules = { auth, scoreController }
@@ -37,89 +40,84 @@ const state = {
 
 const mutations = {
   // make.mutations(state)
-  set_user (state, payload) {
+  set_user(state, payload) {
     // console.log('payload',payload)
     state.user.team_id = payload.team_id
     state.user.slug = payload.slug
   },
-  set_slug (state, payload) {
+  set_slug(state, payload) {
     state.slug = payload
   },
-  set_teamAssocLvl (state, payload) {
+  set_teamAssocLvl(state, payload) {
     state.teamAssocLvl = payload
   },
-  set_userGroups (state, payload) {
+  set_userGroups(state, payload) {
     state.userGroups = payload
   },
-  set_userAttributes (state, payload) {
+  set_userAttributes(state, payload) {
     console.log('userAttributes', state)
     console.log('userAttributes', payload)
   },
-  set_loaded (state, payload) {
+  set_loaded(state, payload) {
     state.loaded = payload
   },
-  set_authenticated (state, payload) {
+  set_authenticated(state, payload) {
     state.authenticated = payload
   },
-  set_seasons (state, payload) {
+  set_seasons(state, payload) {
     state.seasons = payload
   },
-  set_teams (state, payload) {
+  set_teams(state, payload) {
     state.teams = payload
   },
-  set_levels (state, payload) {
+  set_levels(state, payload) {
     state.levels = payload
   },
-  set_configOptions (state, payload) {
+  set_configOptions(state, payload) {
     console.log('configOptions', state)
     console.log('configOptions', payload)
   },
-  set_readWriteAccess (state, payload) {
+  set_readWriteAccess(state, payload) {
     state.readWriteAccess = payload
   },
-  set_fullSchedule (state, payload) {
+  set_fullSchedule(state, payload) {
     state.fullSchedule = payload
   },
-  set_seasonTeams (state, payload) {
+  set_seasonTeams(state, payload) {
     state.season_teams = payload
   }
 }
 
 const actions = {
-  setUser (context, payload) {
+  setUser(context, payload) {
     context.commit('set_user', payload)
   },
 
-  setTeamAssocLvl (context, payload) {
+  setTeamAssocLvl(context, payload) {
     context.commit('set_teamAssocLvl', payload)
   },
 
-  setAuth (context, payload) {
+  setAuth(context, payload) {
     context.commit('set_authenticated', payload)
   },
 
-  setLoaded (context, payload) {
+  setLoaded(context, payload) {
     context.commit('set_loaded', payload)
   },
 
-  readWriteAccess (context, payload) {
+  readWriteAccess(context, payload) {
     context.commit('set_readWriteAccess', payload)
   },
 
-  async setSeasons (context, payload) {
+  async setSeasons(context, payload) {
     await api.getCurrentSeasons().then(response => {
       context.commit('set_seasons', response.data)
     })
   },
 
-  async setTeams ({ commit }) {
+  async setTeams({ commit }) {
     commit('set_teams',
       await api.getTeams().then(response => {
-        // TODO: Convert this to be an object with slug as the object key ie/
-        // {
-        //  slug1: {team object},
-        //  slug2: {team_object}
-        // }
         return response.data
       }).catch(error => {
         console.log(error)
@@ -128,7 +126,7 @@ const actions = {
       ))
   },
 
-  async setTeam (context, payload) {
+  async setTeam(context, payload) {
     await context.dispatch('setTeams')
     const groups = store.getters.userGroups
     const teams = store.getters.teams
@@ -151,13 +149,13 @@ const actions = {
     }
   },
 
-  async setLevels (context, payload) {
+  async setLevels(context, payload) {
     await api.getLevels().then(response => {
       context.commit('set_levels', response.data)
     })
   },
 
-  async setFullSchedule (context, payload) {
+  async setFullSchedule(context, payload) {
     await api.getSchedule().then(response => {
       const fixedData = []
       response.data.forEach(game => {
@@ -170,12 +168,13 @@ const actions = {
     })
   },
 
-  async setSeasonTeams (context) {
+  async setSeasonTeams(context) {
+    console.log("Made it here")
     await api.getSeasonTeams().then(response => {
       context.commit('set_seasonTeams', response.data)
     })
   },
-  load (context) {
+  load(context) {
     // ---- These events are emitted once the listed module is loaded ----- //
     // Loads the vuex 'es' module (Elastic Search) [MUST BE AFTER AUTH]
     // EventBus.$on('auth/loaded', () => context.dispatch('es/load'))
@@ -201,52 +200,53 @@ const getters = {
       console.log(state.teams)
       return state.teams.filter(team => team.slug === slug)[0]
     },
-  user () {
+  user() {
     return state.user
   },
-  team () {
+  team() {
     // console.log('team', state.user)
     return state.user.slug
   },
-  teams (state) {
+  teams(state) {
     return state.teams
   },
-  teamLevels (state) {
+  teamLevels(state) {
     return state.teamAssocLvl
   },
-  levels () {
+  levels() {
     return state.levels
   },
-  schedule () {
+  schedule() {
     return state.fullSchedule
   },
-  userGroups (state) {
+  userGroups(state) {
     return state.userGroups
   },
-  userAttributes (state) {
+  userAttributes(state) {
     return state.userAttributes
   },
-  loaded (state) {
+  loaded(state) {
     return state.loaded
   },
-  authenticated (state) {
+  authenticated(state) {
     return state.authenticated
   },
-  seasons (state) {
+  seasons(state) {
     return state.seasons
   },
-  seasonTeams (state) {
+  seasonTeams(state) {
+    console.log(state)
     return state.season_teams
   },
-  slug (state) {
+  slug(state) {
     return state.slug
   },
-  configOptions (state) {
+  configOptions(state) {
     return state.groups
   }
 }
 
-export const store = new Vuex.Store({
+export const store = createStore({
   state,
   strict,
   actions,

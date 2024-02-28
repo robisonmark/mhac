@@ -1,5 +1,5 @@
 import { robros } from './base'
-import AuthToken from './auth'
+// import AuthToken from './auth'
 
 class Admin {
   constructor () {
@@ -12,10 +12,12 @@ class Admin {
   handleSuccess (response) {
     // commented out because this controls all robros calls (base calls)
     // return response.data // uncomment to only pass data as the response, not the response signature
+    // console.log("In Handle Success", response.resp)
     return response
   }
 
   handleError (err) {
+    console.log(err)
     return err
   }
 

@@ -1,411 +1,364 @@
 <template>
   <div class="hello">
     <header class="contentPad">
-      <h2>{{this.$config.seasonYear}} Schedule <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox></h2>
+      <h2>config.seasonYear Schedule</h2>
+      <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" :label="'level'"
+        v-model="newGame.season">
+      </selectbox>
       <div class="buttonCon">
-        <div class="switch" v-if="edit === false"  @click="edit = !edit" :class="[edit === true ? 'selected' : '']">
-          <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
+        <div class="switch" v-if="!edit" @click="toggleEdit" :class="[edit ? 'selected' : '']">
+          <font-awesome-icon :icon="edit ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
           <span class="focused">Edit</span>
         </div>
 
-        <div class="switch" v-if="edit" @click="edit = !edit">
+        <div class="switch" v-if="edit" @click="toggleEdit">
           <font-awesome-icon :icon="['fas', 'check']" class="icon"></font-awesome-icon>
           <span class="focused">Done Editing</span>
-
         </div>
       </div>
     </header>
 
     <div class="contentPad">
-      <editTable  :columns="columns" :config="config" :tabledata="schedule" v-model="newGame" :edit="edit">
-        <template slot="tbody" v-if="!edit">
-
+      <editTable :columns="columns" :config="config" :tabledata="schedule" v-model="newGame" :edit="edit">
+        <template #body="{ data, index }" v-if="!edit">
           <!-- Current Scheduled Games -->
-          <tr v-for="(data, index) in schedule" :key="index">
-            <td><span :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</span></td>
-            <td>{{data.opponent.team_name}}</td>
-            <td>{{data.game_time}}</td>
-            <td>{{data.game_date}}</td>
-            <td>{{data.opponent.level_name}}</td>
-            <!-- <td></td> -->
-            <!-- <td @click="toggleModal(data)"><font-awesome-icon  :icon="['far', 'edit']" class="icon" ></font-awesome-icon></td> -->
-            <td @click="deleteGame(data, index)"><font-awesome-icon :icon="['far', 'trash-alt']" class="icon"></font-awesome-icon></td>
+          <tr v-for="(game, index) in schedule" :key="index">
+            <td><span :class="{ 'vs': !game.host }" class="currentCustom">{{ game.host ? 'vs' : '@' }}</span></td>
+            <td>{{ game.opponent.team_name }}</td>
+            <td>{{ game.game_time }}</td>
+            <td>{{ game.game_date }}</td>
+            <td>{{ game.opponent.level_name }}</td>
+            <td @click="deleteGame(game, index)"><font-awesome-icon :icon="['far', 'trash-alt']"
+                class="icon"></font-awesome-icon></td>
           </tr>
 
           <!-- Note for when a level hasn't been chosen -->
           <tr v-if="!newGame.season.season_id">
-            <td colspan="7" align="center" class="add-button">Please select a level to begin adding games
-            </td>
+            <td colspan="7" align="center" class="add-button">Please select a level to begin adding games</td>
           </tr>
 
           <tr v-else-if="!addNew" @click="addTo">
             <td colspan="7" align="center" class="add-button">
-              <template v-if="$route.name === 'roster'">Edit Roster</template>
+              <template v-if="route.name === 'roster'">Edit Roster</template>
               <template v-else>Add New Game to Schedule</template>
             </td>
           </tr>
 
           <tr v-else-if="addNew">
             <td class="input-con">
-              <div tabindex="0" @click="homeAwayDisplay(newGame)" @keyup.space="homeAwayDisplay(newGame)" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
+              <div tabindex="0" @click="homeAwayDisplay(newGame)" @keyup.space="homeAwayDisplay(newGame)"
+                :class="{ 'vs': !newGame.host }" class="currentCustom">{{ newGame.host ? 'vs' : '@' }}</div>
             </td>
             <td class="input-con">
-              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
-              </selectbox>
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" :placeholder="''"
+                :label="'team_name'" v-model="newGame.opponent"></selectbox>
             </td>
             <td class="input-con">
-                <input type="time" v-model="newGame.game_time" />
-              </td>
-            <td class="input-con">
-              <input type="date" v-model="newGame.game_date" />
+              <input type="time" v-model="newGame.game_time" />
             </td>
-            <td class="input-con">
-              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox>
-            </td>
-            <td @click="save(newGame)">
-                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
-            </td>
-          </tr>
-        </template>
-
-        <template slot="tbody" v-if="edit">
-          <tr v-for="(data, index) in schedule" :key="index">
-            <td class="input-con">
-              <div tabindex="0" @click="homeAwayDisplay(data)" @keyup.space="homeAwayDisplay(data)" :class="{'vs': !data.host}" class="currentCustom">{{data.host ? 'vs' : '@'}}</div>
-            </td>
-            <td class="input-con">
-              <!-- <selectbox id="opponent" :options="" :trackby="'team_name'" placeholder="Choose a team" v-model="">
-              </selectbox> -->
-              <multiselect
-                v-model="data.opponent"
-                label="team_name"
-                track-by="team_name"
-                :options="selectOptions"
-                :closeOnSelect="false"
-                :optionHeight="10"
-                :multiple="false"
-                :taggable="false"
-
-                >
-              </multiselect>
-            </td>
-            <td class="input-con">
-                <input type="time" v-model="data.game_time" />
-              </td>
-            <td class="input-con">
-              <input type="date" v-model="data.game_date" />
-            </td>
-            <td class="input-con">
-              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="data.season" data="data.season.opponent"></selectbox>
-            </td>
-            <td @click="save(data)">
-                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
-            </td>
-          </tr>
-
-          <tr >
-            <td class="input-con">
-              <div tabindex="0" @click="homeAwayDisplay(newGame)" @keyup.space="homeAwayDisplay(newGame)" :class="{'vs': !newGame.host}" class="currentCustom">{{newGame.host ? 'vs' : '@'}}</div>
-            </td>
-            <td class="input-con">
-              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" placeholder="" v-model="newGame.opponent">
-              </selectbox>
-            </td>
-            <td class="input-con">
-                <input type="time" v-model="newGame.game_time" />
-              </td>
             <td class="input-con">
               <input type="date" v-model="newGame.game_date" />
             </td>
             <td class="input-con">
-              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" v-model="newGame.season"></selectbox>
+              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level"
+                v-model="newGame.season"></selectbox>
             </td>
             <td @click="save(newGame)">
-                <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+              <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
             </td>
           </tr>
         </template>
-        <!-- </template> -->
+
+        <template #body="{ data, index }" v-if="edit">
+          <tr v-for="(game, index) in schedule" :key="index">
+            <td class="input-con">
+              <div tabindex="0" @click="homeAwayDisplay(game)" @keyup.space="homeAwayDisplay(game)"
+                :class="{ 'vs': !game.host }" class="currentCustom">{{ game.host ? 'vs' : '@' }}</div>
+            </td>
+            <td class="input-con">
+              <multiselect v-model="game.opponent" label="team_name" track-by="team_name" :options="selectOptions"
+                :closeOnSelect="false" :optionHeight="10" :multiple="false" :taggable="false"></multiselect>
+            </td>
+            <td class="input-con">
+              <input type="time" v-model="game.game_time" />
+            </td>
+            <td class="input-con">
+              <input type="date" v-model="game.game_date" />
+            </td>
+            <td class="input-con">
+              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level"
+                v-model="game.season" :data="game.season.opponent"></selectbox>
+            </td>
+            <td @click="save(game)">
+              <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td>
+          </tr>
+
+
+          <!-- Add A Team -->
+          <tr>
+            <td class="input-con">
+              <div tabindex="0" @click="homeAwayDisplay(newGame)" @keyup.space="homeAwayDisplay(newGame)"
+                :class="{ 'vs': !newGame.host }" class="currentCustom">{{ newGame.host ? 'vs' : '@' }}</div>
+            </td>
+            <td class="input-con">
+              <selectbox id="opponent" :options="selectOptions" :trackby="'team_name'" :placeholder="''"
+                :label="'team_name'" v-model="newGame.opponent"></selectbox>
+            </td>
+            <td class="input-con">
+              <input type="time" v-model="newGame.game_time" />
+            </td>
+            <td class="input-con">
+              <input type="date" v-model="newGame.game_date" />
+            </td>
+            <td class="input-con">
+              <selectbox id="levels" :options="seasons" :trackby="'level'" :placeholder="'Select Level'" :label="'level'"
+                v-model="newGame.season"></selectbox>
+            </td>
+            <td @click="save(newGame)">
+              <font-awesome-icon :icon="['fas', 'save']" class="icon"></font-awesome-icon>
+            </td>
+          </tr>
+        </template>
       </editTable>
     </div>
-
   </div>
 </template>
 
-<script>
-// api
-import { api } from '@/api/endpoints'
-import Admin from '@/api/admin'
+<script setup>
+import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
 
-// components
-import editTable from '@/components/editTable'
-// import modal from '@/components/modal'
-import selectbox from '../selectbox'
-
-// helpers
-import { mapState } from 'vuex'
-
+//apis
+import api from '@/api/endpoints';
+import Admin from '@/api/admin';
+//components
+import editTable from '@/components/editTable';
+import selectbox from '../selectbox';
+//third party components
+import Multiselect from 'vue-multiselect';
 // mixins
-import { root } from '@/mixins/root'
+import { useRootMixin } from '@/mixins/root'
 import { tablemix } from '@/mixins/table'
 
-// third party
-import Multiselect from 'vue-multiselect'
 
-export default {
-  name: 'schedule',
-  data () {
-    return {
-      modalTitle: 'Test',
-      columns: [
-        {
-          name: 'Host',
-          icon: '',
-          field_name: 'host',
-          type: 'customSelect'
-        },
-        {
-          name: 'Opponent',
-          icon: '',
-          field_name: 'opponent',
-          type: 'select',
-          track_by: 'team_name'
-        },
-        {
-          name: 'Time',
-          icon: '',
-          field_name: 'game_time',
-          type: 'time'
-        },
-        {
-          name: 'Date',
-          icon: '',
-          field_name: 'game_date',
-          type: 'date'
-        },
-        {
-          name: '',
-          icon: '',
-          field_name: 'actions',
-          type: 'actions'
-        }
-        // {
-        //   name: 'Level',
-        //   icon: '',
-        //   field_name: 'level_name',
-        //   type: '',
-        //   track_by: 'level_name'
-        // }
-      ],
-      config: {
-        page: 'schedule'
-      },
-      newGame: {
-        host: true,
-        opponent: '',
-        game_time: '',
-        game_date: '',
-        season: '',
-        neutral_site: ''
-      },
-      saved: false,
-      schedule: [],
-      gameUpdateList: [],
-      edit: false
-    }
+
+const modalTitle = ref('');
+const store = useStore();
+const route = useRoute();
+
+const emit = defineEmits(['save', 'toggleModal']);
+
+const newGame = reactive({
+  host: true,
+  opponent: '',
+  game_time: '',
+  game_date: '',
+  season: '',
+  neutral_site: ''
+});
+
+const saved = ref(false);
+const schedule = ref([]);
+const gameUpdateList = ref([]);
+const edit = ref(false);
+
+const columns = [
+  {
+    name: 'Host',
+    icon: '',
+    field_name: 'host',
+    type: 'customSelect'
   },
-  mixins: [
-    root,
-    tablemix
-  ],
-  components: {
-    editTable: editTable,
-    selectbox: selectbox,
-    Multiselect
+  {
+    name: 'Opponent',
+    icon: '',
+    field_name: 'opponent',
+    type: 'select',
+    track_by: 'team_name'
   },
-  computed: {
-    seasons () {
-      return this.$store.state.seasons
-    },
-
-    selectOptions () {
-      // update to getter and setter
-      const teamList = []
-      if (!this.newGame.season) {
-        this.$store.getters.seasonTeams.filter(team => {
-          if (team.slug !== this.$store.state.user.slug &&
-          !teamList.some(e => e.slug === team.slug)) {
-            teamList.push(team)
-          }
-        })
-      } else {
-        this.$store.getters.seasonTeams.filter(team => {
-          if (team.slug !== this.$store.state.user.slug &&
-            team.level_name === this.newGame.season.level &&
-            !teamList.some(e => e.slug === team.slug)
-          ) {
-            teamList.push(team)
-          }
-        })
-      }
-      return teamList
-    },
-    ...mapState(['slug'])
+  {
+    name: 'Time',
+    icon: '',
+    field_name: 'game_time',
+    type: 'time'
   },
-  watch: {
-    'newGame.season': {
-      deep: true,
-      handler (newValue, oldValue) {
-        this.initSchedule(newValue.season_id, this.$route.params.slug)
-      }
-    },
-    '$route.params.slug': {
-      handler (newValue) {
-        this.initSchedule(undefined, newValue)
-      }
-    }
-
+  {
+    name: 'Date',
+    icon: '',
+    field_name: 'game_date',
+    type: 'date'
   },
-  created () {
-    this.$root.$on('save', payload => {
-      this.save()
-    })
-
-    this.initSchedule(undefined, this.$route.params.slug)
-
-    this.$root.$on('toggleModal', () => { this.showModal = !this.showModal })
-  },
-  methods: {
-    teamInList (teamListObject, newTeam) {
-      return teamListObject.slug === newTeam.slug
-    },
-    addNewGame () {
-      this.schedule.push(this.newGame)
-    },
-    deleteGame (data, id) {
-      Admin.removeGame({ game_id: this.schedule[id].game_id }).then(response => {
-        this.schedule.splice(id, 1)
-      })
-    },
-    // Check for Use Value then set if not available
-    async getSeasonTeamId (slug, gameSeason) {
-      if (gameSeason === undefined) {
-        gameSeason = this.newGame.season.season_id
-      }
-      // move this to vuex ?
-      let teamId = ''
-      await api.getSeasonTeams(slug, gameSeason)
-        .then(response => {
-          teamId = response.data.team_id
-        })
-      return teamId
-    },
-
-    homeAwayDisplay (game) {
-      game.host = !game.host
-    },
-
-    initNewGame (currSeason = '') {
-      this.season = currSeason
-      this.newGame = {
-        host: true,
-        opponent: '',
-        game_time: '',
-        game_date: '',
-        season: this.season,
-        neutral_site: false
-        // 'uuid': string,
-      }
-    },
-
-    initSchedule (season, slug) {
-      api.getSchedule(season, slug).then(response => {
-        const gameArr = []
-        response.data.forEach(game => {
-          const gameObj = {
-            game_id: game.game_id,
-            host: true,
-            opponent: {},
-            game_time: game.game_time,
-            game_date: game.game_date,
-            season: game.season
-          }
-
-          if (game.home_team.slug === this.$store.getters.user.slug) {
-            gameObj.host = true
-            gameObj.opponent = game.away_team
-          // } else if (game.away_team.slug === this.$store.getters.user.slug) {
-          } else {
-            gameObj.host = false
-            gameObj.opponent = game.home_team
-          }
-
-          gameArr.push(gameObj)
-        })
-        this.schedule = gameArr
-      })
-    },
-
-    remove_game () {
-      console.log('delete pressed')
-    },
-
-    async save (game = {}) {
-      const gameJson = {
-        home_team: '',
-        away_team: '',
-        time: game.game_time,
-        date: game.game_date,
-        season: game.season.season_id,
-        // TODO: Change to make this dynamic
-        neutral_site: false
-      }
-
-      if (game.host === true) {
-        gameJson.away_team = await this.getSeasonTeamId(game.opponent.slug, game.season.season_id)
-        gameJson.home_team = await this.getSeasonTeamId(this.$store.state.user.slug, game.season.season_id)
-      } else {
-        gameJson.away_team = await this.getSeasonTeamId(this.$store.state.user.slug, game.season.season_id)
-        gameJson.home_team = await this.getSeasonTeamId(game.opponent.slug, game.season.season_id)
-      }
-
-      // console.log('gameJson', gameJson, game.opponent.slug, this.$store.state.user.slug)
-      if (this.edit && game.game_id) {
-        gameJson.game_id = game.game_id
-        Admin.updateGame(gameJson)
-          .then(response => {
-            // this.initNewGame(this.newGame.season.season_id)
-          })
-          .catch(err => {
-            console.log(err)
-            this.initNewGame(this.newGame.season.season_id)
-          })
-
-        // this.schedule.push(this.newGame)
-      } else {
-        Admin.addGame(gameJson)
-          .then(response => {
-            this.initNewGame(this.newGame.season.season_id)
-          })
-          .catch(err => {
-            console.log(err)
-          })
-
-        this.schedule.push(this.newGame)
-      }
-    },
-
-    toggleModal (id) {
-      console.log('toggleModal', id)
-      this.showModal = !this.showModal
-    }
+  {
+    name: '',
+    icon: '',
+    field_name: 'actions',
+    type: 'actions'
   }
+];
+
+const config = {
+  page: 'schedule'
+};
+
+const seasons = computed(() => {
+  return store.state.seasons;
+});
+
+const selectOptions = computed(() => {
+  const teamList = [];
+  if (!newGame.season) {
+    store.getters.seasonTeams.filter(team => {
+      if (team.slug !== store.state.user.slug &&
+        !teamList.some(e => e.slug === team.slug)) {
+        teamList.push(team);
+      }
+    });
+  } else {
+    store.getters.seasonTeams.filter(team => {
+      if (team.slug !== store.state.user.slug &&
+        !teamList.some(e => e.slug === team.slug)
+      ) {
+        teamList.push(team);
+      }
+    });
+  }
+  return teamList;
+});
+
+const initSchedule = (season, slug) => {
+  console.log("initSchedule", season, slug)
+  api.getSchedule(season, slug).then(response => {
+    console.log(response)
+    const gameArr = [];
+    response.data.forEach(game => {
+      const gameObj = {
+        game_id: game.game_id,
+        host: true,
+        opponent: {},
+        game_time: game.game_time,
+        game_date: game.game_date,
+        season: game.season
+      };
+
+      if (game.home_team.slug === store.getters.user.slug) {
+        gameObj.host = true;
+        gameObj.opponent = game.away_team;
+      } else {
+        gameObj.host = false;
+        gameObj.opponent = game.home_team;
+      }
+
+      gameArr.push(gameObj);
+    });
+    schedule.value = gameArr;
+  });
+};
+
+const toggleEdit = () => {
+  edit.value = !edit.value
 }
+const save = async (game = {}) => {
+  const gameJson = {
+    home_team: '',
+    away_team: '',
+    time: game.game_time,
+    date: game.game_date,
+    season: game.season.season_id,
+    neutral_site: false
+  };
+
+  if (game.host === true) {
+    gameJson.away_team = await getSeasonTeamId(game.opponent.slug, game.season.season_id);
+    gameJson.home_team = await getSeasonTeamId(store.state.user.slug, game.season.season_id);
+  } else {
+    gameJson.away_team = await getSeasonTeamId(store.state.user.slug, game.season.season_id);
+    gameJson.home_team = await getSeasonTeamId(game.opponent.slug, game.season.season_id);
+  }
+
+  if (edit.value && game.game_id) {
+    gameJson.game_id = game.game_id;
+    Admin.updateGame(gameJson)
+      .then(response => { })
+      .catch(err => {
+        console.log(err);
+        initNewGame(newGame.season.season_id);
+      });
+  } else {
+    Admin.addGame(gameJson)
+      .then(response => {
+        initNewGame(newGame.season.season_id);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    schedule.value.push(newGame);
+  }
+};
+
+const initNewGame = (currSeason = '') => {
+  newGame.season = currSeason;
+  newGame.host = true;
+  newGame.opponent = '';
+  newGame.game_time = '';
+  newGame.game_date = '';
+  newGame.neutral_site = false;
+};
+
+const getSeasonTeamId = async (slug, gameSeason) => {
+  if (gameSeason === undefined) {
+    gameSeason = newGame.season.season_id;
+  }
+  let teamId = '';
+  await api.getSeasonTeams(slug, gameSeason)
+    .then(response => {
+      teamId = response.data.team_id;
+    });
+  return teamId;
+};
+
+const homeAwayDisplay = (game) => {
+  game.host = !game.host;
+};
+
+const deleteGame = (data, id) => {
+  Admin.removeGame({ game_id: schedule.value[id].game_id }).then(response => {
+    schedule.value.splice(id, 1);
+  });
+};
+
+const teamInList = (teamListObject, newTeam) => {
+  return teamListObject.slug === newTeam.slug
+};
+
+const addNewGame = () => {
+  schedule.push(newGame)
+};
+
+onMounted(() => {
+  emit('save', payload => {
+    save()
+  })
+  initSchedule(undefined, route.params.slug)
+  emit('toggleModal', () => { showModal = !showModal })
+});
+
+watch('newGame.season', (newValue, oldValue) => {
+  initSchedule(newValue.season_id, this.$route.params.slug)
+});
+
+watch('route.params.slug', (newValue, oldValue) => {
+  initSchedule(undefined, newValue)
+});
+
+
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @teamColor: var(--bg-color);
+
 header {
   display: flex;
   flex-flow: row wrap;
@@ -414,10 +367,11 @@ header {
   padding-top: 1rem;
   margin-bottom: .5rem;
   position: sticky;
-    top: 0;
-    z-index: 2;
-    left: 0;
-    background: #CFCDCD;
+  top: 0;
+  z-index: 2;
+  left: 0;
+  background: #CFCDCD;
+
   .buttonCon {
     flex-grow: 1;
     display: flex;
@@ -442,6 +396,7 @@ header {
 //   margin-top: .6rem;
 // }
 table {
+
   // margin-top: -40px;
   &:before {
     content: '';

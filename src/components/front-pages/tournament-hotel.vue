@@ -3,7 +3,7 @@
      <div class="page-styles">
        <h2>{{ tournament.title }}</h2>
        <template v-for="section in tournament.section">
-          <div :key="section.id">
+          <div>
             <span v-html="section.content"></span>
           </div>
        </template>
@@ -200,7 +200,7 @@ h5 {
   }
 }
 
-::v-deep .levelHead {
+:deep(.levelHead) {
   padding:.75rem;
   background-color: rgba(39,132,195,1);
   color: #fff;

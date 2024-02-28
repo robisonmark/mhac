@@ -7,14 +7,32 @@
 
 import { robros } from './base'
 
-export class api {
+class api {
+
+  constructor() {
+    const base = robros
+    base.interceptors.response.use(
+      this.handleSuccess,
+      this.handleError
+    )
+  }
+
+  handleSuccess(response) {
+    return response
+  }
+
+  handleError(err) {
+    console.error("In Error", err)
+    return Promise.reject(err)
+    // return err
+  }
   /***
      * Login
      * @param {string} method - Put or Post. Method sent to the api
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async login (username, password) {
+  async login(username, password) {
     return robros({
       url: '/login/',
       method: 'POST',
@@ -31,7 +49,7 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getCurrentSeasons () {
+  async getCurrentSeasons() {
     return robros({
       url: '/getCurrentSeasons',
       method: 'GET'
@@ -44,7 +62,7 @@ export class api {
      * @param {string} seasonId - Season Level ID
      * @return - JSON Object of players by team
     ***/
-  static async getTeamCount (seasonId) {
+  async getTeamCount(seasonId) {
     return robros({
       url: '/getTeamCount/' + seasonId,
       method: 'GET'
@@ -57,7 +75,7 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getStandings (seasonId) {
+  async getStandings(seasonId) {
     const queryParms = seasonId ? '/' + seasonId : ''
     return robros({
       url: '/getStandings' + queryParms,
@@ -71,7 +89,7 @@ export class api {
      * @param {object} data - Stat JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getSeasonStats (data) {
+  async getSeasonStats(data) {
     // let queryParms = '?'
     // Object.keys(data).forEach(string => {
     //   // console.log(string)
@@ -91,7 +109,7 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getGameResults (gameId, teamId) {
+  async getGameResults(gameId, teamId) {
     // gameId = gameId ? gameId + '/' : ''
     // teamId = teamId ? teamId + '/' : ''
     let path = ''
@@ -116,7 +134,7 @@ export class api {
    * @param {object} body - Player JSON Body
    * @return - JSON Object of players by team
   ***/
-  static async addGameResults (gameId, stats) {
+  async addGameResults(gameId, stats) {
     // if (store.state.user.signInUserSession.idToken.jwtToken) {
     //   promo.defaults.headers.common['Authorization'] = store.state.user.signInUserSession.idToken.jwtToken
     // } else {
@@ -146,7 +164,7 @@ export class api {
      * @param {object} id - ID
      * @return - JSON Object of players by team
     ***/
-  static async getTeams (id) {
+  async getTeams(id) {
     id = id ? '/' + id : ''
 
     return robros({
@@ -160,7 +178,7 @@ export class api {
      * @param {object} team - Team UUID
      * @return - JSON Object of players by team
     ***/
-  static async getPlayers (team) {
+  async getPlayers(team) {
     return robros({
       url: `/getPlayers/${team}`,
       method: 'GET'
@@ -172,7 +190,7 @@ export class api {
      * @param {object} team - Team UUID
      * @return - JSON Object of players by team
     ***/
-  static async getRoster (level) {
+  async getRoster(level) {
     return robros({
       url: `/getRoster/${level}`,
       method: 'GET'
@@ -185,7 +203,7 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getSchedule (season, team, year) {
+  async getSchedule(season, team, year) {
     let urlString = '/getSchedule'
     let addedParams = ''
 
@@ -217,7 +235,7 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getLevels (season, team) {
+  async getLevels(season, team) {
     return robros({
       url: '/getLevels',
       method: 'GET'
@@ -231,7 +249,7 @@ export class api {
      * @param {string} slug - Team Slug
      * @return - JSON Object of players by team
     ***/
-  static async getSeasonTeams (slug = '', seasonid = null) {
+  async getSeasonTeams(slug = '', seasonid = null) {
     if (slug !== '' && seasonid !== null) {
       slug = slug + '/' + seasonid
     } else if (slug === '' && seasonid !== null) {
@@ -250,21 +268,21 @@ export class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  static async getTournamentInformation (body) {
+  async getTournamentInformation(body) {
     return robros({
       url: '/getTournamentInformation/',
       method: 'GET'
     })
   }
 
-  static async getActiveTournaments (body) {
+  async getActiveTournaments(body) {
     return robros({
       url: '/getActiveTournaments',
       method: 'GET'
     })
   }
 
-  static async sendStats (body, gameId, teamId) {
+  async sendStats(body, gameId, teamId) {
     return robros({
       url: '/addFileGameStats/' + gameId + '/' + teamId,
       method: 'POST',
@@ -272,14 +290,14 @@ export class api {
     })
   }
 
-  static async getActiveYear () {
+  async getActiveYear() {
     return robros({
       url: '/getActiveYear',
       method: 'GET'
     })
   }
 
-  static async getTeamByStandings (seasonId, rank) {
+  async getTeamByStandings(seasonId, rank) {
     return robros({
       url: '/lookupTeamByStandings/' + seasonId + '/' + rank,
       method: 'GET'
@@ -292,7 +310,7 @@ export class api {
    * @param {object} body - Player JSON Body
    * @return - JSON Object of players by team
   ***/
-  static async updateTournamentGame (body) {
+  async updateTournamentGame(body) {
     return robros({
       url: '/updateTournamentGame/',
       method: 'POST',
@@ -306,7 +324,7 @@ export class api {
      *
      *
     ***/
-  static async addTournamentGame (body) {
+  async addTournamentGame(body) {
     return robros({
       url: '/addTournamentGame/',
       method: 'POST',
@@ -314,7 +332,7 @@ export class api {
     })
   }
 
-  static async getYear (active) {
+  async getYear(active) {
     const returnUrl = active ? '/getActiveYear' : '/getYears/'
     return robros({
       url: returnUrl,
@@ -322,14 +340,14 @@ export class api {
     })
   }
 
-  static async getAdminSeasons () {
+  async getAdminSeasons() {
     return robros({
       url: '/getAdminSeasons',
       method: 'GET'
     })
   }
 
-  static async updateSeason (body) {
+  async updateSeason(body) {
     return robros({
       url: '/updateSeason',
       method: 'PUT',
@@ -337,7 +355,7 @@ export class api {
     })
   }
 
-  static async addSeason (body) {
+  async addSeason(body) {
     return robros({
       url: '/addSeason',
       method: 'POST',
@@ -345,14 +363,14 @@ export class api {
     })
   }
 
-  static async getWebSocketUrl () {
+  async getWebSocketUrl() {
     return robros({
       url: '/websocketUrl',
       method: 'GET'
     })
   }
 
-  static async updateWebSocketUrl (body) {
+  async updateWebSocketUrl(body) {
     return robros({
       url: '/websocketUrl',
       method: 'POST',
@@ -360,11 +378,21 @@ export class api {
     })
   }
 
-  static async addTeam (body) {
+  async addTeam(body) {
     return robros({
       url: '/createTeam',
       method: 'POST',
       data: body
     })
   }
+
+  async sendRoster(body, teamId, year) {
+    return robros({
+      url: '/teamFile/' + teamId + "/" + year,
+      method: 'POST',
+      data: body
+    })
+  }
 }
+
+export default new api();

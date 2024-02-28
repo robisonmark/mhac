@@ -2,12 +2,12 @@
   <div class="content-left" id="content-block">
     <div class="content-left_container v-center">
       <div class="content-left_content">
-        <h2>Section Title</h2>
-        <p>Section Content</p>
+        <h3><slot name="yearName">{{ yearName }}</slot></h3>
+        <h4><slot name="teamName"> {{ teamName }}</slot></h4>
       </div>
     </div>
     <div class="content-left_image-container">
-      <div class="content-left_image"></div>
+      <div class="content-left_image" :style="{ backgroundImage: 'url(' + base_api + image + ')' }"></div> 
     </div>
   </div>
 </template>
@@ -17,28 +17,38 @@ export default {
   name: 'content_left',
   data () {
     return {
-
+      base_api: process.env.VUE_APP_IMAGE_API
     }
   },
   props: [
-    'data'
+    'data',
+    'yearName',
+    'teamName',
+    'image'
   ]
 }
 </script>
 
 <style lang="less">
   @import "../../../assets/less/elements/typography.less";
+  @import '../../../assets/less/utils/variables.less';
+  @import '../../../assets/less/utils/breakpoints.less';
 
   .content-left {
     display: flex;
-    min-height: 200px;
+    min-height: 350px;
+    @media @tablet-max {
+      max-height: 350px;
+      min-height: 250px;
+    }
+    @media @tablet-max {
+      min-height: auto;
+    }
 
     &_image {
       order: 2;
-      background: url('../../../assets/img/MHAC_2-optimized.png');
       background-size: cover;
-      background-position: center;
-      width: 125%;
+      background-position: 50% 15%;
       height: 100%;
     }
 
@@ -49,7 +59,7 @@ export default {
       padding: 1rem;
       transform-origin: right;
       position: relative;
-      &:after{
+      &--angled:after{
         content: '';
         display: block;
         position: absolute;
@@ -57,7 +67,7 @@ export default {
         right: 0;
         background: #fff;
         width: 1250px;
-        max-height: 250px;
+        max-height: 500px;
         z-index: 0;
         transform: skew(-45deg);
         transform-origin: bottom right;

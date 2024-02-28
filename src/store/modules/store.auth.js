@@ -1,5 +1,9 @@
 import { store } from '@/store/index'
-import { Auth } from 'aws-amplify'
+// https://docs.amplify.aws/vue/build-a-backend/auth/manage-user-session/
+import { useAuthenticator } from '@aws-amplify/ui-vue';
+const Auth = useAuthenticator();
+
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 // Initial "state"
 const state = {
@@ -9,41 +13,46 @@ const state = {
 }
 
 const getters = {
-  valid (getterState) {
+  valid(getterState) {
     return getterState.valid
   },
-  loggedIn (getterState) {
+  loggedIn(getterState) {
     return getterState.loggedIn
   }
 }
 
 const mutations = {
-  set_valid (mutationState, payload) {
+  set_valid(mutationState, payload) {
     mutationState.valid = payload
   },
-  set_loggedIn (mutationState, payload) {
+  set_loggedIn(mutationState, payload) {
     mutationState.loggedIn = payload
   }
 }
 
 const actions = {
-  async valid (context) {
+  async valid(context) {
     const user = store.state.userData
     if (Object.entries(user).length === 0 && user.constructor === Object) {
-      const valid = await Auth.currentAuthenticatedUser({ bypassCache: false })
-        .then(response => {
-          context.dispatch('load', response, { root: true })
+      async function currentAuthenticatedUser() {
+        try {
+
+          const { user, idToken } = (await fetchAuthSession()).tokens ?? {};
+
+          context.dispatch('load', idToken, { root: true })
           context.commit('set_valid', true)
           context.commit('set_loggedIn', true)
           return true
-        })
-        .catch(() => {
+        } catch (err) {
+          console.log(err)
           context.commit('set_valid', false)
           context.commit('set_loggedIn', false)
           return false
-        })
+        }
+      }
 
-      return valid
+      return await currentAuthenticatedUser()
+
     } else {
       context.dispatch('load', user, { root: true })
       context.commit('set_valid', true)
@@ -52,8 +61,10 @@ const actions = {
     }
   },
 
-  load (context, user) {
-    const groups = user.signInUserSession?.accessToken?.payload['cognito:groups']
+  load(context, user) {
+    // console.log(user.payload)
+    const groups = user.payload['cognito:groups']
+    // console.log(groups)
     context.commit('set_userGroups', groups, { root: true })
   }
 }

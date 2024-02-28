@@ -23,7 +23,7 @@
           </template>
           <hr /> -->
           <template v-for="section in new_compliance.section">
-            <div :key="section.id" :class="{'intro': section.sectionHeader === 'Intro'}">
+            <div :class="{'intro': section.sectionHeader === 'Intro'}">
               <h2 id="section.sectionHeader" v-if="section.displaySectionTitle">{{section.sectionHeader}}</h2>
               <template v-if="section.content">
                 <span v-html="section.content"></span>
@@ -31,7 +31,7 @@
 
               <template v-if="section.subsections">
                 <template v-for="section in section.subsections">
-                  <div class="subsection" :key="section.id">
+                  <div class="subsection">
                     <h3 :id="section.value.header.replace(' ', '')" v-if="section.value.displayHeader">
                       <a v-if="section.value.isHeaderLink===true" :href="section.value.headerLink" target="_blank">
                         {{section.value.header}}

@@ -1,7 +1,8 @@
 // TODO: Page not found error/redirect inside before resolve
-import Vue from 'vue'
-import Router from 'vue-router'
-// import second from '@/components/second'
+// import Vue from 'vue'
+import * as Vue from 'vue';
+// import Router from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 // Front Pages
 // import website from '@/components/website'
@@ -50,10 +51,10 @@ import { store } from '../store/index'
 
 const $config = config.CONSTANTS
 
-Vue.use(Router)
+// Vue.use(Router)
 
-export const router = new Router({
-  mode: 'history',
+export const router = createRouter({
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
@@ -224,7 +225,7 @@ export const router = new Router({
       component: livestream,
       props: true,
       meta: {
-        requiresAuth: (process.env.NODE_ENV === 'production'),
+        requiresAuth: (import.meta.env.APP_ENV === 'production'),
         section: 'public',
         // TODO: String literal interpolation to add game
         title: 'Video Control | Midsouth Homeschool Athletics'
@@ -235,7 +236,7 @@ export const router = new Router({
         //   name: 'videofeed',
         //   component: videofeed,
         //   meta: {
-        //     requiresAuth: (process.env.NODE_ENV === 'production'),
+        //     requiresAuth: (import.meta.env.APP_ENV === 'production'),
         //     section: 'scoreboard'
         //   }
         // },
@@ -244,7 +245,7 @@ export const router = new Router({
           name: 'scoreapp',
           component: scoreapp,
           meta: {
-            // requiresAuth: (process.env.NODE_ENV === 'production'),
+            // requiresAuth: (import.meta.env.APP_ENV === 'production'),
             section: 'scoreboard'
           }
         },
@@ -253,7 +254,7 @@ export const router = new Router({
           name: 'scoreboard',
           component: scoreboard,
           meta: {
-            // requiresAuth: (process.env.NODE_ENV === 'production'),
+            // requiresAuth: (import.meta.env.APP_ENV === 'production'),
             section: 'scoreboard'
           }
         },
@@ -262,7 +263,7 @@ export const router = new Router({
           name: 'awards',
           component: awards,
           meta: {
-            // requiresAuth: (process.env.NODE_ENV === 'production'),
+            // requiresAuth: (import.meta.env.APP_ENV === 'production'),
             section: 'scoreboard'
           }
         }
@@ -338,15 +339,6 @@ export const router = new Router({
         section: 'admin'
       },
       children: [
-        // {
-        //   path: 'login',
-        //   name: 'login',
-        //   component: login,
-        //   meta: {
-        //     requiresAuth: false,
-        //     section: 'admin'
-        //   }
-        // },
         {
           path: 'edit',
           name: 'Edit',

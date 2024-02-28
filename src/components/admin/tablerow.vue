@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { api } from '@/api/endpoints'
+import api from '@/api/endpoints'
 
 export default {
   data () {
