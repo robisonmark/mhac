@@ -386,6 +386,14 @@ class api {
     })
   }
 
+  async updateTeam(body) {
+    return robros({
+      url: '/updateTeam',
+      method: 'PUT',
+      data: body
+    })
+  }
+
   async sendRoster(body, teamId, year) {
     return robros({
       url: '/teamFile/' + teamId + "/" + year,
