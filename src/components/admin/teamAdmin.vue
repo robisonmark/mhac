@@ -18,34 +18,34 @@
     </header>
     <div class="contentPad">
       <editTable :columns="columns" :config="config" :tabledata="teamArray" v-model="new_team" :edit="edit">
-        <template v-slot="body" v-if="edit">
+        <template #body v-if="edit">
           <tr v-for="(team, index) in teamArray" :key="index">
             <td class="input-con">
-              <input type="text" v-model="team.team_name">
+              <input type="text" v-model="team.team_name" @input="addToUpdateList(team)">
             </td>
             <td>
-              <input type="text" v-model="team.team_mascot">
+              <input type="text" v-model="team.team_mascot" @input="addToUpdateList(team)">
             </td>
             <td>
-              <input type="text" v-model="team.main_color">
+              <input type="text" v-model="team.main_color" @input="addToUpdateList(team)">
             </td>
             <td>
-              <input type="text" v-model="team.secondary_color">
+              <input type="text" v-model="team.secondary_color" @input="addToUpdateList(team)">
             </td>
             <td>
-              <input type="text" v-model="team.website">
+              <input type="text" v-model="team.website" @input="addToUpdateList(team)">
             </td>
             <td>
-              <input type="text" v-model="team.logo_color">
+              <input type="text" v-model="team.logo_color" @input="addToUpdateList(team)">
             </td>
             <td>
-              <input type="text" v-model="team.logo_grey">
+              <input type="text" v-model="team.logo_grey" @input="addToUpdateList(team)">
             </td>
             <td>
-              <input type="text" v-model="team.slug">
+              <input type="text" v-model="team.slug" @input="addToUpdateList(team)">
             </td>
             <td>
-              <input type="checkbox" v-model="team.active">
+              <input type="checkbox" v-model="team.active" @input="addToUpdateList(team)">
             </td>
           </tr>
           <tr>
@@ -84,7 +84,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed } from 'vue';
+import { ref, reactive, watch, computed, onBeforeMount } from 'vue';
 import api from '@/api/endpoints.js';
 import editTable from '@/components/editTable.vue'
 // import selectbox from '@/components/selectbox.vue'
@@ -164,41 +164,81 @@ const columns = [
 const config = { page: 'teams' };
 const edit = ref(false);
 const saving = ref(false);
+const saved = ref(false);
+const emit = defineEmits(['changeEdit'])
+const updated = ref([]);
+const added = ref([]);
+
+onBeforeMount(() => {
+  teams()
+  emit('changeEdit', () => {edit.value = !edit.value})
+});
 
 //Methods
 const teams = () => {
   api.getTeams().then(response => {
-    console.error(response.data)
     teamArray.value = response.data
-    console.log(teamArray.value)
   })
 };
 const save = () => {
-  api.addTeam(new_team)
+  console.log(new_team)
+  if (updated.value.length >= 1) {
+    updated.value.forEach(team => {
+      api.updateTeam(team)
+    })
+  }
+
+  if (added.value.length >=1) {
+    api.addTeam(new_team)
     .then(response => {
       initNewTeam()
     })
     .catch(err => {
       console.log(err)
     })
+
+  }
+  
+  edit.value = !edit.value
 };
 
-// const initNewTeam = () => {
-//   new_team = {
-//     team_name: '',
-//     team_mascot: '',
-//     main_color: '',
-//     secondary_color: '',
-//     website: '',
-//     logo_color: '',
-//     logo_grey: '',
-//     slug: '',
-//     active: true
-//   }
-// };
+const initNewTeam = () => {
+  const new_team = {
+    team_name: '',
+    team_mascot: '',
+    main_color: '',
+    secondary_color: '',
+    website: '',
+    logo_color: '',
+    logo_grey: '',
+    slug: '',
+    active: true
+  }
+};
 
-teams();
-// initNewTeam();
+const addToUpdateList = (id) => {
+  let add = true
+  let i = 0 
+  for (i = 0; i < updated.length; i++) {
+    if (updated[i] === id) {
+      add = false
+    }
+  }
+
+  if (add) {
+    updated.value.push(id)
+  }
+};
+
+watch(new_team, (newValue, oldValue) => {
+  const idx = added.value.indexOf(newValue)
+  if (idx >= 0){
+    added.value[idx] = newValue
+  } else {
+    added.value.push(newValue)
+  }
+});
+
 
 </script>
 
