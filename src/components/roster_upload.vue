@@ -42,6 +42,8 @@ const isSuccess = computed(() => currentStatus.value === STATUS_SUCCESS);
 const isFailed = computed(() => currentStatus.value === STATUS_FAILED);
 const fileCount = computed(() => uploadedFiles.value.length);
 
+const emit = defineEmits(['toggleModal', 'uploadError'])
+
 const getActiveYear = () => {
   api.getYear(true).then(response => {
     activeYear.value = response.data;
@@ -74,7 +76,6 @@ const save = (formData) => {
       }
     })
     .finally(() => {
-      console.log("here too");
       emit('toggleModal');
       refreshData();
       reset();

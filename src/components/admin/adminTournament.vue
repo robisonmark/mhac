@@ -9,20 +9,20 @@
     </header>
 
     <div class="contentPad">
-      <editTable :columns="columns" :config="config" :tabledata="tournamentGame" v-model="tournamentGame" :edit="edit"
+      <editTable :columns="columns" :config="config" :tabledata="tournamentGameData" v-model="tournamentGame" :edit="edit"
         @lookup="updateBracket">
 
-        <template v-slot:tbody>
+        <!-- <template v-slot:tbody>
           <tournamentGame v-for="(data, index) in games" :game="data" :key="index" />
           <template v-if="newGame">
             <tournamentGame :game=newTournamentGame :new_game=true @add-game="addGame" />
-          </template>
-          <div>
+          </template> -->
+          <!-- <div>
             <font-awesome-icon :icon="['fas', 'plus']" class="icon" @click="newGame = !newGame"></font-awesome-icon>
             Add Tournament Game
           </div>
 
-        </template>
+        </template> -->
       </editTable>
     </div>
 
@@ -38,7 +38,7 @@
 import { ref, reactive } from 'vue';
 import Admin from '@/api/admin';
 import editTable from '@/components/editTable';
-import tournamentGame from './tournamentGame.vue';
+// import tournamentGame from './tournamentGame.vue';
 import _ from 'lodash';
 
 const games = ref([]);
@@ -166,19 +166,19 @@ const newTournamentGame = reactive({
 const tournament = ref([]);
 
 const initTourney = () => {
-  // Admin.getTournamentInformation().then(response => {
-  //   games.value = response.data.games;
-  // }).catch(err => {
-  //   console.log(err);
-  // });
+  Admin.getTournamentInformation().then(response => {
+    games.value = response.data.games;
+  }).catch(err => {
+    console.log(err);
+  });
 };
 
 const updateBracket = (game) => {
-  if (game.matchup.scoreTeam1 !== '' && game.matchup.scoreTeam2 !== '') {
-    // Handle bracket update logic
-  } else if (oldBracket.value.length > 0) {
-    // Handle resetting bracket
-  }
+  // if (game.matchup.scoreTeam1 !== '' && game.matchup.scoreTeam2 !== '') {
+  //   // Handle bracket update logic
+  // } else if (oldBracket.value.length > 0) {
+  //   // Handle resetting bracket
+  // }
 };
 
 const addGame = (game) => {
@@ -199,11 +199,8 @@ const newLookup = () => {
 
 const lookupTeam = (teamSeed, seasonId, team) => {
   // TODO: Figure out Use
-  console.log(seasonId)
-  // console.log("LookupTeam:", teamSeed, this.game.seasons.season_id)
   if (teamSeed !== null && this.game.seasons.season_id !== undefined) {
     Admin.getTeamByStandings(this.game.seasons.season_id, teamSeed).then(response => {
-      // console.log("Lookup team", team, response.data.team_name)
       if (team === 1) {
         this.game.matchup.team1 = response.data.team_name
       }
@@ -214,8 +211,7 @@ const lookupTeam = (teamSeed, seasonId, team) => {
   }
 };
 
-// Initialize data on component mount
-initTourney();
+
 </script>
 
 
