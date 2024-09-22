@@ -19,7 +19,7 @@
     "axios": "^0.28.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@vue/compat": "^3.3.9",
-    "aws-amplify": "^6.0.5",
+    "aws-amplify": "^6.6.2",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.18.1",
     "date-fns": "^2.16.1",
