@@ -386,6 +386,14 @@ class api {
     })
   }
 
+  async updateTeam(body) {
+    return robros({
+      url: '/updateTeam',
+      method: 'PUT',
+      data: body
+    })
+  }
+
   async sendRoster(body, teamId, year) {
     return robros({
       url: '/teamFile/' + teamId + "/" + year,
@@ -393,6 +401,33 @@ class api {
       data: body
     })
   }
+  async sendSchedule(body, teamId, year) {
+    return robros({
+      url: '/scheduleFile/' + teamId + "/" + year,
+      method: 'POST',
+      data: body
+    })
+  }
+
+    /***
+     * Get Season Teams - This call returns the levels associated with each program,
+     * returning their unique id
+     * @param {string} method - Get
+     * @param {string} slug - Team Slug
+     * @return - JSON Object of players by team
+    ***/
+    async getSeasonTeamsv2(slug = '', seasonid = null) {
+      if (slug !== '' && seasonid !== null) {
+        slug = slug + '/' + seasonid
+      } else if (slug === '' && seasonid !== null) {
+        slug = seasonid
+      }
+  
+      return robros({
+        url: '/v2/getSeasonTeams/' + slug,
+        method: 'GET'
+      })
+    }
 }
 
 export default new api();

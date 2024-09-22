@@ -64,7 +64,7 @@ const reset = () => {
 const save = (formData) => {
   currentStatus.value = STATUS_SAVING;
   console.log("Saving Data");
-  api.sendRoster(formData, props.team_id, activeYear.value.year)
+  api.sendSchedule(formData, props.team_id, activeYear.value.year)
     .then(response => {
       if (response.status === 200) {
         uploadedFiles.value = [].concat(response);

@@ -17,7 +17,7 @@ export default {
   name: 'content_left',
   data () {
     return {
-      base_api: process.env.VUE_APP_IMAGE_API
+      base_api: process.env.VITE_APP_IMAGE_API
     }
   },
   props: [
