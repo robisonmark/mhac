@@ -20,7 +20,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@vue/compat": "^3.3.9",
     "aws-amplify": "^6.0.5",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "^5.0.0",
     "bootstrap-vue": "^2.18.1",
     "date-fns": "^2.16.1",
     "obs-websocket-js": "^5.0.4",
