@@ -1,14 +1,14 @@
 <template>
   <div class="hello">
     <header class="contentPad">
-      <h2>Current Roster</h2>
+      <!-- <h2>Current Roster</h2> -->
       <div class="buttonCon">
         <div class='switch' @click="toggleModal()">
           <font-awesome-icon :icon="['fas', 'file-import']" class="icon"></font-awesome-icon>
-          <span class="focused">{{ slug }}</span>
+          <span class="focused"> Upload Roster File</span>
           &nbsp;
         </div>
-        <div class="switch" v-if="edit === false" @click="edit.value = !edit.value"
+        <div class="switch" v-if="edit === false" @click="edit = !edit"
           :class="[edit === true ? 'selected' : '']">
           <font-awesome-icon :icon="edit === true ? ['fas', 'edit'] : ['far', 'edit']" class="icon"></font-awesome-icon>
           <span class="focused">Edit</span>
@@ -191,7 +191,7 @@ const columns = [
     model: 'season_roster'
   }
 ]
-const showModal = ref(false);
+let showModal = ref(false);
 const config = { page: 'roster' };
 const edit = ref(false);
 const fullRoster = ref([]);
@@ -271,14 +271,14 @@ const getTeamId = () => {
   }
 };
 const initRoster = () => {
-  console.log("initRoster")
+  // console.log("initRoster")
   if (route.params.slug) {
-    console.log("Init Roster2")
+    // console.log("Init Roster2")
     Admin.getAdminPlayers(route.params.slug).then(response => {
-      console.log(JSON.stringify(response.data))
+      // console.log(JSON.stringify(response.data))
       roster.value = response.data
       fullRoster.value = _.cloneDeep(roster.value)
-      console.log("initRoster3", JSON.stringify(fullRoster))
+      // console.log("initRoster3", JSON.stringify(fullRoster))
     })
   }
 };
@@ -382,9 +382,10 @@ const save = () => {
       }
     })
   }
+  edit.value = !edit.value
 }
 const toggleModal = () => {
-  showModal.value = !showModal
+  showModal.value = !showModal.value
 };
 
 const handleSuccess = (player, response) => {
@@ -431,7 +432,7 @@ header {
   background: #CFCDCD;
 
   h2 {
-    display: inline-block;
+    display: flex;
   }
 
   .buttonCon {
