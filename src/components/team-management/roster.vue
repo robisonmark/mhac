@@ -3,9 +3,9 @@
     <header class="contentPad">
       <!-- <h2>Current Roster</h2> -->
       <div class="buttonCon">
-        <div class='switch' @click="toggleModal()">
+        <div class='switch' @click="toggleModal">
           <font-awesome-icon :icon="['fas', 'file-import']" class="icon"></font-awesome-icon>
-          <span class="focused"> Upload Roster File</span>
+          <span class="focused">Upload Roster File</span>
           &nbsp;
         </div>
         <div class="switch" v-if="edit === false" @click="edit = !edit"
@@ -100,7 +100,7 @@
       </editTable>
       <modal :showModal="showModal" :modalTitle="'Upload Roster'" @close="toggleModal">
         <template #modalBody>
-          <fileUpload :showModal="showModal" :team_id="'slug'"> </fileUpload>
+          <fileUpload :showModal="showModal" :team_id="route.params.slug"> </fileUpload>
         </template>
       </modal>
     </div>
