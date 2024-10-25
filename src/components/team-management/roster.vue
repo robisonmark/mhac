@@ -191,7 +191,7 @@ const columns = [
     model: 'season_roster'
   }
 ]
-const showModal = ref(false);
+let showModal = ref(false);
 const config = { page: 'roster' };
 const edit = ref(false);
 const fullRoster = ref([]);
@@ -271,14 +271,14 @@ const getTeamId = () => {
   }
 };
 const initRoster = () => {
-  console.log("initRoster")
+  // console.log("initRoster")
   if (route.params.slug) {
-    console.log("Init Roster2")
+    // console.log("Init Roster2")
     Admin.getAdminPlayers(route.params.slug).then(response => {
-      console.log(JSON.stringify(response.data))
+      // console.log(JSON.stringify(response.data))
       roster.value = response.data
       fullRoster.value = _.cloneDeep(roster.value)
-      console.log("initRoster3", JSON.stringify(fullRoster))
+      // console.log("initRoster3", JSON.stringify(fullRoster))
     })
   }
 };
@@ -382,6 +382,7 @@ const save = () => {
       }
     })
   }
+  edit.value = !edit.value
 }
 const toggleModal = () => {
   showModal.value = !showModal.value
@@ -431,7 +432,7 @@ header {
   background: #CFCDCD;
 
   h2 {
-    display: inline-block;
+    display: flex;
   }
 
   .buttonCon {
