@@ -3,7 +3,7 @@
     <div class="page-styles">
       <div class="row print-only align-items-start justify-content-between">
         <div class="col">
-          <h2>2021 - 2022 Schedule</h2>
+          <h2>2024 - 2025 Schedule</h2>
         </div>
         <div class="col right">
           <div>{{ filterBy.team.name }}</div>
@@ -77,7 +77,6 @@
           </tbody>
           <tbody>
             <template v-if="filteredGames.length >= 1">
-              <!-- <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.team_id }}" tag="tr" class="game" v-for="game in filteredGames" :key="game.game_id"> -->
               <tr class="game" v-for="game in filteredGames" :key="game.game_id">
                 <td class="date">
                   {{ $config.formatDate(game.game_date) }}
@@ -214,28 +213,32 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
+
 // api
 import api from '../../api/endpoints.js'
 
 // mixins
 import { useRootMixin } from '../../mixins/root'
 
-// helpers
-// import {formatDate} from '@/config/helpers'
+const config = {
+  page: 'schedules'
+};
+const store = useStore();
+const route = useRoute();
 
-export default {
-  name: 'schedules',
-  data() {
-    return {
-      activeYear: {
-        name: '',
-        year: ''
-      },
-      currentSort: 'game_date',
-      currentSortDir: 'asc',
-      edit: false,
-      filterBy: {
+const activeYear = reactive({
+  name: '',
+  year: ''
+});
+
+const currentSort = ref('game_date');
+const currentSortdir = ref('asc');
+const edit = ref(false);
+const filterBy =  ref({
         team: {
           slug: '',
           name: 'All Teams'
@@ -248,77 +251,71 @@ export default {
           start_date: '',
           end_date: ''
         }
-      },
-      // games: [],
-      games: [],
-      level_filter: '',
-      showDatePicker: false,
-      showLevels: false,
-      showTeams: false,
-      years: []
-    }
-  },
-  mixins: [useRootMixin],
-  computed: {
-    teams() {
-      const teams = [{ slug: '', team_name: 'All Teams' }, ...this.$store.state.teams]
-      return teams
-    },
-    levels() {
-      const levels = [{ season_id: '', level: 'All Levels' }, ...this.$store.state.seasons]
-      return levels
-    },
-    filteredGames() {
-      if (this.level_filter === '') {
-        return this.games
-      }
-      return this.games.filter(game => (game.season.season_id === this.level_filter))
-    }
-  },
-  watch: {
-    'filterBy.team': {
-      deep: true,
-      handler(newValue, oldValue) {
-        this.initSchedule(this.filterBy.level.season_id, newValue.slug)
-      }
-    },
-    'filterBy.level': {
-      deep: true,
-      handler(newValue, oldValue) {
-        // this.initSchedule(newValue.season_id)
-        this.level_filter = newValue.season_id
-      }
-    }
-  },
-  created() {
-    this.getActiveYear()
-    this.getYears()
-    this.initSchedule()
+      });
+const games = ref([]);
+const level_filter = ref('')
+const showDatePicker = ref(false);
+const showLevels = ref(false);
+const showTeams = ref(false);
+const years = ref([]);
 
-    this.$root.$on('close', payload => {
-      // this.showDatePicker = false
-      // this.showTeams = false
+const teams = computed(() => {
+      const teams = [{ slug: '', team_name: 'All Teams' }, ...store.state.teams]
+      return teams
+    }
+
+)
+const levels = computed(() => {
+      const levels = [{ season_id: '', level: 'All Levels' }, ...store.state.seasons]
+      return levels
     })
-  },
-  methods: {
-    getActiveYear() {
+
+const filteredGames = computed(() =>{
+      if (level_filter === '') {
+        return games
+      }
+      return games.value.filter(game => (game.season.season_id === level_filter))
+    }
+)
+
+watch('filterBy.team', (newValue, oldvalue) => {
+  initSchedule(filterBy.level.season_id, newValue.slug)
+})
+
+watch('filterBy.level', (newValue, oldValue) => {
+  level_filter = newValue.season_id
+})
+
+onMounted(() => {
+  getActiveYear();
+  getYears();
+  initSchedule();
+})
+
+
+// this.$root.$on('close', payload => {
+//       // this.showDatePicker = false
+//       // this.showTeams = false
+//     })
+
+const getActiveYear = () => {
       api.getYear(true).then(response => {
-        // console.log(response.data)
-        this.activeYear = response.data
+        activeYear.value = response.data
       })
-    },
-    getYears() {
+    };
+
+const getYears = () => {
       api.getYear(false).then(response => {
-        // console.log(response.data)
-        this.years = response.data
+        years.value = response.data
       })
-    },
-    // formatDate: this.$formatDate,
-    goToMap(url) {
+    };
+
+const goToMap = (url) => {
       window.location.replace(url)
-    },
-    initSchedule(level, team, year) {
-      // TODO: ADD YEAR
+    };
+
+const initSchedule = (level, team, year) => {
+      console.log("InitSchedule", level, team, year)
       api.getSchedule(level, team, year).then(response => {
         const fixedData = []
         response.data.forEach(game => {
@@ -327,10 +324,11 @@ export default {
           }
           fixedData.push(game)
         })
-        this.games = fixedData
+        games.value = fixedData
       })
-    },
-    checkResult(me, opponent) {
+    };
+
+const checkResult = (me, opponent) => {
       if (me !== null && opponent !== null) {
         if (me > opponent) {
           return 'winner'
@@ -340,36 +338,36 @@ export default {
       } else {
         return ''
       }
-    },
-    setYear(year) {
-      this.activeYear = year
-      this.edit = false
-      this.initSchedule(undefined, undefined, year.year)
-    },
-    setTeam(team) {
-      this.filterBy.team.slug = team.slug
-      this.filterBy.team.name = team.team_name
-      // this.showTeams = false
-      // console.log(this.showTeams)
-    },
-    setLvl(lvl) {
-      console.log(lvl)
-      this.filterBy.level.season_id = lvl.season_id
-      this.filterBy.level.level = lvl.level
-      // this.showTeams = false
-      // console.log(this.showTeams)
-    },
-    sortTable(s, nested) {
-      // if s == current sort, reverse
-      this.currentSort = s
+    };
 
-      this.games.sort((a, b) => {
+const setYear = (year) => {
+      activeYear = year
+      edit = false
+      initSchedule(undefined, undefined, year.year)
+    };
+
+const setTeam = (team) => {
+      filterBy.team.slug = team.slug
+      filterBy.team.name = team.team_name
+    };
+
+const setLvl = (lvl) => {
+      console.log(lvl)
+      filterBy.level.season_id = lvl.season_id
+      filterBy.level.level = lvl.level
+    };
+
+const sortTable = (s, nested) => {
+      // if s == current sort, reverse
+      currentSort = s
+
+      games.sort((a, b) => {
         let modifier = 1
         if (nested) {
-          if (this.currentSortDir === 'desc') modifier = -1
-          if (a[this.currentSort][nested] !== '') {
-            if (a[this.currentSort][nested] < b[this.currentSort][nested]) return -1 * modifier
-            if (a[this.currentSort][nested] > b[this.currentSort][nested]) return 1 * modifier
+          if (currentSortDir === 'desc') modifier = -1
+          if (a[currentSort][nested] !== '') {
+            if (a[currentSort][nested] < b[currentSort][nested]) return -1 * modifier
+            if (a[currentSort][nested] > b[currentSort][nested]) return 1 * modifier
           }
           return 0
         } else if (s === 'game_date') {
@@ -379,39 +377,36 @@ export default {
             it then takes into account the season starting toward the end (october) of the year and rolling into the next.
             lastly I add in the date to allow to sort by date
           */
-          a[this.currentSort].split(' ')
-          let monthANumber = this.months.indexOf(a[this.currentSort].split(' ')[0])
-          let monthBNumber = this.months.indexOf(b[this.currentSort].split(' ')[0])
+          a[currentSort].split(' ')
+          let monthANumber = months.indexOf(a[currentSort].split(' ')[0])
+          let monthBNumber = months.indexOf(b[currentSort].split(' ')[0])
 
           if (monthANumber <= 9) monthANumber = monthANumber + 12
-          monthANumber = monthANumber + a[this.currentSort].split(' ')[1]
-          monthBNumber = monthBNumber + b[this.currentSort].split(' ')[1]
+          monthANumber = monthANumber + a[currentSort].split(' ')[1]
+          monthBNumber = monthBNumber + b[currentSort].split(' ')[1]
 
-          if (this.currentSortDir === 'desc') modifier = -1
+          if (currentSortDir === 'desc') modifier = -1
           if (monthANumber < monthBNumber) return -1 * modifier
           if (monthANumber > monthBNumber) return 1 * modifier
           return 0
         } else {
-          if (this.currentSortDir === 'desc') modifier = -1
-          if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier
-          if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier
+          if (currentSortDir === 'desc') modifier = -1
+          if (a[currentSort] < b[currentSort]) return -1 * modifier
+          if (a[currentSort] > b[currentSort]) return 1 * modifier
           return 0
         }
       })
-    },
-    programInfo(teamName) {
-      const team = this.$store.state.teams.filter(team => {
-        // console.log(team)
+    };
+
+const programInfo = (teamName) => {
+      const team = store.state.teams.filter(team => {
         if (team.team_name === teamName) {
-          // console.log(team)
           return team
         }
       })
-      // console.log(team[0].team_mascot)
       return team[0]
-    }
-  }
-}
+    };
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
