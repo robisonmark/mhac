@@ -2,13 +2,12 @@
   <div class="hello">
     <header class="contentPad">
       <!-- <h2>{{config.seasonYear}} Schedule</h2> -->
-      <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" :label="'level'"
-        v-model="newGame.season">
+      <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level" :label="'level'" v-model="newGame.season">
       </selectbox> 
       <div class="buttonCon">
         <div class='switch' @click="toggleModal">
           <font-awesome-icon :icon="['fas', 'file-import']" class="icon"></font-awesome-icon>
-          <span class="focused">Upload Roster File</span>
+          <span class="focused">Upload Schedule File (beta)</span>
           &nbsp;
         </div>
         <div class="switch" v-if="!edit" @click="toggleEdit" :class="[edit ? 'selected' : '']">
@@ -38,6 +37,7 @@
           </tr>
 
           <!-- Note for when a level hasn't been chosen -->
+          
           <tr v-if="!newGame.season.season_id">
             <td colspan="7" align="center" class="add-button">Please select a level to begin adding games</td>
           </tr>
@@ -59,10 +59,12 @@
                     label="team_name" 
                     track-by="team_name" 
                     :options="selectOptions"
-                    group-label="type"
-                    group-values="teams"
-                    :closeOnSelect=false :multiple="false"
-                    :taggable="true" @tag="addTeam"></multiselect>
+                    :filteredOptions="selectOptions"
+                    :closeOnSelect=false 
+                    :multiple="false"
+                    :taggable="true" 
+                    
+                    :searchable="false"></multiselect>
             </td>
             <td class="input-con">
               <input type="time" v-model="newGame.game_time" />
@@ -92,9 +94,9 @@
                   label="team_name" 
                   track-by="team_name" 
                   :options="selectOptions" 
-                  group-label="type" 
-                  group-values="teams"
-                  :closeOnSelect="false" :optionHeight="10" :multiple="false" :taggable="true"></multiselect>
+                  :closeOnSelect="false" 
+                  :multiple="false" 
+                  :taggable="true"></multiselect>
             </td>
             <td class="input-con">
               <input type="time" v-model="game.game_time" />
@@ -103,7 +105,7 @@
               <input type="date" v-model="game.game_date" />
             </td>
             <td class="input-con">
-              <selectbox id="levels" :options="seasons" :trackby="'level'" placeholder="Select Level"
+              <selectbox id="levels" :options="seasons" :trackby="'level'" :placeholder="'Select Level'" :label="'level'"
                 v-model="game.season" :data="game.season.opponent"></selectbox>
             </td>
             <td @click="save(game)">
@@ -112,7 +114,7 @@
           </tr>
 
 
-          <!-- Add A Team -->
+          <!-- Add A Game -->
           <tr>
             <td class="input-con">
               <div tabindex="0" @click="homeAwayDisplay(newGame)" @keyup.space="homeAwayDisplay(newGame)"
@@ -123,10 +125,11 @@
                     label="team_name" 
                     track-by="team_name" 
                     :options="selectOptions"
-                    group-values="teams"
-                    group-label="type"
-                    :closeOnSelect=true :multiple="false"
-                    :taggable="true" @tag="addTeam"></multiselect>
+                    :closeOnSelect=true 
+                    :multiple="false"
+                    :taggable="true" 
+                    
+                    ></multiselect>
                 
             </td>
             <td class="input-con">
@@ -181,15 +184,15 @@ const modalTitle = ref('');
 const store = useStore();
 const route = useRoute();
 const showModal = ref(false);
-
-const emit = defineEmits(['save', 'toggleModal']);
+const addNew = ref(false);
+const emit = defineEmits(['save', 'toggleModal', 'buildTeams']);
 
 const newGame = reactive({
   host: true,
-  opponent: '',
+  opponent: ref({}),
   game_time: '',
   game_date: '',
-  season: '',
+  season: reactive({}),
   neutral_site: ''
 });
 
@@ -197,7 +200,7 @@ const saved = ref(false);
 const schedule = ref([]);
 const gameUpdateList = ref([]);
 const edit = ref(false);
-
+let selectOptions = ref([]);
 const columns = [
   {
     name: 'Host',
@@ -225,9 +228,9 @@ const columns = [
     type: 'date'
   },
   {
-    name: '',
+    name: 'Level',
     icon: '',
-    field_name: 'actions',
+    field_name: 'seasons.level',
     type: 'actions'
   }
 ];
@@ -241,6 +244,7 @@ onBeforeMount(() => {
     save()
   })
   emit('toggleModal', toggleModal);
+  buildTeams();
 });
 
 
@@ -248,26 +252,28 @@ const seasons = computed(() => {
   return store.state.seasons;
 });
 
-const selectOptions = computed(() => {
+const buildTeams = () => {
   const teamList = [];
   let conferenceList = [];
   let nonConferenceList = [];
   api.getSeasonTeamsv2().then(response => {
     response.data.forEach(team => {
-      if (team.conference) {
+      if (team.conference && team.slug != store.state.user.slug) {
+        // console.log(team)
         conferenceList.push(team)
-      } else {
-        nonConferenceList.push(team)
-      }
+      } 
+      // else {
+      //   nonConferenceList.push(team)
+      // }
     })
     teamList.push({
       'type':"Conference",
       'teams': conferenceList
     })
-    teamList.push({
-        'type': 'Non-Conference',
-        'teams': nonConferenceList
-      })
+    // teamList.push({
+    //     'type': 'Non-Conference',
+    //     'teams': nonConferenceList
+    //   })
   })
   // if (!newGame.season) {
   //   store.getters.seasonTeams.filter(team => {
@@ -285,14 +291,13 @@ const selectOptions = computed(() => {
   //     }
   //   });
   // }
-  console.log(teamList)
-  return teamList;
-});
+  // console.log(teamList)
+  // return conferenceList;
+  selectOptions = conferenceList;
+};
 
 const initSchedule = (season, slug) => {
-  // console.log("initSchedule", season, slug)
   api.getSchedule(season, slug).then(response => {
-    console.log(response)
     const gameArr = [];
     response.data.forEach(game => {
       const gameObj = {
@@ -356,14 +361,15 @@ const save = async (game = {}) => {
         console.log(err);
       });
 
-    schedule.value.push(newGame);
+    schedule.value.push(_.cloneDeep(newGame));
+    addNew.value = false;
   }
 };
 
 const initNewGame = (currSeason = '') => {
   newGame.season = currSeason;
   newGame.host = true;
-  newGame.opponent = '';
+  newGame.opponent = {};
   newGame.game_time = '';
   newGame.game_date = '';
   newGame.neutral_site = false;
@@ -397,6 +403,10 @@ const teamInList = (teamListObject, newTeam) => {
   return teamListObject.slug === newTeam.slug
 };
 
+const addTo = () => {
+  addNew.value = true;
+};
+
 const addNewGame = () => {
   schedule.push(newGame)
 };
@@ -416,16 +426,19 @@ onMounted(() => {
   initSchedule(undefined, route.params.slug)
 });
 
-watch('newGame.season', (newValue, oldValue) => {
-  initSchedule(newValue.season_id, this.$route.params.slug)
-});
 
-watch('route.params.slug', (newValue, oldValue) => {
-  initSchedule(undefined, newValue)
-});
+watch( () => newGame.season, (newSeason) => {
+    initSchedule(newSeason.season_id, route.params.slug)
+  }
+);
+watch( () => route.params.slug, (route) => {
+  initSchedule(undefined, route)
+}
+  
+);
+
 
 const toggleModal = () => {
-  console.log("Here")
   showModal.value = !showModal.value
 };
 

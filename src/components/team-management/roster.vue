@@ -64,7 +64,7 @@
             <td class="stat">
               <multiselect v-model="player.season_roster" label="level_name" track-by="team_id"
                 :options="store.getters.teamLevels" :closeOnSelect="false" :optionHeight="10" :multiple="true"
-                :taggable="true" @input="addToUpdateList(player)">
+                :taggable="true" @update:modelValue="addToUpdateList(player)">
               </multiselect>
             </td>
           </tr>
@@ -271,14 +271,10 @@ const getTeamId = () => {
   }
 };
 const initRoster = () => {
-  // console.log("initRoster")
   if (route.params.slug) {
-    // console.log("Init Roster2")
     Admin.getAdminPlayers(route.params.slug).then(response => {
-      // console.log(JSON.stringify(response.data))
       roster.value = response.data
       fullRoster.value = _.cloneDeep(roster.value)
-      // console.log("initRoster3", JSON.stringify(fullRoster))
     })
   }
 };
@@ -297,23 +293,21 @@ const initLeveledRoster = (lvlId) => {
     console.log("initLeveledRoster", roster)
   })
 };
+
 const initNewPlayer = () => {
-  const newPlayer = {
-    player_number: NaN,
-    first_name: '',
-    last_name: '',
-    id: null,
-    position: '',
-    age: '',
-    height: {
-      feet: 0,
-      inches: 0
-    },
-    team: teamId,
-    season_roster: [],
-    person_type: 1
-  }
-  return newPlayer
+  newPlayer.player_number = NaN;
+  newPlayer.first_name = '';
+  newPlayer.last_name = '';
+  newPlayer.id = null;
+  newPlayer.position = '';
+  newPlayer.age = '';
+  newPlayer.height.feet = 0;
+  newPlayer.height.inches = 0;
+  newPlayer.team = teamId; // Ensure teamId is defined
+  newPlayer.season_roster = [];
+  newPlayer.person_type = 1;
+  console.log("Init: ", newPlayer)
+  // return newPlayer
 };
 
 const addToUpdateList = (id) => {
@@ -347,11 +341,10 @@ const save = () => {
       const playerJson = player
       Admin.updatePlayer(player.id, playerJson)
         .then(response => {
-
+          fullRoster.value.push(player)
         })
         .catch(err => {
-
-          errors.push({ player: player, error: err })
+          errors.value.push({ player: player, error: err })
         })
     })
   }
@@ -359,10 +352,10 @@ const save = () => {
   if (added.value.length >= 1) {
     console.log("Added Records")
     added.value.forEach(player => {
-      console.log("Players", player.age)
-      if (isNaN(player.age) || player.age === '') {
-        errors.push({ player: player, error: "Age is Required" })
-      }
+      console.log("Players", player)
+      // if (isNaN(player.age) || player.age === '') {
+      //   errors.push({ player: player, error: "Age is Required" })
+      // }
       player.team_id = store.state.user.team_id
       const playerJson = player
 
@@ -372,7 +365,8 @@ const save = () => {
           .then(response => {
             if (response.status === 201 || response.status == 200) {
               handleSuccess(playerJson, response)
-              roster.value.push(newPlayer)
+              const updatedPlayer = _.cloneDeep(newPlayer)
+              fullRoster.value.push(_.cloneDeep(newPlayer))
               initNewPlayer()
             }
           })

@@ -230,14 +230,14 @@ const config = {
 const store = useStore();
 const route = useRoute();
 
-const activeYear = reactive({
+let activeYear = reactive({
   name: '',
   year: ''
 });
 
-const currentSort = ref('game_date');
-const currentSortdir = ref('asc');
-const edit = ref(false);
+let currentSort = ref('game_date');
+// const currentSortdir = ref('asc');
+let edit = ref(false);
 const filterBy =  ref({
         team: {
           slug: '',
@@ -253,7 +253,7 @@ const filterBy =  ref({
         }
       });
 const games = ref([]);
-const level_filter = ref('')
+let level_filter = ref('')
 const showDatePicker = ref(false);
 const showLevels = ref(false);
 const showTeams = ref(false);
