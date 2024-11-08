@@ -394,13 +394,14 @@ class api {
     })
   }
 
-  async sendRoster(body, teamId, year) {
+  async sendRoster(body, teamId, year, level_name) {
     return robros({
-      url: '/teamFile/' + teamId + "/" + year,
+      url: '/teamFile/' + teamId + "/" + year + "/" + level_name,
       method: 'POST',
       data: body
     })
   }
+
   async sendSchedule(body, teamId, year) {
     return robros({
       url: '/scheduleFile/' + teamId + "/" + year,
