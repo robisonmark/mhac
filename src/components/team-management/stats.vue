@@ -53,7 +53,7 @@
               <td>{{ game.opponent }}</td>
               <td>{{ game.home_team.team_name }}</td>
               <td>{{ game.missing_stats }}</td>
-              <td>{{ game.level }} </td>
+              <td>{{ game.level_name }} </td>
               <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
             </tr>
           </tbody>
@@ -96,9 +96,7 @@
                   v-model="gameScore.period_scores[index].home_score" />
                 <template v-else>{{ period.home_score }}</template>
               </td>
-              <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter"> -->
-              <input v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.home_score" />
-              <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  -->
+              <input class="finalScoreInput" v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.home_score" />
               <td v-else class="finalScore text-center">{{ gameScore.final_scores.home_score }}</td>
             </tr>
             <tr class="teamRow"
@@ -120,9 +118,7 @@
                   v-model="gameScore.period_scores[index].away_score" />
                 <template v-else>{{ period.away_score }}</template>
               </td>
-              <!-- <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter"> -->
-              <input v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.away_score" />
-              <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template> -->
+              <input class="finalScoreInput" v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.away_score" />
               <td v-else class="finalScore text-center">{{ gameScore.final_scores.away_score }}</td>
             </tr>
           </tbody>
@@ -301,17 +297,17 @@
           </template>
 
           <template #body>
-            {{ newGameStats }}
-            <!-- <tr v-for="(player, index) in newGameStats.player_stats" :key="index">
+            <!-- {{ newGameStats }} -->
+            <tr v-for="(player, index) in newGameStats.player_stats" :key="index">
               <td class="text-center sticky" v-html="player.player_number"></td>
               <td class="align-no-pad sticky" v-html="player.player_first_name"></td>
-              <td class="align-no-pad sticky" v-html="player.player_last_name"></td> -->
-            <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
+              <td class="align-no-pad sticky" v-html="player.player_last_name"></td>
+            
+            <td v-for="(stat, idx) in player.player_stats" :key="idx">
                 {{stat}}
-              </td> -->
-
+              </td>
             <!-- 2PT -->
-            <!-- <td class="stat light first">
+            <td class="stat light first">
                 <input v-if="edit === true" type="checkbox" v-model="player.player_stats.game_played" />
                 <template v-else>
                   <font-awesome-icon v-if="player.player_stats['game_played']" :icon="['fas', 'check']"
@@ -326,10 +322,10 @@
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['FGA']" />
                 <template v-else>{{ player.player_stats['FGA'] }}</template>
               </td>
-              <td class="stat light">{{ percentage(player.player_stats['FGA'], player.player_stats['FGM']) }}</td> -->
+              <td class="stat light">{{ percentage(player.player_stats['FGA'], player.player_stats['FGM']) }}</td>
 
             <!-- 3PT -->
-            <!-- <td class="stat dark">
+            <td class="stat dark">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['ThreePM']" />
                 <template v-else>{{ player.player_stats['ThreePM'] }}</template>
               </td>
@@ -337,10 +333,10 @@
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['ThreePA']" />
                 <template v-else>{{ player.player_stats['ThreePA'] }}</template>
               </td>
-              <td class="stat dark">{{ percentage(player.player_stats['ThreePA'], player.player_stats['ThreePM']) }}</td> -->
+              <td class="stat dark">{{ percentage(player.player_stats['ThreePA'], player.player_stats['ThreePM']) }}</td>
 
             <!-- FT -->
-            <!-- <td class="stat light">
+            <td class="stat light">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.FTM" />
                 <template v-else>{{ player.player_stats.FTM }}</template>
               </td>
@@ -348,10 +344,10 @@
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.FTA" />
                 <template v-else>{{ player.player_stats.FTA }}</template>
               </td>
-              <td class="stat light">{{ percentage(player.player_stats.FTA, player.player_stats.FTM) }}</td> -->
+              <td class="stat light">{{ percentage(player.player_stats.FTA, player.player_stats.FTM) }}</td>
 
             <!-- Rebounds -->
-            <!-- <td class="stat dark">
+            <td class="stat dark">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.OREB" />
                 <template v-else>{{ player.player_stats.OREB }}</template>
               </td>
@@ -386,9 +382,9 @@
                 <template v-if="edit === true">{{ totalPoints(player.player_stats['FGM'], player.player_stats['ThreePM'],
                   player.player_stats.FTM) }} </template>
                 <template v-else>{{ player.player_stats.total_points }}</template>
-              </td> -->
+              </td>
 
-            <!-- </tr> -->
+            </tr>
           </template>
 
           <template #tfoot>
@@ -573,7 +569,7 @@ const gameScore = reactive({
 const newStats = ref({
   season: ''
 });
-const newGameStats = reactive({
+const newGameStats = ref({
   game_id: '',
   player_stats: []
 });
@@ -628,9 +624,9 @@ watch(gameScore.period_scores.away_score, (newValue) => {
   }
 });
 
-watch(newGameStats, (newValue) => {
-  console.log(newValue.player_stats);
-});
+// watch(newGameStats, (newValue) => {
+//   console.log(newValue.player_stats);
+// });
 
 // watch(user, (newValue, oldValue) => {
 //   if (newStats.season_id) {
@@ -651,7 +647,7 @@ const sumPoints = computed(() => console.log('test location'));
 
 onBeforeMount(() => {
   initSchedule(undefined, route.params.slug)
-  emit('initNewGameStats', (teamId) => { initNewGameStats(teamId) })
+  emit('initNewGameStats', (teamId) => { initNewGameStats(selectedGame.value.game_id, teamId, selectedGame.value.level_name) })
 })
 
 const toggleModal = () => { showModal.value = !showModal.value };
@@ -687,6 +683,7 @@ const programInfo = (teamName) => {
 
 // Evalute making this a broader scoped roster
 const initRoster = (id) => {
+  console.log("here")
   api.getPlayers(id).then(response => {
     const roster = []
     response.data.forEach(player => {
@@ -725,11 +722,10 @@ const initRoster = (id) => {
 
 
 const enterStats = (game) => {
-  // console.log("here", game, team)
   newGameStats.game_id = game.game_id
-  initNewGameStats(game.rosterId)
+  newGameStats.team_id = game.rosterId
+  initNewGameStats(game.game_id, game.rosterId, game.level_name)
   selectedGame.value = game
-  console.log("enterStats", game.home_team.slug, route.params.slug)
   if (game.home_team.slug === route.params.slug) {
     boxscore.value = true
   }
@@ -748,7 +744,7 @@ const addOvertime = (homeScore, awayScore) => {
 };
 
 const backToGameStats = () => {
-  newGameStats.value = {
+  newGameStats = {
     game_id: '',
     player_stats: []
   }
@@ -764,12 +760,12 @@ const goToPlayerStats = () => {
   boxscore.value = false
 };
 
-const initNewGameStats = (rosterId) => {
-  api.getGameResults(newGameStats.game_id, rosterId).then(response => {
-    console.log(response.data)
+const initNewGameStats = (game_id, rosterId, level_name) => {
+  console.log("InitNEwGAmeStats:", level_name)
+  api.getGameResults(game_id, rosterId, level_name).then(response => {
+    // console.log("Init New Game Stats", response.data)
     newGameStats.value = response.data
-    console.log(newGameStats)
-    if (newGameStats.value.final_scores.home_score.value !== null) {
+    if (newGameStats.value.final_scores.home_score !== null) {
       gameScore.final_scores.home_score = newGameStats.value.final_scores.home_score
       gameScore.final_scores.away_score = newGameStats.value.final_scores.away_score
     }
@@ -781,10 +777,10 @@ const initNewGameStats = (rosterId) => {
         for (var i = 1; i <= quarterAdd; i++) {
           addOvertime()
         }
-        // } else if (gameScore.length < 4 && gameScore.length > 0) {
-        //   gameScore.forEach(period => {
-
-        //   })
+      } else if (gameScore.length < 4 && gameScore.length > 0) {
+        gameScore.forEach(period => {
+          // console.log(period)
+        })
       } else if (gameScore.period_scores.length === 0) {
         gameScore.period_scores = [
           {
@@ -835,15 +831,16 @@ const saveStats = () => {
   const finalScores = { final_scores: {} }
 
   if (boxscore) {
-    console.log("saveStats", finalScores, gameScore.final_scores)
     finalScores.final_scores = { ...gameScore.final_scores }
   }
 
-  console.log("saveStats2", newGameStats.value.player_stats)
-  const playerStats = _.cloneDeep(newGameStats.player_stats)
+  // console.log("saveStats2", newGameStats.value.player_stats)
+  const playerStats = _.cloneDeep(newGameStats.value.player_stats)
 
   const flattenedStats = []
-  playerStats.player_stats.forEach(player => {
+  // console.log("saveStats", playerStats)
+
+  playerStats.forEach(player => {
     const newPlayer = { ...player, ...player.player_stats }
     delete newPlayer.player_stats
 
@@ -852,13 +849,15 @@ const saveStats = () => {
 
   playerStats.player_stats = flattenedStats
 
-  console.log("saveStats3", JSON.stringify({ ...finalScores }));
-  console.log("saveStats4", JSON.stringify({ ...playerStats }));
-  playerStats.value.game_score
+  // console.log("saveStats3", JSON.stringify({ ...finalScores }));
+  // console.log("saveStats4", JSON.stringify({ ...playerStats }));
+  
   let stats = {}
-  stats = { ...playerStats, ...finalScores }
+  console.log(selectedGame.value.level_name)
+  stats = { "game_id": newGameStats.game_id, "level_name": selectedGame.value.level_name,  ...playerStats, ...finalScores }
+  console.log("SaveStats", stats)
 
-  api.addGameResults(newGameStats.game_id, stats.value)
+  api.addGameResults(newGameStats.game_id, stats)
     .then(response => {
       saving.value = false
 
@@ -880,7 +879,7 @@ const percentage = (attempted, made) => {
 
 const teamTotal = (stat) => {
   let total = 0
-  newGameStats.player_stats.forEach(player => {
+  newGameStats.value.player_stats.forEach(player => {
     total += (parseInt(_.get(player.player_stats, stat)) || 0)
   })
   return total
@@ -1260,6 +1259,7 @@ table {
       padding: 0;
       height: 50px;
       box-sizing: border-box;
+  
     }
 
     &:nth-child(odd) input {
@@ -1292,6 +1292,10 @@ table {
 
 .finalScore {
   width: 75px;
+}
+
+.finalScoreInput {
+  color: #fff;
 }
 
 #levels {
@@ -1357,6 +1361,7 @@ table {
     border: 0;
     outline: none;
     text-align: center;
+    color: #fff;
   }
 
   &.first {

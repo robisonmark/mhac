@@ -22,7 +22,8 @@ import { ref, computed, onMounted } from 'vue';
 import api from '../api/endpoints.js';
 
 const props = defineProps({
-  team_id: String
+  team_id: String,
+  roster_level: String
 });
 
 const STATUS_INITIAL = 0;
@@ -55,7 +56,7 @@ const refreshData = () => {
 };
 
 const reset = () => {
-  console.log("In Reset");
+  // console.log("In Reset");
   currentStatus.value = STATUS_INITIAL;
   uploadedFiles.value = [];
   uploadError.value = '';
@@ -64,7 +65,7 @@ const reset = () => {
 const save = (formData) => {
   currentStatus.value = STATUS_SAVING;
   console.log("Saving Data");
-  api.sendRoster(formData, props.team_id, activeYear.value.year)
+  api.sendRoster(formData, props.team_id, activeYear.value.year, props.roster_level)
     .then(response => {
       if (response.status === 200) {
         uploadedFiles.value = [].concat(response);

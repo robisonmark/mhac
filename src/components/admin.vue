@@ -45,7 +45,7 @@
 
 <script>
 // api
-import api from '@/api/endpoints'
+import api from '../api/endpoints'
 
 import { mapGetters } from 'vuex'
 

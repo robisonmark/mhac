@@ -64,7 +64,7 @@
             <td class="stat">
               <multiselect v-model="player.season_roster" label="level_name" track-by="team_id"
                 :options="store.getters.teamLevels" :closeOnSelect="false" :optionHeight="10" :multiple="true"
-                :taggable="true" @input="addToUpdateList(player)">
+                :taggable="true" @update:modelValue="addToUpdateList(player)">
               </multiselect>
             </td>
           </tr>
@@ -92,7 +92,7 @@
             </td>
             <td class="stat">
               <multiselect v-model="newPlayer.season_roster" label="level_name" track-by="team_id"
-                :options="$store.getters.teamLevels" :closeOnSelect="false" :optionHeight="10" :multiple="true"
+                :options="store.getters.teamLevels" :closeOnSelect="false" :optionHeight="10" :multiple="true"
                 :taggable="true"></multiselect>
             </td>
           </tr>
@@ -100,7 +100,15 @@
       </editTable>
       <modal :showModal="showModal" :modalTitle="'Upload Roster'" @close="toggleModal">
         <template #modalBody>
-          <fileUpload :showModal="showModal" :team_id="route.params.slug"> </fileUpload>
+              <multiselect v-model="rosterLvl" 
+                label="level_name" 
+                track-by="team_id"
+                :options="store.getters.teamLevels" 
+                :closeOnSelect="true" 
+                :optionHeight="10"
+                >
+              </multiselect>
+          <fileUpload :showModal="showModal" :team_id="route.params.slug" :roster_level="rosterLvl.level_name.replace(' ', '_')"> </fileUpload>
         </template>
       </modal>
     </div>
@@ -211,7 +219,19 @@ const newPlayer = reactive({
   person_type: 1
 })
 const roster = reactive([]);
-const rosterLvl = ref('');
+const rosterLvl = ref({
+  team_id:"",
+  team_mascot:"",
+  main_color:"",
+  secondary_color:"",
+  website:"",
+  logo_color:"",
+  logo_grey:"",
+  slug:"",
+  season_id:"",
+  level_name:"",
+  team_name:""
+});
 const saved = ref(false);
 const saving = ref(false);
 const updated = ref([]);
@@ -220,8 +240,6 @@ const errors = ref([]);
 const successful_saves = ref([]);
 
 //   computed: {
-const seasons = computed(() => store.state.seasons);
-const teamAssocLvl = computed(() => store.state.teamAssocLvl.season_team_ids);
 const user = computed({
   get: function () {
     return store.getters.user
@@ -231,25 +249,26 @@ const user = computed({
     initRoster()
   }
 });
-//     ...mapState(['slug']), 
 
-watch(newPlayer, (newValue, oldValue) => {
-  const idx = added.value.indexOf(newValue)
-  if (idx >= 0) {
-    added.value[idx] = newValue
-  } else {
-    added.value.push(newValue)
+
+watch(() => newPlayer, (newValue, oldValue) => {
+    const idx = added.value.indexOf(newValue)
+    if (idx >= 0) {
+      added.value[idx] = newValue
+    } else {
+      added.value.push(newValue)
+    }
   }
+);
 
-});
+// watch(rosterLvl, (newValue, oldValue) => {
+//   initLeveledRoster(newValue.season_team_id);
+// });
 
-watch(rosterLvl, (newValue, oldValue) => {
-  initLeveledRoster(newValue.season_team_id);
-});
-
-watch(route.params.slug, () => {
-  initRoster();
-});
+watch( () => route.params.slug, (route) => {
+    initRoster();
+  }
+);
 
 onBeforeMount(() => {
   initRoster();
@@ -271,14 +290,10 @@ const getTeamId = () => {
   }
 };
 const initRoster = () => {
-  // console.log("initRoster")
   if (route.params.slug) {
-    // console.log("Init Roster2")
     Admin.getAdminPlayers(route.params.slug).then(response => {
-      // console.log(JSON.stringify(response.data))
       roster.value = response.data
       fullRoster.value = _.cloneDeep(roster.value)
-      // console.log("initRoster3", JSON.stringify(fullRoster))
     })
   }
 };
@@ -297,23 +312,21 @@ const initLeveledRoster = (lvlId) => {
     console.log("initLeveledRoster", roster)
   })
 };
+
 const initNewPlayer = () => {
-  const newPlayer = {
-    player_number: NaN,
-    first_name: '',
-    last_name: '',
-    id: null,
-    position: '',
-    age: '',
-    height: {
-      feet: 0,
-      inches: 0
-    },
-    team: teamId,
-    season_roster: [],
-    person_type: 1
-  }
-  return newPlayer
+  newPlayer.player_number = NaN;
+  newPlayer.first_name = '';
+  newPlayer.last_name = '';
+  newPlayer.id = null;
+  newPlayer.position = '';
+  newPlayer.age = '';
+  newPlayer.height.feet = 0;
+  newPlayer.height.inches = 0;
+  newPlayer.team = teamId; // Ensure teamId is defined
+  newPlayer.season_roster = [];
+  newPlayer.person_type = 1;
+  console.log("Init: ", newPlayer)
+  // return newPlayer
 };
 
 const addToUpdateList = (id) => {
@@ -347,11 +360,10 @@ const save = () => {
       const playerJson = player
       Admin.updatePlayer(player.id, playerJson)
         .then(response => {
-
+          fullRoster.value.push(player)
         })
         .catch(err => {
-
-          errors.push({ player: player, error: err })
+          errors.value.push({ player: player, error: err })
         })
     })
   }
@@ -359,10 +371,10 @@ const save = () => {
   if (added.value.length >= 1) {
     console.log("Added Records")
     added.value.forEach(player => {
-      console.log("Players", player.age)
-      if (isNaN(player.age) || player.age === '') {
-        errors.push({ player: player, error: "Age is Required" })
-      }
+      console.log("Players", player)
+      // if (isNaN(player.age) || player.age === '') {
+      //   errors.push({ player: player, error: "Age is Required" })
+      // }
       player.team_id = store.state.user.team_id
       const playerJson = player
 
@@ -372,7 +384,8 @@ const save = () => {
           .then(response => {
             if (response.status === 201 || response.status == 200) {
               handleSuccess(playerJson, response)
-              roster.value.push(newPlayer)
+              const updatedPlayer = _.cloneDeep(newPlayer)
+              fullRoster.value.push(_.cloneDeep(newPlayer))
               initNewPlayer()
             }
           })

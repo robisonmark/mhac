@@ -24,37 +24,37 @@
                 </li>
                 <li>
                   <a
-                    href="https://www.facebook.com/people/Bluegrass-Blazers-Homeschool-Basketball/100084579375555/?mibextid=LQQJ4d">
+                    href="https://www.facebook.com/people/Bluegrass-Blazers-Homeschool-Basketball/100084579375555/?mibextid=LQQJ4d" target="_blank">
                     <img src="/static/color-team-logos/blazersLogo.png" alt="Link to Team Site" />
                   </a>
                 </li>
                 <li>
-                  <a href="https://facebook.com/uppercumberlandrams/">
+                  <a href="https://facebook.com/uppercumberlandrams/" target="_blank">
                     <img src="/static/color-team-logos/rams.png" alt="Link to Team Site" />
                   </a>
                 </li>
                 <li>
-                  <a href="http://cca-huntsville.org/">
+                  <a href="https://rocketcityfalconsbasketball.org/" target="_blank">
                     <img src="/static/color-team-logos/rocket_city_falcons_logo.png" alt="Link to Team Site" />
                   </a>
                 </li>
                 <li>
-                  <a href="https://tnheatsports.com/">
+                  <a href="https://tnheatsports.com/" target="_blank">
                     <img src="/static/color-team-logos/heat.png" alt="Link to Team Site" />
                   </a>
                 </li>
-                <li>
-                  <a href="https://www.bradleyknights.org/">
+                <!-- <li>
+                  <a href="https://www.bradleyknights.org/" target="_blank">
                     <img src="/static/color-team-logos/KnightsLogo.png" alt="Link to Team Site" />
                   </a>
-                </li>
+                </li> -->
                 <li>
-                  <a href="">
+                  <a href="https://www.csthea.org/basketball.html" target="_blank">
                     <img src="/static/color-team-logos/patriots.png" alt="Link to Team Site" />
                   </a>
                 </li>
                 <li>
-                  <a href="https://www.nccwarriors.com/">
+                  <a href="https://www.nccwarriors.com/" target="_blank">
                     <img src="/static/color-team-logos/warriors.png" alt="Link to Team Site" />
                   </a>
                 </li>

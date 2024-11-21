@@ -101,13 +101,13 @@ onMounted(() => {
   getSeasonTeams(team);
 });
 
-watch(selectedTeam, (newValue, oldValue) => {
+watch(() => selectedTeam, (newValue, oldValue) => {
   console.log(newValue)
   teamLogo.value = '/static/color-team-logos/' + newValue.logo_color;
   greyLogo.value = '/static/washedout-team-logo/' + newValue.logo_grey;
 });
 
-watch(team, (newValue, oldValue) => {
+watch(() => team, (newValue, oldValue) => {
   console.log("team Watcher", newValue)
 })
 

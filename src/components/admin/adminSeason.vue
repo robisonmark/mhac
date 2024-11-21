@@ -21,11 +21,10 @@
     <div class="contentPad">
       <editTable :columns="columns" :config="config" :tabledata="seasonArr" :edit="edit" v-model="new_season">
         <template #body v-if="edit">
-
-          <tr v-for="season in seasonArr" :key="season.id">
-            <td class="input-con">
+           <tr v-for="season in seasonArr" :key="season.id">
+             <td class="input-con">
               <multiselect v-model="season.level" label="level_name" track-by="level_id" :options=levels
-                :closeOnSelect="false" :optionHeight="10" :multiple="False" :taggable="true" :hideSelected="true">
+                :closeOnSelect="false" :optionHeight="10" :multiple="false" :taggable="true" :hideSelected="true">
               </multiselect>
             </td>
             <td class="input-con">
@@ -51,9 +50,9 @@
             </td>
             <multiselect v-model="season.season_teams" label="team_name" track-by="team_id" :options="teams"
               :closeOnSelect="false" :optionHeight="20" :multiple="true" :taggable="true" :hideSelected="true"
-              @input="addToUpdateList(season)">
+              @update:modelValue="addToUpdateList(season)">
             </multiselect>
-          </tr>
+          </tr> 
           <tr>
             <td class="input-con">
               <multiselect v-model="new_season.level" label="level_name" track-by="level_id" :options=levels
@@ -95,9 +94,8 @@
 
 <script setup>
 import { ref, reactive, watch, computed } from 'vue';
-import api from '@/api/endpoints.js';
-import editTable from '@/components/editTable.vue'
-// import selectbox from '@/components/selectbox.vue'
+import api from '../../api/endpoints.js';
+import editTable from '../../components/editTable.vue'
 import { useStore } from 'vuex';
 
 // Components
@@ -108,7 +106,6 @@ const store = useStore();
 
 
 // Data
-const years = ref([]);
 const currentSeason = ref([]);
 const edit = ref(false);
 const seasonArr = ref([]);
@@ -197,6 +194,7 @@ const teams = computed(() => store.state.teams);
 
 // Methods
 const addToUpdateList = (id) => {
+  console.log(id)
   let add = true;
   for (let i = 0; i < updated.value.length; i++) {
     if (updated.value[i] === id) {
@@ -222,6 +220,7 @@ const getCurrentSeason = () => {
 
 const save = () => {
   if (updated.value.length > 0) {
+    console.log(updated.value)
     api.updateSeason(updated.value)
       .then(response => {
         updated.value = [];
