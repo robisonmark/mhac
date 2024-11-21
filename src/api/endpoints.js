@@ -109,11 +109,12 @@ class api {
      * @param {object} body - Player JSON Body
      * @return - JSON Object of players by team
     ***/
-  async getGameResults(gameId, teamId) {
-    // gameId = gameId ? gameId + '/' : ''
-    // teamId = teamId ? teamId + '/' : ''
+  async getGameResults(gameId, teamId, level_name) {
+
     let path = ''
-    if (gameId && teamId) {
+    if (gameId && teamId && level_name) {
+      path = gameId + '/' + teamId + '/' + level_name
+    } else if (gameId && teamId) {
       path = gameId + '/' + teamId
     } else if (gameId && !teamId) {
       path = gameId
@@ -144,7 +145,7 @@ class api {
     //     // console.log(user)
     //   })
     // }'
-
+    console.log(stats)
     let addedParams = ''
     if (gameId !== undefined) {
       addedParams = '/' + gameId
