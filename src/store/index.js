@@ -169,7 +169,7 @@ const actions = {
   },
 
   async setSeasonTeams(context) {
-    console.log("Made it here")
+    // console.log("Made it here")
     await api.getSeasonTeams().then(response => {
       context.commit('set_seasonTeams', response.data)
     })

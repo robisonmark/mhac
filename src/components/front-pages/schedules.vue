@@ -13,25 +13,12 @@
       <div class="col-12">
         <div class="row filter-bar">
           <div class="col-md-4">
-            <div v-if="edit === false" @click="edit = !edit">
-              <h2>{{ activeYear.name }} Schedule</h2>
-            </div>
-            <div v-if="edit === true">
-              <ul class="options-menu">
-                <li class="option" v-for="year in years" :key="year.year" @click="setYear(year)"> {{ year.name }} </li>
-              </ul>
+            <div>
               <h2>{{ activeYear.name }} Schedule</h2>
             </div>
           </div>
           <div class="col-md-6">
             <div class="filters">
-              <!-- <div class="custom-select" @click="showDatePicker = !showDatePicker, showTeams = false, showLevels = false">
-                <div disabled>All Dates</div>
-                <div class="options-menu" @click.stop="showDatePicker = true">
-                  <input class="option noHover" v-show="showDatePicker" type="date" v-model="filterBy.dateRange.start_date"/>
-                </div>
-              </div> -->
-
               <div class="custom-select" @click="showLevels = !showLevels, showTeams = false, showDatePicker = false">
                 <div disabled>{{ filterBy.level.level }}</div>
                 <div class="options-menu">
@@ -76,11 +63,11 @@
             </tr>
           </tbody>
           <tbody>
-            <template v-if="filteredGames.length >= 1">
-              <tr class="game" v-for="game in filteredGames" :key="game.game_id">
+            <template v-if="games.length >= 1">
+              <tr class="game" v-for="game in games" :key="game.game_id">
                 <td class="date">
-                  {{ $config.formatDate(game.game_date) }}
-                  <div class="time">{{ $config.formatTime(game.game_time) }}</div>
+                  {{ formatDate(game.game_date) }}
+                  <div class="time">{{ formatTime(game.game_time) }}</div>
                 </td>
 
                 <!-- AWAY TEAM -->
@@ -92,7 +79,7 @@
                     :src="'/static/color-team-logos/' + programInfo(game.away_team.team_name).logo_color" />
                   <div class="team_name" :class="checkResult(game.final_scores.away_score, game.final_scores.home_score)">
                     {{ game.away_team.team_name }}</div>
-                  <span class="level" v-if="game.away_team.level_name" v-html="game.away_team.level_name"></span>
+                  <span class="level" v-if="game.level_name" v-html="game.level_name"></span>
                 </td>
                 <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
                   {{ game.final_scores.away_score }}
@@ -105,22 +92,22 @@
                     :src="'/static/color-team-logos/' + programInfo(game.home_team.team_name).logo_color" />
                   <div class="team_name" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
                     {{ game.home_team.team_name }}</div>
-                  <span class="level" v-if="game.home_team.level_name" v-html="game.home_team.level_name"></span>
+                  <span class="level" v-if="game.level_name" v-html="game.level_name"></span>
                 </td>
                 <td class="score" :class="checkResult(game.final_scores.home_score, game.final_scores.away_score)">
                   {{ game.final_scores.home_score }}
                 </td>
 
-                <!-- <td class="location text-right">
+                <td class="location text-right">
                   <div>{{game.home_team.address_name}}</div>
                   <br/>
                   <span class="address" :href="'https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip" @click.stop="goToMap('https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip)">
                     <div>{{game.home_team.address_lines}}</div>
                     <div>{{game.home_team.city_state_zip}}</div>
                   </span>
-                </td> -->
+                </td>
               </tr>
-              <!-- </router-link> -->
+              
             </template>
             <template v-else>
               <tr>
@@ -166,17 +153,15 @@
         <!-- </div> -->
 
         <!-- AWAY TEAM -->
-        <!-- <div class="col-1 score" :class="checkResult(game.final_score.away, game.final_score.home)"> -->
-        <!-- {{game.final_score.away}} -->
-        <!-- </div> -->
+      
 
         <!-- <div class="col-2 team_info" :class="checkResult(game.final_score.home, game.final_score.away)">
               <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.name).logo_color" />
               <div class="team_name">{{game.away_team.name}}</div>
               <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
-            </div>
+            </div> -->
 
-            <div class="col-1">
+            <!-- <div class="col-1">
               <span class="at">@</span>
             </div> -->
 
@@ -222,7 +207,9 @@ import { useStore } from 'vuex';
 import api from '../../api/endpoints.js'
 
 // mixins
-import { useRootMixin } from '../../mixins/root'
+// import { useRootMixin } from '../../mixins/root'
+
+import {formatDate, formatTime} from '../../config/helpers.js';
 
 const config = {
   page: 'schedules'
@@ -230,15 +217,11 @@ const config = {
 const store = useStore();
 const route = useRoute();
 
-const activeYear = reactive({
-  name: '',
-  year: ''
-});
-
-const currentSort = ref('game_date');
-const currentSortdir = ref('asc');
-const edit = ref(false);
-const filterBy =  ref({
+let currentSort = ref('game_date');
+// const currentSortdir = ref('asc');
+let edit = ref(false);
+const activeYear = ref('')
+const filterBy =  reactive({
         team: {
           slug: '',
           name: 'All Teams'
@@ -253,11 +236,17 @@ const filterBy =  ref({
         }
       });
 const games = ref([]);
-const level_filter = ref('')
+let level_filter = reactive('')
 const showDatePicker = ref(false);
 const showLevels = ref(false);
 const showTeams = ref(false);
 const years = ref([]);
+
+const programInfo = (teamName) => {
+  const team = store.state.teams.find(team => team.team_name === teamName);
+  return team || {}; // Return an empty object if no match is found
+};
+
 
 const teams = computed(() => {
       const teams = [{ slug: '', team_name: 'All Teams' }, ...store.state.teams]
@@ -272,31 +261,31 @@ const levels = computed(() => {
 
 const filteredGames = computed(() =>{
       if (level_filter === '') {
-        return games
+        return games.value
       }
       return games.value.filter(game => (game.season.season_id === level_filter))
     }
 )
 
-watch('filterBy.team', (newValue, oldvalue) => {
-  initSchedule(filterBy.level.season_id, newValue.slug)
-})
+watch(() => filterBy.team, (newValue) => {
+  console.log(newValue)
+  initSchedule(undefined, newValue.slug, undefined);
+});
 
-watch('filterBy.level', (newValue, oldValue) => {
-  level_filter = newValue.season_id
-})
+watch(() => filterBy.level.season_id, (newValue) => {
+  level_filter = newValue.season_id;
+  if (newValue === '') {
+    newValue = undefined
+  }
+  initSchedule(newValue, undefined, undefined);
+});
+
 
 onMounted(() => {
   getActiveYear();
   getYears();
   initSchedule();
 })
-
-
-// this.$root.$on('close', payload => {
-//       // this.showDatePicker = false
-//       // this.showTeams = false
-//     })
 
 const getActiveYear = () => {
       api.getYear(true).then(response => {
@@ -305,7 +294,7 @@ const getActiveYear = () => {
     };
 
 const getYears = () => {
-      api.getYear(false).then(response => {
+      api.getYear(true).then(response => {
         years.value = response.data
       })
     };
@@ -317,7 +306,8 @@ const goToMap = (url) => {
 const initSchedule = (level, team, year) => {
       console.log("InitSchedule", level, team, year)
       api.getSchedule(level, team, year).then(response => {
-        const fixedData = []
+        if (response.status == 200) {
+          const fixedData = []
         response.data.forEach(game => {
           if (game.game_time === '12:00 AM ') {
             game.game_time = 'TBD'
@@ -325,7 +315,12 @@ const initSchedule = (level, team, year) => {
           fixedData.push(game)
         })
         games.value = fixedData
-      })
+      }
+      else {
+        games.value = []
+      }  
+        }
+        )
     };
 
 const checkResult = (me, opponent) => {
@@ -396,15 +391,6 @@ const sortTable = (s, nested) => {
           return 0
         }
       })
-    };
-
-const programInfo = (teamName) => {
-      const team = store.state.teams.filter(team => {
-        if (team.team_name === teamName) {
-          return team
-        }
-      })
-      return team[0]
     };
 
 </script>
