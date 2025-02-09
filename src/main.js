@@ -34,7 +34,7 @@ import { Amplify } from 'aws-amplify'
 import awsconfig from './aws-exports'
 
 // local config
-import config from './config/helpers'
+import helpers from './config/helpers'
 
 Amplify.configure(awsconfig)
 
@@ -71,7 +71,7 @@ app.component('font-awesome-icon', FontAwesomeIcon)
 app.use(router)
 app.use(vuetify)
 app.use(store)
-
+app.config.globalProperties.$helpers = helpers.CONSTANTS 
 
 app.mount('#app')
 

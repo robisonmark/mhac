@@ -152,29 +152,29 @@
               <th colspan="3"></th>
             </tr>
             <tr class="rowTwo">
-              <!-- <th class="text-center sticky" @click="sortTable('player_number')">#</th>
+              <th class="text-center sticky" @click="sortTable('player_number')">#</th>
               <th class="pad-right sticky" @click="sortTable('first_name')">First Name</th>
-              <th class="pad-right sticky" @click="sortTable('last_name')">Last Name</th> -->
+              <th class="pad-right sticky" @click="sortTable('last_name')">Last Name</th>
               <!-- 2PT -->
-              <!-- <th class="stat" @click="sortTable('player_stats', 'FGA')">M</th>
+              <th class="stat" @click="sortTable('player_stats', 'FGA')">M</th>
               <th class="stat" >A</th>
-              <th class="stat">%</th> -->
+              <th class="stat">%</th>
               <!-- 3PT -->
-              <!-- <th class="stat">M</th>
+              <th class="stat">M</th>
               <th class="stat">A</th>
-              <th class="stat">%</th> -->
+              <th class="stat">%</th>
               <!-- FT -->
-              <!-- <th class="stat">M</th>
+              <th class="stat">M</th>
               <th class="stat">A</th>
-              <th class="stat">%</th> -->
+              <th class="stat">%</th>
               <!-- Rebounds -->
-              <!-- <th class="stat">O</th>
+              <th class="stat">O</th>
               <th class="stat">D</th>
-              <th class="stat">Tot</th> -->
+              <th class="stat">Tot</th>
 
-              <!-- <th class="stat">To</th>
+              <th class="stat">To</th>
               <th class="stat">Ast</th>
-              <th class="stat">Blk</th> -->
+              <th class="stat">Blk</th>
 
               <!-- <th class="stat">Stl</th>
               <th class="stat">Total Pts</th> -->
@@ -302,10 +302,10 @@
               <td class="text-center sticky" v-html="player.player_number"></td>
               <td class="align-no-pad sticky" v-html="player.player_first_name"></td>
               <td class="align-no-pad sticky" v-html="player.player_last_name"></td>
-            
             <td v-for="(stat, idx) in player.player_stats" :key="idx">
                 {{stat}}
               </td>
+              
             <!-- 2PT -->
             <td class="stat light first">
                 <input v-if="edit === true" type="checkbox" v-model="player.player_stats.game_played" />
@@ -625,7 +625,7 @@ watch(gameScore.period_scores.away_score, (newValue) => {
 });
 
 // watch(newGameStats, (newValue) => {
-//   console.log(newValue.player_stats);
+  // console.log(newValue.player_stats);
 // });
 
 // watch(user, (newValue, oldValue) => {
@@ -647,7 +647,9 @@ const sumPoints = computed(() => console.log('test location'));
 
 onBeforeMount(() => {
   initSchedule(undefined, route.params.slug)
-  emit('initNewGameStats', (teamId) => { initNewGameStats(selectedGame.value.game_id, teamId, selectedGame.value.level_name) })
+
+  emit('initNewGameStats', (teamId, level) => { initNewGameStats(teamId, level) })
+  //emit('initNewGameStats', (teamId) => { initNewGameStats(selectedGame.value.game_id, teamId, selectedGame.value.level_name) })
 })
 
 const toggleModal = () => { showModal.value = !showModal.value };
@@ -723,8 +725,10 @@ const initRoster = (id) => {
 
 const enterStats = (game) => {
   newGameStats.game_id = game.game_id
-  newGameStats.team_id = game.rosterId
-  initNewGameStats(game.game_id, game.rosterId, game.level_name)
+  // newGameStats.team_id = game.rosterId
+  // initNewGameStats(game.game_id, game.rosterId, game.level_name)
+  initNewGameStats(game.rosterId, game.level_name)
+  
   selectedGame.value = game
   if (game.home_team.slug === route.params.slug) {
     boxscore.value = true
@@ -760,9 +764,13 @@ const goToPlayerStats = () => {
   boxscore.value = false
 };
 
-const initNewGameStats = (game_id, rosterId, level_name) => {
-  console.log("InitNEwGAmeStats:", level_name)
-  api.getGameResults(game_id, rosterId, level_name).then(response => {
+//const initNewGameStats = (game_id, rosterId, level_name) => {
+  //console.log("InitNEwGAmeStats:", level_name)
+  //api.getGameResults(game_id, rosterId, level_name).then(response => {
+  
+const initNewGameStats = (rosterId, level) => {
+  // console.log(newGameStats.game_id, rosterId, level)
+  api.getGameResultsNew(newGameStats.game_id, rosterId, level).then(response => {
     // console.log("Init New Game Stats", response.data)
     newGameStats.value = response.data
     if (newGameStats.value.final_scores.home_score !== null) {
@@ -777,10 +785,10 @@ const initNewGameStats = (game_id, rosterId, level_name) => {
         for (var i = 1; i <= quarterAdd; i++) {
           addOvertime()
         }
-      } else if (gameScore.length < 4 && gameScore.length > 0) {
-        gameScore.forEach(period => {
-          // console.log(period)
-        })
+      //} else if (gameScore.length < 4 && gameScore.length > 0) {
+      //  gameScore.forEach(period => {
+      //    // console.log(period)
+      //  })
       } else if (gameScore.period_scores.length === 0) {
         gameScore.period_scores = [
           {
@@ -835,12 +843,10 @@ const saveStats = () => {
   }
 
   // console.log("saveStats2", newGameStats.value.player_stats)
-  const playerStats = _.cloneDeep(newGameStats.value.player_stats)
-
+  const notFlattenedplayerStats = _.cloneDeep(newGameStats.value.player_stats)
+  // console.log("saveStats3", playerStats)
   const flattenedStats = []
-  // console.log("saveStats", playerStats)
-
-  playerStats.forEach(player => {
+  notFlattenedplayerStats.forEach(player => {
     const newPlayer = { ...player, ...player.player_stats }
     delete newPlayer.player_stats
 
@@ -851,11 +857,20 @@ const saveStats = () => {
 
   // console.log("saveStats3", JSON.stringify({ ...finalScores }));
   // console.log("saveStats4", JSON.stringify({ ...playerStats }));
-  
+
+  // playerStats.value.game_score
   let stats = {}
-  console.log(selectedGame.value.level_name)
-  stats = { "game_id": newGameStats.game_id, "level_name": selectedGame.value.level_name,  ...playerStats, ...finalScores }
-  console.log("SaveStats", stats)
+  stats = { ...playerStats, ...finalScores }
+  console.log(selectedGame)
+  stats.level_name = selectedGame.value.level_name
+  stats.game_id = selectedGame.value.game_id
+  stats.team_id = selectedGame.value.team_id
+  stats.game_scores = []
+  
+  //let stats = {}
+  //console.log(selectedGame.value.level_name)
+  //stats = { "game_id": newGameStats.game_id, "level_name": selectedGame.value.level_name,  ...playerStats, ...finalScores }
+  //console.log("SaveStats", stats)
 
   api.addGameResults(newGameStats.game_id, stats)
     .then(response => {
