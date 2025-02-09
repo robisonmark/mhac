@@ -96,9 +96,7 @@
                   v-model="gameScore.period_scores[index].home_score" />
                 <template v-else>{{ period.home_score }}</template>
               </td>
-              <!-- <td v-for="(quarter, key, index) in gameScore.homeTeam.quarters" :key="quarter[index]" class="quarter"> -->
-              <input v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.home_score" />
-              <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template>  -->
+              <input class="finalScoreInput" v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.home_score" />
               <td v-else class="finalScore text-center">{{ gameScore.final_scores.home_score }}</td>
             </tr>
             <tr class="teamRow"
@@ -120,9 +118,7 @@
                   v-model="gameScore.period_scores[index].away_score" />
                 <template v-else>{{ period.away_score }}</template>
               </td>
-              <!-- <td v-for="(quarter, key, index) in gameScore.awayTeam.quarters" :key="quarter[index]" class="quarter"> -->
-              <input v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.away_score" />
-              <!-- <template v-else>{{gameScore.awayTeam.quarters[key]}}</template> -->
+              <input class="finalScoreInput" v-if="edit === true && boxscore" type="number" min="0" v-model="gameScore.final_scores.away_score" />
               <td v-else class="finalScore text-center">{{ gameScore.final_scores.away_score }}</td>
             </tr>
           </tbody>
@@ -309,7 +305,7 @@
             <td v-for="(stat, idx) in player.player_stats" :key="idx">
                 {{stat}}
               </td>
-
+              
             <!-- 2PT -->
             <td class="stat light first">
                 <input v-if="edit === true" type="checkbox" v-model="player.player_stats.game_played" />
@@ -573,7 +569,7 @@ const gameScore = reactive({
 const newStats = ref({
   season: ''
 });
-const newGameStats = reactive({
+const newGameStats = ref({
   game_id: '',
   player_stats: []
 });
@@ -651,7 +647,9 @@ const sumPoints = computed(() => console.log('test location'));
 
 onBeforeMount(() => {
   initSchedule(undefined, route.params.slug)
+
   emit('initNewGameStats', (teamId, level) => { initNewGameStats(teamId, level) })
+  //emit('initNewGameStats', (teamId) => { initNewGameStats(selectedGame.value.game_id, teamId, selectedGame.value.level_name) })
 })
 
 const toggleModal = () => { showModal.value = !showModal.value };
@@ -687,6 +685,7 @@ const programInfo = (teamName) => {
 
 // Evalute making this a broader scoped roster
 const initRoster = (id) => {
+  console.log("here")
   api.getPlayers(id).then(response => {
     const roster = []
     response.data.forEach(player => {
@@ -725,11 +724,12 @@ const initRoster = (id) => {
 
 
 const enterStats = (game) => {
-  console.log("here", game, team)
   newGameStats.game_id = game.game_id
+  // newGameStats.team_id = game.rosterId
+  // initNewGameStats(game.game_id, game.rosterId, game.level_name)
   initNewGameStats(game.rosterId, game.level_name)
+  
   selectedGame.value = game
-  console.log("enterStats", game.home_team.slug, route.params.slug)
   if (game.home_team.slug === route.params.slug) {
     boxscore.value = true
   }
@@ -748,7 +748,7 @@ const addOvertime = (homeScore, awayScore) => {
 };
 
 const backToGameStats = () => {
-  newGameStats.value = {
+  newGameStats = {
     game_id: '',
     player_stats: []
   }
@@ -764,9 +764,14 @@ const goToPlayerStats = () => {
   boxscore.value = false
 };
 
+//const initNewGameStats = (game_id, rosterId, level_name) => {
+  //console.log("InitNEwGAmeStats:", level_name)
+  //api.getGameResults(game_id, rosterId, level_name).then(response => {
+  
 const initNewGameStats = (rosterId, level) => {
   // console.log(newGameStats.game_id, rosterId, level)
   api.getGameResultsNew(newGameStats.game_id, rosterId, level).then(response => {
+    // console.log("Init New Game Stats", response.data)
     newGameStats.value = response.data
     if (newGameStats.value.final_scores.home_score !== null) {
       gameScore.final_scores.home_score = newGameStats.value.final_scores.home_score
@@ -780,7 +785,10 @@ const initNewGameStats = (rosterId, level) => {
         for (var i = 1; i <= quarterAdd; i++) {
           addOvertime()
         }
-        
+      //} else if (gameScore.length < 4 && gameScore.length > 0) {
+      //  gameScore.forEach(period => {
+      //    // console.log(period)
+      //  })
       } else if (gameScore.period_scores.length === 0) {
         gameScore.period_scores = [
           {
@@ -849,6 +857,7 @@ const saveStats = () => {
 
   // console.log("saveStats3", JSON.stringify({ ...finalScores }));
   // console.log("saveStats4", JSON.stringify({ ...playerStats }));
+
   // playerStats.value.game_score
   let stats = {}
   stats = { ...playerStats, ...finalScores }
@@ -857,7 +866,12 @@ const saveStats = () => {
   stats.game_id = selectedGame.value.game_id
   stats.team_id = selectedGame.value.team_id
   stats.game_scores = []
-  console.log("Stat: ", stats)
+  
+  //let stats = {}
+  //console.log(selectedGame.value.level_name)
+  //stats = { "game_id": newGameStats.game_id, "level_name": selectedGame.value.level_name,  ...playerStats, ...finalScores }
+  //console.log("SaveStats", stats)
+
   api.addGameResults(newGameStats.game_id, stats)
     .then(response => {
       saving.value = false
@@ -880,7 +894,7 @@ const percentage = (attempted, made) => {
 
 const teamTotal = (stat) => {
   let total = 0
-  newGameStats.player_stats.forEach(player => {
+  newGameStats.value.player_stats.forEach(player => {
     total += (parseInt(_.get(player.player_stats, stat)) || 0)
   })
   return total
@@ -1260,6 +1274,7 @@ table {
       padding: 0;
       height: 50px;
       box-sizing: border-box;
+  
     }
 
     &:nth-child(odd) input {
@@ -1292,6 +1307,10 @@ table {
 
 .finalScore {
   width: 75px;
+}
+
+.finalScoreInput {
+  color: #fff;
 }
 
 #levels {
@@ -1357,6 +1376,7 @@ table {
     border: 0;
     outline: none;
     text-align: center;
+    color: #fff;
   }
 
   &.first {

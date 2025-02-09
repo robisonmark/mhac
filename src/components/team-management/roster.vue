@@ -92,7 +92,7 @@
             </td>
             <td class="stat">
               <multiselect v-model="newPlayer.season_roster" label="level_name" track-by="team_id"
-                :options="$store.getters.teamLevels" :closeOnSelect="false" :optionHeight="10" :multiple="true"
+                :options="store.getters.teamLevels" :closeOnSelect="false" :optionHeight="10" :multiple="true"
                 :taggable="true"></multiselect>
             </td>
           </tr>
@@ -100,7 +100,15 @@
       </editTable>
       <modal :showModal="showModal" :modalTitle="'Upload Roster'" @close="toggleModal">
         <template #modalBody>
-          <fileUpload :showModal="showModal" :team_id="route.params.slug"> </fileUpload>
+              <multiselect v-model="rosterLvl" 
+                label="level_name" 
+                track-by="team_id"
+                :options="store.getters.teamLevels" 
+                :closeOnSelect="true" 
+                :optionHeight="10"
+                >
+              </multiselect>
+          <fileUpload :showModal="showModal" :team_id="route.params.slug" :roster_level="rosterLvl.level_name.replace(' ', '_')"> </fileUpload>
         </template>
       </modal>
     </div>
@@ -211,7 +219,19 @@ const newPlayer = reactive({
   person_type: 1
 })
 const roster = reactive([]);
-const rosterLvl = ref('');
+const rosterLvl = ref({
+  team_id:"",
+  team_mascot:"",
+  main_color:"",
+  secondary_color:"",
+  website:"",
+  logo_color:"",
+  logo_grey:"",
+  slug:"",
+  season_id:"",
+  level_name:"",
+  team_name:""
+});
 const saved = ref(false);
 const saving = ref(false);
 const updated = ref([]);
@@ -220,8 +240,6 @@ const errors = ref([]);
 const successful_saves = ref([]);
 
 //   computed: {
-const seasons = computed(() => store.state.seasons);
-const teamAssocLvl = computed(() => store.state.teamAssocLvl.season_team_ids);
 const user = computed({
   get: function () {
     return store.getters.user
@@ -231,25 +249,26 @@ const user = computed({
     initRoster()
   }
 });
-//     ...mapState(['slug']), 
 
-watch(newPlayer, (newValue, oldValue) => {
-  const idx = added.value.indexOf(newValue)
-  if (idx >= 0) {
-    added.value[idx] = newValue
-  } else {
-    added.value.push(newValue)
+
+watch(() => newPlayer, (newValue, oldValue) => {
+    const idx = added.value.indexOf(newValue)
+    if (idx >= 0) {
+      added.value[idx] = newValue
+    } else {
+      added.value.push(newValue)
+    }
   }
+);
 
-});
+// watch(rosterLvl, (newValue, oldValue) => {
+//   initLeveledRoster(newValue.season_team_id);
+// });
 
-watch(rosterLvl, (newValue, oldValue) => {
-  initLeveledRoster(newValue.season_team_id);
-});
-
-watch(route.params.slug, () => {
-  initRoster();
-});
+watch( () => route.params.slug, (route) => {
+    initRoster();
+  }
+);
 
 onBeforeMount(() => {
   initRoster();
