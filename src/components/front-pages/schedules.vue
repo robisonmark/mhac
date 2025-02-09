@@ -79,8 +79,9 @@
             <template v-if="filteredGames.length >= 1">
               <tr class="game" v-for="game in filteredGames" :key="game.game_id">
                 <td class="date">
-                  {{ $config.formatDate(game.game_date) }}
-                  <div class="time">{{ $config.formatTime(game.game_time) }}</div>
+                  {{ $helpers.formatDate(game.game_date) }}
+                  <div class="time">{{ $helpers.formatTime(game.game_time) }}</div>
+                  <div>{{game.level_name}}</div>
                 </td>
 
                 <!-- AWAY TEAM -->
@@ -120,7 +121,6 @@
                   </span>
                 </td> -->
               </tr>
-              <!-- </router-link> -->
             </template>
             <template v-else>
               <tr>
@@ -133,81 +133,6 @@
             </template>
           </tbody>
         </table>
-        <!-- </div> -->
-        <!-- <div class="col content">
-        <div class="row">
-          <div class="col-2">
-            Date/Time
-          </div>
-          <div class="col-1">
-          </div>
-          <div class="col-2" align="center">
-            Away
-          </div>
-          <div class="col-1">
-          </div>
-          <div class="col-2" align="center">
-            Home
-          </div>
-          <div class="col-1">
-          </div>
-          <div class="col-3 text-right">
-            <font-awesome-icon :icon="['fas', 'map-marker-alt']"></font-awesome-icon> Location
-          </div>
-        </div> -->
-
-        <!-- <template v-if="games.length >= 1">
-          <router-link :to="{ path: 'stats', query: { game: game.game_id, home_team: game.home_team.id }}" tag="div" class="row game" v-for="game in games" :key="game.game_id">
-            <div class="col-2 date">
-              {{game.game_date}}
-              <div class="time">{{game.game_time}}</div> -->
-
-        <!-- {{game.game_date}} {{game.game_time}} -->
-        <!-- </div> -->
-
-        <!-- AWAY TEAM -->
-        <!-- <div class="col-1 score" :class="checkResult(game.final_score.away, game.final_score.home)"> -->
-        <!-- {{game.final_score.away}} -->
-        <!-- </div> -->
-
-        <!-- <div class="col-2 team_info" :class="checkResult(game.final_score.home, game.final_score.away)">
-              <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.away_team.name).logo_color" />
-              <div class="team_name">{{game.away_team.name}}</div>
-              <span class="level" v-if="game.away_team.team_level" v-html="game.away_team.team_level"></span>
-            </div>
-
-            <div class="col-1">
-              <span class="at">@</span>
-            </div> -->
-
-        <!-- HOME TEAM -->
-        <!-- <div class="col-2 team_info">
-              <img class="team_img" :src="'/static/color-team-logos/' + programInfo(game.home_team.name).logo_color" />
-              <div class="team_name" :class="checkResult(game.final_score.home, game.final_score.away)">{{game.home_team.name}}</div>
-              <span class="level" v-if="game.home_team.team_level" v-html="game.home_team.team_level"></span>
-            </div>
-
-            <div class="col-1 score" :class="checkResult(game.final_score.home, game.final_score.away)">
-              {{game.final_score.home}}
-            </div>
-
-            <div class="col-3 location text-right">
-              <div>{{game.home_team.address_name}}</div>
-              <br/>
-              <span class="address" :href="'https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip" @click.stop="goToMap('https://maps.google.com/?q=' + game.home_team.address_lines + ' ' + game.home_team.city_state_zip)">
-                <div>{{game.home_team.address_lines}}</div>
-                <div>{{game.home_team.city_state_zip}}</div>
-              </span>
-            </div>
-
-          </router-link> -->
-        <!-- </template> -->
-
-        <!-- <template v-else>
-          <div class="col" align="center">
-            There are currently no games on the schedule <em v-if="filterBy.team.slug !== '' || filterBy.level.id !== ''">that match your criteria</em>, please keep checking back.
-          </div>
-        </template> -->
       </div>
     </div>
   </div>
@@ -220,9 +145,6 @@ import { useStore } from 'vuex';
 
 // api
 import api from '../../api/endpoints.js'
-
-// mixins
-import { useRootMixin } from '../../mixins/root'
 
 const config = {
   page: 'schedules'
@@ -244,7 +166,7 @@ const filterBy =  ref({
           name: 'All Teams'
         },
         level: {
-          season_id: '',
+          season_id: undefined,
           level: 'All Levels'
         },
         dateRange: {
@@ -271,19 +193,19 @@ const levels = computed(() => {
     })
 
 const filteredGames = computed(() =>{
-      if (level_filter === '') {
-        return games
+      if (level_filter.value === '') {
+        return games.value
       }
-      return games.value.filter(game => (game.season.season_id === level_filter))
+      return games.value.filter(game => (game.season.season_id === level_filter.value))
     }
 )
 
-watch('filterBy.team', (newValue, oldvalue) => {
-  initSchedule(filterBy.level.season_id, newValue.slug)
+watch(() => filterBy.value.team.slug, (newValue, oldvalue)=> {
+  initSchedule(filterBy.value.level.season_id, newValue)
 })
 
-watch('filterBy.level', (newValue, oldValue) => {
-  level_filter = newValue.season_id
+watch(() => filterBy.value.level.season_id, (newValue, oldValue) => {
+  level_filter.value = newValue
 })
 
 onMounted(() => {
@@ -291,12 +213,6 @@ onMounted(() => {
   getYears();
   initSchedule();
 })
-
-
-// this.$root.$on('close', payload => {
-//       // this.showDatePicker = false
-//       // this.showTeams = false
-//     })
 
 const getActiveYear = () => {
       api.getYear(true).then(response => {
@@ -347,14 +263,13 @@ const setYear = (year) => {
     };
 
 const setTeam = (team) => {
-      filterBy.team.slug = team.slug
-      filterBy.team.name = team.team_name
+      filterBy.value.team.slug = team.slug
+      filterBy.value.team.name = team.team_name
     };
 
 const setLvl = (lvl) => {
-      console.log(lvl)
-      filterBy.level.season_id = lvl.season_id
-      filterBy.level.level = lvl.level
+      filterBy.value.level.season_id = lvl.season_id
+      filterBy.value.level.level = lvl.level
     };
 
 const sortTable = (s, nested) => {

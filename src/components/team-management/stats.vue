@@ -53,7 +53,7 @@
               <td>{{ game.opponent }}</td>
               <td>{{ game.home_team.team_name }}</td>
               <td>{{ game.missing_stats }}</td>
-              <td>{{ game.level }} </td>
+              <td>{{ game.level_name }} </td>
               <td><font-awesome-icon :icon="['far', 'eye']" class="icon"></font-awesome-icon></td>
             </tr>
           </tbody>
@@ -156,29 +156,29 @@
               <th colspan="3"></th>
             </tr>
             <tr class="rowTwo">
-              <!-- <th class="text-center sticky" @click="sortTable('player_number')">#</th>
+              <th class="text-center sticky" @click="sortTable('player_number')">#</th>
               <th class="pad-right sticky" @click="sortTable('first_name')">First Name</th>
-              <th class="pad-right sticky" @click="sortTable('last_name')">Last Name</th> -->
+              <th class="pad-right sticky" @click="sortTable('last_name')">Last Name</th>
               <!-- 2PT -->
-              <!-- <th class="stat" @click="sortTable('player_stats', 'FGA')">M</th>
+              <th class="stat" @click="sortTable('player_stats', 'FGA')">M</th>
               <th class="stat" >A</th>
-              <th class="stat">%</th> -->
+              <th class="stat">%</th>
               <!-- 3PT -->
-              <!-- <th class="stat">M</th>
+              <th class="stat">M</th>
               <th class="stat">A</th>
-              <th class="stat">%</th> -->
+              <th class="stat">%</th>
               <!-- FT -->
-              <!-- <th class="stat">M</th>
+              <th class="stat">M</th>
               <th class="stat">A</th>
-              <th class="stat">%</th> -->
+              <th class="stat">%</th>
               <!-- Rebounds -->
-              <!-- <th class="stat">O</th>
+              <th class="stat">O</th>
               <th class="stat">D</th>
-              <th class="stat">Tot</th> -->
+              <th class="stat">Tot</th>
 
-              <!-- <th class="stat">To</th>
+              <th class="stat">To</th>
               <th class="stat">Ast</th>
-              <th class="stat">Blk</th> -->
+              <th class="stat">Blk</th>
 
               <!-- <th class="stat">Stl</th>
               <th class="stat">Total Pts</th> -->
@@ -301,17 +301,17 @@
           </template>
 
           <template #body>
-            {{ newGameStats }}
-            <!-- <tr v-for="(player, index) in newGameStats.player_stats" :key="index">
+            <!-- {{ newGameStats }} -->
+            <tr v-for="(player, index) in newGameStats.player_stats" :key="index">
               <td class="text-center sticky" v-html="player.player_number"></td>
               <td class="align-no-pad sticky" v-html="player.player_first_name"></td>
-              <td class="align-no-pad sticky" v-html="player.player_last_name"></td> -->
-            <!-- <td v-for="(stat, idx) in player.player_stats" :key="idx">
+              <td class="align-no-pad sticky" v-html="player.player_last_name"></td>
+            <td v-for="(stat, idx) in player.player_stats" :key="idx">
                 {{stat}}
-              </td> -->
+              </td>
 
             <!-- 2PT -->
-            <!-- <td class="stat light first">
+            <td class="stat light first">
                 <input v-if="edit === true" type="checkbox" v-model="player.player_stats.game_played" />
                 <template v-else>
                   <font-awesome-icon v-if="player.player_stats['game_played']" :icon="['fas', 'check']"
@@ -326,10 +326,10 @@
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['FGA']" />
                 <template v-else>{{ player.player_stats['FGA'] }}</template>
               </td>
-              <td class="stat light">{{ percentage(player.player_stats['FGA'], player.player_stats['FGM']) }}</td> -->
+              <td class="stat light">{{ percentage(player.player_stats['FGA'], player.player_stats['FGM']) }}</td>
 
             <!-- 3PT -->
-            <!-- <td class="stat dark">
+            <td class="stat dark">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['ThreePM']" />
                 <template v-else>{{ player.player_stats['ThreePM'] }}</template>
               </td>
@@ -337,10 +337,10 @@
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats['ThreePA']" />
                 <template v-else>{{ player.player_stats['ThreePA'] }}</template>
               </td>
-              <td class="stat dark">{{ percentage(player.player_stats['ThreePA'], player.player_stats['ThreePM']) }}</td> -->
+              <td class="stat dark">{{ percentage(player.player_stats['ThreePA'], player.player_stats['ThreePM']) }}</td>
 
             <!-- FT -->
-            <!-- <td class="stat light">
+            <td class="stat light">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.FTM" />
                 <template v-else>{{ player.player_stats.FTM }}</template>
               </td>
@@ -348,10 +348,10 @@
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.FTA" />
                 <template v-else>{{ player.player_stats.FTA }}</template>
               </td>
-              <td class="stat light">{{ percentage(player.player_stats.FTA, player.player_stats.FTM) }}</td> -->
+              <td class="stat light">{{ percentage(player.player_stats.FTA, player.player_stats.FTM) }}</td>
 
             <!-- Rebounds -->
-            <!-- <td class="stat dark">
+            <td class="stat dark">
                 <input v-if="edit === true" type="number" min="0" v-model.number="player.player_stats.OREB" />
                 <template v-else>{{ player.player_stats.OREB }}</template>
               </td>
@@ -386,9 +386,9 @@
                 <template v-if="edit === true">{{ totalPoints(player.player_stats['FGM'], player.player_stats['ThreePM'],
                   player.player_stats.FTM) }} </template>
                 <template v-else>{{ player.player_stats.total_points }}</template>
-              </td> -->
+              </td>
 
-            <!-- </tr> -->
+            </tr>
           </template>
 
           <template #tfoot>
@@ -628,9 +628,9 @@ watch(gameScore.period_scores.away_score, (newValue) => {
   }
 });
 
-watch(newGameStats, (newValue) => {
-  console.log(newValue.player_stats);
-});
+// watch(newGameStats, (newValue) => {
+  // console.log(newValue.player_stats);
+// });
 
 // watch(user, (newValue, oldValue) => {
 //   if (newStats.season_id) {
@@ -651,7 +651,7 @@ const sumPoints = computed(() => console.log('test location'));
 
 onBeforeMount(() => {
   initSchedule(undefined, route.params.slug)
-  emit('initNewGameStats', (teamId) => { initNewGameStats(teamId) })
+  emit('initNewGameStats', (teamId, level) => { initNewGameStats(teamId, level) })
 })
 
 const toggleModal = () => { showModal.value = !showModal.value };
@@ -725,9 +725,9 @@ const initRoster = (id) => {
 
 
 const enterStats = (game) => {
-  // console.log("here", game, team)
+  console.log("here", game, team)
   newGameStats.game_id = game.game_id
-  initNewGameStats(game.rosterId)
+  initNewGameStats(game.rosterId, game.level_name)
   selectedGame.value = game
   console.log("enterStats", game.home_team.slug, route.params.slug)
   if (game.home_team.slug === route.params.slug) {
@@ -764,12 +764,11 @@ const goToPlayerStats = () => {
   boxscore.value = false
 };
 
-const initNewGameStats = (rosterId) => {
-  api.getGameResults(newGameStats.game_id, rosterId).then(response => {
-    console.log(response.data)
+const initNewGameStats = (rosterId, level) => {
+  // console.log(newGameStats.game_id, rosterId, level)
+  api.getGameResultsNew(newGameStats.game_id, rosterId, level).then(response => {
     newGameStats.value = response.data
-    console.log(newGameStats)
-    if (newGameStats.value.final_scores.home_score.value !== null) {
+    if (newGameStats.value.final_scores.home_score !== null) {
       gameScore.final_scores.home_score = newGameStats.value.final_scores.home_score
       gameScore.final_scores.away_score = newGameStats.value.final_scores.away_score
     }
@@ -781,10 +780,7 @@ const initNewGameStats = (rosterId) => {
         for (var i = 1; i <= quarterAdd; i++) {
           addOvertime()
         }
-        // } else if (gameScore.length < 4 && gameScore.length > 0) {
-        //   gameScore.forEach(period => {
-
-        //   })
+        
       } else if (gameScore.period_scores.length === 0) {
         gameScore.period_scores = [
           {
@@ -835,15 +831,14 @@ const saveStats = () => {
   const finalScores = { final_scores: {} }
 
   if (boxscore) {
-    console.log("saveStats", finalScores, gameScore.final_scores)
     finalScores.final_scores = { ...gameScore.final_scores }
   }
 
-  console.log("saveStats2", newGameStats.value.player_stats)
-  const playerStats = _.cloneDeep(newGameStats.player_stats)
-
+  // console.log("saveStats2", newGameStats.value.player_stats)
+  const notFlattenedplayerStats = _.cloneDeep(newGameStats.value.player_stats)
+  // console.log("saveStats3", playerStats)
   const flattenedStats = []
-  playerStats.player_stats.forEach(player => {
+  notFlattenedplayerStats.forEach(player => {
     const newPlayer = { ...player, ...player.player_stats }
     delete newPlayer.player_stats
 
@@ -852,13 +847,18 @@ const saveStats = () => {
 
   playerStats.player_stats = flattenedStats
 
-  console.log("saveStats3", JSON.stringify({ ...finalScores }));
-  console.log("saveStats4", JSON.stringify({ ...playerStats }));
-  playerStats.value.game_score
+  // console.log("saveStats3", JSON.stringify({ ...finalScores }));
+  // console.log("saveStats4", JSON.stringify({ ...playerStats }));
+  // playerStats.value.game_score
   let stats = {}
   stats = { ...playerStats, ...finalScores }
-
-  api.addGameResults(newGameStats.game_id, stats.value)
+  console.log(selectedGame)
+  stats.level_name = selectedGame.value.level_name
+  stats.game_id = selectedGame.value.game_id
+  stats.team_id = selectedGame.value.team_id
+  stats.game_scores = []
+  console.log("Stat: ", stats)
+  api.addGameResults(newGameStats.game_id, stats)
     .then(response => {
       saving.value = false
 
