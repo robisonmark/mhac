@@ -58,7 +58,17 @@ async function startSignalR() {
   try {
     await connection.start();
     console.log("Connected to SignalR");
-    connection.invoke(  )
+    connection.invoke("GetGameState").then(res => {
+      console.log(res)
+      store.dispatch("setHomeTeam", res.homeTeam);
+      store.dispatch("setAwayTeam", res.awayTeam);
+      store.dispatch("setHome", res.homeTeamScore);
+      store.dispatch("setAway", res.awayTeamScore);
+      store.dispatch("setPeriod", res.quarter);
+      time_remaining.value = res.quarterTime
+    }).catch(err => console.error(err));
+
+
     connection.on("UpdateGameState", (qTime) => {
         console.log(qTime)
         time_remaining.value = qTime;
@@ -98,17 +108,24 @@ async function startSignalR() {
       connection.on("decrementPeriod", (value) => {
         store.dispatch("decrementPeriod", value)
       })
-
       connection.on("setHomeTeam", (home_team_slug) => {
-        console.log("In Connection", home_team_slug)
         store.dispatch("setHomeTeam", home_team_slug)
       })
-
       connection.on("setAwayTeam", (away_team_slug) => {
-        console.log("In Connection", away_team_slug)
         store.dispatch("setAwayTeam", away_team_slug)
       })
-      
+      connection.on("setHomeScore", (value) => {
+        store.dispatch("setHome", value)
+      })
+      connection.on("setAwayScore", (value) => {
+        store.dispatch("setAway", value)
+      })
+      connection.on("UpdateHomeFouls", (value) => {
+        store.dispatch("incrementHomeFouls", value)
+      })
+      connection.on("UpdateAwayFouls", (value) => {
+        store.dispatch("incrementAwayFouls", value)
+      })
 
   } catch (err) {
       console.error("SignalR Connection Error:", err);
@@ -116,8 +133,6 @@ async function startSignalR() {
     }
   
 }
-
-
 
 const isHidden = ref(false)
 

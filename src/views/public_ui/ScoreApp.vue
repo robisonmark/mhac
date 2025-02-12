@@ -292,6 +292,9 @@ async function startSignalR() {
 
     connection.invoke("GetGameState").then(res => {
       console.log(res)
+      level.value = '18U Boys';
+      home.value.slug = res.homeTeam;
+      away.value.slug = res.awayTeam;
       store.dispatch("setHomeTeam", res.homeTeam);
       store.dispatch("setAwayTeam", res.awayTeam);
       store.dispatch("setHome", res.homeTeamScore);
