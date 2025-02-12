@@ -347,43 +347,6 @@ const resetScore = () => {
   }
 };
 
-const timer = () => {
-  if (timer_running.value) {
-    stopTimer();
-    connection.invoke("StopClock").then(resp => console.log(resp)).catch(err => console.error(err));
-  } else {
-    runTimer();
-    connection.invoke("StartClock").then(resp => console.log(resp)).catch(err => console.error(err));
-  }
-  timer_running.value = !timer_running.value;
-};
-
-const runTimer = () => {
-  const timerFunc = setInterval(() => {
-    const timerRemaining = time_remaining.value.hundreds_seconds * 1000 + time_remaining.value.seconds * 60 + time_remaining.value.minutes;
-    if (timerRemaining > 0) {
-      time_remaining.value.hundreds_seconds -= 1;
-    }
-
-    if (time_remaining.value.hundreds_seconds === 0) {
-      time_remaining.value.seconds -= 1;
-      time_remaining.value.hundreds_seconds = 100;
-    }
-
-    if (time_remaining.value.seconds === 0) {
-      time_remaining.value.minutes -= 1;
-      time_remaining.value.seconds = 59;
-    }
-
-    if (Object.entries(timerRemaining) === 0) {
-      clearInterval(timerFunc);
-    }
-  }, 10);
-};
-
-const stopTimer = () => {
-  clearInterval(Window.timerFunc);
-};
 
 const fetchData = async () => {
   await store.dispatch('setSeasonTeams');
