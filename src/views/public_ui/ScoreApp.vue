@@ -49,7 +49,7 @@
                 :style='{ backgroundColor: home_color }'>Score +3</v-btn>
             </v-col>
             <v-col>
-              <v-btn elevation="2" @click.prevent.stop="submitWebsocket('decrementHomeTimeouts', 0)"
+              <v-btn elevation="2" @click.prevent.stop="submitWebsocket('decrementHomeTimeouts', -1)"
                 :style='{ backgroundColor: home_color }'>Timeout</v-btn>
             </v-col>
           </v-row>
@@ -70,7 +70,7 @@
         <v-col class="center">
           <v-row>
             <v-col cols="12">
-              <v-btn elevation="2" block x-large @click.prevent.stop="submitWebsocket('toggleClock', true)"
+              <v-btn elevation="2" block x-large @click.prevent.stop="timer"
                 :style="{ backgroundColor: 'green' }">Toggle Clock</v-btn>
             </v-col>
           </v-row>
@@ -131,7 +131,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn elevation="2" @click.prevent.stop="submitWebsocket('decrementAwayTimeouts', 0)"
+              <v-btn elevation="2" @click.prevent.stop="submitWebsocket('decrementAwayTimeouts', -1)"
                 :style='{ backgroundColor: away_color }'>Timeout</v-btn>
             </v-col>
             <v-col>
@@ -159,7 +159,7 @@
     <!-- Scoreboard component -->
     <v-container>
       <v-row>
-        <scoreboard></scoreboard>
+        <!-- <scoreboard></scoreboard> -->
       </v-row>
     </v-container>
     <v-container>
@@ -178,13 +178,13 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-text-field v-model="time_remaining.minutes" label="Minutes"></v-text-field>
+          <v-text-field type="number" v-model.number="time_remaining.minutes" label="Minutes"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field v-model="time_remaining.seconds" label="Seconds"></v-text-field>
+          <v-text-field type="number" v-model.number="time_remaining.seconds" label="Seconds"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field v-model="time_remaining.tenth_seconds" label="Tenths"></v-text-field>
+          <v-text-field type="number" v-model.number="time_remaining.tenth_seconds" label="Tenths"></v-text-field>
         </v-col>
         <v-btn @click.stop.prevent="submitWebsocket('setTime', time_remaining)"
           :style='{ backgroundColor: "crimson" }'>Submit</v-btn>
@@ -196,10 +196,10 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-text-field type="number" v-model="home_score_override" label="Home Score"></v-text-field>
+          <v-text-field type="number" v-model.number="home_score_override" label="Home Score"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field type="number" v-model="away_score_override" label="Away Score"></v-text-field>
+          <v-text-field type="number" v-model.number="away_score_override" label="Away Score"></v-text-field>
         </v-col>
         <v-btn @click.stop.prevent="resetScore" :style='{ backgroundColor: "crimson" }'>Submit</v-btn>
       </v-row>
@@ -208,14 +208,21 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import scoreboard from '@/views/public_ui/Scoreboard';
 import { useStore } from 'vuex';
 import Selectbox from '@/components/selectbox.vue';
 
-import OBSWebSocket from 'obs-websocket-js';
+import * as signalR from "@microsoft/signalr";
 
+// import OBSWebSocket from 'obs-websocket-js';
+
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("http://localhost:5259/scoreboard")
+    .configureLogging(signalR.LogLevel.Information)
+    .withAutomaticReconnect()
+    .build();
 
 const store = useStore();
 const router = useRouter();
@@ -229,8 +236,8 @@ const keys = ref([]);
 const time_remaining = ref({ minutes: 7, seconds: 0, tenth_seconds: 0 });
 const timer_running = ref(false);
 
-const obs = new OBSWebSocket();
-obs.connect('ws://localhost:4455');
+// const obs = new OBSWebSocket();
+// obs.connect('ws://localhost:4455');
 
 
 const levels = ref(store.getters.levels);
@@ -250,31 +257,82 @@ const home_score = computed({
   get: () => store.getters.home_score,
   set: (newValue) => (home_score_override.value = newValue),
 });
-// const period = computed({
-//   get: () => store.getters.period,
-//   // set: (newValue) => (home_score_override.value = newValue),
-// });
 
-const connectWebSocket = () => {
-  console.log('Starting connection to WebSocket Server', store.getters.getWebsocket);
-  obs.connect(url = store.getters.getWebsocket);
-};
-
-const submitWebsocket = (action, value) => {
-  // console.log('action: ', action)
-  //console.log('value:', value)
-  obs.call('BroadcastCustomEvent', {
-    "eventData": {
-      "action": action, "value": value
-    }
-  });
-};
-
-// const messageSend = (data) => {
-//   console.log(JSON.stringify(data));
-//   connection.send(JSON.stringify(data));
+// const connectWebSocket = () => {
+//   console.log('Starting connection to WebSocket Server', store.getters.getWebsocket);
+//   obs.connect(url = store.getters.getWebsocket);
 // };
 
+const submitWebsocket = (action, value) => {
+  console.log(`Sending action: ${action}, value: ${JSON.stringify(value)}`);
+  // obs.call('BroadcastCustomEvent', {
+  //   "eventData": {
+  //     "action": action, "value": value
+  //   }
+  // });
+
+  if (connection.state === signalR.HubConnectionState.Connected) {
+    console.log(action, value);
+    connection.invoke(action, value)
+      .then(() => console.log(`Sent: ${action} - ${value}`))
+      .catch(err => console.error("SignalR Error:", err));
+  } else {
+    console.warn("SignalR connection not established yet.");
+  }
+};
+
+async function startSignalR() {
+  try {
+    await connection.start();
+    console.log("Connected to SignalR");
+
+    // connection.invoke("GetGameState", (GameState) => {
+    //   console.log(GameState);
+    // });
+
+    connection.invoke("GetGameState").then(res => {
+      console.log(res)
+      store.dispatch("setHomeTeam", res.homeTeam);
+      store.dispatch("setAwayTeam", res.awayTeam);
+      store.dispatch("setHome", res.homeTeamScore);
+      store.dispatch("setAway", res.awayTeamScore);
+    }).catch(err => console.error(err));
+
+    connection.on("UpdateGameState", (qTime, hTime, to, t1, t2, s1, s2) => {
+        // quarterTime.value = qTime;_homeTeamFouls -= value;
+        // halfTime.value = hTime;
+        // timeouts.value = to;
+        // team1.value = t1;
+        // team2.value = t2;
+        // score1.value = s1;
+        // score2.value = s2;
+      });
+  
+      connection.on("UpdateTeams", (t1, t2) => {
+        // team1.value = t1;
+        // team2.value = t2;
+      });
+  
+      connection.on("UpdateShotLog", (shots) => {
+        // shotLog.value = shots;
+      });
+  
+      connection.on("UpdateGameRules", (qTime, hTime, to) => {
+        // quarterTime.value = qTime;
+        // halfTime.value = hTime;
+        // timeouts.value = to;
+      });
+
+      connection.on("SetHomeTeam", (team_name) => {
+
+      });
+
+  } catch (err) {
+      console.error("SignalR Connection Error:", err);
+      setTimeout(startSignalR, 5000);
+    }
+  
+}
 
 const resetScore = () => {
   console.log('resetScore');
@@ -289,8 +347,10 @@ const resetScore = () => {
 const timer = () => {
   if (timer_running.value) {
     stopTimer();
+    connection.invoke("StopClock").then(resp => console.log(resp)).catch(err => console.error(err));
   } else {
     runTimer();
+    connection.invoke("StartClock").then(resp => console.log(resp)).catch(err => console.error(err));
   }
   timer_running.value = !timer_running.value;
 };
@@ -344,9 +404,8 @@ const teams = computed(() => {
 });
 
 watch(level, (newValue, oldValue) => {
-  // teams.value = store.getters.seasonTeams.filter(team => team.level_name === newValue.level_name)
   const shortLevelName = newValue.level_name.split(' ')[0];
-  submitWebsocket('setGameConfig', shortLevelName);
+  submitWebsocket('SetGameConfig', shortLevelName);
 });
 
 watch(home, (newValue, oldValue) => {
@@ -358,9 +417,13 @@ watch(away, (newValue, oldValue) => {
 });
 
 
-router.beforeEach(() => {
-  connectWebSocket();
-});
+// router.beforeEach(() => {
+//   connectWebSocket();
+// });
+
+  onMounted(() => {
+    startSignalR();
+  });
 </script>
 
 <style>

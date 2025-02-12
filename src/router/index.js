@@ -23,6 +23,7 @@ import videofeed from '@/components/front-pages/live_video/video_iframe'
 import livestream from '@/views/public_ui/LiveStream'
 import scoreboard from '@/views/public_ui/Scoreboard'
 import scoreapp from '@/views/public_ui/ScoreApp'
+// import scoreapp_old from '@/views/public_ui/ScoreApp_old'
 import awards from '@/views/public_ui/live_video/awards'
 
 // Team Management Components
@@ -47,6 +48,7 @@ import adminObs from '@/components/admin/adminObs'
 import config from '@/config/helpers'
 
 import { store } from '../store/index'
+import Bracket from '../components/tournament/bracket.vue';
 // import { component } from 'vue/types/umd'
 
 const $config = config.CONSTANTS
@@ -249,6 +251,15 @@ export const router = createRouter({
             section: 'scoreboard'
           }
         },
+        // {
+        //   path: 'scoreapp_old',
+        //   name: 'scoreapp_old',
+        //   component: scoreapp_old,
+        //   meta: {
+        //     // requiresAuth: (import.meta.env.APP_ENV === 'production'),
+        //     section: 'scoreboard'
+        //   }
+        // },
         {
           path: 'scoreboard',
           name: 'scoreboard',

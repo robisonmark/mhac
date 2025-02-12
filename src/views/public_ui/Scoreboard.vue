@@ -7,9 +7,10 @@
     <div class="gameStats">
       <div class="timeBlock">
         <div class="timeRemaining" :class="{ hidden: isHidden }">
-          <!-- <template v-if="time_remaining.minutes !== 0">{{ time_remaining.minutes }}:</template>{{
+            <!-- {{ time_remaining }} -->
+          <template v-if="time_remaining.minutes !== 0">{{ time_remaining.minutes }}:</template>{{
             displaySeconds(time_remaining.seconds)
-          }}<template v-if="time_remaining.minutes === 0">.{{ time_remaining.tenth_seconds }}</template> -->
+          }}<template v-if="time_remaining.minutes === 0">.{{ time_remaining.tenth_seconds }}</template> 
         </div>
         <div class="period">{{ period }}</div>
         <!-- <div class="period" v-if="!final && half">Half</div> -->
@@ -26,10 +27,18 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import team from '@/components/front-pages/live_video/scoreboard/team';
 import OBSWebSocket from 'obs-websocket-js';
+
+import * as signalR from "@microsoft/signalr";
+
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("http://localhost:5259/scoreboard")
+    .configureLogging(signalR.LogLevel.Information)
+    .withAutomaticReconnect()
+    .build();
 
 const teamBlock = team;
 const store = useStore();
@@ -43,30 +52,75 @@ const time_remaining = ref({
   seconds: 0,
   tenth_seconds: 0
 });
-let connection = null;
+// let connection = null;
 
-// const period = computed(() => {
-//   return getNumberWithOrdinal(store.state.scoreController.period);
-// });
-// const nextPossession = computed(() => {
-//   return store.state.scoreController.possession;
-// });
-// const timer_running = computed(() => {
-//   return store.state.scoreController.clock.running;
-// });
-// const webSocketURL = computed(() => {
-//   return store.getters.getWebsocket;
-// });
-// const half = computed(() => {
-//   return store.state.scoreController.half;
-// });
-// const final = computed(() => {
-//   return store.state.scoreController.final;
-// });
-const isHidden = ref(true)
-// const clockDisplay = ref(() => {
-//   return store.state.scoreController.clock_display;
-// });
+async function startSignalR() {
+  try {
+    await connection.start();
+    console.log("Connected to SignalR");
+    connection.invoke(  )
+    connection.on("UpdateGameState", (qTime) => {
+        console.log(qTime)
+        time_remaining.value = qTime;
+        // halfTime.value = hTime;
+        // timeouts.value = to;
+        // team1.value = t1;
+        // team2.value = t2;
+        // store.dispatch("setHome", s1);
+        // store.dispatch("setAway", s2);
+        // homeScore.value = s1;
+        // awayScore.value = s2;
+      });
+  
+      connection.on("UpdateTeams", (t1, t2) => {
+        // team1.value = t1;
+        // team2.value = t2;
+      });
+  
+      connection.on("UpdateShotLog", (shots) => {
+        // shotLog.value = shots;
+      });
+  
+      connection.on("UpdateGameRules", (qTime, hTime, to) => {
+        quarterTime.value = qTime;
+        halfTime.value = hTime;
+        timeouts.value = to;
+      });
+      connection.on("updateHomeScore", (value) => {
+        store.dispatch("incrementHome", value)
+      })
+      connection.on("updateAwayScore", (value) => {
+        store.dispatch("incrementAway", value)
+      })
+      connection.on("incrementPeriod", (value) => {
+        store.dispatch("incrementPeriod", value)
+      })
+      connection.on("decrementPeriod", (value) => {
+        store.dispatch("decrementPeriod", value)
+      })
+
+      connection.on("setHomeTeam", (home_team_slug) => {
+        console.log("In Connection", home_team_slug)
+        store.dispatch("setHomeTeam", home_team_slug)
+      })
+
+      connection.on("setAwayTeam", (away_team_slug) => {
+        console.log("In Connection", away_team_slug)
+        store.dispatch("setAwayTeam", away_team_slug)
+      })
+      
+
+  } catch (err) {
+      console.error("SignalR Connection Error:", err);
+      setTimeout(startSignalR, 5000);
+    }
+  
+}
+
+
+
+const isHidden = ref(false)
+
 
 const getNumberWithOrdinal = (n) => {
   if (n <= 4) {
@@ -79,26 +133,14 @@ const getNumberWithOrdinal = (n) => {
 };
 
 // Computed properties
-// const away_team_slug = computed({
-//   get() {
-//     if (store.state.scoreController.away_team_slug) {
-//       return store.state.scoreController.away_team_slug
-//     }
-//     return 'tennessee_heat'
-//   },
-//   set(newValue) {
-//     // Note: we are using destructuring assignment syntax here.
-//     return newValue
-//   }
-// });
-const home_team_slug = computed({
-  get() {
+
+const home_team_slug = computed(() => {
     if (store.state.scoreController.home_team_slug) {
       return store.state.scoreController.home_team_slug
     }
     return 'nasvhille_central_christian'
   }
-});
+);
 const away_team_slug = computed({
   get() {
     if (store.state.scoreController.away_team_slug) {
@@ -153,11 +195,8 @@ const period = computed({
 // const away_score = () => store.state.scoreController.score.away;
 // const home_fouls = () => store.state.scoreController.fouls.home;
 // const homeScore = () => store.state.scoreController.score.home;
-const homeTimeouts = () => store.state.scoreController.timeouts.home;
-const awayTimeouts = () => store.state.scoreController.timeouts.away;
-// const period = () => {
-//   return getNumberWithOrdinal(store.state.scoreController.period);
-// };
+const home_timeouts = () => store.state.scoreController.timeouts.home;
+const away_timeouts = () => store.state.scoreController.timeouts.away;
 const nextPossession = () => store.state.scoreController.possession;
 const timerRunning = () => store.state.scoreController.clock.running;
 const webSocketURL = () => store.getters.getWebsocket;
@@ -319,6 +358,10 @@ const displaySeconds = (seconds) => {
     return seconds;
   }
 };
+
+  onMounted(() => {
+    startSignalR();
+  });
 </script>
 
 <style scoped lang="less">
