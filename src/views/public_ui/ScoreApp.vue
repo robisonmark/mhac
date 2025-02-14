@@ -219,7 +219,7 @@ import * as signalR from "@microsoft/signalr";
 // import OBSWebSocket from 'obs-websocket-js';
 
 const connection = new signalR.HubConnectionBuilder()
-    .withUrl("http://localhost:5259/scoreboard")
+    .withUrl("http://127.0.0.1:5259/scoreboard")
     .configureLogging(signalR.LogLevel.Information)
     .withAutomaticReconnect()
     .build();
@@ -258,6 +258,27 @@ const home_score = computed({
   set: (newValue) => (home_score_override.value = newValue),
 });
 
+
+const timer = () => {
+  if (connection.state === signalR.HubConnectionState.Connected) {
+    if (timer_running.value) {
+      connection.invoke("StopClock")
+      // .then(() => console.log(`Sent: ${action} - ${value}`))
+      .catch(err => console.error("SignalR Error:", err));
+  } else {
+    connection.invoke("StartClock")
+      // .then(() => console.log(`Sent: ${action} - ${value}`))
+      .catch(err => console.error("SignalR Error:", err));
+  }
+  timer_running.value = !timer_running.value;
+    
+    
+  } else {
+    console.warn("SignalR connection not established yet.");
+  }
+  
+};
+
 // const connectWebSocket = () => {
 //   console.log('Starting connection to WebSocket Server', store.getters.getWebsocket);
 //   obs.connect(url = store.getters.getWebsocket);
@@ -292,13 +313,13 @@ async function startSignalR() {
 
     connection.invoke("GetGameState").then(res => {
       console.log(res)
-      level.value = '18U Boys';
-      home.value.slug = res.homeTeam;
-      away.value.slug = res.awayTeam;
-      store.dispatch("setHomeTeam", res.homeTeam);
-      store.dispatch("setAwayTeam", res.awayTeam);
-      store.dispatch("setHome", res.homeTeamScore);
-      store.dispatch("setAway", res.awayTeamScore);
+      // level.value = '18U Boys';
+      // home.value.slug = res.homeTeam;
+      // away.value.slug = res.awayTeam;
+      // store.dispatch("setHomeTeam", res.homeTeam);
+      // store.dispatch("setAwayTeam", res.awayTeam);
+      // store.dispatch("setHome", res.homeTeamScore);
+      // store.dispatch("setAway", res.awayTeamScore);
     }).catch(err => console.error(err));
 
     connection.on("UpdateGameState", (qTime, hTime, to, t1, t2, s1, s2) => {

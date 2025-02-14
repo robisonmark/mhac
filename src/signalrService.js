@@ -1,7 +1,7 @@
 import * as signalR from "@microsoft/signalr";
 
 const connection = new signalR.HubConnectionBuilder()
-  .withUrl("http://localhost:5259/scoreboard", {
+  .withUrl("http://127.0.0.1:5259/scoreboard", {
     withCredentials: false, // Ensures CORS does not interfere
     transport: signalR.HttpTransportType.WebSockets
   })
