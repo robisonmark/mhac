@@ -35,10 +35,11 @@ import OBSWebSocket from 'obs-websocket-js';
 import * as signalR from "@microsoft/signalr";
 
 const connection = new signalR.HubConnectionBuilder()
-    .withUrl("http://localhost:5259/scoreboard")
+    .withUrl("http://127.0.0.1:5259/scoreboard")
     .configureLogging(signalR.LogLevel.Information)
     .withAutomaticReconnect()
     .build();
+
 
 const teamBlock = team;
 const store = useStore();
@@ -68,18 +69,20 @@ async function startSignalR() {
       time_remaining.value = res.quarterTime
     }).catch(err => console.error(err));
 
+    // connection.on("PushGameState").then(res => {
+    //   console.log(res)
+    //   store.dispatch("setHomeTeam", res.homeTeam);
+    //   store.dispatch("setAwayTeam", res.awayTeam);
+    //   store.dispatch("setHome", res.homeTeamScore);
+    //   store.dispatch("setAway", res.awayTeamScore);
+    //   store.dispatch("setPeriod", res.quarter);
+    //   time_remaining.value = res.quarterTime
+    // }).catch(err => console.error(err));
+
 
     connection.on("UpdateGameState", (qTime) => {
         console.log(qTime)
         time_remaining.value = qTime;
-        // halfTime.value = hTime;
-        // timeouts.value = to;
-        // team1.value = t1;
-        // team2.value = t2;
-        // store.dispatch("setHome", s1);
-        // store.dispatch("setAway", s2);
-        // homeScore.value = s1;
-        // awayScore.value = s2;
       });
   
       connection.on("UpdateTeams", (t1, t2) => {
@@ -96,36 +99,58 @@ async function startSignalR() {
         halfTime.value = hTime;
         timeouts.value = to;
       });
+      
       connection.on("updateHomeScore", (value) => {
         store.dispatch("incrementHome", value)
       })
+      
       connection.on("updateAwayScore", (value) => {
         store.dispatch("incrementAway", value)
       })
+      
       connection.on("incrementPeriod", (value) => {
         store.dispatch("incrementPeriod", value)
       })
+      
       connection.on("decrementPeriod", (value) => {
         store.dispatch("decrementPeriod", value)
       })
+      
       connection.on("setHomeTeam", (home_team_slug) => {
         store.dispatch("setHomeTeam", home_team_slug)
       })
+      
       connection.on("setAwayTeam", (away_team_slug) => {
         store.dispatch("setAwayTeam", away_team_slug)
       })
+      
       connection.on("setHomeScore", (value) => {
         store.dispatch("setHome", value)
       })
+      
       connection.on("setAwayScore", (value) => {
         store.dispatch("setAway", value)
       })
+      
       connection.on("UpdateHomeFouls", (value) => {
         store.dispatch("incrementHomeFouls", value)
       })
+      
       connection.on("UpdateAwayFouls", (value) => {
         store.dispatch("incrementAwayFouls", value)
       })
+
+
+      connection.on("ResetGame", (res) => {
+        console.log(res)
+        store.dispatch("setHomeTeam", res.homeTeam);
+        store.dispatch("setAwayTeam", res.awayTeam);
+        store.dispatch("setHome", res.homeTeamScore);
+        store.dispatch("setAway", res.awayTeamScore);
+        store.dispatch("setPeriod", res.quarter);
+        time_remaining.value = res.quarterTime
+      })
+
 
   } catch (err) {
       console.error("SignalR Connection Error:", err);
