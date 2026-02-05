@@ -1,4 +1,3 @@
-// TODO: Clickaway on menu
 <template>
   <header :style="styles">
     <div class="container container--header">
@@ -11,11 +10,11 @@
       <div class="right">
         <div class="top-hat">
           <nav class="schoolNav">
-            <div class="mobile-drop" @click="collapse = !collapse">
+            <div class="mobile-drop" @click="toggleTopHatNav">
               <div>Members <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon></div>
             </div>
             <div class="schoolMenuCon" :class="[collapse === true ? 'collapse' : 'open']">
-              <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']">
+              <ul class="top-hat__list" :class="[collapse === true ? 'collapse' : 'open']" @click="clickaway($event)">
                 <li><div class="flex-spacer"></div></li>
                 <li>
                   <a href="https://www.facebook.com/people/Bluegrass-Blazers-Homeschool-Basketball/100084579375555/?mibextid=LQQJ4d">
@@ -72,8 +71,8 @@
             </div>
           </nav>
         </div>
-        <div class="main-nav" :class="[openMenu ? 'open' : 'close']">
-          <div class="hamburger" @click="openMenu = !openMenu">
+        <div class="main-nav" :class="[openMenu ? 'open' : 'close']" @click="clickaway($event)">
+          <div class="hamburger" @click="toggleMainMenu">
             <font-awesome-icon :icon="openMenu ? ['fas', 'times'] : ['fas', 'bars']" class="icon"></font-awesome-icon>
           </div>
           <nav :class="[openMenu ? 'open' : 'close']">
@@ -82,7 +81,7 @@
             <router-link :to="{ path: '/' }">Home</router-link>
             <span class="dropdown" @click="tournamentDrop" ref="tournamentDropDown" @mouseover="showTournament = true" @mouseleave="showTournament = false">
               Tournament Central<font-awesome-icon class="dropIcon" v-if="showTournament === false " :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showTournament" :icon="['fas', 'angle-up']"></font-awesome-icon>
-                <ul v-show="showTournament" class="tourn_nav_dropdown">
+                <ul v-show="showTournament" class="about_nav_dropdown">
                   <li><router-link :to="{ path: '/tournament'}">General Information</router-link> </li>
                   <li><router-link :to="{ path: '/tournament-brackets'}">Brackets</router-link></li>
                   <li><a href='https://jonland.smugmug.com/Event-Coverage-Root/Athletics/MHAC-2023/n-pM7CKV' target='_blank'>Tournament Photos 2023<font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon></a></li>
@@ -175,6 +174,25 @@ export default {
     },
     displayDrop () {
       this.showSchools = !this.showSchools
+    },
+    toggleMainMenu () {
+      if (this.collapse === false) this.collapse = true
+      
+      this.openMenu = !this.openMenu  
+    },
+    toggleTopHatNav () {
+      if (this.openMenu === true) this.openMenu = false
+      
+      this.collapse = !this.collapse  
+    },
+    clickaway (e) {
+      console.log(e)
+      if (e.target.classList.contains('top-hat__list')) {
+        this.collapse = true
+      }
+      if (e.target.classList.contains('main-nav')) {
+        this.openMenu = false
+      }
     },
     tournamentDrop () {
       this.showTournament = !this.showTournament
@@ -396,7 +414,7 @@ export default {
           z-index: 1;
           flex-flow: row wrap;
           position: absolute;
-          top: 7rem;
+          top: 0;
           right: 0;
           width: 100%;
           width: 500px;
@@ -438,7 +456,7 @@ export default {
         .schoolMenuCon {
           width: 100%;
           position: absolute;
-          top: 0;
+          top: 7rem;
           right: 0;
           overflow: hidden;
           &.collapse {
@@ -510,7 +528,6 @@ export default {
           align-items: center;
           height: 100%;
           flex-grow: 1;
-          max-width: 200px;
           &:hover{
             background-color: #fff;
             color: var(--bg-color);
@@ -524,7 +541,6 @@ export default {
         .nav_dropdown {
           color: #2A2A2A;
           top: 4.5rem;
-          box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
           right: 0;
           position: absolute;
           width: auto;
@@ -557,12 +573,15 @@ export default {
               color: @conf-blue;
             }
           }
+
+          @media @desktop-min {
+            box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
+          }
         }
 
         .about_nav_dropdown {
           color: #2A2A2A;
           top: 4.5rem;
-          box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
           right: 200;
           position: absolute;
           width: auto;
@@ -599,6 +618,10 @@ export default {
               color: #2A2A2A;
               width: calc(100% + .80rem);
             }
+          }
+
+          @media @desktop-min {
+            box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
           }
         }
 
