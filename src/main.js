@@ -26,8 +26,9 @@ const vuetify = createVuetify({
 import { dom, library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
-// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faFacebookSquare, faInstagram } from '@fortawesome/free-brands-svg-icons'
+
 
 import '@aws-amplify/ui-vue'
 import Amplify from 'aws-amplify'
@@ -40,9 +41,9 @@ import config from './config/helpers'
 Amplify.configure({ ...awsconfig, ...awsCookieStorage })
 
 /* ********************************* *\
-     Global Component Registration
+Global Component Registration
 \* ********************************* */
-// Vue.component('font-awesome-icon', FontAwesomeIcon)
+
 
 /* ********************************* *\
           Configuration
@@ -81,6 +82,8 @@ const app = createApp({ render: () => h(App) })
 app.use(router)
 app.use(vuetify)
 app.use(store)
+
+app.component('font-awesome-icon', FontAwesomeIcon)
 
 
 app.mount('#app')

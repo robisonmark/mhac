@@ -89,7 +89,7 @@
                 </ul>
             </span>
             <span class="about_dropdown" @click="aboutDrop" ref="aboutDropdown" @mouseover="showAbout = true" @mouseleave="showAbout = false">
-              About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
+              About<font-awesome-icon class="dropIcon" v-if="showAbout === false " :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showAbout" :icon="['fas', 'angle-up']"></font-awesome-icon>
               <ul v-show="showAbout" class="about_nav_dropdown">
                   <li><router-link :to="{ path: '/about' }">Who We Are</router-link></li>
                   <li><a href="https://mhac-media-docs.s3.us-east-2.amazonaws.com/MHAC+Bylaws+March+2021.pdf" target="_blank">Bylaws  <font-awesome-icon v-if="showSchools === false " :icon="['fas', 'external-link-alt']"></font-awesome-icon> </a></li>
@@ -99,8 +99,8 @@
             </span>
             <router-link :to="{ path: '/schedules' }">Schedules</router-link>
             <span class="dropdown" @click="displayDrop" ref="schoolDropDown"  @mouseover="showSchools = true" @mouseleave="showSchools = false">
-              Rosters <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon>
-              <!-- <font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon> -->              <ul v-show="showSchools" class="nav_dropdown">
+              Rosters <font-awesome-icon class="dropIcon" v-if="showSchools === false " :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon" v-if="showSchools === true " :icon="['fas', 'angle-up']"></font-awesome-icon>
+              <ul v-show="showSchools" class="nav_dropdown">
                 <router-link v-for="team in teams" :key="team.id" :to="{ name: 'schools', params: { slug: team.slug.toLowerCase(), school: team.team_name.toLowerCase(), id: team.id }}" tag="li">
                   {{team.team_name}}
                 </router-link>
@@ -160,7 +160,12 @@ export default {
   },
   filters: {
   },
-  watch: {},
+  watch: {
+    $route() {
+      this.collapse = true
+      this.openMenu = false
+    }
+  },
   created () {
     this.$root.$on('close', payload => {
       this.showLogin = false
@@ -186,7 +191,6 @@ export default {
       this.collapse = !this.collapse  
     },
     clickaway (e) {
-      console.log(e)
       if (e.target.classList.contains('top-hat__list')) {
         this.collapse = true
       }
@@ -592,8 +596,6 @@ export default {
           font-size: .9rem;
           letter-spacing: -.2px;
           li {
-            padding: .2rem 1rem;
-
             cursor: pointer;
             font-family: 'Lato';
             &:after {
@@ -616,7 +618,10 @@ export default {
             }
             a {
               color: #2A2A2A;
-              width: calc(100% + .80rem);
+              padding: .2rem 1rem;
+              @media @tablet-max {
+                width: calc(100% + .80rem);
+              }
             }
           }
 
@@ -754,9 +759,6 @@ export default {
               font-size: 14px;
               width: calc(100vw + 2rem);
               margin-left: -1rem;
-              li {
-                max-height: 35px;
-              }
             }
           };
         }
