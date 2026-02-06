@@ -6,7 +6,7 @@
         <img :src="logo" :class="`${props.location}`" />
       </div>
       <div class="team_name team_name_wrapper">
-        <div :class="`team_name team_name_${props.location}`" :style="{ color: secondary_color }">{{ team_name }}</div>
+        <div :class="`team_name team_name_${props.location}`" :style="{ color: '#ddd' }">{{ team_name }}</div>
       </div>
       <scoreBlock :location="props.location" :score="score" :style="{ color: '#fff' }"></scoreBlock>
     </div>

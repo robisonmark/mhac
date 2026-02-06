@@ -141,7 +141,7 @@ async function startSignalR() {
       })
 
 
-      connection.on("ResetGame", (res) => {
+      connection.on("ResetGame", (res) => { 
         console.log(res)
         store.dispatch("setHomeTeam", res.homeTeam);
         store.dispatch("setAwayTeam", res.awayTeam);
@@ -151,6 +151,10 @@ async function startSignalR() {
         time_remaining.value = res.quarterTime
       })
 
+      connection.on("HideClock", (value) => {
+        console.log(isHidden);
+        isHidden = !isHidden;
+      })
 
   } catch (err) {
       console.error("SignalR Connection Error:", err);

@@ -128,6 +128,16 @@ class api {
     })
   }
 
+  async getGameResultsNew(gameId, teamId, levelName) {
+    let path = ''
+    path = gameId + '/' + teamId + '/' + levelName
+
+    return robros({
+      url: `/getGameResults/${path}`,
+      method: 'GET'
+    })
+  }
+
   /***
    * Get Game Results
    * This call returns the game stats, it takes optional parameters of game_id and team_id
@@ -283,6 +293,21 @@ class api {
     })
   }
 
+  async getTournamentBracket() {
+    return robros({
+      url: '/tournament/bracket',
+      method: 'GET'
+    })
+  }
+
+  async postTournamentScore(body) {
+    return robros({
+      url: '/tournament/update_score',
+      method: 'POST',
+      data: body
+    })
+  }
+
   async sendStats(body, gameId, teamId) {
     return robros({
       url: '/addFileGameStats/' + gameId + '/' + teamId,
@@ -334,7 +359,7 @@ class api {
   }
 
   async getYear(active) {
-    const returnUrl = active ? '/getActiveYear' : '/getYears/'
+    const returnUrl = active ? '/getActiveYear' : '/getYears'
     return robros({
       url: returnUrl,
       method: 'GET'

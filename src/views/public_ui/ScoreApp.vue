@@ -172,7 +172,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn @click.prevent.stop="submitWebsocket('toggleClockDisplay', time_remaining)"
+          <v-btn @click.prevent.stop="submitWebsocket('toggleClockDisplay', true)"
             :style='{ backgroundColor: "crimson", color: "white" }'>Toggle Clock Display</v-btn>
         </v-col>
       </v-row>

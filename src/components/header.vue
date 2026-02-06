@@ -89,6 +89,9 @@
               <ul v-show="showTournament" class="tourn_nav_dropdown">
                 <li><router-link :to="{ path: '/tournament' }">General Information</router-link> </li>
                 <li><router-link :to="{ path: '/tournament-brackets' }">Brackets</router-link></li>
+                <li><a href='https://jonland.smugmug.com/Event-Coverage-Root/2025/MHAC/n-TJGR9C?fbclid=IwY2xjawIbsAlleHRuA2FlbQIxMAABHbDtIKhC2G9yr60xBZtwJ_55QcEnX3rOsSzhwhN_28jck1Z4-Ns6LnClCA_aem_CEM0HncIEj0CUS0T8cYKpw'
+                    target='_blank'>Tournament Photos 2025<font-awesome-icon class="dropIcon" v-if="showSchools === false"
+                      :icon="['fas', 'external-link-alt']"></font-awesome-icon></a></li>
                 <li><a href='https://jonland.smugmug.com/Event-Coverage-Root/2024/n-D3sBbg/MHAC-2024'
                     target='_blank'>Tournament Photos 2024<font-awesome-icon class="dropIcon" v-if="showSchools === false"
                       :icon="['fas', 'external-link-alt']"></font-awesome-icon></a></li>
