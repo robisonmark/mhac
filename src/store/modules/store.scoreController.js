@@ -258,7 +258,6 @@ const actions = {
     commit('setTime', time * 60)
   },
   incrementAway(context, payload) {
-    // console.log("Payload ", payload)
     context.commit('incrementAway', payload)
   },
   setAway(context, payload) {

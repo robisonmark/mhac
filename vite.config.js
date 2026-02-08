@@ -22,5 +22,14 @@ export default defineConfig({
             }
         }
     })],
-    base: './'
+    build: {
+        rollupOptions: {
+          output: {
+            inlineDynamicImports: true,
+            entryFileNames: 'assets/[name].js',
+            assetFileNames: `assets/[name].[ext]`
+          }
+        },
+    },
+    base: 'https://mhacsports.com/'
 })

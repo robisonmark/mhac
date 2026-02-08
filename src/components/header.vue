@@ -13,11 +13,11 @@
       <div class="right">
         <div class="top-hat">
           <nav class="schoolNav">
-            <div class="mobile-drop" @click="collapse = !collapse">
+            <div class="mobile-drop" @click="toggleTopHatNav">
               <div>Members <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon></div>
             </div>
             <div class="schoolMenuCon" :class="[collapse ? 'collapse' : 'open']">
-              <ul class="top-hat__list" :class="[collapse ? 'collapse' : 'open']">
+              <ul class="top-hat__list" :class="[collapse ? 'collapse' : 'open']" @click="clickAway($event)">
 
                 <li>
                   <div class="flex-spacer"></div>
@@ -73,11 +73,11 @@
             </div>
           </nav>
         </div>
-        <div class="main-nav" :class="[openMenu ? 'open' : 'close']">
-          <div class="hamburger" @click="openMenu = !openMenu">
+        <div class="main-nav" :class="[openMenu ? 'open' : 'close']" @click="clickAway($event)">
+          <div class="hamburger" @click="toggleMainMenu">
             <font-awesome-icon :icon="openMenu ? ['fas', 'times'] : ['fas', 'bars']" class="icon"></font-awesome-icon>
           </div>
-          <nav :class="[openMenu ? 'open' : 'close']">
+          <nav :class="[openMenu ? 'open' : 'close']" >
             <!-- Min Menu Items is 4 and a flex spacer -->
             <div class="flex-spacer"></div>
             <router-link :to="{ path: '/' }">Home</router-link>
@@ -86,9 +86,12 @@
               Tournament Central<font-awesome-icon class="dropIcon" v-if="showTournament === false"
                 :icon="['fas', 'angle-down']"></font-awesome-icon><font-awesome-icon class="dropIcon"
                 v-if="showTournament" :icon="['fas', 'angle-up']"></font-awesome-icon>
-              <ul v-show="showTournament" class="tourn_nav_dropdown">
+              <ul v-show="showTournament" class="about_nav_dropdown">
                 <li><router-link :to="{ path: '/tournament' }">General Information</router-link> </li>
                 <li><router-link :to="{ path: '/tournament-brackets' }">Brackets</router-link></li>
+                <li><a href='https://jonland.smugmug.com/Event-Coverage-Root/2025/MHAC/n-TJGR9C?fbclid=IwY2xjawIbsAlleHRuA2FlbQIxMAABHbDtIKhC2G9yr60xBZtwJ_55QcEnX3rOsSzhwhN_28jck1Z4-Ns6LnClCA_aem_CEM0HncIEj0CUS0T8cYKpw'
+                    target='_blank'>Tournament Photos 2025<font-awesome-icon class="dropIcon" v-if="showSchools === false"
+                      :icon="['fas', 'external-link-alt']"></font-awesome-icon></a></li>
                 <li><a href='https://jonland.smugmug.com/Event-Coverage-Root/2024/n-D3sBbg/MHAC-2024'
                     target='_blank'>Tournament Photos 2024<font-awesome-icon class="dropIcon" v-if="showSchools === false"
                       :icon="['fas', 'external-link-alt']"></font-awesome-icon></a></li>
@@ -132,7 +135,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router'
 
@@ -170,6 +173,27 @@ export default {
     const isPublic = computed(() => {
       return route.meta.section === 'public';
     });
+
+    const toggleMainMenu = () => {
+      if (collapse.value === false) collapse.value = true
+      
+      openMenu.value = !openMenu.value  
+    };
+    
+    const toggleTopHatNav = () => {
+      if (openMenu.value === true) openMenu.value = false
+      
+      collapse.value = !collapse.value  
+    };
+    
+    const clickAway = (e) => {
+      if (e.target.classList.contains('top-hat__list')) {
+        collapse.value = true
+      }
+      if (e.target.classList.contains('main-nav')) {
+        openMenu.value = false
+      }
+    };
 
     // const checkMouse = () => {
     //   // Add your logic for checkMouse method
@@ -233,6 +257,15 @@ export default {
       }
     };
 
+    /* Watchers */
+    watch(
+      () => route.fullPath,
+      () => {
+        openMenu.value = false;
+        collapse.value = true;
+      }
+    );
+
     return {
       collapse,
       openMenu,
@@ -243,6 +276,9 @@ export default {
       loggedIn,
       isPublic,
       // checkMouse,
+      toggleMainMenu,
+      toggleTopHatNav,
+      clickAway,
       closeOpenOption,
       displayDrop,
       tournamentDrop,
@@ -434,7 +470,7 @@ header {
         z-index: 1;
         flex-flow: row wrap;
         position: absolute;
-        top: 7rem;
+        top: 0;
         right: 0;
         width: 100%;
         width: 500px;
@@ -479,7 +515,7 @@ header {
       .schoolMenuCon {
         width: 100%;
         position: absolute;
-        top: 0;
+        top: 7rem;
         right: 0;
         overflow: hidden;
 
@@ -560,7 +596,6 @@ header {
         align-items: center;
         height: 100%;
         flex-grow: 1;
-        max-width: 200px;
 
         &:hover {
           background-color: #fff;
@@ -576,7 +611,6 @@ header {
       .nav_dropdown {
         color: #2A2A2A;
         top: 4.5rem;
-        box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
         position: absolute;
         width: auto;
         font-weight: 400;
@@ -619,17 +653,22 @@ header {
 
         a[tag="li"] {
           color: #2A2A2A !important;
-          // width: calc(100% + .80rem);
           padding: 0.2rem 1rem;
           white-space: normal;
           text-align: center;
+          @media @tablet-max {
+            width: calc(100% + .80rem);
+          }
+        }
+
+        @media @desktop-min {
+          box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
         }
       }
 
       .about_nav_dropdown {
         color: #2A2A2A;
         top: 4.5rem;
-        box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
         position: absolute;
         width: auto;
         font-weight: 400;
@@ -669,6 +708,13 @@ header {
             color: #2A2A2A;
             // width: calc(100% + .80rem);
             padding: .2rem 1rem;
+            @media @tablet-max {
+              width: calc(100% + .80rem);
+            }
+          }
+
+          @media @desktop-min {
+            box-shadow: 0 3px 5px rgba(1, 2, 2, 0.2), 0 0px rgba(0, 0, 0, 0.15);
           }
         }
       }
@@ -814,10 +860,6 @@ header {
             font-size: 14px;
             width: calc(100vw + 2rem);
             margin-left: -1rem;
-
-            li {
-              max-height: 35px;
-            }
           }
         }
 

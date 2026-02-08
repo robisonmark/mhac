@@ -569,7 +569,7 @@ const gameScore = reactive({
 const newStats = ref({
   season: ''
 });
-const newGameStats = ref({
+let newGameStats = ref({
   game_id: '',
   player_stats: []
 });
