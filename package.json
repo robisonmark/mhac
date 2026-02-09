@@ -20,7 +20,7 @@
     "@microsoft/signalr": "^8.0.7",
     "@vue/compat": "^3.3.9",
     "aws-amplify": "^6.0.5",
-    "axios": "^0.28.0",
+    "axios": "^1.13.5",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.18.1",
     "date-fns": "^2.16.1",
