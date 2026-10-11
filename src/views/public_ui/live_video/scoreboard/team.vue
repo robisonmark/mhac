@@ -1,3 +1,4 @@
+<!-- TODO: CLEAN UP, this is not being used -->
 <template>
     <div class="wrapper">
       <div :id="`canvas_${props.location}`" :class="`team_block team_block-${props.location}`"
@@ -6,7 +7,7 @@
           <img :src="logo" :class="`${props.location}`" />
         </div>
         <div class="team_name team_name_wrapper">
-          <div :class="`team_name team_name_${props.location}`" :style="{ color: secondary_color }">{{ team_name }}</div>
+          <div :class="`team_name team_name_${props.location}`" style="color: #fff">{{ team_name }}</div>
         </div>
         <scoreBlock :location="props.location" :score="score" :style="{ color: '#fff' }"></scoreBlock>
       </div>
