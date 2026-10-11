@@ -21,14 +21,22 @@
 
   <title>MHAC | Midsouth Homeschool Athletics</title>
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157989243-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
+  <!-- Google tag (gtag.js) -->
+   <script type="module">
+    if (import.meta.env.PROD) {
+      const s = document.createElement('script')
+      s.src = "https://www.googletagmanager.com/gtag/js?id=G-V9EVEL3PVV"
+      document.head.appendChild(s)
+    }
+  </script>
+  <script type="module">
+    if (import.meta.env.PROD) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-    gtag('config', 'UA-157989243-1');
+      gtag('config', 'G-V9EVEL3PVV');
+    }
   </script>
 
 </head>
