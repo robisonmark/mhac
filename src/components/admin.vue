@@ -35,7 +35,19 @@
         }" tag="li" class="nav-item">
           Run Clock
         </router-link>
+        <li class="nav-item">
+          <a
+            :href="adminAppUrl"
+            :aria-busy="openingAdminApp"
+            @click.prevent="openAdminApp"
+          >
+            {{ openingAdminApp ? 'Opening Admin App…' : 'Admin App' }}
+          </a>
+        </li>
       </ul>
+      <p v-if="adminAppError" class="admin-app-error" role="alert">
+        {{ adminAppError }}
+      </p>
     </nav>
     <router-view class="admin" />
     <img class="bottom-logo" :src="greyLogo" />
@@ -44,15 +56,22 @@
 </template>
 
 <script>
-// api
-import api from '../api/endpoints'
+import { fetchAuthSession } from 'aws-amplify/auth'
 
-import { mapGetters } from 'vuex'
+const adminAppUrl = import.meta.env.DEV
+  ? 'http://localhost:8001'
+  : 'https://admin.mhacsports.com'
+const adminAuthBaseUrl = import.meta.env.DEV
+  ? `${window.location.origin}/django-admin/`
+  : `${adminAppUrl}/`
 
 export default {
   name: 'teamManager',
   data() {
     return {
+      adminAppUrl,
+      openingAdminApp: false,
+      adminAppError: '',
       collapse: true,
       login: true,
       greyLogo: '',
@@ -74,6 +93,64 @@ export default {
     // this.getSeasonTeams(this.$route.params.slug)
   },
   methods: {
+    async openAdminApp() {
+      if (this.openingAdminApp) return
+
+      this.openingAdminApp = true
+      this.adminAppError = ''
+
+      try {
+        const { tokens } = await fetchAuthSession()
+        const idToken = tokens?.idToken?.toString()
+        if (!idToken) {
+          throw new Error('You must sign in to the Vue app before opening the Admin App.')
+        }
+
+        const csrfResponse = await fetch(new URL('auth/cognito/csrf/', adminAuthBaseUrl), {
+          credentials: 'include'
+        })
+        if (!csrfResponse.ok) {
+          throw new Error('Could not start Django sign-in. Please try again.')
+        }
+
+        const { csrfToken } = await csrfResponse.json()
+        if (!csrfToken) {
+          throw new Error('Django did not provide a CSRF token. Please try again.')
+        }
+
+        const sessionResponse = await fetch(new URL('auth/cognito/session/', adminAuthBaseUrl), {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+          },
+          body: JSON.stringify({
+            idToken,
+            next: '/'
+          })
+        })
+        if (!sessionResponse.ok) {
+          throw new Error('Django sign-in was rejected. Check that your account has Admin App access.')
+        }
+
+        const { redirectUrl } = await sessionResponse.json()
+        if (typeof redirectUrl !== 'string' || !redirectUrl) {
+          throw new Error('Django sign-in succeeded but did not provide a redirect URL.')
+        }
+
+        const destination = new URL(redirectUrl, this.adminAppUrl)
+        if (destination.origin !== new URL(this.adminAppUrl).origin) {
+          throw new Error('Django returned a redirect outside the Admin App.')
+        }
+        window.location.assign(destination.toString())
+      } catch (error) {
+        this.adminAppError = error instanceof Error
+          ? error.message
+          : 'Could not open the Admin App. Please try again.'
+        this.openingAdminApp = false
+      }
+    },
     // getSeasonTeams (slug) {
     //   api.getSeasonTeams(slug)
     //     .then(response => {
@@ -183,6 +260,7 @@ li.game-bottom {
       padding-inline-start: 0px;
     }
 
+    .nav-item > a,
     a[tag="li"] {
       text-decoration: none;
       list-style: none;
@@ -191,6 +269,11 @@ li.game-bottom {
       height: 3rem;
       display: flex;
       align-items: center;
+      color: #fff;
+    }
+
+    .admin-app-error {
+      margin: 1rem;
       color: #fff;
     }
   }

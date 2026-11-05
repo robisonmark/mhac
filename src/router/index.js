@@ -1,59 +1,50 @@
 // TODO: Page not found error/redirect inside before resolve
-// import Vue from 'vue'
-import * as Vue from 'vue';
-// import Router from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 
 // Front Pages
-// import website from '@/components/website'
-import home from '@/components/front-pages/home'
-import tournament from '@/components/front-pages/tournament'
-import tournamentBracket from '@/components/front-pages/tournament-bracket'
-import tournamentHotel from '@/components/front-pages/tournament-hotel'
-import compliance from '@/components/front-pages/compliance'
-import schedules from '@/components/front-pages/schedules'
-import stats from '@/components/front-pages/stats'
-import schools from '@/components/front-pages/schools'
-import contact from '@/components/front-pages/contact'
-import hallOfFame from '@/components/front-pages/hallOfFame'
-import videofeed from '@/components/front-pages/live_video/video_iframe'
+// import website from '../components/website'
+import home from '../components/front-pages/home.vue'
+import tournament from '../components/front-pages/tournament.vue'
+import tournamentBracket from '../components/front-pages/tournament-bracket.vue'
+import tournamentHotel from '../components/front-pages/tournament-hotel.vue'
+import compliance from '../components/front-pages/compliance.vue'
+import schedules from '../components/front-pages/schedules.vue'
+import stats from '../components/front-pages/stats.vue'
+import schools from '../components/front-pages/schools.vue'
+import contact from '../components/front-pages/contact.vue'
+import hallOfFame from '../components/front-pages/hallOfFame.vue'
+import videofeed from '../components/front-pages/live_video/video_iframe.vue'
 
 // View
 // Public UI
-import livestream from '@/views/public_ui/LiveStream'
-import scoreboard from '@/views/public_ui/Scoreboard'
-import scoreapp from '@/views/public_ui/ScoreApp'
-// import scoreapp_old from '@/views/public_ui/ScoreApp_old'
-import awards from '@/views/public_ui/live_video/awards'
+import livestream from '../views/public_ui/LiveStream.vue'
+import scoreboard from '../views/public_ui/Scoreboard.vue'
+import scoreapp from '../views/public_ui/ScoreApp.vue'
+import awards from '../views/public_ui/live_video/awards.vue'
 
 // Team Management Components
-import TeamManagement from '@/components/TeamManagement'
-import teamhome from '@/components/team-management/teamhome'
-import roster from '@/components/team-management/roster'
-import schedule from '@/components/team-management/schedule'
-import gamestats from '@/components/team-management/stats'
-import profile from '@/components/team-management/profile'
+import TeamManagement from '../components/TeamManagement.vue'
+import teamhome from '../components/team-management/teamhome.vue'
+import roster from '../components/team-management/roster.vue'
+import schedule from '../components/team-management/schedule.vue'
+import gamestats from '../components/team-management/stats.vue'
+import profile from '../components/team-management/profile.vue'
 
 // Admin Components
-import admin from '@/components/admin'
-// import login from '@/components/admin/login'
-import adminTournament from '@/components/admin/adminTournament'
-import teamManager from '@/components/admin/teamAdmin'
-import adminSeason from '@/components/admin/adminSeason'
-import editHomepage from '@/components/admin/editHomepage'
-import manageStandings from '@/components/admin/manageStandings'
-import adminObs from '@/components/admin/adminObs'
+import admin from '../components/admin.vue'
+import adminTournament from '../components/admin/adminTournament.vue'
+import teamManager from '../components/admin/teamAdmin.vue'
+import adminSeason from '../components/admin/adminSeason.vue'
+import editHomepage from '../components/admin/editHomepage.vue'
+import manageStandings from '../components/admin/manageStandings.vue'
+import adminObs from '../components/admin/adminObs.vue'
 
 // Config Helpers
-import config from '@/config/helpers'
+import config from '../config/helpers'
 
 import { store } from '../store/index'
-import Bracket from '../components/tournament/bracket.vue';
-// import { component } from 'vue/types/umd'
 
 const $config = config.CONSTANTS
-
-// Vue.use(Router)
 
 export const router = createRouter({
   history: createWebHistory(),

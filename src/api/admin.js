@@ -1,5 +1,4 @@
 import { robros } from './base'
-// import AuthToken from './auth'
 
 class Admin {
   constructor () {
