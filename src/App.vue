@@ -110,6 +110,7 @@ const clickAway = () => {
 </script>
 
 <style scoped lang="less">
+@import './assets/less/utils/breakpoints.less';
 /* Import your less variables and mixins here */
 
 body {
@@ -120,6 +121,7 @@ body {
 main {
   position: relative;
   z-index: 1;
+  flex-grow: 1;
 }
 
 .body {
@@ -140,8 +142,10 @@ main {
   background: -moz-linear-gradient(-45deg, #2784c3 49%, #1e5799 100%, #2784c3 100%);
   background: -webkit-linear-gradient(-45deg, #2784c3 49%, #1e5799 100%, #2784c3 100%);
   background: linear-gradient(135deg, #2784c3 49%, #1e5799 100%, #2784c3 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2784c3', endColorstr='#2784c3', GradientType=1);
+  display: flex;
+  flex-direction: column;
   background-attachment: fixed;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2784c3', endColorstr='#2784c3', GradientType=1);
 }
 
 .contentPad {
@@ -163,9 +167,12 @@ main {
 
 .main-footer {
   background-color: #2A2A2A;
-  height: 405px;
   display: flex;
   align-items: center;
+
+  @media @desktop-min {
+    height: 405px;
+  }
 
   .conference {
     &-info {
