@@ -11,7 +11,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import api from '@/api/endpoints';
+import api from '../../api/endpoints.js';
 
 const websocketUrl = ref('');
 const saving = ref(false);

@@ -142,7 +142,7 @@ async function startSignalR() {
 
 
       connection.on("ResetGame", (res) => { 
-        console.log(res)
+        // console.log(res)
         store.dispatch("setHomeTeam", res.homeTeam);
         store.dispatch("setAwayTeam", res.awayTeam);
         store.dispatch("setHome", res.homeTeamScore);
@@ -163,7 +163,7 @@ async function startSignalR() {
   
 }
 
-const isHidden = ref(false)
+let isHidden = ref(false)
 
 
 const getNumberWithOrdinal = (n) => {

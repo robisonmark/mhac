@@ -1,35 +1,39 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const path = require("path");
-// https://vitejs.dev/config/
-export default defineConfig({
-    resolve: {
-        alias: {
-            "@": path.resolve(__dirname, "./src"),
-            find: './runtimeConfig', 
-            replacement: './runtimeConfig.browser',
-            // vue: "@vue/compat"
-        },
-        extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? 'https://mhacsports.com/' : '/',
+
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
-    plugins: [vue({
-        template: {
-            compilerOptions: {
-                compatConfig: {
-                    MODE: 2
-                }
-            }
-        }
-    })],
-    build: {
-        rollupOptions: {
-          output: {
-            inlineDynamicImports: true,
-            entryFileNames: 'assets/[name].js',
-            assetFileNames: `assets/[name].[ext]`
-          }
-        },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+  },
+
+  server: {
+    proxy: {
+      '/django-admin': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+        rewrite: (requestPath) => requestPath.replace(/^\/django-admin/, ''),
+      },
     },
-    base: 'https://mhacsports.com/'
-})
+  },
+
+  plugins: [vue()],
+
+  build: {
+    rollupOptions: {
+      output: {
+        inlineDynamicImports: true,
+        entryFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
+      },
+    },
+  },
+}))
